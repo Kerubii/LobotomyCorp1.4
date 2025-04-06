@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class Heaven : ModItem
+    public class Heaven : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -17,13 +17,13 @@ namespace LobotomyCorp.Items.Waw
 
         public override void SetDefaults()
         {
-            Item.damage = 38;
+            Item.damage = 42;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 28;
-            Item.useAnimation = 28;
+            Item.useTime = 32;
+            Item.useAnimation = 32;
 
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
@@ -36,6 +36,7 @@ namespace LobotomyCorp.Items.Waw
             Item.UseSound = LobotomyCorp.WeaponSounds.Spear;
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool CanUseItem(Player player)

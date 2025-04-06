@@ -41,6 +41,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.shootSpeed = 3f;
             Item.noUseGraphic = true;
             Item.noMelee = true;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         private int SpecialAttackTimer = 0;
@@ -73,7 +74,13 @@ namespace LobotomyCorp.Items.Aleph
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             if (player.altFunctionUse == 2)
+            {
                 damage = (int)(damage * 1.3f);
+            }
+            else
+            {
+                Item.shoot = ModContent.ProjectileType<Projectiles.TwilightSlash>();
+            }
         }
 
         public override bool CanUseItem(Player player)
@@ -86,8 +93,7 @@ namespace LobotomyCorp.Items.Aleph
                 Item.useAnimation = 90;
                 Item.useStyle = ItemUseStyleID.Shoot;
                 Item.shoot = ModContent.ProjectileType<Projectiles.TwilightSpecial>();
-                Item.shootSpeed = 7.6f;//4.2f;
-                                       //Item.noUseGraphic = true;
+                Item.shootSpeed = 7.6f;
                 Item.noMelee = true;
             }
             else
@@ -96,7 +102,6 @@ namespace LobotomyCorp.Items.Aleph
                 Item.useTime = 26;
                 Item.useAnimation = 26;
                 Item.useStyle = 15;
-                Item.shoot = ModContent.ProjectileType<Projectiles.TwilightSlash>();
                 Item.shootSpeed = 18f;
                 //Item.noUseGraphic = false;
                 Item.noMelee = false;

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -23,7 +24,7 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).WristCutterScars = true;
+            player.GetModPlayer<LobotomyTethPlayer>().WristCutterScars = true;
             player.buffTime[buffIndex] = 10;
         }
     }

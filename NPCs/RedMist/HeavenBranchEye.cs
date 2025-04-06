@@ -51,7 +51,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     for (int i = -1; i < 2; i += 2)
                     {
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(MathHelper.ToRadians(90 * i)), ModContent.ProjectileType<HeavenBranch>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.ai[0], i);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(MathHelper.ToRadians(90 * i)), ModContent.ProjectileType<HeavenBranch>(), Projectile.damage, Projectile.knockBack, -1, Projectile.ai[0], i);
                     }
                 }
             }

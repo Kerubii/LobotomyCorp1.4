@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class Amrita : ModItem
+    public class Amrita : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -18,13 +18,13 @@ namespace LobotomyCorp.Items.Waw
 
         public override void SetDefaults()
         {
-            Item.damage = 30;
+            Item.damage = 33;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 42;
-            Item.useAnimation = 40;
+            Item.useTime = 46;
+            Item.useAnimation = 44;
 
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
@@ -37,6 +37,7 @@ namespace LobotomyCorp.Items.Waw
             Item.UseSound = LobotomyCorp.WeaponSound("Templer");
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool CanUseItem(Player player)
@@ -54,6 +55,13 @@ namespace LobotomyCorp.Items.Waw
         {
             CreateRecipe()
             .AddIngredient(ItemID.DynastyWood, 30)
+            .AddIngredient(ItemID.WhitePearl)
+            .AddTile(Mod, "BlackBox2")
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ItemID.VanityTreeSakuraSeed, 10)
+            .AddIngredient(ItemID.WhitePearl)
             .AddTile(Mod, "BlackBox2")
             .Register();
         }

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -49,7 +50,7 @@ namespace LobotomyCorp.Items.Ruina.Art
                     Projectile.NewProjectile(n.Center, Vector2.Zero, ModContent.ProjectileType<Projectiles.AlriuneDeathAnimation"), Item.damage, 0, player.whoAmI, n.whoAmI);
             }*/
             if (Main.myPlayer == player.whoAmI)
-                Projectile.NewProjectile(source, position, velocity, type, damage, 0, player.whoAmI, (int)(LobotomyModPlayer.ModPlayer(player).FaintAromaPetal/LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax) - 1);
+                Projectile.NewProjectile(source, position, velocity, type, damage, 0, player.whoAmI, (int)(player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal/ player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax) - 1);
             return false;
         }
 
@@ -60,13 +61,13 @@ namespace LobotomyCorp.Items.Ruina.Art
                 Item.useTime = 26;
                 Item.useAnimation = 26;
                 Item.shootSpeed = 1f;
-                if (LobotomyModPlayer.ModPlayer(player).FaintAromaPetal > LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax)
+                if (player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal > player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax)
                 {
                     Item.shoot = ModContent.ProjectileType<Projectiles.FaintAromaS>();
                     Item.useStyle = 5;
                     Item.noUseGraphic = true;
                     Item.noMelee = true;
-                    switch ((int)(LobotomyModPlayer.ModPlayer(player).FaintAromaPetal / LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax))
+                    switch ((int)(player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal / player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax))
                     {
                         case 1:
                             Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Ali_Sub_Atk");
@@ -113,19 +114,19 @@ namespace LobotomyCorp.Items.Ruina.Art
 
         public override void UseStyle(Player player, Rectangle heldItemFrame)
         {
-            if (player.altFunctionUse == 2 && LobotomyModPlayer.ModPlayer(player).FaintAromaPetal < LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax * 3 + 30)
+            if (player.altFunctionUse == 2 && player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal < player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30)
             {
-                LobotomyModPlayer.ModPlayer(player).FaintAromaPetal += 1f + LobotomyModPlayer.ModPlayer(player).FaintAromaDecay * 2;
-                if (LobotomyModPlayer.ModPlayer(player).FaintAromaPetal > LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax * 3 + 30)
-                    LobotomyModPlayer.ModPlayer(player).FaintAromaPetal = LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax * 3 + 30;
+                player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal += 1f + player.GetModPlayer<LobotomyWawPlayer>().FaintAromaDecay * 2;
+                if (player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal > player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30)
+                    player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal = player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30;
             }
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            LobotomyModPlayer.ModPlayer(player).FaintAromaPetal += 30f;
-            if (LobotomyModPlayer.ModPlayer(player).FaintAromaPetal > LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax * 3 + 30)
-                LobotomyModPlayer.ModPlayer(player).FaintAromaPetal = LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax * 3 + 30;
+            player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal += 30f;
+            if (player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal > player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30)
+                player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal = player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30;
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)

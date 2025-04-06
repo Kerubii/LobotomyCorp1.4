@@ -8,6 +8,7 @@ using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Microsoft.CodeAnalysis;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -46,7 +47,7 @@ namespace LobotomyCorp.Projectiles.Realized
 		public static void ApplyStoneBuff(Player reciever, int giver)
         {
 			reciever.AddBuff(ModContent.BuffType<Buffs.OurGalaxyStoneBuff>(), 100);
-			LobotomyModPlayer modReciever = LobotomyModPlayer.ModPlayer(reciever);
+			LobotomyHePlayer modReciever = reciever.GetModPlayer<LobotomyHePlayer>();
 			modReciever.OurGalaxyStone = true;
 			modReciever.OurGalaxyOwner = giver;
         }
@@ -64,7 +65,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			ApplyStoneBuff(Main.player[Projectile.owner], Projectile.owner);
 			int hp = -1;
 			int healTarget = -1;
-			foreach (Player p in Main.player)
+			foreach (Player p in Main.ActivePlayers)
 			{
 				if (p.whoAmI != Projectile.owner && !p.dead && p.team == Main.player[Projectile.owner].team)
 				{
@@ -81,7 +82,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 //ApplyStoneBuff(p, Projectile.owner);
             }
         }
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             for (int i = 0; i < 20; i++)
             {
@@ -96,7 +97,7 @@ namespace LobotomyCorp.Projectiles.Realized
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel, ModContent.ProjectileType<OurGalaxySparkle>(), 0, 0, Projectile.owner);
 				}
 			}
-			SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Art/Galaxy_Strong_Big_Boom") with { Volume = 0.25f });
+			SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Art/Galaxy_Strong_Big_Boom") with { Volume = 0.25f }, Projectile.Center);
 		}
 
         public override bool PreDraw(ref Color lightColor)

@@ -1,4 +1,5 @@
 ﻿using System;
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -89,10 +90,10 @@ namespace LobotomyCorp.Projectiles.Realized
         {
             Player owner = Main.player[Projectile.owner];
 
-            LobotomyModPlayer modOwner = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyHePlayer modOwner = owner.GetModPlayer<LobotomyHePlayer>();
 
-            if (modOwner.ForgottenAffectionResistance >= 0.03f && !ValidTarget(owner, target))
-                return false;
+            //if (modOwner.ForgottenAffectionResistance >= 0.03f && !ValidTarget(owner, target))
+                //return false;
 
             float progress = owner.itemAnimation / (float)owner.itemAnimationMax;
             int diff = (int)(owner.itemAnimationMax * 0.33f);
@@ -139,13 +140,13 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            LobotomyModPlayer owner = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyHePlayer owner = Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>();
             if (ValidTarget(owner.Player, target))
             {
                 if (owner.ForgottenAffectionResistance < 0.4f)
                     owner.ForgottenAffectionResistance += 0.01f;
             }
-            else
+            else if (owner.ForgottenAffectionResistance < 0.03f)
             {
                 owner.ForgottenAffectionResistance = 0f;
                 owner.ForgottenAffection = target.whoAmI;
@@ -158,7 +159,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
             if (owner.ForgottenAffectionResistance == 0.03f)
             {
-                SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Teddy_On") with { Volume = 0.5f, MaxInstances = 1 });
+                SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Teddy_On") with { Volume = 0.5f, MaxInstances = 1 }, Projectile.Center);
             }
 
             Vector2 delta = Projectile.Center - owner.Player.Center;
@@ -170,8 +171,8 @@ namespace LobotomyCorp.Projectiles.Realized
         //for multisegmented enemies/bosses
         public bool ValidTarget(Player player, NPC target)
         {
-            LobotomyModPlayer owner = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
-            return owner.ForgottenAffection == target.whoAmI || target.realLife >= 0 && owner.ForgottenAffection == target.realLife;
+            LobotomyHePlayer owner = Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>();
+            return owner.ForgottenAffection == target.whoAmI || (target.realLife >= 0 && owner.ForgottenAffection == target.realLife);
         }
 
         public override bool PreDraw(ref Color lightColor)

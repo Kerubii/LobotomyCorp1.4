@@ -58,6 +58,28 @@ namespace LobotomyCorp.Items.Zayin
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
 
+        public override bool CanConsumeAmmo(Item ammo, Player player)
+        {
+            if (RedMistMaskUpgrade(player))
+            {
+                int rand = Main.rand.Next(3);
+                if (rand == 0)
+                {
+                    player.Heal(1);
+                }
+                if (rand == 1)
+                {
+                    player.statMana += 20;
+                    player.ManaEffect(20);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return base.CanConsumeAmmo(ammo, player);
+        }
+
         public override void AddRecipes()
         {
             CreateRecipe()

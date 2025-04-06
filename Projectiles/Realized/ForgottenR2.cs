@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -57,7 +58,7 @@ namespace LobotomyCorp.Projectiles.Realized
             }
             else
             {
-                float resistance = LobotomyModPlayer.ModPlayer(owner).ForgottenAffectionResistance;
+                float resistance = owner.GetModPlayer<LobotomyHePlayer>().ForgottenAffectionResistance;
                 if (resistance >= 0.4f)
                 {
                     owner.immune = true;
@@ -175,17 +176,17 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override bool? CanHitNPC(NPC target)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyHePlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>();
             if ((target.whoAmI == modPlayer.ForgottenAffection || target.realLife >= 0 && target.realLife == modPlayer.ForgottenAffection) && (Projectile.ai[0] < 30 || Projectile.ai[0] >= 60 && Projectile.ai[0] % 60 == 0))
                 return null;
             return false;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             if (Projectile.ai[0] < 60)
                 return;
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyHePlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>();
             modPlayer.ForgottenAffectionResistance = 0f;
         }
 

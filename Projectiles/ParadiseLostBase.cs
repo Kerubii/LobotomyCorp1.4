@@ -89,7 +89,7 @@ namespace LobotomyCorp.Projectiles
             return false;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             Vector2 speed = Vector2.Normalize(Projectile.velocity) * 4;
             for (int i = 0; i < 10; i++)

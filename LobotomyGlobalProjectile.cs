@@ -8,6 +8,7 @@ using LobotomyCorp.Utils;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp
 {
@@ -41,61 +42,70 @@ namespace LobotomyCorp
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (projectile.owner == Main.myPlayer && Lament > 0 && LobotomyCorp.LamentValid(target, projectile) && target.CanBeChasedBy(projectile))
+            if (projectile.owner == Main.myPlayer && Lament > 0)
             {
-                int p = Projectile.NewProjectile(projectile.GetSource_FromThis(), Main.player[projectile.owner].Center, new Vector2(6, 0).RotateRandom(6.28f), ModContent.ProjectileType<Projectiles.Kaleidoscope>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
-                Main.projectile[p].localAI[0] = Lament;
-                if (projectile.type != ModContent.ProjectileType<Projectiles.Kaleidoscope>())
-                {                     
-                    for (int i = 0, amount = Main.rand.Next(4, 9); i < amount; i++)
+                if (LobotomyCorp.LamentValid(target, projectile) && target.CanBeChasedBy(projectile))
+                {
+                    int p = Projectile.NewProjectile(projectile.GetSource_FromThis(), Main.player[projectile.owner].Center, new Vector2(6, 0).RotateRandom(6.28f), ModContent.ProjectileType<Projectiles.Kaleidoscope>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
+                    Main.projectile[p].localAI[0] = Lament;
+                    if (projectile.type != ModContent.ProjectileType<Projectiles.Kaleidoscope>())
                     {
-                        Vector2 vel = new Vector2(Main.rand.NextFloat(2,5), 0).RotatedByRandom(6.29f);
-                        Projectile.NewProjectile(projectile.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<Projectiles.KaleidoscopeEffect>(), 0, 0, projectile.owner, Lament);
+                        for (int i = 0, amount = Main.rand.Next(4, 9); i < amount; i++)
+                        {
+                            Vector2 vel = new Vector2(Main.rand.NextFloat(2, 5), 0).RotatedByRandom(6.29f);
+                            Projectile.NewProjectile(projectile.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<Projectiles.KaleidoscopeEffect>(), 0, 0, projectile.owner, Lament);
+                        }
+                    }
+
+                    SoundStyle ding = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_Black");
+                    int dustType = 91;
+                    ScreenFilter screenFilter = new Items.Ruina.Technology.SolemnLamentWhite();
+                    ScreenFilter screenFilter2 = new Items.Ruina.Technology.SolemnLamentBlack();
+
+                    if (Lament == 1)
+                    {
+                        ding = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_White");
+                        dustType = 109;
+
+                        screenFilter = new Items.Ruina.Technology.SolemnLamentBlack();
+                        screenFilter2 = new Items.Ruina.Technology.SolemnLamentWhite();
+                    }
+                    ding.Volume = 0.5f;
+                    //SoundEngine.PlaySound(ding, target.Center);
+
+                    if (projectile.owner == Main.myPlayer && !LobCustomDraw.Instance().ContainsFilter(screenFilter2))
+                        LobCustomDraw.Instance().AddFilter(screenFilter, 0, false, false);
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Vector2 pos = target.position;
+                        pos.X += Main.rand.Next(target.width);
+                        pos.Y += Main.rand.Next(target.height);
+                        int limit = 16;
+
+                        float speed = Main.rand.NextFloat(8f);
+                        for (int a = 0; a < limit; a++)
+                        {
+                            float angle = (float)a / limit * 6.34f;
+
+                            Vector2 velocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+                            Dust d = Dust.NewDustPerfect(pos + velocity * speed, dustType, velocity * 2);
+                            d.noGravity = true;
+                            d.scale = 0.5f;
+                        }
                     }
                 }
-
-                SoundStyle ding = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_Black");
-                int dustType = 91;
-                ScreenFilter screenFilter = new Items.Ruina.Technology.SolemnLamentWhite();
-                ScreenFilter screenFilter2 = new Items.Ruina.Technology.SolemnLamentBlack();
-
-                if (Lament == 1)
+                // On Kill, Disable Lament
+                if (target.life <= 0)
                 {
-                    ding = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_White");
-                    dustType = 109;
-
-                    screenFilter = new Items.Ruina.Technology.SolemnLamentBlack();
-                    screenFilter2 = new Items.Ruina.Technology.SolemnLamentWhite();
-                }
-                ding.Volume = 0.5f;
-                //SoundEngine.PlaySound(ding, target.Center);
-
-                if (projectile.owner == Main.myPlayer && !LobCustomDraw.Instance().ContainsFilter(screenFilter2))
-                    LobCustomDraw.Instance().AddFilter(screenFilter, 0, false, false);
-
-                for (int i = 0; i < 3; i++)
-                {
-                    Vector2 pos = target.position;
-                    pos.X += Main.rand.Next(target.width);
-                    pos.Y += Main.rand.Next(target.height);
-                    int limit = 16;
-
-                    float speed = Main.rand.NextFloat(8f);
-                    for (int a = 0; a < limit; a++)
-                    {
-                        float angle = (float)a / limit * 6.34f;
-
-                        Vector2 velocity = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-                        Dust d = Dust.NewDustPerfect(pos + velocity * speed, dustType, velocity * 2);
-                        d.noGravity = true;
-                        d.scale = 0.5f;
-                    }
+                    Main.player[projectile.owner].AddBuff(ModContent.BuffType<Buffs.Lament>(), 180);
+                    Main.player[projectile.owner].GetModPlayer<LobotomyWawPlayer>().SolemnLamentDisable = 1;
                 }
             }
         
             if (CrimsonScarBullet)
             {
-                LobotomyModPlayer.ModPlayer(Main.player[projectile.owner]).CrimsonScarEmpower = 1;
+                Main.player[projectile.owner].GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower = 1;
             }
 
             if (projectile.owner == Main.myPlayer)
@@ -112,7 +122,7 @@ namespace LobotomyCorp
         {
             if (projectile.owner >= 0 && projectile.owner < Main.maxPlayers)
             {
-                LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[projectile.owner]); 
+                LobotomyTethPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<LobotomyTethPlayer>(); 
                 if (modPlayer.TodaysExpressionActive)
                     modifiers.FinalDamage *= modPlayer.TodaysExpressionDamage();
             }

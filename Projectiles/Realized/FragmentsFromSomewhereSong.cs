@@ -60,7 +60,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			Projectile.Center = Main.player[Projectile.owner].MountedCenter;
 		}
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
 			/*
 			if (Projectile.ai[0] < 5 && Main.myPlayer == Projectile.owner)

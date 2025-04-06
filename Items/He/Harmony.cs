@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
-    public class Harmony : ModItem
+    public class Harmony : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -35,6 +35,7 @@ namespace LobotomyCorp.Items.He
             Item.shoot = 10; //idk why but all the guns in the vanilla source have this
             Item.shootSpeed = 8f; // the speed of the projectile (measured in pixels per frame)
             Item.mana = 10;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -76,7 +77,7 @@ namespace LobotomyCorp.Items.He
 
             CreateRecipe()
             .AddIngredient(ItemID.Sawmill)
-            .AddIngredient(ItemID.SilverBar, 8)
+            .AddIngredient(ItemID.TungstenBar, 8)
             .AddIngredient(ItemID.Chain, 10)
             .AddIngredient(ItemID.Vertebrae, 2)
             .AddTile(Mod, "BlackBox2")

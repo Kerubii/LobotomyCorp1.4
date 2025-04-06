@@ -16,18 +16,19 @@ namespace LobotomyCorp.Items.He
 
         public override void SetDefaults()
         {
-            Item.damage = 92;
+            Item.damage = 96;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 52;
-            Item.useAnimation = 52;
+            Item.useTime = 56;
+            Item.useAnimation = 56;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
             Item.rare = ItemRarityID.Yellow;
             SwingSound = new SoundStyle("LobotomyCorp/Sounds/Item/Lumberjack_Atk2") with { Volume = 0.5f, PitchVariance = 0.1f }; ;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

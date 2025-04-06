@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using ReLogic.Content;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.PlayerDrawEffects
 {
@@ -18,13 +19,15 @@ namespace LobotomyCorp.PlayerDrawEffects
 
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
         {
-            LobotomyModPlayer ModPlayer = LobotomyModPlayer.ModPlayer(drawInfo.drawPlayer);
+            LobotomyTethPlayer modTethPlayer = drawInfo.drawPlayer.GetModPlayer<LobotomyTethPlayer>();
+            LobotomyHePlayer modHePlayer = drawInfo.drawPlayer.GetModPlayer<LobotomyHePlayer>();
+            LobotomyWawPlayer modWawPlayer = drawInfo.drawPlayer.GetModPlayer<LobotomyWawPlayer>();
             return !drawInfo.drawPlayer.dead && (
-                ModPlayer.FaintAromaPetal > 0 ||
-                ModPlayer.HarmonyAddiction ||
-                ModPlayer.TodaysExpressionActive ||
-                ModPlayer.BlackSwanNettleClothing > 0 ||
-                ModPlayer.OurGalaxyStone);
+                modWawPlayer.FaintAromaPetal > 0 ||
+                modHePlayer.HarmonyAddiction ||
+                modTethPlayer.TodaysExpressionActive ||
+                modWawPlayer.BlackSwanNettleClothing > 0 ||
+                modHePlayer.OurGalaxyStone);
         }
 
         public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccFront);
@@ -48,12 +51,14 @@ namespace LobotomyCorp.PlayerDrawEffects
             if ()*/
 
             Player Player = drawInfo.drawPlayer;
-            LobotomyModPlayer ModPlayer = LobotomyModPlayer.ModPlayer(Player);
-            if (ModPlayer.FaintAromaPetal > 0)
+            LobotomyTethPlayer modTethPlayer = Player.GetModPlayer<LobotomyTethPlayer>();
+            LobotomyHePlayer modHePlayer = Player.GetModPlayer<LobotomyHePlayer>();
+            LobotomyWawPlayer modWawPlayer = Player.GetModPlayer<LobotomyWawPlayer>();
+            if (modWawPlayer.FaintAromaPetal > 0)
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    if (ModPlayer.FaintAromaPetal <= ModPlayer.FaintAromaPetalMax * i)
+                    if (modWawPlayer.FaintAromaPetal <= modWawPlayer.FaintAromaPetalMax * i)
                         continue;
 
                     Texture2D texture = AlriunePetal.Value;
@@ -70,7 +75,7 @@ namespace LobotomyCorp.PlayerDrawEffects
 
                     rot = MathHelper.ToRadians(rot * Player.direction + (Player.direction == 1 ? 0 : 180)) - MathHelper.ToRadians(135);
 
-                    float alpha = Terraria.Utils.GetLerpValue(0, 1f, ((ModPlayer.FaintAromaPetal - ModPlayer.FaintAromaPetalMax * i) / ModPlayer.FaintAromaPetalMax));
+                    float alpha = Terraria.Utils.GetLerpValue(0, 1f, ((modWawPlayer.FaintAromaPetal - modWawPlayer.FaintAromaPetalMax * i) / modWawPlayer.FaintAromaPetalMax));
                     Color color = Lighting.GetColor((int)(Player.position.X / 16), (int)(Player.position.Y / 16)) * alpha;
 
                     DrawData data = new DrawData(texture, new Vector2(drawX, drawY) + Offset, null, color, rot, new Vector2(texture.Width / 2f, texture.Height / 2f), 1f, 0, 0);
@@ -78,7 +83,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                 }
             }
 
-            if (ModPlayer.HarmonyAddiction)
+            if (modHePlayer.HarmonyAddiction)
             {
                 Texture2D texture = MusicalAddiction.Value;
                 int drawX = (int)(drawInfo.Position.X + Player.width / 2f - Main.screenPosition.X) + Main.rand.Next(2);
@@ -90,7 +95,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                 drawInfo.DrawDataCache.Add(data);
             }
 
-            if (ModPlayer.TodaysExpressionActive)
+            if (modTethPlayer.TodaysExpressionActive)
             {
                 Texture2D texture = TodaysLook.Value;
                 int drawX = (int)(drawInfo.Position.X + Player.width / 2f - Main.screenPosition.X);
@@ -99,33 +104,33 @@ namespace LobotomyCorp.PlayerDrawEffects
                 Color color = Color.White;
 
                 float scale = 0.75f;
-                if (ModPlayer.TodaysExpressionTimer < 60)
+                if (modTethPlayer.TodaysExpressionTimer < 60)
                 {
-                    float prog = ModPlayer.TodaysExpressionTimer / 60f;
+                    float prog = modTethPlayer.TodaysExpressionTimer / 60f;
                     float amount = 0.1f * (float)Math.Sin((3f * Math.PI) * prog);
                     if (amount < 0)
                         amount *= -1;
 
                     scale += amount;
                 }
-                DrawData data = new DrawData(texture, new Vector2(drawX, drawY), texture.Frame(5, 1, ModPlayer.TodaysExpressionFace), color, 0, new Vector2(texture.Width / 10f, texture.Height / 2f), scale, 0, 0);
+                DrawData data = new DrawData(texture, new Vector2(drawX, drawY), texture.Frame(5, 1, modTethPlayer.TodaysExpressionFace), color, 0, new Vector2(texture.Width / 10f, texture.Height / 2f), scale, 0, 0);
                 drawInfo.DrawDataCache.Add(data);
 
-                int timer = ModPlayer.TodaysExpressionTimerMax - 30;
-                if (ModPlayer.TodaysExpressionTimer > timer)
+                int timer = modTethPlayer.TodaysExpressionTimerMax - 30;
+                if (modTethPlayer.TodaysExpressionTimer > timer)
                 {
-                    float prog = (ModPlayer.TodaysExpressionTimer - timer) / 30f;
+                    float prog = (modTethPlayer.TodaysExpressionTimer - timer) / 30f;
 
                     scale += 0.25f * (float)Math.Sin(1.57f * (1f - prog));
                     float opacity = prog;
-                    data = new DrawData(texture, new Vector2(drawX, drawY), texture.Frame(5, 1, ModPlayer.TodaysExpressionFace), color * opacity, 0, new Vector2(texture.Width / 10f, texture.Height / 2f), scale, 0, 0);
+                    data = new DrawData(texture, new Vector2(drawX, drawY), texture.Frame(5, 1, modTethPlayer.TodaysExpressionFace), color * opacity, 0, new Vector2(texture.Width / 10f, texture.Height / 2f), scale, 0, 0);
                     drawInfo.DrawDataCache.Add(data);
                 }
             }
 
-            if (ModPlayer.BlackSwanNettleClothing > 0)
+            if (modWawPlayer.BlackSwanNettleClothing > 0)
             {
-                float clothing = ModPlayer.BlackSwanNettleClothing;
+                float clothing = modWawPlayer.BlackSwanNettleClothing;
                 int currentActive = (int)Math.Ceiling(clothing);
                 Texture2D texture = BlackSwan.Value;
                 int drawX = (int)(drawInfo.Position.X + Player.width / 2f - Main.screenPosition.X);
@@ -148,7 +153,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                 }
             }
 
-            if (ModPlayer.OurGalaxyStone)
+            if (modHePlayer.OurGalaxyStone)
             {
                 Texture2D texture = OurGalaxy.Value;
                 int drawX = (int)(drawInfo.Position.X + Player.width / 2f - Main.screenPosition.X);

@@ -1,5 +1,14 @@
+using LobotomyCorp.Buffs;
+using LobotomyCorp.Players;
+using LobotomyCorp.Projectiles.QueenLaser;
+using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
+using Mono.Cecil;
+using rail;
+using System;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,49 +24,61 @@ namespace LobotomyCorp.Items.Ruina.Natural
         public int ArcanaManaCost = 500;
 
 		public override void SetStaticDefaults() {
-			// Tooltip.SetDefault("In the name of Love and Justice~ Here comes Magical Girl!");
-            
             EgoColor = LobotomyCorp.WawRarity;
-            //Item.staff[Item.type] = true;
         }
 
         public override void SetDefaults() {
-            PassiveText = "Arcana Slave - Summon a laser of love, costs " + ArcanaManaCost + " mana\n" +
-                          "Love - Hitting an enemy or getting hit reduces Arcana Slave cost\n" +
-                          "Villain - Hitting an enemy with Arcana Beats marks them, increasing Justice and Hate gained\n" +
-                          "Justice - Increases defense and lowers damage when hitting enemies\n" +
-                          "|Hate - Getting hit reduces defense and increases damage\n" +
-                          "This Item is incomplete and unobtainable";
-
-            Item.damage = 30; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
-			Item.DamageType = DamageClass.Magic;; // sets the damage type to ranged
-			Item.width = 40; // hitbox width of the Item
-			Item.height = 20; // hitbox height of the Item
-			Item.useTime = 20; // The Item's use time in ticks (60 ticks == 1 second.)
-			Item.useAnimation = 20; // The length of the Item's use animation in ticks (60 ticks == 1 second.)
-			Item.useStyle = ItemUseStyleID.Shoot; // how you use the Item (swinging, holding out, etc)
-			Item.noMelee = true; //so the Item's animation doesn't do damage
-			Item.knockBack = 4; // Sets the Item's knockback. Note that projectiles shot by this weapon will use its and the used ammunition's knockback damageed together.
-			Item.value = 10000; // how much the Item sells for (measured in copper)
-			Item.rare = ItemRarityID.Green; // the color that the Item's name will be in-game
-			Item.UseSound = SoundID.Item11; // The sound that this Item plays when used.
-			Item.autoReuse = true; // if you can hold click to automatically use it again
-			Item.shoot = ModContent.ProjectileType<Projectiles.QueenLaser.ArcanaBeats>(); //idk why but all the guns in the vanilla source have this
-			Item.shootSpeed = 1f; // the speed of the projectile (measured in pixels per frame)
+            Item.damage = 60;
+			Item.DamageType = DamageClass.Magic;
+			Item.width = 40;
+			Item.height = 20;
+			Item.useTime = 20;
+			Item.useAnimation = 20;
+			Item.useStyle = ItemUseStyleID.Shoot;
+			Item.noMelee = true;
+			Item.knockBack = 4;
+			Item.value = 10000; 
+			Item.rare = ItemRarityID.Green;
+            Item.noUseGraphic = true;
+			//Item.UseSound = SoundID.Item11;
+            Item.autoReuse = true;
+			Item.shoot = ModContent.ProjectileType<ArcanaBeatsv2>();
+            Item.shootSpeed = 16f;
             Item.channel = true;
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
+            type = ModContent.ProjectileType<StarShot2>();
             if (player.altFunctionUse == 2)
             {
-                Item.shoot = ModContent.ProjectileType<Projectiles.QueenLaser.Circle1>();
+                if (player.CheckMana(player.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost, true, true))
+                    type = ModContent.ProjectileType<Circle1>();
             }
-            else
-                Item.shoot = ModContent.ProjectileType<Projectiles.QueenLaser.ArcanaBeats>();
+            base.ModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
+        }
 
-            position.X -= 42 * player.direction;
-            position.Y -= 30;
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            int proj = ModContent.ProjectileType<ArcanaBeatsv2>();
+            if (player.ownedProjectileCounts[proj] == 0)
+                Projectile.NewProjectile(player.GetSource_FromThis(), position, Vector2.Zero, proj, 0, knockback, player.whoAmI);
+
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+
+        public override bool LobModifyTooltips(List<TooltipLine> tooltips, ref int num)
+        {
+            num = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost;
+            return base.LobModifyTooltips(tooltips, ref num);
+        }
+
+        public override void HoldItem(Player player)
+        {
+            if (player.statLife > player.statLifeMax2 / 2)
+                player.AddBuff(ModContent.BuffType<Love>(), 2);
+            else
+                player.AddBuff(ModContent.BuffType<Hatred>(), 2);
         }
 
         public override bool AltFunctionUse(Player player)

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -48,14 +49,14 @@ namespace LobotomyCorp.Items.Ruina.Philosophy
 
         public override bool? CanHitNPC(Player player, NPC target)
         {
-            return LobotomyModPlayer.ModPlayer(player).BeakPunish > 0 || LobotomyGlobalNPC.LNPC(target).BeakTarget > 0;
+            return player.GetModPlayer<LobotomyTethPlayer>().BeakPunish > 0 || LobotomyGlobalNPC.LNPC(target).BeakTarget > 0;
         }
 
         public override bool SafeCanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
-                LobotomyModPlayer.ModPlayer(player).BeakParry = 30;
+                player.GetModPlayer<LobotomyTethPlayer>().BeakParry = 30;
                 Item.useAnimation = 30;
                 Item.useTime = 45;
             }
@@ -70,7 +71,7 @@ namespace LobotomyCorp.Items.Ruina.Philosophy
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
         {
-            if (LobotomyModPlayer.ModPlayer(player).BeakPunish > 0)
+            if (player.GetModPlayer<LobotomyTethPlayer>().BeakPunish > 0)
                 damage += 75f;
         }
 

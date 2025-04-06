@@ -42,16 +42,15 @@ namespace LobotomyCorp.Tiles
 			int redMistType = ModContent.NPCType<NPCs.RedMist.RedMist>();
 			if (!NPC.AnyNPCs(redMistType))
             {
-                WorldGen.KillTile(i, j, false, false, true);
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
-                    NPC.SpawnBoss(i * 16, (j + 1) * 16, redMistType, 0);
-					int who = NPC.FindFirstNPC(redMistType);
-                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, who);
+					LobotomyCorp.SendBossSpawnCoords(redMistType, i * 16, (j + 1) * 16, Main.myPlayer);
+                    WorldGen.KillTile(i, j, false, false, true);
                     NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, i, j);
 				}
 				else
-				{
+                {
+                    WorldGen.KillTile(i, j, false, false, true);
                     NPC.SpawnBoss(i * 16, (j + 1) * 16, redMistType, 0);
                 }
                 Gore.NewGore(null, new Vector2(i * 16, j * 16), new Vector2(-1, 0), ModContent.Find<ModGore>("LobotomyCorp/ShellGore").Type);

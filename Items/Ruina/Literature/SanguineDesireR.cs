@@ -81,7 +81,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 				if (Glitter(player, (int)(GlitterTimer * 0.8f)))
 				{
 					if (player.whoAmI == Main.myPlayer)
-						SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Literature/RedShoes_On2") with { Volume = 0.5f });
+						SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Literature/RedShoes_On2") with { Volume = 0.5f }, player.Center);
 				}
 				else
 					GlitterTimer = 120;
@@ -123,9 +123,9 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
 
 			bool GlitterSuccess = false;
-			foreach (NPC n in Main.npc)
+			foreach (NPC n in Main.ActiveNPCs)
             {
-				if (n.active && n.life > 0 && !n.friendly && Main.rand.NextFloat(1f) < chance && n.Center.Distance(player.Center) < distance)
+				if (n.life > 0 && !n.friendly && Main.rand.NextFloat(1f) < chance && n.Center.Distance(player.Center) < distance)
                 {
 					GlitterSuccess = true;
 					n.AddBuff(ModContent.BuffType<Buffs.Glitter>(), time);

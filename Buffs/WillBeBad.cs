@@ -14,6 +14,7 @@ namespace LobotomyCorp.Buffs
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetDamage(DamageClass.Melee) += 0.1f;
+			player.moveSpeed += .1f;
         }
     }
 }

@@ -19,12 +19,12 @@ namespace LobotomyCorp.Items.He
 
         public override void SetDefaults()
         {
-            Item.damage = 38;
+            Item.damage = 40;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 20;
-            Item.useAnimation = 20;
+            Item.useTime = 24;
+            Item.useAnimation = 24;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 5000;
@@ -34,6 +34,7 @@ namespace LobotomyCorp.Items.He
 
             Item.shoot = ProjectileID.OrnamentFriendly;
             Item.shootSpeed = 16f;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override void AddRecipes()

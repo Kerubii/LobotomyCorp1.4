@@ -9,6 +9,7 @@ using Terraria.GameContent;
 using System.Collections.Generic;
 using Terraria.Audio;
 using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -65,7 +66,7 @@ namespace LobotomyCorp.Projectiles.Realized
 				owner.itemAnimation = owner.itemAnimationMax / 3 * 2;
 				owner.itemTime = owner.itemAnimation;
 				Projectile.alpha = (int)(255 * Projectile.ai[0] / 30);
-				LobotomyModPlayer.ModPlayer(owner).RedEyesOpacity = Projectile.ai[0] / 30;
+				owner.GetModPlayer<LobotomyTethPlayer>().RedEyesOpacity = Projectile.ai[0] / 30;
 			}
 			else if (Projectile.ai[0] >= 45)
             {
@@ -89,7 +90,7 @@ namespace LobotomyCorp.Projectiles.Realized
 				if (Projectile.alpha < 0)
 					Projectile.alpha = 0;
 
-				LobotomyModPlayer.ModPlayer(owner).RedEyesOpacity = Projectile.alpha / 255f;
+                owner.GetModPlayer<LobotomyTethPlayer>().RedEyesOpacity = Projectile.alpha / 255f;
 				Projectile.velocity.Y = 42;// 1057 / 30;
 				owner.itemAnimation = owner.itemAnimationMax / 2;
 				owner.itemTime = owner.itemAnimation;

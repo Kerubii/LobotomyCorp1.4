@@ -4,29 +4,20 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Chat;
 using Terraria.Audio;
 using LobotomyCorp;
 using LobotomyCorp.Utils;
 using LobotomyCorp.UI;
 using System.Collections.Generic;
-using Terraria.Graphics.Effects;
 using System.IO;
-using static Terraria.ModLoader.PlayerDrawLayer;
 using LobotomyCorp.Projectiles;
-using static Terraria.ModLoader.ExtraJump;
-using System.Reflection;
-using Stubble.Core.Parser.TokenParsers;
-using Terraria.Utilities;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Terraria.ModLoader.IO;
-using Terraria.Physics;
-using static Terraria.ModLoader.BuilderToggle;
-using Terraria.ModLoader.Assets;
 using LobotomyCorp.Projectiles.KingPortal;
 using LobotomyCorp.ModSystems;
 using Terraria.GameContent.Bestiary;
-using Terraria.WorldBuilding;
+using Terraria.GameContent.NetModules;
+using Terraria.Localization;
+using Terraria.Chat;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
@@ -68,7 +59,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
         public override void SetStaticDefaults()
         {
-            NPCID.Sets.MPAllowedEnemies[NPC.type] = true;
+            NPCID.Sets.MPAllowedEnemies[Type] = true;
             NPCID.Sets.BossBestiaryPriority.Add(Type);
 
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
@@ -79,7 +70,6 @@ namespace LobotomyCorp.NPCs.RedMist
                 PortraitPositionYOverride = 50,
             };
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
-            NPCID.Sets.MPAllowedEnemies[Type] = true;
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -91,20 +81,25 @@ namespace LobotomyCorp.NPCs.RedMist
             });
         }
 
+        public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+        {
+            NPC.lifeMax = (int)(NPC.lifeMax * 0.9f * balance * bossAdjustment);
+        }
+
         public override void SetDefaults()
         {
             NPC.width = 60;
             NPC.height = 100;
-            NPC.lifeMax = 26000;
+            NPC.lifeMax = 23000;
             //NPC.noTileCollide = true;
             //NPC.noGravity = true;
-            //NPC.damage = 240;
+            NPC.damage = 20;
             NPC.defense = 12;
             NPC.aiStyle = -1;
             NPC.knockBackResist = 0.0f;
             NPC.HitSound = SoundID.NPCHit4;
             NPC.boss = true;
-            NPC.timeLeft *= 10000;
+            NPC.SpawnWithHigherTime(30);
             NPC.DeathSound = SoundID.Item14;
             LobotomyGlobalNPC.LNPC(NPC).RiskLevel = (int)RiskLevel.Aleph;
             GoldRushCount = 0;
@@ -267,17 +262,20 @@ namespace LobotomyCorp.NPCs.RedMist
                 if (AiState == -1)
                 {
                     ChangeAnimation(AnimationState.Intro);
+                    NPC.dontTakeDamage = true;
                     Timer++;
                     if (Timer > 120)
                     {
                         AiState = 0;
                         Timer = 0;
+                        NPC.dontTakeDamage = false;
                         NPC.netUpdate = true;
                     }
                 }
                 // Follow Mode
                 else if (AiState <= FollowState)
                 {
+                    NPC.dontTakeDamage = false;
                     FollowMode1();
                 }
                 // EGO Swing
@@ -294,7 +292,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
                     if (Timer == 30 && Main.netMode != NetmodeID.MultiplayerClient)
                     {
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<RedMistEye>(), 0, 0, 0, NPC.whoAmI);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<RedMistEye>(), 0, 0, -1, NPC.whoAmI);
                     }
 
                     if (Timer > 60)
@@ -331,15 +329,17 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     SwingingDaCapo();
                 }
-                else if (AiState == SwingDaCapo + 1)//ThrowDaCapo
+                else if (AiState == SwingDaCapo + 1)//ThrowDaCapo <- Piece of shit why aren't you in a fucking function
                 {
                     NPC.velocity.X *= 0.9f;
                     Vector2 delta = NPC.GetTargetData().Center - NPC.Center;
                     Timer++;
                     if (Timer == 50)
                     {
-                        NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Normalize(delta) * 24f, ModContent.ProjectileType<DaCapoThrow>(), 20, 2, 0, NPC.whoAmI);
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Normalize(delta) * 24f, ModContent.ProjectileType<DaCapoThrow>(), 20, 2, -1, NPC.whoAmI);
                         SoundEngine.PlaySound(SoundID.Item19, NPC.Center);
+                        NPC.netUpdate = true;
                     }
                     if (Timer > 100)
                     {
@@ -368,8 +368,11 @@ namespace LobotomyCorp.NPCs.RedMist
                     NPC.velocity.X *= 0.9f;
                     Vector2 delta = NPC.GetTargetData().Center - NPC.Center;
                     Timer++;
-                    if (Timer == 50)
-                        NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, delta /= 30, ModContent.ProjectileType<DaCapoLegato>(), 20, 2, 0, NPC.whoAmI);
+                    if (Timer == 50 && Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, delta /= 30, ModContent.ProjectileType<DaCapoLegato>(), 20, 2, -1, NPC.whoAmI);
+                        NPC.netUpdate = true;
+                    }
                     if (Timer > 100)
                     {
                         AiState = 8;
@@ -395,6 +398,7 @@ namespace LobotomyCorp.NPCs.RedMist
                         p.Kill();
                         NPC.ai[3] = -1;
                         Talk("Teleport3", NPC.spriteDirection);
+                        NPC.netUpdate = true;
                     }
                 }
                 else if (AiState == SpecialAttackStart + 2)
@@ -409,7 +413,8 @@ namespace LobotomyCorp.NPCs.RedMist
                                 float angle = 6.28f / 32;
 
                                 Vector2 vel = new Vector2(8, 0).RotatedBy(angle * i);
-                                Projectile.NewProjectile(NPC.GetSource_FromAI(), skelly.Weapon1.Position(NPC.spriteDirection) + vel * 3, vel, ModContent.ProjectileType<RedMistMimicryHello>(), 30, 2);
+                                if (Main.netMode != NetmodeID.MultiplayerClient)
+                                    Projectile.NewProjectile(NPC.GetSource_FromAI(), skelly.Weapon1.Position(NPC.spriteDirection) + vel * 3, vel, ModContent.ProjectileType<RedMistMimicryHello>(), 30, 2);
                             }
                         }
                     }
@@ -425,6 +430,7 @@ namespace LobotomyCorp.NPCs.RedMist
                         AiState = 0;
                         Timer = 0;
                         NPC.velocity.Y = -8f;
+                        NPC.netUpdate = true;
                     }
                 }
                 //Uses on Aggresion
@@ -437,7 +443,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     ChangeAnimation(AnimationState.Phase3Transition);
                     Timer++;
-                    if (Timer == 60)
+                    if (Timer == 60 && Main.netMode != NetmodeID.MultiplayerClient)
                     {
                         SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase2_Change") with { Volume = 0.5f }, NPC.position);
                         //Shoot Mimicry forwards and Dacapo backwards
@@ -494,7 +500,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     {
                         ChangeAnimation(AnimationState.Idle4);
                         Timer++;
-                        if (Timer > 60 && NPC.velocity.Y == 0)
+                        if (Timer > 60 && NPC.velocity.Y == 0 && Main.netMode != NetmodeID.MultiplayerClient)
                         {
                             NPC.TargetClosest();
                             Timer = 0;
@@ -514,13 +520,15 @@ namespace LobotomyCorp.NPCs.RedMist
                             {
                                 AiState = TwilightLampstrike;
                             }
+                            NPC.netUpdate = true;
                         }
                     }
 
-                    if (((NPC.GetTargetData().Center - NPC.Center).Length() > 2000f && Main.rand.NextBool(360)) || Aggression > 300)
+                    if (((NPC.GetTargetData().Center - NPC.Center).Length() > 2000f && Main.rand.NextBool(360)) || Aggression > 300 && Main.netMode != NetmodeID.MultiplayerClient)
                     {
                         AiState = TwilightTeleport;
                         Aggression = 0;
+                        NPC.netUpdate = true;
                     }
 
                     GoldRush4Sequence();
@@ -556,14 +564,15 @@ namespace LobotomyCorp.NPCs.RedMist
                     {
                         NPC.noTileCollide = true;
                         NPC.noGravity = true;
-                        NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+                        NPC.spriteDirection = NPC.velocity.X < 0 ? -1 : 1;
                         ChangeAnimation(AnimationState.TwilightDashSlash);
                         Timer++;
 
                         if (Timer % 3 == 0)
                         {
                             Vector2 SlashPosition = NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-100, 101));
-                            Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
+                            if (Main.netMode != NetmodeID.MultiplayerClient)
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
                         }
 
                         if (Timer > 20)
@@ -590,15 +599,19 @@ namespace LobotomyCorp.NPCs.RedMist
                             velocity.Normalize();
                             velocity *= 32;
 
-                            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
+                            if (Main.netMode != NetmodeID.MultiplayerClient)
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
                         }
 
                         if (Timer > 45)
                         {
                             Timer = 0;
                             AiState = 0;
-                            if (Main.rand.Next(3) == 0)
+                            if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(3))
+                            {
                                 AiState = 7;
+                                NPC.netUpdate = true;
+                            }
                         }
                     }
 
@@ -620,15 +633,19 @@ namespace LobotomyCorp.NPCs.RedMist
                             velocity.Normalize();
                             velocity *= 32;
 
-                            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
+                            if (Main.netMode != NetmodeID.MultiplayerClient)
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
                         }
 
                         if (Timer > 45)
                         {
                             Timer = 0;
                             AiState = 0;
-                            if (Main.rand.Next(3) == 0)
+                            if (Main.rand.NextBool(3) && Main.netMode != NetmodeID.MultiplayerClient)
+                            {
                                 AiState = 3;
+                                NPC.netUpdate = true;
+                            }
                         }
                     }
 
@@ -742,7 +759,8 @@ namespace LobotomyCorp.NPCs.RedMist
                             if (Timer % 3 == 0)
                             {
                                 Vector2 SlashPosition = NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 11));
-                                Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
+                                if (Main.netMode != NetmodeID.MultiplayerClient)
+                                    Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
                             }
                         }
                         else if (Timer > 30 && Main.expertMode)
@@ -811,8 +829,20 @@ namespace LobotomyCorp.NPCs.RedMist
                 animState = AnimationState.TwilightEnd;
                 Timer++;
                 NPC.velocity.X *= 0.8f;
-                if (Timer > 180 && Main.netMode != NetmodeID.MultiplayerClient)
-                    NPC.StrikeInstantKill();
+                if (Timer > 180)
+                {
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        NPC.HitInfo hit = new NPC.HitInfo();
+                        hit.InstantKill = true;
+                        NPC.StrikeNPC(hit, false, true);
+                    }
+                    else if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        NPC.StrikeInstantKill();
+                        NPC.netUpdate = true;
+                    }
+                }
             }
             
             // Hidden Red Mist Phase??
@@ -958,6 +988,7 @@ namespace LobotomyCorp.NPCs.RedMist
             {
                 AiState = SwitchPhase;
                 Timer = 0;
+                NPC.netUpdate = true;
             }
         }
 
@@ -999,6 +1030,7 @@ namespace LobotomyCorp.NPCs.RedMist
             }
 
             Timer++;
+            // Used to spawn Projectiles to act as melee hitboxes
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
                 if (20 < Timer && Timer < 30)
@@ -1006,7 +1038,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     if (AiState != SwingRedEyes)
                     {
                         Vector2 pos = skelly.Weapon1.EndPoint(NPC.spriteDirection);
-
+                        
                         Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<RedMistMelee>(), 25, 2);
                         if (Main.expertMode && Timer == 28)
                         {
@@ -1020,6 +1052,7 @@ namespace LobotomyCorp.NPCs.RedMist
                                     target.Y += Main.rand.Next(-180, 180);
                                 }
                                 Vector2 speed = (target - pos) / PenitenceStar.TIME;
+                                
                                 Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, speed * 4, ModContent.ProjectileType<PenitenceStar>(), 15, 2);
                             }
                         }
@@ -1040,6 +1073,7 @@ namespace LobotomyCorp.NPCs.RedMist
                                 {
                                     speed = speed.RotatedByRandom(0.08f);
                                 }
+                                
                                 Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, speed * 2, ModContent.ProjectileType<RedEyesEgg>(), 15, 2);
                             }
                         }
@@ -1070,7 +1104,10 @@ namespace LobotomyCorp.NPCs.RedMist
                 NPC.noGravity = true;
                 NPC.noTileCollide = true;
                 NPC.netUpdate = true;
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<RoadOfGold>(), 0, 0, 0, -1, 5);
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<RoadOfGold>(), 0, 0, -1, -1, 5);
+                }
 
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Start") with { Volume = 0.25f }, NPC.position);
             }
@@ -1131,9 +1168,11 @@ namespace LobotomyCorp.NPCs.RedMist
                 ChangeAnimation(AnimationState.GoldRushIntro);
                 NPC.noGravity = true;
                 NPC.noTileCollide = true;
-                int i = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.GetTargetData().Center + new Vector2(400 * NPC.spriteDirection, Main.LocalPlayer.height / 2 - 50), new Vector2(-22f * NPC.spriteDirection, 0), ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, 0, -2);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, 0, i);
-
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    int i = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.GetTargetData().Center + new Vector2(400 * NPC.spriteDirection, Main.LocalPlayer.height / 2 - 50), new Vector2(-22f * NPC.spriteDirection, 0), ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, -1, -2);
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, -1, i);
+                }
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Start") with { Volume = 0.25f }, NPC.position);
             }
             //Mini GoldRush Charge
@@ -1202,43 +1241,56 @@ namespace LobotomyCorp.NPCs.RedMist
                 Timer--;
             else
             {
-                if (distance < 128f && Main.rand.NextBool(30))
+                if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    if (Main.rand.NextBool(2))
+                    if (distance < 128f && Main.rand.NextBool(30))
                     {
-                        Talk("Mimicry" + (1 + Main.rand.Next(2)), NPC.spriteDirection);
-                        AiState = SwingMimicry;
-                        ChangeAnimation(AnimationState.SwingMimicry);
-                        NPC.velocity.X = 0;
+                        if (Main.rand.NextBool(2))
+                        {
+                            Talk("Mimicry" + (1 + Main.rand.Next(2)), NPC.spriteDirection);
+                            AiState = SwingMimicry;
+                            ChangeAnimation(AnimationState.SwingMimicry);
+                            NPC.velocity.X = 0;
+
+                            NPC.netUpdate = true;
+                        }
+                        else if (IsDaCapoHeld)//if DaCapo is held by red mist
+                        {
+                            Talk("DaCapo" + (1 + Main.rand.Next(2)), NPC.spriteDirection);
+                            AiState = SwingDaCapo;
+                            ChangeAnimation(AnimationState.SwingDaCapo);
+                            NPC.velocity.X = 0;
+
+                            NPC.netUpdate = true;
+                        }
                     }
-                    else if (IsDaCapoHeld)//if DaCapo is held by red mist
+
+                    //Check if Heaven throw is valid, random
+                    HeavenThrowCheck(distance, difference.Y);
+
+                    if ((distance > 2000 && Main.rand.NextBool(360)) || Aggression > 300)
                     {
-                        Talk("DaCapo" + (1 + Main.rand.Next(2)), NPC.spriteDirection);
-                        AiState = SwingDaCapo;
-                        ChangeAnimation(AnimationState.SwingDaCapo);
-                        NPC.velocity.X = 0;
+                        AiState = GoldRushMimicryCombo;
+                        Aggression = 0;
+                        NPC.netUpdate = true;
                     }
-                }
-
-                //Check if Heaven throw is valid
-                HeavenThrowCheck(distance, difference.Y);
-
-                if ((distance > 2000 && Main.rand.NextBool(360)) || Aggression > 300)
-                {
-                    AiState = GoldRushMimicryCombo;
-                    Aggression = 0;
                 }
             }
 
             if (distance > 460)
             {
-                if (distance < 600 && Main.rand.NextBool(200))
+                if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    AiState = DashSwingMimicry;
-                    Timer = 30;
-                    NPC.velocity.Y *= 0;
-                    NPC.velocity.X = 18 * NPC.spriteDirection;
-                    ChangeAnimation(AnimationState.Dash);
+                    if (distance < 600 && Main.rand.NextBool(200))
+                    {
+                        AiState = DashSwingMimicry;
+                        Timer = 30;
+                        NPC.velocity.Y *= 0;
+                        NPC.velocity.X = 18 * NPC.spriteDirection;
+                        ChangeAnimation(AnimationState.Dash);
+
+                        NPC.netUpdate = true;
+                    }
                 }
 
                 if (IncomingProjectile())
@@ -1248,6 +1300,8 @@ namespace LobotomyCorp.NPCs.RedMist
                     NPC.velocity.Y *= 0;
                     NPC.velocity.X = 18 * NPC.spriteDirection;
                     ChangeAnimation(AnimationState.Dash);
+
+                    NPC.netUpdate = true;
                 }
             }
 
@@ -1278,7 +1332,8 @@ namespace LobotomyCorp.NPCs.RedMist
             {
                 Vector2 position = skelly.Weapon1.Position(NPC.spriteDirection) + new Vector2(100, 0).RotatedBy(skelly.Weapon1.GetRotation(NPC.spriteDirection));
 
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), position, Vector2.Zero, ModContent.ProjectileType<RedMistMimicry>(), 50, 2);
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), position, Vector2.Zero, ModContent.ProjectileType<RedMistMimicry>(), 50, 2);
             }
 
             if (Timer == 60)
@@ -1295,7 +1350,8 @@ namespace LobotomyCorp.NPCs.RedMist
                     Vector2 pos = skelly.UpperArmR.Position(NPC.spriteDirection);
                     vel.Normalize();
                     vel *= 8;
-                    Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, vel, ModContent.ProjectileType<RedMistMimicryHello>(), 30, 2);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, vel, ModContent.ProjectileType<RedMistMimicryHello>(), 30, 2);
                 }
             }
 
@@ -1308,13 +1364,14 @@ namespace LobotomyCorp.NPCs.RedMist
 
         void SwingingDaCapo()
         {
+            ChangeAnimation(AnimationState.SwingDaCapo);
             Timer++;
             NPC.velocity.X *= 0.9f;
             if (Timer > 20 && Timer < 90 && Timer % 30 < 10)
             {
                 Vector2 position = skelly.Weapon2.Position(NPC.spriteDirection) + new Vector2(40, 0).RotatedBy(skelly.Weapon2.GetRotation(NPC.spriteDirection));
-
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), position, Vector2.Zero, ModContent.ProjectileType<RedMistDaCapo>(), 15, 0);
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), position, Vector2.Zero, ModContent.ProjectileType<RedMistDaCapo>(), 15, 0);
             }
             if (Timer == 90) //Throw DaCapo when enemy is at certain distance
             {
@@ -1361,6 +1418,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 AiState = ThrowHeaven;
                 Talk("Heaven", NPC.spriteDirection);
                 NPC.velocity.X = 0;
+                NPC.netUpdate = true;
             }
         }
 
@@ -1383,6 +1441,7 @@ namespace LobotomyCorp.NPCs.RedMist
             {
                 AiState = FollowState;
                 Timer = 30;
+                NPC.netUpdate = true;
             }
         }
 
@@ -1405,7 +1464,17 @@ namespace LobotomyCorp.NPCs.RedMist
             }
         }
 
-        bool IsDaCapoHeld { get { return NPC.ai[3] < 0; } }
+        bool IsDaCapoHeld { get
+            {
+                // Edge case if Da Capo despawns, so the fight can move forwards
+                if (NPC.ai[3] >= 0)
+                {
+                    Projectile p = Main.projectile[(int)NPC.ai[3]];
+                    if (!p.active || p.type != ModContent.ProjectileType<DaCapoThrow>() || (int)p.ai[0] != NPC.whoAmI)
+                        NPC.ai[3] = -1;
+                }
+                return NPC.ai[3] < 0; 
+            } }
 
         const int SwingSmile = 4;
 
@@ -1419,9 +1488,11 @@ namespace LobotomyCorp.NPCs.RedMist
                 ChangeAnimation(AnimationState.GoldRushIntro);
                 NPC.noGravity = true;
                 NPC.noTileCollide = true;
-                int i = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.GetTargetData().Center + new Vector2(400 * NPC.spriteDirection, Main.LocalPlayer.height / 2 - 50), new Vector2(-22f * NPC.spriteDirection, 0), ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, 0, -2);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, 0, i);
-
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    int i = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.GetTargetData().Center + new Vector2(400 * NPC.spriteDirection, Main.LocalPlayer.height / 2 - 50), new Vector2(-22f * NPC.spriteDirection, 0), ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, -1, -2);
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, -1, i);
+                }
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Start") with { Volume = 0.25f }, NPC.position);
             }
             //Mini GoldRush Charge
@@ -1465,13 +1536,15 @@ namespace LobotomyCorp.NPCs.RedMist
             //Justitia Slashes
             else if (AiState > 0 && AiState <= 3)
             {
+                ChangeAnimation(AnimationState.JustitiaSwing);
                 Timer++;
                 if (Timer > 30 && Timer % 45 == 0)
                 {
                     //Shoot Justitia Slashes
                     Vector2 delta = NPC.GetTargetData().Center - NPC.Center;
                     delta.Normalize();
-                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, 16 * delta, ModContent.ProjectileType<JustitiaSlashBoss>(), 15, 0);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, 16 * delta, ModContent.ProjectileType<JustitiaSlashBoss>(), 15, 0);
                     if (AiState > 1)
                         AiState--;
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase3_Atk3") with { Volume = 0.5f }, NPC.position);
@@ -1488,6 +1561,7 @@ namespace LobotomyCorp.NPCs.RedMist
             }
             else if (AiState == SwingSmile)
             {
+                ChangeAnimation(AnimationState.SmileSwing);
                 Timer++;
                 if (Timer == 70)
                 {
@@ -1559,7 +1633,8 @@ namespace LobotomyCorp.NPCs.RedMist
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), targetPos + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<GoldRushPortal>(), 0, 0, 0, currentPortal, 5);
                 */
                 //Default
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, 0, -3, 8);
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfGold>(), 0, 0, -1, -3, 8);
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Start") with { Volume = 0.5f }, NPC.position);
             }
             //GoldRush Charging
@@ -1619,6 +1694,7 @@ namespace LobotomyCorp.NPCs.RedMist
             //Phase4Transition
             else if (AiState == SwitchPhase)
             {
+                ChangeAnimation(AnimationState.Phase4Transition);
                 NPC.velocity.X = 0;
                 Timer++;
                 if (Timer == 120)
@@ -1659,30 +1735,36 @@ namespace LobotomyCorp.NPCs.RedMist
             if (Timer > 0)
                 Timer--;
 
-            if (Timer <= 0 && Main.rand.NextBool(60))
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                if (Main.rand.NextBool(2))
+                if (Timer <= 0 && Main.rand.NextBool(60))
                 {
-                    NPC.velocity.X *= 0;
-                    //Justitia Attack, up to three just to catch people offguard
-                    AiState = 1;
-                    Timer = 0;
-                    ChangeAnimation(AnimationState.JustitiaSwing);
+                    if (Main.rand.NextBool(2))
+                    {
+                        NPC.velocity.X *= 0;
+                        //Justitia Attack, up to three just to catch people offguard
+                        //Up to three is removed, shits kinda wack to dodge anyawy
+                        AiState = 1;
+                        Timer = 0;
+                        ChangeAnimation(AnimationState.JustitiaSwing);
 
-                    Talk("Justitia" + Main.rand.Next(1, 3), NPC.spriteDirection);
-                }
-                else
-                {
-                    //Smile Attack
-                    NPC.velocity.X *= 0;
-                    AiState = 4;
-                    Timer = 0;
-                    ChangeAnimation(AnimationState.SmileSwing);
-                    Talk("Smile" + Main.rand.Next(1, 3), NPC.spriteDirection);
-                }
+                        Talk("Justitia" + Main.rand.Next(1, 3), NPC.spriteDirection);
+                        NPC.netUpdate = true;
+                    }
+                    else
+                    {
+                        //Smile Attack
+                        NPC.velocity.X *= 0;
+                        AiState = 4;
+                        Timer = 0;
+                        ChangeAnimation(AnimationState.SmileSwing);
+                        Talk("Smile" + Main.rand.Next(1, 3), NPC.spriteDirection);
+                        NPC.netUpdate = true;
+                    }
 
-                //Heaven Attack
-                HeavenThrowCheck(delta.Length(), delta.Y);
+                    //Heaven Attack
+                    HeavenThrowCheck(delta.Length(), delta.Y);
+                }
             }
 
             //Gold Rush!
@@ -1711,9 +1793,9 @@ namespace LobotomyCorp.NPCs.RedMist
             SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase3_Atk1") with { Volume = 0.5f }, NPC.position);
 
             Vector2 hammerPos = skelly.Weapon2.Position(NPC.spriteDirection) + new Vector2(70, 0).RotatedBy(skelly.Weapon2.GetRotation(NPC.spriteDirection));
-            foreach (Player p in Main.player)
+            foreach (Player p in Main.ActivePlayers)
             {
-                if (p.active && !p.dead && Collision.CanHit(hammerPos, 1, 1, p.position, p.width, p.height))
+                if (!p.dead && Collision.CanHit(hammerPos, 1, 1, p.position, p.width, p.height))
                 {
                     p.AddBuff(ModContent.BuffType<Buffs.Scream>(), 300);
                     p.velocity.Y = 6;
@@ -1839,7 +1921,8 @@ namespace LobotomyCorp.NPCs.RedMist
                     Talk("GoldRush" + Main.rand.Next(2, 4), NPC.spriteDirection);
 
                     Vector2 velocity = new Vector2(GOLDRUSH4SPEED * NPC.spriteDirection, 0);
-                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + velocity * GOLDRUSH4DELAY, velocity, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfKing>(), 0, 0, 0, -1, 170 - GOLDRUSH4DELAY);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + velocity * GOLDRUSH4DELAY, velocity, ModContent.ProjectileType<Projectiles.KingPortal.RoadOfKing>(), 0, 0, -1, -1, 170 - GOLDRUSH4DELAY);
 
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Start") with { Volume = 0.5f }, NPC.position);
                 }
@@ -1849,7 +1932,8 @@ namespace LobotomyCorp.NPCs.RedMist
                 if (Timer == 160)
                 {
                     Vector2 velocity = new Vector2(GOLDRUSH4SPEED * NPC.spriteDirection, 0);
-                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.KingPortal.GoldRushRedMist>(), 45, 1f, 0, 10);
+                    //if (Main.netMode != NetmodeID.MultiplayerClient)
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.KingPortal.GoldRushRedMist>(), 45, 1f, -1, 10);
                 }
 
                 if (Timer > 200)
@@ -1865,7 +1949,7 @@ namespace LobotomyCorp.NPCs.RedMist
             {
                 NPC.noTileCollide = true;
                 NPC.noGravity = true;
-                NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+                NPC.spriteDirection = NPC.velocity.X < 0 ? -1 : 1;
                 Timer++;
 
                 ChangeAnimation(AnimationState.TwilightChase);
@@ -2122,9 +2206,9 @@ namespace LobotomyCorp.NPCs.RedMist
             if (delta.LengthSquared() < max * max)
                 return;
 
-            foreach (Projectile p in Main.projectile)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
-                if (p.active && p.owner == Main.myPlayer && p.friendly)
+                if (p.owner == Main.myPlayer && p.friendly)
                 {
                     Vector2 dist = p.Center - NPC.Center;
                     if (dist.LengthSquared() < 200 * 200)
@@ -3765,7 +3849,9 @@ namespace LobotomyCorp.NPCs.RedMist
                     else if (headRot < -MathHelper.ToRadians(30))
                         headRot = -MathHelper.ToRadians(30);
 
-                    if (Math.Sign(delta.X) == Math.Sign(NPC.spriteDirection))
+                    int FacingDirection = delta.X < 0 ? -1 : 1;
+
+                    if (FacingDirection == NPC.spriteDirection)
                         skelly.Head.ChangeBoneRotation(headRot - 1.57f);
                     else
                         skelly.Head.ChangeBoneRotation(-1.57f);
@@ -3994,38 +4080,50 @@ namespace LobotomyCorp.NPCs.RedMist
             return base.CanFallThroughPlatforms();
         }
 
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return false;
+        }
+
         public override void OnKill()
         {
-            Vector2 pos = skelly.Pelvis.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore1").Type);
-            pos = skelly.Pelvis.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore2").Type);
-            pos = skelly.UpperArmR.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore3").Type);
-            pos = skelly.UpperArmL.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore4").Type);
-            pos = skelly.UpperLegR.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore5").Type);
-            pos = skelly.LowerLegR.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore6").Type);
-            pos = skelly.UpperLegL.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore7").Type);
-            pos = skelly.LowerLegL.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore8").Type);
-            pos = skelly.Head.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore9").Type);
-            pos = skelly.Head.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore10").Type);
-            pos = skelly.Head.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore11").Type);
-            pos = skelly.Head.Position(NPC.direction);
-            Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore12").Type);
-            NPC.SetEventFlagCleared(ref LobEventFlags.downedRedMist, -1);            
+            NPC.SetEventFlagCleared(ref LobEventFlags.downedRedMist, -1);     
+				
+			if (Main.netMode == NetmodeID.Server) {
+				NetMessage.SendData(MessageID.WorldData);
+			}
+			else if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				Vector2 pos = skelly.Pelvis.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore1").Type);
+				pos = skelly.Pelvis.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore2").Type);
+				pos = skelly.UpperArmR.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore3").Type);
+				pos = skelly.UpperArmL.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore4").Type);
+				pos = skelly.UpperLegR.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore5").Type);
+				pos = skelly.LowerLegR.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore6").Type);
+				pos = skelly.UpperLegL.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore7").Type);
+				pos = skelly.LowerLegL.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore8").Type);
+				pos = skelly.Head.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore9").Type);
+				pos = skelly.Head.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore10").Type);
+				pos = skelly.Head.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore11").Type);
+				pos = skelly.Head.Position(NPC.direction);
+				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore12").Type);
+			}
         }
 
         public override bool CheckDead()
         {
-            if (Phase < 4)
+            if (Phase < 4 && Main.netMode == NetmodeID.SinglePlayer)
             {
                 Phase = 4;
                 Timer = 0;
@@ -4111,9 +4209,9 @@ namespace LobotomyCorp.NPCs.RedMist
 
         public bool IncomingProjectile()
         {
-            foreach (Projectile p in Main.projectile)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
-                if (p.active && p.friendly && p.damage > 0)
+                if (p.friendly && p.damage > 0)
                 {
                     for (int i = 1; i <= 3; i++)
                     {

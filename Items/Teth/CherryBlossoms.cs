@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class CherryBlossoms : ModItem
+    public class CherryBlossoms : LobItemBase
     {
         public override void SetDefaults()
         {
@@ -26,6 +26,7 @@ namespace LobotomyCorp.Items.Teth
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.CherryBlossomsPetal>();
             Item.shootSpeed = 14f;
+            EGORiskLevel = RiskLevel.Teth;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -33,13 +34,23 @@ namespace LobotomyCorp.Items.Teth
             if (Main.myPlayer == player.whoAmI)
             {
                 damage = (int)(damage * 0.6f);
-                for (int i = 0; i < 3; i++)
+                int amount = RedMistMaskUpgrade(player) ? 6 : 3;
+                for (int i = 0; i < amount; i++)
                 {
                     Vector2 speed = velocity.RotatedByRandom(MathHelper.ToRadians(15));
                     Projectile.NewProjectile(source, position, speed, type, damage, knockback, player.whoAmI);
                 }
             }
             return false;
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
+        {
+            if (RedMistMaskUpgrade(player))
+            {
+                damage += 3.5f;
+            }
+            base.ModifyWeaponDamage(player, ref damage);
         }
 
         public override void MeleeEffects(Player player, Rectangle hitbox)
@@ -52,7 +63,13 @@ namespace LobotomyCorp.Items.Teth
         {
             CreateRecipe()
             .AddIngredient(ItemID.Acorn, 3)
-            .AddIngredient(ItemID.DynastyWood, 20)
+            .AddIngredient(ItemID.DynastyWood, 10)
+            .AddTile(Mod, "BlackBox")
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ItemID.Acorn, 3)
+            .AddIngredient(ItemID.VanityTreeSakuraSeed, 4)
             .AddTile(Mod, "BlackBox")
             .Register();
         }

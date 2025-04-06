@@ -4,6 +4,8 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using System;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.PlayerDrawEffects
 {
@@ -53,12 +55,21 @@ namespace LobotomyCorp.PlayerDrawEffects
                     {
                         origin = new Vector2(texture.Width + x, texture.Height / 2);
                     }
-                    position.X += textureCenter.X + (!Player.GetModPlayer<LobotomyModPlayer>().SolemnSwitch ? 6 : 3) * Player.direction - 28;
+                    position.X += textureCenter.X + (!Player.GetModPlayer<LobotomyWawPlayer>().SolemnSwitch ? 6 : 3) * Player.direction - 28;
                     position.Y += textureCenter.Y;
 
-                    if (!Player.GetModPlayer<LobotomyModPlayer>().SolemnSwitch)
+                    if (!Player.GetModPlayer<LobotomyWawPlayer>().SolemnSwitch)
                     {
-                        rot -= MathHelper.ToRadians(30 + 75 * (1 - (float)Player.itemAnimation / (float)Player.itemAnimationMax)) * Player.direction;
+                        //rot -= MathHelper.ToRadians(30 + 75 * (1 - (float)Player.itemAnimation / (float)Player.itemAnimationMax)) * Player.direction;
+                        float prog = (float)Player.itemAnimation / (float)Player.itemAnimationMax;
+                        if (prog > 0.2f)
+                        {
+                            prog = (prog - 0.2f) / .8f;
+                            float limit = 105;
+                            if (Player.GetModPlayer<LobotomyWawPlayer>().SolemnLamentFireRate > 1f)
+                                limit = 75;
+                            rot -= MathHelper.ToRadians(limit * (float)Math.Sin(3.14f * prog)) * Player.direction;
+                        }
                     }
                 }
 

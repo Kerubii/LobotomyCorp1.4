@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
-    public class BearPaw : ModItem
+    public class BearPaw : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -23,7 +23,8 @@ namespace LobotomyCorp.Items.He
             Item.useTime = 12;
             Item.autoReuse = true;
             Item.UseSound = LobotomyCorp.WeaponSounds.Fist;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ItemRarityID.Yellow;
+            EGORiskLevel = RiskLevel.He;
         }
         /*
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)

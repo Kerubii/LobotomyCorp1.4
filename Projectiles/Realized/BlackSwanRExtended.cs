@@ -1,4 +1,5 @@
-﻿using LobotomyCorp.Utils;
+﻿using LobotomyCorp.Players;
+using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -111,7 +112,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-			if (LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).BlackSwanNettleClothing >= 5)
+			if (Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing >= 5)
 			{
 				target.AddBuff(BuffID.Ichor, 300);
 			}

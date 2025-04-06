@@ -6,6 +6,11 @@ namespace LobotomyCorp.Items.Teth
     [AutoloadEquip(EquipType.Head)]
     public class RegretGift : LobItemBase
     {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
         public override void SetStaticDefaults()
         {
             ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
@@ -32,6 +37,11 @@ namespace LobotomyCorp.Items.Teth
     [AutoloadEquip(EquipType.Body)]
     public class RegretChestplate : LobItemBase
     {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
         public override void SetDefaults()
         {
             Item.vanity = true;

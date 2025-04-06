@@ -23,8 +23,8 @@ namespace LobotomyCorp.Items.Aleph
             Item.DamageType = DamageClass.MeleeNoSpeed;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 26;
-            Item.useAnimation = 26;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.useStyle = 15;
             Item.knockBack = 3;
             Item.value = 10000;
@@ -36,6 +36,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.scale = 1.3f;
             AlternateAttack = false;
             PreviouslyHitNPC = -1;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         private bool AlternateAttack;
@@ -147,7 +148,15 @@ namespace LobotomyCorp.Items.Aleph
         {
             CreateRecipe()
             .AddIngredient(ItemID.LightsBane)
-            .AddIngredient(ItemID.Feather, 15)
+            .AddIngredient(ItemID.Feather, 10)
+            .AddIngredient(ItemID.Bone, 10)
+            .AddIngredient(ItemID.Silk, 20)
+            .AddTile(Mod, "BlackBox3")
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ItemID.BloodButcherer)
+            .AddIngredient(ItemID.Feather, 10)
             .AddIngredient(ItemID.Bone, 10)
             .AddIngredient(ItemID.Silk, 20)
             .AddTile(Mod, "BlackBox3")

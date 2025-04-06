@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -13,7 +14,7 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).RedEyesAlerted = true;
+            player.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted = true;
         }
 
         public override bool RightClick(int buffIndex)

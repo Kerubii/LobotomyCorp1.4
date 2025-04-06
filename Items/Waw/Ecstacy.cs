@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class Ecstacy : ModItem
+    public class Ecstacy : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -33,6 +33,7 @@ namespace LobotomyCorp.Items.Waw
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.Candy>();
             Item.shootSpeed = 8f;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -53,6 +54,13 @@ namespace LobotomyCorp.Items.Waw
         {
             CreateRecipe()
             .AddIngredient(ItemID.WaterGun)
+            .AddIngredient(ItemID.Bubble, 30)
+            .AddIngredient(ItemID.SharkFin)
+            .AddTile(Mod, "BlackBox3")
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ItemID.SlimeGun)
             .AddIngredient(ItemID.Bubble, 30)
             .AddIngredient(ItemID.SharkFin)
             .AddTile(Mod, "BlackBox3")

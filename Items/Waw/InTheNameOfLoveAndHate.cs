@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class InTheNameOfLoveAndHate : ModItem
+    public class InTheNameOfLoveAndHate : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -31,8 +31,9 @@ namespace LobotomyCorp.Items.Waw
             Item.rare = ItemRarityID.Purple; // the color that the Item's name will be in-game
             Item.UseSound = LobotomyCorp.WeaponSound("magicalGirl"); // The sound that this Item plays when used.
             Item.autoReuse = true; // if you can hold click to automatically use it again
-            Item.shoot = ModContent.ProjectileType<Projectiles.StarShot>(); ; //idk why but all the guns in the vanilla source have this
+            Item.shoot = ModContent.ProjectileType<Projectiles.StarShot>(); //idk why but all the guns in the vanilla source have this
             Item.shootSpeed = 8f; // the speed of the projectile (measured in pixels per frame)
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

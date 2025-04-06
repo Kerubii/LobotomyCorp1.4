@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Audio;
 using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Technology
 {
@@ -61,7 +62,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
         {
 			if (Main.netMode != 2 && player.whoAmI == Main.myPlayer && player.altFunctionUse == 2)
             {
-				LobotomyModPlayer.ModPlayer(player).MagicBulletRequest = FindNearest();
+				player.GetModPlayer<LobotomyWawPlayer>().MagicBulletRequest = FindNearest();
             }
 			return true;
         }
@@ -71,18 +72,15 @@ namespace LobotomyCorp.Items.Ruina.Technology
 			int target = -1;
 			float distance = 160;
 			Vector2 compareTo = Main.MouseWorld;
-			foreach (NPC n in Main.npc)
+			foreach (NPC n in Main.ActiveNPCs)
 			{
-				if (n.active)
+				float targetDist = n.Center.Distance(compareTo);
+				if (n.friendly)
+					targetDist += 80;
+				if (!n.dontTakeDamage && targetDist < distance)// && n.CanBeChasedBy(this))
 				{
-					float targetDist = n.Center.Distance(compareTo);
-					if (n.friendly)
-						targetDist += 80;
-					if (!n.dontTakeDamage && targetDist < distance)// && n.CanBeChasedBy(this))
-					{
-						distance = targetDist;
-						target = n.whoAmI;
-					}
+					distance = targetDist;
+					target = n.whoAmI;
 				}
 			}
 

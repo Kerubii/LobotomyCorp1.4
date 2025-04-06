@@ -1,4 +1,5 @@
 ﻿using System;
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -33,8 +34,13 @@ namespace LobotomyCorp.Projectiles
             
         public override void AI() {
             Projectile.ai[0]++;
-
+            
             Player player = Main.player[Projectile.owner];
+            if (Projectile.ai[1] > 0)
+            {
+                Projectile.ai[0]++;
+                return;
+            }
             Vector2 mountedCenter = player.RotatedRelativePoint(player.MountedCenter, true);
             Projectile.Center = mountedCenter + new Vector2(16, 0).RotatedBy(Projectile.velocity.ToRotation());
         }
@@ -61,6 +67,15 @@ namespace LobotomyCorp.Projectiles
             }
         }
 
+        public override void OnKill(int timeLeft)
+        {
+            Player player = Main.player[Projectile.owner];
+            if (player.GetModPlayer<LobotomyModPlayer>().RedMistMask && Projectile.ai[1] == 1 && Main.myPlayer == Projectile.owner)
+            {
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Projectile.type, Projectile.damage, Projectile.knockBack, Projectile.owner, 0, 2);
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
@@ -68,8 +83,13 @@ namespace LobotomyCorp.Projectiles
             Vector2 origin = texture.Size() / 2;
             Color color = Color.White * 0.2f;
             color.A = (byte)(color.A * 0.8f);
-            if (Projectile.ai[0] > 31)
-                color *= (Projectile.ai[0] - 31) / 31;
+            int limit = 31;
+            if (Projectile.ai[1] > 0)
+                limit *= 2;
+            if (Projectile.ai[0] > limit)
+            {
+                color *= (Projectile.ai[0] - limit) / (float)limit;
+            }
             float scale = (Projectile.ai[0]/23f);
             Main.EntitySpriteDraw(texture, position, (Rectangle)texture.Frame(), color, Main.rand.NextFloat(6.28f), origin, scale, 0, 0);
             return false;

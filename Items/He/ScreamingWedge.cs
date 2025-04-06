@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
-    public class ScreamingWedge : ModItem
+    public class ScreamingWedge : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -33,6 +33,7 @@ namespace LobotomyCorp.Items.He
             Item.shootSpeed = 10f;
             Item.useAmmo = AmmoID.Arrow;
             Item.scale = 0.8f;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -56,14 +57,14 @@ namespace LobotomyCorp.Items.He
             .AddIngredient(ItemID.Ebonwood, 10)
             .AddIngredient(ItemID.BlackString)
             .AddIngredient(ItemID.EbonstoneBlock, 10)
-            .AddTile(Mod, "BlackBox2")
+            .AddTile(Mod, "BlackBox")
             .Register();
 
             CreateRecipe()
             .AddIngredient(ItemID.Shadewood, 10)
             .AddIngredient(ItemID.BlackString)
             .AddIngredient(ItemID.CrimstoneBlock, 10)
-            .AddTile(Mod, "BlackBox2")
+            .AddTile(Mod, "BlackBox")
             .Register();
         }
     }

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Buffs
         */
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).MimicryHusk = true;
+            player.GetModPlayer<LobotomyAlephPlayer>().MimicryHusk = true;
             player.statDefense -= 8;
             //LobotomyModPlayer.ModPlayer(player).MimicryHuskDeficit = player.buffTime[buffIndex];
             if (player.HeldItem.type == ModContent.ItemType<Items.Ruina.Language.MimicryR>())

@@ -12,6 +12,10 @@ using LobotomyCorp.Utils;
 using LobotomyCorp.UI;
 using static System.Net.Mime.MediaTypeNames;
 using MonoMod.Cil;
+using System.IO;
+using Terraria.GameContent.Creative;
+using Terraria.GameContent.NetModules;
+using Terraria.Chat;
 
 namespace LobotomyCorp.Tiles
 {
@@ -57,27 +61,58 @@ namespace LobotomyCorp.Tiles
 				{
 					if (!entity.isTalking)
 					{
-						if (!LobEventFlags.binahIntroTalk)
+						if (Main.netMode == NetmodeID.MultiplayerClient)
 						{
-							entity.InitiateText(0);
-							LobEventFlags.binahIntroTalk = true;
-							LobEventFlags.killedByRedMist = false;
-						}
-						else if (LobEventFlags.downedRedMist)
+							return true;
+                            if (!LobEventFlags.binahIntroTalk)
+                            {
+                                LobotomyCorp.TileEntityBlackBoxInitialize(entity.Position.X, entity.Position.Y, 0);
+                                LobEventFlags.BinahEntitySendPacket(LobEventFlags.FlagIDs.BinahIntroTalk, true);
+                                LobEventFlags.BinahEntitySendPacket(LobEventFlags.FlagIDs.KilledByRedMist, false);
+                            }
+                            else if (LobEventFlags.downedRedMist)
+                            {
+                                entity.InitiateText(3);
+                                LobEventFlags.BinahEntitySendPacket(LobEventFlags.FlagIDs.BinahDoneTalk, true);
+                            }
+                            else if (LobEventFlags.killedByRedMist)
+                            {
+                                if (!LobEventFlags.binahRedmistTalk)
+                                {
+                                    entity.InitiateText(1);
+                                    LobEventFlags.BinahEntitySendPacket(LobEventFlags.FlagIDs.BinahRedmistTalk, true);
+                                }
+                                else
+                                    entity.InitiateText(2);
+                                LobEventFlags.BinahEntitySendPacket(LobEventFlags.FlagIDs.KilledByRedMist, false);
+                            }
+
+                            //NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, entity.ID, entity.Position.X, entity.Position.Y);
+                        }
+						else
 						{
-							entity.InitiateText(3);
-							LobEventFlags.binahDoneTalk = true;
-						}
-						else if (LobEventFlags.killedByRedMist)
-						{
-							if (!LobEventFlags.binahRedmistTalk)
-							{
-								entity.InitiateText(1);
-								LobEventFlags.binahRedmistTalk = true;
-							}
-							else
-								entity.InitiateText(2);
-                            LobEventFlags.killedByRedMist = false;
+                            if (!LobEventFlags.binahIntroTalk)
+                            {
+                                entity.InitiateText(0);
+                                LobEventFlags.binahIntroTalk = true;
+                                LobEventFlags.killedByRedMist = false;
+                            }
+                            else if (LobEventFlags.downedRedMist)
+                            {
+                                entity.InitiateText(3);
+                                LobEventFlags.binahDoneTalk = true;
+                            }
+                            else if (LobEventFlags.killedByRedMist)
+                            {
+                                if (!LobEventFlags.binahRedmistTalk)
+                                {
+                                    entity.InitiateText(1);
+                                    LobEventFlags.binahRedmistTalk = true;
+                                }
+                                else
+                                    entity.InitiateText(2);
+                                LobEventFlags.killedByRedMist = false;
+                            }
                         }
 					}
 				}
@@ -123,11 +158,16 @@ namespace LobotomyCorp.Tiles
 			}
 			NetMessage.SendTileSquare(-1, x, y + 1, 3);
 		}
-		/*
+        /*
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
 			Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 32, ModContent.ItemType<Items.BlackBox3>());
 		}*/
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            ModContent.GetInstance<BlackBox3TileEntity>().Kill(i, j);
+        }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
@@ -182,7 +222,7 @@ namespace LobotomyCorp.Tiles
 
         public override void Update()
         {
-			if (LobEventFlags.downedRedMist && !LobEventFlags.binahDoneTalk && !isTalking)
+            if (LobEventFlags.downedRedMist && !LobEventFlags.binahDoneTalk && !isTalking)
 			{
 				if (Main.netMode == NetmodeID.SinglePlayer)
 				{
@@ -196,14 +236,16 @@ namespace LobotomyCorp.Tiles
 				}
 				else
 				{
-					foreach (Player player in Main.player)
+					foreach (Player player in Main.ActivePlayers)
 					{
 						if (CheckIfPlayerNear(player))
 						{
 							InitiateText(3);
-							LobEventFlags.binahDoneTalk = true;
+							LobEventFlags.BinahEntitySendPacket(LobEventFlags.FlagIDs.BinahDoneTalk, true);
 							TileLoader.HitWire(Position.X, Position.Y, Main.tile[Position.X, Position.Y].TileType);
-							break;
+
+                            NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, ID, Position.X, Position.Y);
+                            break;
 						}
 					}
 				}
@@ -220,7 +262,7 @@ namespace LobotomyCorp.Tiles
 						case 0:
 							if (dialogue == 8)
 							{
-								Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_FromThis(), ModContent.ItemType<Items.ItemTiles.DisciplinaryShell>());
+								SpawnShellNearestPlayer();
 							}
 							if (dialogue >= 9)
 								isDone = true; 
@@ -228,7 +270,7 @@ namespace LobotomyCorp.Tiles
                         case 1:
                             if (dialogue == 2)
                             {
-                                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_FromThis(), ModContent.ItemType<Items.ItemTiles.DisciplinaryShell>());
+                                SpawnShellNearestPlayer();
                             }
                             if (dialogue >= 4)
                                 isDone = true; 
@@ -236,7 +278,7 @@ namespace LobotomyCorp.Tiles
                         case 2:
 							if (dialogue >= 1)
 							{
-								Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_FromThis(), ModContent.ItemType<Items.ItemTiles.DisciplinaryShell>());
+                                SpawnShellNearestPlayer();
                                 isDone = true;
 							}
 							break;
@@ -257,9 +299,31 @@ namespace LobotomyCorp.Tiles
 					{
                         current = CreateText();
                     }
-				}
-			}
-		}
+                }
+            }
+            if (Main.netMode == NetmodeID.Server)
+            {
+                //NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
+            }
+        }
+
+		private void SpawnShellNearestPlayer()
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_FromThis(), ModContent.ItemType<Items.ItemTiles.DisciplinaryShell>());
+				return;
+            }
+
+            foreach (Player player in Main.ActivePlayers)
+            {
+                if (CheckIfPlayerNear(player))
+                {
+					player.QuickSpawnItem(player.GetSource_FromThis(), ModContent.ItemType<Items.ItemTiles.DisciplinaryShell>());
+                    break;
+                }
+            }
+        }
 
 		private bool CheckIfPlayerNear(Player player)
 		{
@@ -272,7 +336,9 @@ namespace LobotomyCorp.Tiles
 			mode = which;
 			dialogue = 0;
 			current = CreateText();
-		}
+
+            Dust.NewDust(new Vector2(Position.X, Position.Y) * 16, 1, 1, 1);
+        }
 
         public void InitiateText(string text)
         {
@@ -280,6 +346,8 @@ namespace LobotomyCorp.Tiles
             mode = -1;
             dialogue = 0;
             current = CreateText(text);
+
+            Dust.NewDust(new Vector2(Position.X, Position.Y) * 16, 1, 1, 1);
         }
 
         private int CreateText()
@@ -306,8 +374,24 @@ namespace LobotomyCorp.Tiles
         {
             if (Main.netMode == NetmodeID.Server)
             {
-                NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
+				NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
             }
+        }
+
+        public override void NetSend(BinaryWriter writer)
+        {
+			writer.Write(current);
+			writer.Write(mode);
+			writer.Write(dialogue);
+			writer.Write(isTalking);
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+			current = reader.ReadInt32();
+			mode = reader.ReadInt32();
+			dialogue = reader.ReadInt32();
+			isTalking = reader.ReadBoolean();
         }
     }
 }

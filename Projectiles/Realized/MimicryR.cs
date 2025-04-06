@@ -1,6 +1,7 @@
 ﻿using System;
 using LobotomyCorp.Buffs;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -75,7 +76,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     Projectile.ai[1]++;
                     if (Projectile.ai[1] == MimicryChargeMax)
                     {
-                        if (!LobotomyModPlayer.ModPlayer(owner).MimicryShell)
+                        if (!(owner.GetModPlayer<LobotomyAlephPlayer>().MimicryShell || owner.GetModPlayer<LobotomyAlephPlayer>().MimicryHusk))
                         {
                             owner.channel = false;
                             Projectile.ai[1]--;
@@ -129,7 +130,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     //Do a normal second hit
                     if (Projectile.ai[1] < 60)
                     {
-                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill2_Hook") with { Volume = 0.25f });
+                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill2_Hook") with { Volume = 0.25f }, Projectile.Center);
 
                         scale = 1f;
                         Projectile.ai[0] = 2;
@@ -138,8 +139,8 @@ namespace LobotomyCorp.Projectiles.Realized
                     //Goodbye Attack
                     else
                     {
-                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/NothingThere_Goodbye") with { Volume = 0.25f });
-                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill3_Finish") with { Volume = 0.25f });
+                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/NothingThere_Goodbye") with { Volume = 0.25f }, Projectile.Center);
+                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill3_Finish") with { Volume = 0.25f }, Projectile.Center);
 
                         scale = 1.4f;
                         Projectile.ai[0] = 3;
@@ -262,7 +263,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyAlephPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyAlephPlayer>();
             target.immune[Projectile.owner] = Main.player[Projectile.owner].itemAnimation;
             Main.player[Projectile.owner].attackCD = Main.player[Projectile.owner].itemAnimationMax / 6;
             if (Projectile.ai[1] == 3)
@@ -357,11 +358,11 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void AI()
         {
-            if (Projectile.ai[1] == 0 && LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).MimicryShell)
+            if (Projectile.ai[1] == 0 && Main.player[Projectile.owner].GetModPlayer<LobotomyAlephPlayer>().MimicryShell)
             {
                 if (Main.rand.NextBool(3))
                 {
-                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill1_casting") with { Volume = 0.1f, MaxInstances = 1 });
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill1_casting") with { Volume = 0.1f, MaxInstances = 1 }, Projectile.Center);
                 }
 
                 Projectile.velocity *= 2;
@@ -388,7 +389,7 @@ namespace LobotomyCorp.Projectiles.Realized
             }
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -429,7 +430,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyAlephPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyAlephPlayer>();
             target.immune[Projectile.owner] = Main.player[Projectile.owner].itemAnimation;
             if (Projectile.ai[1] == 3)
             {

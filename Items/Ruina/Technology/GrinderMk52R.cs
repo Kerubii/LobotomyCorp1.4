@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Audio;
 using LobotomyCorp.Items.He;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Technology
 {
@@ -27,7 +28,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
 			Item.useTime = 20;
 			Item.useAnimation = 20;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.knockBack = 6;
+			Item.knockBack = 2;
 			Item.value = 10000;
 			Item.rare = ItemRarityID.Yellow;
 			Item.UseSound = SoundID.Item1;
@@ -45,7 +46,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
 
         public override bool SafeCanUseItem(Player player)
         {
-            if (LobotomyModPlayer.ModPlayer(player).GrinderMk2Recharging)
+            if (player.GetModPlayer<LobotomyHePlayer>().GrinderMk2Recharging)
                 return false;
 
             if (player.ownedProjectileCounts[Item.shoot] == 0)

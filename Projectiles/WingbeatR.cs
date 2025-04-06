@@ -1,4 +1,5 @@
 ﻿using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -197,6 +198,20 @@ namespace LobotomyCorp.Projectiles
             bool hasFairy = target.HasBuff<Buffs.Fairy>();
             if (damageDone > 10)
             {
+                float healPercent = 0;
+                if (Projectile.ai[1] == -1)
+                    healPercent += 0.1f;
+                if (hasFairy)
+                    healPercent += 0.1f;
+                int heal = (int)(damageDone * 0.1f);
+                if (heal > 0)
+                {
+                    Main.player[Projectile.owner].GetModPlayer<LobotomyZayinPlayer>().WingbeatStoreHeal(heal);
+                }
+            }
+            
+            /*if (damageDone > 10)
+            {
                 int heal = 0;
                 if (Projectile.ai[1] == -1)
                     heal += (int)(damageDone * 0.1f);
@@ -207,7 +222,7 @@ namespace LobotomyCorp.Projectiles
                     Main.player[Projectile.owner].statLife += heal;
                     Main.player[Projectile.owner].HealEffect(heal);
                 }
-            }
+            }*/
             if (Projectile.ai[0] <= 15 && Projectile.ai[1] < 0)
                 Projectile.ai[1] = target.whoAmI;
             else if (Main.player[Projectile.owner].itemTime > 5)
@@ -226,7 +241,9 @@ namespace LobotomyCorp.Projectiles
 
             if (target.life <= 0)
             {
-                Main.player[Projectile.owner].AddBuff(ModContent.BuffType<Buffs.Festival>(), 300);
+                //Main.player[Projectile.owner].AddBuff(ModContent.BuffType<Buffs.Festival>(), 300);
+                int heal = (int)(target.lifeMax * 0.1f);
+                Main.player[Projectile.owner].GetModPlayer<LobotomyZayinPlayer>().WingbeatStoreHeal(heal);
             }
             if (Main.myPlayer == Projectile.owner)
                 ModContent.GetInstance<ScreenSystem>().ScreenShake(15, 4f, 0, false);

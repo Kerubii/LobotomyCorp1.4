@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using System;
 using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Literature
 {
@@ -54,13 +55,13 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			if (player.altFunctionUse == 2)
 			{
 				bool shriek = false;
-				if (LobotomyModPlayer.ModPlayer(player).BlackSwanNettleClothing >= 4)
+				if (player.GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing >= 4)
 				{
 					damage = (int)(damage * 0.75f);
-					LobotomyModPlayer.ModPlayer(player).BlackSwanNettleRemove(1);
+					player.GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleRemove(1);
 					shriek = true;
 				}
-				else if (LobotomyModPlayer.ModPlayer(player).BlackSwanBrokenDream)
+				else if (player.GetModPlayer<LobotomyWawPlayer>().BlackSwanBrokenDream)
 				{
 					damage = (int)(damage * 0.4f);
 					shriek = true;
@@ -81,7 +82,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
         public override bool? UseItem(Player player)
         {
-			if (!LobotomyModPlayer.ModPlayer(player).BlackSwanBrokenDream)
+			if (!player.GetModPlayer<LobotomyWawPlayer>().BlackSwanBrokenDream)
 				player.AddBuff(ModContent.BuffType<Buffs.NettleClothing>(), 60);
 			if (player.altFunctionUse == 2)
             {
@@ -98,7 +99,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
         public override float UseSpeedMultiplier(Player player)
         {
-			if (LobotomyModPlayer.ModPlayer(player).BlackSwanNettleClothing >= 1 || LobotomyModPlayer.ModPlayer(player).BlackSwanBrokenDream)
+			if (player.GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing >= 1 || player.GetModPlayer<LobotomyWawPlayer>().BlackSwanBrokenDream)
 				return 1.15f;
             return base.UseSpeedMultiplier(player);
         }
@@ -111,7 +112,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 		private int GooeyWasteProduce = 0;
         public override void HoldItem(Player player)
         {
-            if (Main.myPlayer == player.whoAmI && LobotomyModPlayer.ModPlayer(player).BlackSwanNettleClothing >= 2 || LobotomyModPlayer.ModPlayer(player).BlackSwanBrokenDream)
+            if (Main.myPlayer == player.whoAmI && player.GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing >= 2 || player.GetModPlayer<LobotomyWawPlayer>().BlackSwanBrokenDream)
             {
 				if (GooeyWasteProduce <= 0)
                 {

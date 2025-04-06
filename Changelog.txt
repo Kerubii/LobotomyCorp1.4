@@ -1,1 +1,10 @@
-0.8.4 - Fixed Red Mist having coordinate problems causing her to despawn (I wish I didnt spam hotfixes like this)
+0.8.9 Changelog (non hotfix edition)
+Regret R third hit effect now has limited piercing and lowered damage each pierce
+Fixed Smile R dropping a lot of corpses against worm bosses
+Fixed Da Capo R's Extra Projectile being active even if the performance is cancelled
+Da Capo R's Extra Projectile is now active during 1st movement onward, increasing in speed and range the further the performance is
+Limited Da Capo's Finale radius to prevent unintended map wide kills
+Wingbeat R regeneration removing hp under certain conditions
+Red Mist's health now properly scales depending on difficulty
+Red Mist's health is also readjusted to account for this (Health is now 23000/41400/52785)
+Red Mist Suppression text modified to look closer to Lobcorp (not the font though, I cant find the font for the life of me)

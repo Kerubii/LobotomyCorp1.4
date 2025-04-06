@@ -1,4 +1,5 @@
 using LobotomyCorp.Items.He;
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -83,7 +84,7 @@ namespace LobotomyCorp.Items.Ruina.History
 
         public override bool AltFunctionUse(Player player)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
             return modPlayer.ForgottenAffectionResistance >= 0.03f;
         }
 

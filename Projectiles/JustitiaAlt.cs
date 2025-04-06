@@ -34,7 +34,6 @@ namespace LobotomyCorp.Projectiles
             Projectile.DamageType = DamageClass.Melee;
             Projectile.tileCollide = false;
             Projectile.friendly = true;
-            Projectile.hostile = false;
         }
 
         public override void AI() {
@@ -52,7 +51,7 @@ namespace LobotomyCorp.Projectiles
                 if (Projectile.ai[1] < 1)
                 {
                     Projectile.ai[1] = 1;
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_1"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_1"), Projectile.Center);
                     if (Main.myPlayer == Projectile.owner)
                     {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), ownerMountedCenter, Projectile.velocity * 22, ModContent.ProjectileType<JustitiaExtended>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 1);
@@ -116,7 +115,7 @@ namespace LobotomyCorp.Projectiles
                     {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), ownerMountedCenter, new Vector2(20f, 0).RotatedBy(rot), ModContent.ProjectileType<SpearExtender>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 1, 3);
                     }
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_2"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_2"), Projectile.Center);
                 }
                 if (Projectile.ai[1] < 3 && progress > 0.46f)
                 {
@@ -125,7 +124,7 @@ namespace LobotomyCorp.Projectiles
                     {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), ownerMountedCenter, new Vector2(20f, 0).RotatedBy(rot), ModContent.ProjectileType<SpearExtender>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 1, 3);
                     }
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_3"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_3"), Projectile.Center);
                 }
             }
             else
@@ -137,7 +136,7 @@ namespace LobotomyCorp.Projectiles
                     {
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), ownerMountedCenter, Projectile.velocity * 16, ModContent.ProjectileType<JustitiaExtended>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 2);
                     }
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_2"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_2"), Projectile.Center);
                 }
 
                 if (progress < 0.7f)
@@ -238,7 +237,7 @@ namespace LobotomyCorp.Projectiles
                 target.immune[Projectile.owner] = 5;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             Main.player[Projectile.owner].itemRotation = 0;
             Main.player[Projectile.owner].heldProj = -1;

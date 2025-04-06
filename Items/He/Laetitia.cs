@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
-    public class Laetitia : ModItem
+    public class Laetitia : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -31,6 +31,7 @@ namespace LobotomyCorp.Items.He
             Item.shoot = 10; //idk why but all the guns in the vanilla source have this
             Item.shootSpeed = 8f; // the speed of the projectile (measured in pixels per frame)
             Item.useAmmo = AmmoID.Bullet; // The "ammo Id" of the ammo Item that this weapon uses. Note that this is not an Item Id, but just a magic value.
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override Vector2? HoldoutOffset()

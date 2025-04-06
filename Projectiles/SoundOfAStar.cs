@@ -187,7 +187,7 @@ namespace LobotomyCorp.Projectiles
             modifiers.FinalDamage *= multiplier;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             for (int i = 0; i < 180; i++)
             {

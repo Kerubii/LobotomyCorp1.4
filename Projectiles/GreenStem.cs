@@ -15,7 +15,7 @@ namespace LobotomyCorp.Projectiles
         {
             if (Projectile.timeLeft == duration / 2 && Main.myPlayer == Projectile.owner)
             {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GreenStemTrap>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GreenStemTrap>(), Projectile.damage, 0f, Projectile.owner);
             }
         }
 	}

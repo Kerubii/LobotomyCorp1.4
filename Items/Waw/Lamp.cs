@@ -17,18 +17,19 @@ namespace LobotomyCorp.Items.Waw
 
         public override void SetDefaults()
         {
-            Item.damage = 104;
+            Item.damage = 110;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 52;
-            Item.useAnimation = 52;
+            Item.useTime = 56;
+            Item.useAnimation = 56;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
             Item.rare = ItemRarityID.Purple;
             SwingSound = LobotomyCorp.WeaponSounds.Hammer;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
@@ -48,7 +49,7 @@ namespace LobotomyCorp.Items.Waw
         {
             CreateRecipe()
             .AddRecipeGroup("LobotomyCorp:DungeonLantern")
-            .AddIngredient(ItemID.Feather, 8)
+            .AddIngredient(ItemID.Feather, 4)
             .AddIngredient(ItemID.Bone, 10)
             .AddTile(Mod, "BlackBox3")
             .Register();

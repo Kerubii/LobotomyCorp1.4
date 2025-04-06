@@ -26,7 +26,6 @@ namespace LobotomyCorp.Projectiles
 			Projectile.DamageType = DamageClass.Ranged; // Is the Projectile shoot by a ranged weapon?
 			Projectile.penetrate = -1; // How many monsters the Projectile can penetrate. (OnTileCollide below also decrements penetrate for bounces as well)
 			Projectile.timeLeft = 1000; // The live time for the Projectile (60 = 1 second, so 600 is 10 seconds)
-			Projectile.alpha = 255; // The transparency of the Projectile, 255 for completely transparent. (aiStyle 1 quickly fades the Projectile in) Make sure to delete this if you aren't using an aiStyle that fades in. You'll wonder why your Projectile is invisible.
 			Projectile.light = 0.5f; // How much light emit around the Projectile
 			Projectile.ignoreWater = true; // Does the Projectile's speed be influenced by water?
 			Projectile.tileCollide = false; // Can the Projectile collide with tiles?
@@ -37,6 +36,14 @@ namespace LobotomyCorp.Projectiles
 
         public override void AI()
         {
+			//Normalize Bullet's velocity
+			if (Projectile.ai[0] == 0)
+			{
+				Projectile.ai[0]++;
+				Projectile.velocity.Normalize();
+				Projectile.velocity *= 12f;
+			}
+
 			Projectile.localAI[0]++;
 			if (Projectile.localAI[0] > 4)
 			{
@@ -54,6 +61,8 @@ namespace LobotomyCorp.Projectiles
 
         public override bool CanHitPlayer(Player target)
         {
+			if (target.whoAmI == Projectile.owner)
+				return false;
 			return true;
         }
 

@@ -12,6 +12,8 @@ using ReLogic.Graphics;
 using System;
 using Terraria.GameContent;
 using LobotomyCorp.ModSystems;
+using static ReLogic.Graphics.DynamicSpriteFont;
+using Terraria.GameContent.UI.Elements;
 
 namespace LobotomyCorp.UI
 {
@@ -61,7 +63,7 @@ namespace LobotomyCorp.UI
         }
     }
 
-    class SuppressionText
+    public class SuppressionText
     {
         public string text;
         public string subText;
@@ -186,7 +188,11 @@ namespace LobotomyCorp.UI
                         break;
                 }
                 textColor *= 0.9f;
-                DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.CombatText[1].Value, subText, pos + offset, textColor, rotation, origin, textScale, 0f, 0f);
+                //DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.CombatText[1].Value, subText, pos + offset, textColor, rotation, origin, textScale, 0f, 0f);
+                Vector2 scale2 = default(Vector2);
+                scale2.X = scale;
+                scale2.Y = scale;
+                drawString(FontAssets.CombatText[1].Value, subText, spriteBatch, pos + offset, textColor, rotation, origin, ref scale2, 0f, 0f);
             }
         }
 
@@ -275,6 +281,99 @@ namespace LobotomyCorp.UI
             SuppressionTextSystem System = ModContent.GetInstance<SuppressionTextSystem>();
             SuppressionText[] Text = System.SupText.Text;
             return Text[i].active;
+        }
+        
+        /// <summary>
+        /// derived from Internal Draw of Dynamic Sprite Front to allow individual letters to have their own size and rotation
+        /// </summary>
+        /// <param name="font"></param>
+        /// <param name="text"></param>
+        /// <param name="spriteBatch"></param>
+        /// <param name="startPosition"></param>
+        /// <param name="color"></param>
+        /// <param name="rotation"></param>
+        /// <param name="origin"></param>
+        /// <param name="scale"></param>
+        /// <param name="spriteEffects"></param>
+        /// <param name="depth"></param>
+        private void drawString(DynamicSpriteFont font, string text, SpriteBatch spriteBatch, Vector2 startPosition, Color color, float rotation, Vector2 origin, ref Vector2 scale, SpriteEffects spriteEffects, float depth)
+        {
+            Matrix matrix = Matrix.CreateTranslation((0f - origin.X) * scale.X, (0f - origin.Y) * scale.Y, 0f) * Matrix.CreateRotationZ(rotation);
+            Vector2 zero = Vector2.Zero;
+            Vector2 one = Vector2.One;
+            bool flag = true;
+            float x = 0f;
+            if (spriteEffects != 0)
+            {
+                Vector2 vector = font.MeasureString(text);
+                if (spriteEffects.HasFlag(SpriteEffects.FlipHorizontally))
+                {
+                    x = vector.X * scale.X;
+                    one.X = -1f;
+                }
+
+                if (spriteEffects.HasFlag(SpriteEffects.FlipVertically))
+                {
+                    zero.Y = (vector.Y - (float)font.LineSpacing) * scale.Y;
+                    one.Y = -1f;
+                }
+            }
+
+            int index = 0;
+            zero.X = x;
+            foreach (char c in text)
+            {
+                switch (c)
+                {
+                    case '\n':
+                        zero.X = x;
+                        zero.Y += (float)font.LineSpacing * scale.Y * one.Y;
+                        flag = true;
+                        continue;
+                    case '\r':
+                        continue;
+                }
+
+                SpriteCharacterData characterData = GetCharacterData(font, c);
+                Vector3 kerning = characterData.Kerning;
+                Rectangle padding = characterData.Padding;
+                if (spriteEffects.HasFlag(SpriteEffects.FlipHorizontally))
+                    padding.X -= padding.Width;
+
+                if (spriteEffects.HasFlag(SpriteEffects.FlipVertically))
+                    padding.Y = font.LineSpacing - characterData.Glyph.Height - padding.Y;
+
+                if (flag)
+                    kerning.X = Math.Max(kerning.X, 0f);
+                else
+                    zero.X += font.CharacterSpacing * scale.X * one.X;
+
+                zero.X += kerning.X * scale.X * one.X;
+                Vector2 position = zero;
+                Vector2 offset = characterData.Glyph.Size() / 2;
+                position.X += (float)padding.X * scale.X;
+                position.Y += (float)padding.Y * scale.Y;
+                Vector2.Transform(ref position, ref matrix, out position);
+                position += startPosition + offset;
+
+                // 'Randomize' font's size and rotation via Sin
+                float randRot = MathHelper.ToRadians(5) * (float)Math.Sin(3.14f * ((523423412 * index + 12345) / 65536f));
+                float randSize = 0.9f + 0.1f * (float)Math.Sin(3.14f * ((523423412 * index + 12345) / 65536f));
+
+                spriteBatch.Draw(characterData.Texture, position, characterData.Glyph, color, rotation + randRot, offset, scale * randSize, spriteEffects, depth);
+                zero.X += (kerning.Y + kerning.Z) * 1.2f * scale.X * one.X;
+                flag = false;
+                
+                index++;
+            }
+        }
+
+        private SpriteCharacterData GetCharacterData(DynamicSpriteFont font, char character)
+        {
+            if (!font.SpriteCharacters.TryGetValue(character, out var value))
+                return font.DefaultCharacterData;
+
+            return value;
         }
     }
 }

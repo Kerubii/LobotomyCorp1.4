@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -40,7 +41,7 @@ namespace LobotomyCorp.Items.Ruina.Natural
 
         public override void HoldItem(Player player)
         {
-            if (Main.myPlayer == player.whoAmI && LobotomyModPlayer.ModPlayer(player).NihilCheckActive())
+            if (Main.myPlayer == player.whoAmI && player.GetModPlayer<LobotomyAlephPlayer>().NihilCheckActive())
             {
                 if (player.ownedProjectileCounts[ModContent.ProjectileType<Projectiles.Realized.Nihil.NihilQOH>()] == 0)
                 {

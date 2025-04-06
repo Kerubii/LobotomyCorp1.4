@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Aleph
 {
-    public class SoundOfAStar : ModItem
+    public class SoundOfAStar : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -19,7 +19,7 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void SetDefaults()
         {
-            Item.damage = 42;
+            Item.damage = 50;
             Item.DamageType = DamageClass.Summon;
             Item.mana = 6;
             Item.width = 40;
@@ -37,6 +37,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.shoot = ModContent.ProjectileType<Projectiles.SoundOfAStar>();
             Item.shootSpeed = 4f;
             Item.noUseGraphic = true;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

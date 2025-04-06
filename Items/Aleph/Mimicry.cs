@@ -23,12 +23,12 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void SetDefaults()
         {
-            Item.damage = 43;
+            Item.damage = 52;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 28;
-            Item.useAnimation = 28;
+            Item.useTime = 32;
+            Item.useAnimation = 32;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
@@ -36,6 +36,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.rare = ItemRarityID.Red;
             MimicryHeal = false;
             //Item.UseSound = SoundID.Item1;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override bool CanUseItem(Player player)

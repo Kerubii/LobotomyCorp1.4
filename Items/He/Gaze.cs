@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
-    public class Gaze : ModItem
+    public class Gaze : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -18,16 +18,16 @@ namespace LobotomyCorp.Items.He
 
         public override void SetDefaults()
         {
-            Item.damage = 14;
+            Item.damage = 25;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 42;
-            Item.useAnimation = 40;
+            Item.useTime = 46;
+            Item.useAnimation = 44;
 
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.knockBack = 6;
+            Item.knockBack = 2;
             Item.value = 10000;
             Item.rare = ItemRarityID.Yellow;
             Item.shootSpeed = 2.2f;
@@ -37,6 +37,7 @@ namespace LobotomyCorp.Items.He
             Item.UseSound = LobotomyCorp.WeaponSound("DontWatch");
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override bool CanUseItem(Player player)

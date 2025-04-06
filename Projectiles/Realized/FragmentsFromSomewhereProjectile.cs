@@ -9,6 +9,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ModLoader;	
 using Terraria.ID;
+using LobotomyCorp.Misc.Dusts;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -31,12 +32,13 @@ namespace LobotomyCorp.Projectiles.Realized
             Projectile.rotation = Projectile.velocity.ToRotation();
             for (int i = -1; i < 2; i++)
 			{
-				int type = 72 + i;
+				int type = ModContent.DustType<WhiteDust>();// 72 + i;
 
 				Vector2 offset = new Vector2(-11, 11 * (float)Math.Sin((Projectile.localAI[0]/20f) * 6.28f) * i).RotatedBy(Projectile.rotation);
 
 				Dust d = Dust.NewDustPerfect(Projectile.Center + offset, type, Vector2.Zero);
 				d.noGravity = true;
+				d.color = LobotomyCorp.FragmentShaderColor;
 				if (i == 0)
 				{
 					d.scale = 0.75f;
@@ -48,22 +50,27 @@ namespace LobotomyCorp.Projectiles.Realized
 
 			if (Projectile.timeLeft < 30)
 				Projectile.alpha += 15;
+
+			ModContent.GetInstance<ModSystems.ScreenSystem>().FragmentScreenActivate();
 		}
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             for (int i = 0; i < 8; i++)
 			{
-				int type = Main.rand.Next(71, 74);
+				int type = ModContent.DustType<WhiteDust>();// Main.rand.Next(71, 74);
 				int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, type, Projectile.velocity.X, Projectile.velocity.Y);
 				Main.dust[d].noGravity = true;
+				Main.dust[d].fadeIn = 1.5f;
+                Main.dust[d].color = LobotomyCorp.FragmentShaderColor;
             }
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-			lightColor = Color.White * 0.8f * (1f - Projectile.alpha / 255f);
-			lightColor.A = (byte)(lightColor.A * 0.5f);
+			lightColor = LobotomyCorp.FragmentShaderColor;
+			//lightColor = Color.White * 0.8f * (1f - Projectile.alpha / 255f);
+			//lightColor.A = (byte)(lightColor.A * 0.5f);
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Rectangle frame = tex.Frame();
 			Vector2 position = Projectile.Center - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;

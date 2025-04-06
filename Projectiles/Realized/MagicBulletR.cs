@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using LobotomyCorp.Utils;
 using Terraria.GameContent;
 using System.IO;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -45,7 +46,7 @@ namespace LobotomyCorp.Projectiles.Realized
         {
 			if (!PlayerTarget)
 			{
-				LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+				LobotomyWawPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>();
 				if (modPlayer.MagicBulletNthShot == 6)
 				{
 					Projectile.usesLocalNPCImmunity = true;
@@ -128,9 +129,9 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-			LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyWawPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>();
 
-			switch(modPlayer.MagicBulletNthShot)
+            switch (modPlayer.MagicBulletNthShot)
             {
 				case 3:
 					target.AddBuff(BuffID.OnFire, 600);

@@ -17,7 +17,7 @@ namespace LobotomyCorp.Items.Waw
 
         public override void SetDefaults()
         {
-            Item.damage = 25;
+            Item.damage = 62;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
@@ -29,15 +29,16 @@ namespace LobotomyCorp.Items.Waw
             Item.rare = ItemRarityID.Purple;
             Item.UseSound = LobotomyCorp.WeaponSound("blackSwan1");
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (Main.rand.Next(4) == 0)
+            if (Main.rand.NextBool(4))
                 LobotomyModPlayer.ModPlayer(player).ApplyShield("B", 900, Item.damage * 2);
-            foreach (Player teammate in Main.player)
+            foreach (Player teammate in Main.ActivePlayers)
             {
-                if (teammate.active && teammate.whoAmI != player.whoAmI && !teammate.dead && teammate.team == player.team && Vector2.Distance(teammate.Center, player.Center) < 1600)
+                if (teammate.whoAmI != player.whoAmI && !teammate.dead && teammate.team == player.team && Vector2.Distance(teammate.Center, player.Center) < 1600)
                 {
                     LobotomyModPlayer.ModPlayer(teammate).ApplyShield("B", 900, Item.damage * 2);
                 }

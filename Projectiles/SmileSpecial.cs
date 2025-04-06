@@ -1,4 +1,5 @@
-﻿using LobotomyCorp.Utils;
+﻿using LobotomyCorp.Buffs;
+using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -297,6 +298,8 @@ namespace LobotomyCorp.Projectiles
             Projectile.friendly = true;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
+
+            Projectile.ArmorPenetration = 20;
         }
 
         public override void AI()
@@ -348,7 +351,7 @@ namespace LobotomyCorp.Projectiles
                 }
             }            
 
-            Projectile.scale = 1f - (Projectile.timeLeft / 15f);// (float)Math.Sin(1.57f * (1f - (Projectile.timeLeft / 15f)));
+            Projectile.scale = Projectile.ai[2] - Projectile.ai[2] * (Projectile.timeLeft / 15f);// (float)Math.Sin(1.57f * (1f - (Projectile.timeLeft / 15f)));
             Projectile.alpha = 255 - (int)(255 * (1f - (Projectile.timeLeft / 15f)));
         }
 
@@ -367,13 +370,18 @@ namespace LobotomyCorp.Projectiles
             return false;
         }
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            target.AddBuff(ModContent.BuffType<Scream>(), 300);
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = SmileShockwave.SmileShockwaveTex.Value;
             Vector2 position = Projectile.Center - Main.screenPosition;
             Vector2 origin = tex.Size() / 2;
 
-            float scaleFactor = (float)Math.Sin(1.57f * (Projectile.scale / 0.85f));
+            float scaleFactor = (float)Math.Sin(1.57f * ((Projectile.scale / Projectile.ai[2]) / 0.85f));
             Vector2 scale = new Vector2(scaleFactor, scaleFactor) * 3f;
             switch (Projectile.localAI[0])
             {
@@ -387,14 +395,9 @@ namespace LobotomyCorp.Projectiles
 
             Color color = Color.Black;
             color *= 1f - scaleFactor;
-            Main.EntitySpriteDraw(tex, position, tex.Frame(), color, Projectile.rotation, origin, scale, 0, 0);            
+            Main.EntitySpriteDraw(tex, position, tex.Frame(), color, Projectile.rotation, origin, scale * Projectile.ai[2], 0, 0);            
 
             return false;
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-        {
-            modifiers.ArmorPenetration += 20;
         }
     }
 }

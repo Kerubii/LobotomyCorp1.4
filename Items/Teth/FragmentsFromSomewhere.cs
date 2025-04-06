@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class FragmentsFromSomewhere : ModItem
+    public class FragmentsFromSomewhere : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -18,13 +18,13 @@ namespace LobotomyCorp.Items.Teth
 
         public override void SetDefaults()
         {
-            Item.damage = 16;
+            Item.damage = 17;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 22;
-            Item.useAnimation = 20;
+            Item.useTime = 26;
+            Item.useAnimation = 24;
 
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
@@ -37,6 +37,7 @@ namespace LobotomyCorp.Items.Teth
             Item.UseSound = LobotomyCorp.WeaponSounds.Spear;
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Teth;
         }
 
         public override bool CanUseItem(Player player)

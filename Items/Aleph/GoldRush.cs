@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Aleph
 {
-    public class GoldRush : ModItem
+    public class GoldRush : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -38,6 +38,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.noMelee = true;
             Item.autoReuse = true;
             Item.channel = true;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override bool AltFunctionUse(Player player)
@@ -87,6 +88,14 @@ namespace LobotomyCorp.Items.Aleph
             .AddIngredient(ItemID.FeralClaws)
             .AddIngredient(ItemID.Amber)
             .AddIngredient(ItemID.GoldBar, 20)
+            .AddIngredient(ItemID.FallenStar, 8)
+            .AddTile(Mod, "BlackBox3")
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ItemID.FeralClaws)
+            .AddIngredient(ItemID.Amber)
+            .AddIngredient(ItemID.PlatinumBar, 20)
             .AddIngredient(ItemID.FallenStar, 8)
             .AddTile(Mod, "BlackBox3")
             .Register();

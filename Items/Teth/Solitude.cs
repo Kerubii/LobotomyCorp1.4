@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class Solitude : ModItem
+    public class Solitude : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -32,6 +32,7 @@ namespace LobotomyCorp.Items.Teth
             Item.shootSpeed = 14f;
             Item.useAmmo = AmmoID.Bullet;
             Item.scale = 0.8f;
+            EGORiskLevel = RiskLevel.Teth;
         }
 
         public override Vector2? HoldoutOffset()

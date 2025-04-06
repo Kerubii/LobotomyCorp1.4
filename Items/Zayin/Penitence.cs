@@ -25,8 +25,8 @@ namespace LobotomyCorp.Items.Zayin
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 26;
-            Item.useAnimation = 26;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
@@ -73,7 +73,10 @@ namespace LobotomyCorp.Items.Zayin
 
         public override void AddRecipes()
         {
-
+            CreateRecipe()
+            .AddIngredient(ItemID.Wood, 99)
+            .AddTile(Mod, "BlackBox")
+            .Register();
         }
     }
 }

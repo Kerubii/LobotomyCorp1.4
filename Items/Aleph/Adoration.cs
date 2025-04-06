@@ -7,7 +7,7 @@ using System;
 
 namespace LobotomyCorp.Items.Aleph
 {
-    public class Adoration : ModItem
+    public class Adoration : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -34,6 +34,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.shoot = ModContent.ProjectileType<MeltyLove>();
             Item.shootSpeed = 7.6f;
             Item.channel = true;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override void UseStyle(Player player, Rectangle heldItemFrame)

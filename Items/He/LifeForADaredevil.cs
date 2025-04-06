@@ -22,6 +22,7 @@ namespace LobotomyCorp.Items.He
             Item.DamageType = DamageClass.Generic;
             Item.rare = ItemRarityID.Yellow;
             Item.UseSound = LobotomyCorp.WeaponSound("katana");
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override void UseItemHitboxAlt(Player player, ref Rectangle hitbox, ref bool noHitbox)
@@ -85,7 +86,7 @@ namespace LobotomyCorp.Items.He
             .AddIngredient(ItemID.IronBar, 10)
             .AddIngredient(ItemID.LeadBar, 10)
             .AddIngredient(ItemID.Obsidian, 5)
-            .AddTile(Mod, "BlackBox2")
+            .AddTile(Mod, "BlackBox")
             .Register();
         }
     }

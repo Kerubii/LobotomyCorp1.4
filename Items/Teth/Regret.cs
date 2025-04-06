@@ -27,6 +27,7 @@ namespace LobotomyCorp.Items.Teth
             Item.rare = ItemRarityID.Blue;
             SwingSound = LobotomyCorp.WeaponSounds.Hammer;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Teth;
         }
 
         public override void AddRecipes()

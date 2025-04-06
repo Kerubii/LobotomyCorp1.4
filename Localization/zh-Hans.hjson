@@ -32,7 +32,7 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
-					Creates sarira, up to 4 while having maximum health
+					Creates sarira that pulses, up to 4 while having maximum health
 					Sarira can be hit again to be launched and returns to the owner
 					Sariras are only active while this weapon is held
 					''' */
@@ -47,9 +47,10 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
-					Firing speed increases when hit for 5 seconds
-					Accuracy is lowered while firing speed is increased
-					80% chance to not consume ammo while firing speed is increased
+					Firing speed increased
+					Inaccurate while firing speed is increased
+					After getting hit, Alternate attack to fire an empowered single shot
+					Empowered shot has increased damage and reduced firing speed
 					''' */
 				DisplayName: 尖喙
 			}
@@ -79,9 +80,9 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
-					Shoots a shotgun blast of toxic waves
-					Can parry projectiles with perfect timing
-					Reflecting damage taken or parrying allows a follow up attack
+					Shoots a blast of toxic waves
+					Increased chance to reflect damage taken
+					Reflect damage dealt to more enemies
 					''' */
 				DisplayName: 黑天鹅
 			}
@@ -110,7 +111,7 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Increased Cherry Blossom amount
-					Cherry Blossoms fall on enemies hit by this weapon
+					Cherry Blossoms fall on enemies hit
 					''' */
 				DisplayName: 落樱
 			}
@@ -135,15 +136,14 @@ Mods: {
 				/* Tooltip:
 					'''
 					'Once upon a time, these claws would cut open the bellies of numerous creatures and tear apart their guts.'
-					Hitting an enemy has a chance of increasing melee damage by 10%
-					50% increased damage while under 50% health
+					Chance for a 10% increased melee and movement speed for 10 seconds on hit
+					50% increased damage and guaranteed buff while under 50% health
 					''' */
 				/* Tooltip2:
 					'''
 					Creates blood slashes while having no 'Well Fed' buff
 					Killed enemies give 'Well Fed' buff
 					While 'Well Fed', Attacks change to a close ranged heavier strike combo instead
-					Right click to convert 'Well Fed' buff to 'Hunger' buff
 					''' */
 				DisplayName: Cobalt Scar
 			}
@@ -155,14 +155,14 @@ Mods: {
 					It's more important to deliver a decisive strike in blind hatred without hesitation than to hold on to insecure courage.'
 					Benefits from Ranged damage increases
 					Empowers next Range attack after hitting with a Normal Melee attack and vice versa
-					50% increased damage under 50% health
+					50% increased damage and attacks are always Empowered under 25% health
 					''' */
 				/* Tooltip2:
 					'''
 					All attacks are empowered
 					If attacks are empowered normally, they are further empowered
-					Empowered Scythes creates a rain of Scythes
-					Empowered Shots aims semi randomly consecutively
+					Scythes creates a rain of Scythes
+					Bullet Shots aims semi randomly consecutively
 					''' */
 				DisplayName: 郁蓝创痕
 			}
@@ -174,7 +174,12 @@ Mods: {
 					You can ignore the ridiculous advice that you can see it with your mind.'
 					Randomizes enemy stats on first hit
 					''' */
-				// Tooltip2: Has a random size and damage
+				/* Tooltip2:
+					'''
+					Increased size
+					Stats are decreased by a set amount instead
+					Deals more damaged against diffracted enemies
+					''' */
 				DisplayName: 虚无衍射体
 			}
 
@@ -199,8 +204,9 @@ Mods: {
 					'''
 					Bubbles dont flow upwards
 					Gain increased movement speed when firing
-					Sboots one extra bubble that does not do damage and stays in the air
+					Sboots one extra bubble that does not do damage
 					Right click to dash towards the bubble nearest to the cursor
+					Dashing leaves a trail of bubbles
 					''' */
 				DisplayName: 沉醉
 			}
@@ -215,6 +221,9 @@ Mods: {
 					'''
 					Swings the weapon 360 degrees
 					Pokes the weapon on both sides
+					Following effects activate while Light Shard is present in the inventory
+					Creates an outer ring when swung
+					Creates Light projectiles when poking
 					''' */
 				DisplayName: 不和
 			}
@@ -226,7 +235,12 @@ Mods: {
 					这家残酷的公司甚至不允许人们拥有甜美的梦。
 					这件武器将唤醒那些沉浸在甜美梦境中的人们。
 					'''
-				// Tooltip2: '''Shoots additional slow moving piercing stars					'''
+				/* Tooltip2:
+					'''
+					Increased Range
+					Cries linger in place
+					Sometimes creates additional slow moving piercing stars
+					''' */
 				DisplayName: 虚空之梦
 			}
 
@@ -237,7 +251,7 @@ Mods: {
 					Smoke projectiles linger longer
 					Infects enemies hit
 					Deals more damage to infected enemies
-					Infected enemies shoots parasites to uninfected enemies
+					Infection spreads to nearby uninfected enemies
 					Infected enemies produce lingering smoke projectiles on death
 					''' */
 				DisplayName: 蜕落之皮
@@ -252,8 +266,8 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Converts Arrows into Full Bloom Arrows
+					Full Bloom Arrows splits into three arrows on hitting an enemy and homes back in
 					Petals home in on the nearest enemy
-					When all 3 petals hit, deals damage to nearby enemies
 					''' */
 				DisplayName: 余香
 			}
@@ -280,12 +294,14 @@ Mods: {
 					'''
 					'The fire roars and burns like the first flame.
 					The light of the match will not go out.'
-					Consumes bullets
+					Consumes torch
 					''' */
 				/* Tooltip2:
 					'''
 					Bigger and stronger explosion
 					Can be charged to create an even bigger explosion
+					Can consume various Biome Torches
+					Biome Torches provide additional effects
 					''' */
 				DisplayName: 终末之光
 			}
@@ -297,7 +313,7 @@ Mods: {
 					这支长矛经常试图引导握着它的人进入无尽的精神位面，因此持有者必须小心，决不能被
 					其迷惑。
 					'''
-				// Tooltip2: Range increased
+				// Tooltip2: Increased range
 				DisplayName: 彼方的碎片
 			}
 
@@ -383,7 +399,7 @@ Mods: {
 					Health consumption is negated
 					Increased amount of Projectiles
 					Projectiles gain a random behavior
-					Right click to execute an enemy under 10% health and gain a buff
+					Right click to execute an enemy under 25% health and gain a buff
 					''' */
 				DisplayName: 谐奏发射器
 			}
@@ -399,6 +415,7 @@ Mods: {
 					'''
 					Throws the spear
 					Right click to charge forwards
+					Charge deals extra damage equal to missing health
 					''' */
 				DisplayName: 犄角
 			}
@@ -412,7 +429,7 @@ Mods: {
 					The weapon's bullets selectively fly toward threats, so skillful aiming isn't required; all that's needed is the will to hit the target.'
 					Bullets are converted to bees
 					''' */
-				// Tooltip2: Bullets are converted to bee bullets instead
+				// Tooltip2: Bullets are converted to Worker Beellets instead
 				DisplayName: 黄蜂
 			}
 
@@ -444,6 +461,7 @@ Mods: {
 					Grows additional Branches
 					Right click to throw
 					Creates Branches when hitting a tile
+					Branches grow on enemies with no direct line of sight
 					''' */
 				DisplayName: 穿刺极乐
 			}
@@ -456,7 +474,13 @@ Mods: {
 					However, be warned that nature does not know the difference between a blessing and a curse.'
 					Sold by the Dryad after Queen Bee
 					''' */
-				// Tooltip2: Arrows are converted to Great Tree Arrows
+				/* Tooltip2:
+					'''
+					Arrows are converted to Great Tree Arrows
+					Great Tree Arrows creates a fruit on hit for 3 seconds that restores health
+					If a fruit is not consumed it turns into a poisonous fruit instead that damages you
+					After 1 more seconds, the fruit explodes
+					''' */
 				DisplayName: 伪善
 			}
 
@@ -471,6 +495,7 @@ Mods: {
 					Increased projectile amount
 					Stars can home in to nearest damaged allies
 					Channel a laser that heals allies and damages enemies
+					Laser has an extremely long start up
 					''' */
 				DisplayName: 以爱与恨为名
 			}
@@ -544,6 +569,7 @@ Mods: {
 					'''
 					Does extra 10% of the non boss enemy's health as damage
 					Right click for judgement cut
+					Increases in damage and intensity under lower health
 					''' */
 				DisplayName: 决死之心
 			}
@@ -560,7 +586,7 @@ Mods: {
 					Extra reach
 					Deals more damage having more health
 					Increased melee speed on low health
-					Grants 'Heartreach' on hit
+					Grants Heartreach buff on hit
 					''' */
 				DisplayName: 伐木者
 			}
@@ -576,7 +602,7 @@ Mods: {
 					'''
 					Redirects to an enemy if it misses
 					Inflicts dark flame
-					First hit of each bullets increases damage by 7%
+					First hit of each bullets increases next bullet damage by 7%
 					Resets on the 7th bullet
 					''' */
 				DisplayName: 魔弹射手
@@ -591,7 +617,7 @@ Mods: {
 					Can be charged for 300% increased damage
 					Recovers 25% damage dealt on the first enemy hit on swing (Max 40)
 					''' */
-				// Tooltip2: You desire one too don't you? a shell
+				// Tooltip2: Don’t you desire a human shell as well?
 				DisplayName: 拟态
 			}
 
@@ -613,7 +639,11 @@ Mods: {
 					When the child cries, the stars in the galaxy light the void.
 					"In your universe, am I to be found?"'
 					''' */
-				// Tooltip2: Star projectiles orbit around you
+				/* Tooltip2:
+					'''
+					Star projectiles orbit around you
+					Getting hit homes all Star projectiles to an enemy
+					''' */
 				DisplayName: 小小银河
 			}
 
@@ -628,8 +658,8 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Can be used in the air
-					Summoned weapons spin after piercing
-					Right click to summon weapons for each enemy on screen
+					Attacks vary slightly
+					Right click to attack each enemy on screen
 					''' */
 				DisplayName: 失乐园
 			}
@@ -658,6 +688,7 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Converts bullets to Pink Bullet
+					Pink Bullets bounce to nearby allies
 					Right click to switch to Black
 					Black has slower firing speed but increased damage
 					Black converts bullets to Black Bullet
@@ -713,7 +744,7 @@ Mods: {
 					甚至在女孩的双脚被砍断后，舞鞋依旧凭借着难以置信的执念，带着残肢进入了森林。
 					大多数员工都熟悉这双舞鞋曾引发的悲剧往事。    
 					'''
-				// Tooltip2: Grants 'Desire' while held
+				// Tooltip2: ???
 				DisplayName: 血之渴望
 			}
 
@@ -723,7 +754,12 @@ Mods: {
 					'Hair has grown on the crossbow as if to express that the woman's dejection will never be forgotten.
 					The sound of the projectile splitting the air is reminiscent of her piercing scream.'
 					''' */
-				// Tooltip2: Arrows are converted to Screaming Arrows
+				/* Tooltip2:
+					'''
+					Arrows are converted to Screaming Arrows
+					Screaming Arrows are unaffected by gravity
+					Screaming Arrows create a piercing scream on hit
+					''' */
 				DisplayName: 刺耳尖叫
 			}
 
@@ -732,7 +768,7 @@ Mods: {
 					'''
 					'It has the pale faces of nameless employees and a giant mouth on it.
 					Upon striking with the weapon, the monstrous mouth opens wide to devour the target, its hunger insatiable.'
-					Alternate attack to slam down an enemy or the ground
+					Alternate attack to slam down an enemy or the ground, decreasing target defense
 					''' */
 				/* Tooltip2:
 					'''
@@ -772,13 +808,16 @@ Mods: {
 					'''
 					'The somber design is a reminder that not a sliver of frivolity is allowed for the minds of those who mourn.
 					One handgun symbolizes grief for the dead, while the other symbolizes early lament for the living.'
-					Switches between range and magic depending on the gun used
+					Benefits from Magic damage increases
+					Switches randomly betwwen guns
+					Right click to fire both guns
 					''' */
 				/* Tooltip2:
 					'''
 					Fire rate increased
 					Sometimes converts Ammo into Butterflies
 					''' */
+				// ManaTooltip: Black gun costs {0} Mana instead of using ammo
 				DisplayName: 圣宣
 			}
 
@@ -801,6 +840,9 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
+					Summons Orbs equal to 3 plus unused minion slots
+					Orbs automatically attack nearby enemies
+					Can be fired all at once
 					Impact radius increased
 					Knockbacks enemies to the center
 					''' */
@@ -937,23 +979,25 @@ Mods: {
 					Matchlight - 16% increased damage while on fire
 					|Scorching Embers - Sets self on fire every fourth use
 					''' */
-				/* Simplified:
-					'''
-					Every fourth use deals 400% increased damage and sets yourself on fire
-					Right click to explode when the fourth attack is ready
-					16% increased damage while on fire
-					''' */
 				/* PassiveListRework:
 					'''
-					Warmth of a Flame - 400% damage on fourth use
-					Matchlight - 16% increased damage while on fire
-					|Scorching Embers - Alternate attack to set self on fire and explode, taking 20% of your health
+					Warmth of a Flame - 400% damage on fourth use, Inflict Scorching Embers
+					Matchlight - Inflicts 'On Fire'. 16% increased damage while user is 'On Fire'
+					Scorching Embers - Increases damage taken from on fire debuffs. Counts as 'On Fire'
+					|Footfalls - Alternate attack to inflict Scorching Embers to self and explode, taking 20% of your health
 					''' */
 			}
 
 			ForgottenR: {
 				DisplayName: 忘却
 				Tooltip: 它的记忆始于一个温暖的拥抱。
+				/* PassiveOld:
+					'''
+					Display of Affection - Attacking the same enemy three times in a row marks them, unmarks enemies when far away or switching weapons
+					Happy Memories - Attacking the same enemy in a row gives 1% increased contact damage resistance against them, up to 40%. Lost when switching targets
+					Nostalgic Embrace - Alternate attack to hug a marked enemy for a short while based on Happy Memories, become invincible if Happy Memories is max.
+					|Unattended - After marking an enemy, Unable to hit any other enemies other than the marked enemy
+					''' */
 				PassiveList:
 					'''
 					谨慎示爱-连续攻击同一个敌人时第三次会标记他们，距离过远或切换武器时取消标记。
@@ -961,23 +1005,6 @@ Mods: {
 					忘却-右键攻击后抱紧一个拥有标记的敌人，造成持续伤害，结束后丢出敌人，标记的越明显伤害就越高。
 					|抛弃-标记一个敌人后，无法击中除标记敌人外的任何其他敌人
 					'''
-				/* Simplified:
-					'''
-					Hitting an enemy multiple times marks them
-					Hitting a marked enemy increases their mark
-					Cannot hit other enemies while having a mark
-					Marked enemies deal less damage
-					Right click to Hug a marked enemy
-					The Hug deals more damage if the mark is less transparent
-					The Hug is invincible if the mark is flashing
-					''' */
-				/* PassiveListRework:
-					'''
-					Display of Affection - Attacking the same enemy three times in a row marks them with 'Happy Memories'
-					Happy Memories - 1% decreased contact damage to you, up to 40%. Decreases while not using this E.G.O or if the enemy is far away
-					Nostalgic Embrace - Alternate attack to hug an enemy with 'Happy Memories', removing it. become invincible if 'Happy Memories' is max
-					|Unattended - Getting hit by other enemies without mark or projectiles decreases 'Happy Memories'
-					''' */
 			}
 
 			WingbeatR: {
@@ -998,13 +1025,6 @@ Mods: {
 					The marked enemy is locked in by the attack from this weapon when nearby
 					Holding this weapon decreases your life regeneration
 					Killing an enemy temporarily disables the reduced life regeneration
-					''' */
-				/* PassiveListRework:
-					'''
-					Ravenous Hunger - First enemy hit stores 10% of damage dealt as healing, 5% increased damage when healing is stored
-					Fairies Care - Alternate attack to send a fairy to heal an enemy, Marking and making them easier to hit
-					Prepared Meal - 15% increased damage and 20% increased chances of lifesteal against enemies under 'Fairies Care'
-					|Predation - Healing recieved from Wingbeat is applied slowly over time, stops under Potion sickness. Cannot use Potions while healing
 					''' */
 			}
 
@@ -1030,12 +1050,12 @@ Mods: {
 					''' */
 				/* PassiveListRework:
 					'''
-					Strike of Retribution - Charge up a forward strike, the distance travelled depends on how long you've charged. Inflicts Spores
+					Strike of Retribution - Charge up a forward strike, the distance travelled depends on how long you've charged. Inflicts 'Spores'
 					Loyalty - Alternate attack to summon a 'Worker Bee', If minion slot is full, release 'Pheromones' instead
 					Worker Bee - Takes up 1 minion slot. Strengthens damage and speed under the effects of 'Spores' and prioritizes enemies with 'Spores'
-					Pheromones - Alternate attack releases 'Spores', inflicting it to 'Worker Bees' and nearby enemies. Has a cooldown of 30 seconds
+					Pheromones - Inflict 'Spores' to 'Worker Bees' and nearby enemies. -5 Defense and a cooldown of 30 seconds when used
 					Spores - Decreases life regeneration, Reduces defense and creates a temporary 'Worker Bee' on death for 30 seconds (Up to half of Maximum minion slot). 
-					|Embrace of Death - Having less that 25% of your maximum health will turn your 'Worker Bees' hostile
+					|Embrace of Death - Having less that 25% of your maximum health will turn your temporary 'Worker Bees' hostile, lasting 10 seconds
 					''' */
 			}
 
@@ -1051,10 +1071,10 @@ Mods: {
 					'''
 				/* PassiveListRework:
 					'''
-					Enroaching Malice - Slowly spread vines around you
+					Enroaching Malice - Slowly spread vines around you when channelled
 					Vines fraught with Spite - Vines attacks enemies near the spread out vines
-					Malice - Deal extra damage inversely proportional to health value
-					|Crumbling Life - Mana is drained at a certain rate, 'Enroaching Malice' slowly dissapear when Green Stem is not held or with no mana
+					Malice - Deal extra damage inversely proportional to your health value
+					|Crumbling Life - Mana is drained at a certain rate, 'Enroaching Malice' slowly dissapear when this E.G.O is not held or with no mana
 					''' */
 			}
 
@@ -1076,7 +1096,7 @@ Mods: {
 					Metallic Ringing - Reduces defense and creates shockwaves when hit
 					Violence - Minimum and maximum damage variance is decreased and increased respectively by 20% and 50%
 					Chained Wrath - Alternate attack to convert increased movement speed to increased damage (50% conversion), Removed while on a mount or minecart
-					|Binding Jacket - 'Chained Wrath' buffs are disabled while having any form of debuff
+					|Binding Jacket - 'Chained Wrath' buff is removed while having any form of debuff
 					''' */
 			}
 
@@ -1090,6 +1110,15 @@ Mods: {
 					反复识别模式-击中敌人恢复电量，击杀敌人补充电量。
 					|充电-使用此ego，挨揍或冲刺都会消耗电量，电量归零后原地充电。
 					'''
+				/* PassiveListRework:
+					'''
+					Charge - A battery displays current Charge, Activates effects below with Charge
+					Disable Limiter - Gain 40% increased movement speed while active, up to 20% increased damage with 'Charge'
+					Clean - Allows the player to dash through enemies if the player does not have a dash, Costs 'Charge'
+					Protocol - Automatically attacks nearby enemies while not held, Increased swing rate while using 'Clean'
+					Repetitive Pattern Recognition - Hitting an enemy generates 'Charge', killing an enemy refills 'Charge'
+					|Recharge - Right click buff to remove and refill 'Charge' at the cost of being immobilized
+					''' */
 			}
 
 			HarmonyR: {
@@ -1104,10 +1133,10 @@ Mods: {
 					'''
 				/* PassiveListRework:
 					'''
-					Harmony of Despair - Continously hitting enemies increases the weapon's damage and hit rate
+					Harmony of Despair - Continously hitting enemies increases the weapon's damage, splash damage and hit rate
 					Performance - Alternate attack shoots a soundwave that decreases defense. Shoots three while having 'Musical Addiction'
 					Let's Make Music! - Hit enemies gain 'Musical Addiction' and produces Harmony Notes that gives 'Musical Addiction' when picked up
-					|Musical Addiction - 12% increased damage, 8% increased attack speed. Decreased life regeneration on NPCs
+					|Musical Addiction - 12% increased damage, 8% increased melee speed. Decreased life regeneration on NPCs
 					''' */
 			}
 
@@ -1121,13 +1150,6 @@ Mods: {
 					救赎之手-子弹对生命值最低的敌人额外造成15%伤害，并生成一只蝴蝶。
 					|哀悼-被击中时一杆枪会失效3秒，3秒内只能失效一杆枪。
 					'''
-				/* PassiveListRework:
-					'''
-					Eternal Rest - The second gun uses the next ammo type in your inventory, it does not shoot otherwise.
-					Tranquility - Alternate attack to transform the bullets into numerous butterflies at a slower rate of fire
-					Hand of Salvation - Bullets deal 15% increased damage and spawn butterflies against enemies with the lowest health
-					|Lament - When an enemy is killed by a butterfly they burst into numerous butterflies, 'Tranquility' is temporarily disabled
-					''' */
 			}
 
 			MagicBulletR: {
@@ -1144,7 +1166,7 @@ Mods: {
 					'''
 					Magic Bullet - Each shot has a special damage, target and property. The bullets always hits its mark
 					Request - Right click to Mark a target, The bullets only targets the marked target. Removed when switching items
-					Dark Flame - After the Seventh shot, Gain Dark Flame buff, boosting Magic Bullet's damage by 70%
+					Dark Flame - After 'The Seventh Bullet', Gain Dark Flame buff, boosting Magic Bullet's damage by 70%
 					|The Seventh Bullet - The 7th Bullet always targets Town NPCs. If there is none, targets allies. Pierces the user's heart if there are none left
 					''' */
 			}
@@ -1164,7 +1186,7 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					Look of the Day - While holding the Today's Expression, gain a random Face that provides a buff for 5 seconds if you have none
-					Wavering Feelings - Send out a wall that has special properties depending on 'Look of the Day'
+					Wavering Feelings - Attacks vary in power and effect depending on 'Look of the Day'
 					Social Distancing - When getting hit by contact damage, release a wall of expression depending on 'Look of the Day'
 					|Shyness - Alternate attack to lock in 'Look of the Day' for 15 seconds, increasing its buffs and debuffs
 					''' */
@@ -1218,11 +1240,11 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					,
-					Huuuuge Gift!!! - If no enemies have any Gifts, use all Mana to send a Huge Gift that give gifts up to 5 enemies
-					Suprise Gift - Hitting an enemy will mark them with a Gift
-					Funny Prank - After dealing enough indirect damage (with allies or minions) against enemies with Gift. The Gift explodes, spawning a 'Friend'
-					Friend - Temporary minion that occupies no Minion slot, Maximum equal to half of Minion Slots. After dealing enough damage or time, they explode
-					|Being Lonely is Sad - After a 'Friend' explodes, Temporarily gain 10% reduced damage reduction for 5 seconds
+					Huuuuge Gift!!! - Channel to give a bigger gift that explodes, Hit enemies gain 'Surprise Gift'
+					Suprise Gift - Explodes after being dealt indirect damage through allies or minions
+					Funny Prank - Summon a 'Friend' when a 'Surprise Gift' explodes up to half of minion slots
+					Friend - Attacks nearby enemies, Explodes after a certain amount of time passes or replaced
+					|Being Lonely is Sad - After a 'Friend' explodes, take 10% reduced damage reduction for 5 seconds
 					This Item is incomplete and unobtainable
 					''' */
 			}
@@ -1242,10 +1264,10 @@ Mods: {
 					'''
 					Clothing of Nettle - Regenerate Nettles after 5 seconds while holding Black Swan
 					Nettle - Up to 6, Upgrades Black Swan. Reduces incoming damage by 75% with Thorns effect, Decreases by 1 when hit
-					Shriek of Broken Dreams - While having 4 or more Nettles, Alternate Attack transforms to Shriek which damages enemies around you and consumes a nettle
-					Gooey Waste - Leave a trail of debuffing waste. Spreads sporatically while attacking, or Shrieking
+					Shriek of Broken Dreams - At 4+ Nettles, Alternate Attack Shrieks, damaging enemies around you and consumes a nettle
+					Gooey Waste - Leave a trail of debuffing waste. Spreads sporatically while attacking or Shrieking
 					Well-worn Parasol - Poking or Swinging Black Swan deflects Projectiles when timed correctly, can be held to deflect for a longer time
-					|Broken Dream - Alternate attacks activates 'Clothing of Nettle'. after taking a hit with no Nettles, cannot gain Clothing of Nettle for 20 seconds
+					|Broken Dream - After taking a hit with less than 1 Nettle, Take 20% increased damage and 'Nettle' cannot be obtained
 					''' */
 			}
 
@@ -1263,9 +1285,9 @@ Mods: {
 					''' */
 				/* PassiveListReworked:
 					'''
-					Echoes from the Beyond - Alternate attack to Echo. After 5 seconds, Hit enemies loses 'Tentacles' and inflict 'Enlightenment' for 20 seconds
+					Echoes from the Beyond - Alternate attack to Echo. After 5 seconds, Hit enemies lose 'Tentacles' and inflict 'Enlightenment' for 20 seconds
 					Enlightenment - True melee, Spears and other allies deal 20% increased damage
-					Tentacles - Hitting enemies decreases their damage resistance to 'Echoes from the Beyond' (from 10% to 400% damage)
+					Tentacles - Hitting enemies decreases their damage resistance to 'Echoes from the Beyond' (10% to 400% damage)
 					|Understand - Enemies with 'Enlightenment' takes no damage from 'Echoes from the Beyond', Immunity from 'Tentacles'
 					''' */
 			}
@@ -1275,10 +1297,10 @@ Mods: {
 				// Tooltip: A teardrop fell from the child's dewy eyes, as stars showered from the sky. The world falls into a slumber, trapped in an ecstatic lullaby.
 				/* PassiveList:
 					'''
-					An Eternal Farewell - Heal the nearest injured ally on hit
-					A Token of Friendship - Allies healed by this weapon gain a Pebble that is only removed when they die
-					Pebble - Gain increased life regeneration based on how many other allies have Pebble, Regeneration disabled under Potion Sickness
-					|Teardrop - If an ally with a Pebble die, the user and all other allies with Pebble also die
+					An Eternal Farewell - Heal the nearest, most injured ally on hit
+					A Token of Friendship - Allies healed by this weapon gain a Pebble, Removing a Pebble costs 25% of your maximum health
+					Pebble - Gain increased life regeneration based on how many other allies have Pebble, Effect is nullified under Potion Sickness
+					|Teardrop - If an ally loses a Pebble, all allies with Pebble take 25% of their maximum health as damage.
 					''' */
 			}
 
@@ -1297,8 +1319,8 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					Spring's Genesis - Alternate attack lunges forwards, hit enemies gain a 'Laurel Wreath'
-					Magnificent End - Holding Alternate attack while having 3 petals consumes all of it and applies 300% damage to all enemies nearby and removes Laurel Wreath
-					Flower Petals - Hitting enemies charges up to 3 petal that dissapears after a short time, enhancing Faint Aroma's attacks and damage
+					Magnificent End - Channel alternate attacks and consume 3 petals to apply damage to all enemies, removing 'Laurel Wreath'
+					Flower Petals - Hitting enemies charges up to 3 petal that dissapears after a short time. Enhances Faint Aroma's attacks and damage
 					Doll Fashioned from the Earth - Negate any negative life regeneration while a petal is active
 					|Laurel Wreath - 10% increased damage for each full 'Flower Petals' on the targett
 					This Item is incomplete and unobtainable
@@ -1317,6 +1339,15 @@ Mods: {
 					A Game of Trust - 60% of the damage taken is converted into mana damage
 					|Laughing Powder - Heavily decreased Mana Regen and disables Mana Potion heal. When reaching 0 Mana, take 50% maximum health damage and restore Max Mana
 					''' */
+				/* PassiveListRework:
+					'''
+					Time for the Head to Burst - Summon a tail attacking nearby enemies, or marked by this EGO when held.
+					Thrill - 20% chance to inflict 'Pleasure', Disabling this EGO requires 50% of your maximum mana
+					Pleasure - When inflicted enough times, ruptures it dealing 300% damage or 5% maximum health as damage(Whichever is greater)
+					Fluttering - 15% increased Wing acceleration. Chance to dodge Projectiles, Increased chances while no enemy is nearby or no boss is alive.
+					A Game of Trust - 60% of the damage taken is converted into mana damage, When mana reaches 0, restore all Mana.
+					|Laughing Powder - Heavily decreased Mana Regen and disables Mana Potion heal
+					''' */
 			}
 
 			DaCapoR: {
@@ -1325,7 +1356,7 @@ Mods: {
 				/* PassiveList:
 					'''
 					Ever-repeating Performance - Alternate attack to start a Performance with each movement inflicting buffs to allies and debuffs against enemies
-					Accelerando - True melee hits enhances this EGO's combo, During Movement 3 and above, further enhances this EGO
+					Accelerando - True melee hits enhances this EGO's combo, During Movement 1 and above, further enhances this EGO
 					Finale - During Finale, Fully heal and 5% of the damange done by this weapon during the peformance is distributed to all enemies being affecte by the Performance. Maximum of 10000% of this weapon's damage
 					|Al Fine - The Performance never ends, Requires to be in a town to disable
 					Fervent Adoration - After repeating the Performance, all allies and enemies are affected by both buffs and non damaging debuffs
@@ -1333,7 +1364,7 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					Ever-repeating Performance - Alternate attack to start a Performance with each movement inflicting buffs to allies and debuffs against enemies
-					Accelerando - True melee hits enhances this EGO's combo, During Movement 3 and above, further enhances this EGO
+					Accelerando - True melee hits enhances this EGO's combo, During Movement 1 and above, further enhances this EGO
 					Finale - During Finale, Fully heal and 5% of the damange done by Da Capo during the peformance is distributed to all enemies being affecte by the Performance. Maximum of 10000% of this weapon's damage
 					|Al Fine - 'Ever-repeating Performance' can only be cancelled during the applause or in a town with no nearby enemies
 					Fervent Adoration - After repeating the Performance, all allies and enemies are affected with boosted buffs and non damaging debuffs
@@ -1353,6 +1384,20 @@ Mods: {
 					heLLo? - Alternate attack shoots a piercing Projectile, reducing enemy defense
 					|Cocoon - Shell reduces quickly when not holding this weapon, When 'Shell' runs out, gain 'Hollow Husk'
 					Hollow Husk - Enables 'GoDdByE', -8 Defense. Timer set to 5 seconds while holding this weapon
+					''' */
+			}
+
+			SmileR: {
+				// DisplayName: Smile R
+				// Tooltip: The smiling faces are unfamiliar yet sorrowful.
+				/* PassiveList:
+					'''
+					Absorption - Killing enemies or damaging a boss drops corpses. Bite corpses to absorb them, increasing 'Mountain of Corpses'
+					Mountain of Corpses - Increases damage dealt and damage reduction but lowers swing speed and movement speed
+					Putrid Vomit - Above 60% 'Mountain of Corpses', Alternate attack vomits out projectiles decreasing 'Mountain of Corpses' by 1%
+					Horrid Screech - Above 30% 'Mountain of Corpses', Channel this EGO to scream decreasing 'Mountain of Corpses' by 5%
+					|Division - Damage reduced by 'Mountain of Corpses' stack reduces it, Lose all stacks when healed by the nurse
+					Melted Corpses - If 'Mountain of Corpses' reaches 0, Temporarily Disable 'Absorption' and take 10% increased damage
 					''' */
 			}
 
@@ -1393,14 +1438,31 @@ Mods: {
 				// Tooltip: In the name of Love and Justice~ Here comes Magical Girl!
 				/* PassiveList:
 					'''
-					Arcana Slave - Summon a laser of Love and Justice that costs {0} mana, Resets to maximum when used
-					Justice - Hitting an enemy or getting hit reduces Arcana Slave cost, resets when used
-					Villain - Hitting an enemy with Arcana Beats marks them, increasing Justice and Hate gained
-					Love - Increases defense and lowers damage when hitting enemies
-					|Hate - Getting hit reduces defense and increases damage. After getting hit enough times, turns all attacks of this weapon into lasers
+					Arcana Slave = Alternate attack summons a laser of Love and Justice, costs {0} mana (unaffected by mana cost reduction)
+					Arcana Beats - If unable to use 'Arcana Slave', Alternate attack to mark an Enemy as a 'Villain' if it does not exist
+					Villain - Takes 25% increased damage from this EGO, only 1 Villain can exist at a time
+					Justice - Attacking 'Villain' reduces Arcana Slave cost. Arcana Slave cost resets when used
+					Love - Attacks give nearby allies life regeneration, disabled while Hate is active
+					|Hate - Under 50% health until reaching 75% health, attacks are changed to lasers. Recieve 25% more damage while held
+					Hysteria - Arcana Slave lasts longer and can be aimed under 'Hate', Temporarily unable to use items afterwards
 					This Item is incomplete and unobtainable
 					''' */
 				// DisplayName: In The Name Of Love And Hate
+			}
+
+			GoldRushR: {
+				// ItemTooltip: ...Sadness says: 'Begone, pass away!' But greed seeks eternity... seeks deep, deep eternity.
+				/* PassiveList:
+					'''
+					Road of the King - Alternate attack to break all 'Fragments of Bliss', Becoming invincible and hit each enemy sequentially
+					Fragment of Bliss - Increases defense until broken, Reduces defense while broken. Up to 5 unbroken Fragment can be active
+					Intemperance - Critical hits heal 10% of its damage and applies a 'Fragment of Bliss'
+					Happiness - Increased damage after breaking a 'Fragment of Bliss' and heal 10 health
+					|Voracity - When activating 'Road of King' under 50% health, gain 'Greed' instead
+					Greed - 'Road of King' costs 50 health and rushes through enemies 
+					''' */
+				// Tooltip: ""
+				// DisplayName: Gold Rush R
 			}
 
 			#Social
@@ -1440,6 +1502,11 @@ Mods: {
 					A Tool to extract from the subconsciousness of mankind
 					Allows the creation of WAW and ALEPH E.G.O
 					''' */
+				/* TooltipBinah:
+					'''
+					Awakens an Arbiter
+					"Try to resist to the very end"
+					''' */
 				// DisplayName: Black Box - Extraction
 			}
 
@@ -1464,11 +1531,6 @@ Mods: {
 					Allows the creation of ZAYIN and TETH E.G.O
 					"The Bucket rises from the Well of a person, filled with the water that can only be drawn by that person."
 					''' */
-				/* TooltipBinah:
-					'''
-					Awakens an Arbiter
-					"Try to resist to the very end"
-					''' */
 				// DisplayName: Black Box
 			}
 
@@ -1482,6 +1544,11 @@ Mods: {
 					'''
 					Awakens the Red Mist
 					"Crush those monstrous bastards."
+					''' */
+				/* Warning:
+					'''
+					//MULTIPLAYER WARNING//
+					ACTIVATING THIS WHILE STANDING ON OR CLOSE TO IT MAY CAUSE UNINTENDED BEHAVIOR
 					''' */
 				// DisplayName: Disciplinary Shell
 			}
@@ -1540,11 +1607,6 @@ Mods: {
 					''' */
 			}
 
-			SmileR: {
-				// DisplayName: Smile R
-				// Tooltip: ""
-			}
-
 			PEBox: {
 				// DisplayName: PE Box
 				// Tooltip: Right click in the inventory while having an E.G.O in the cursor to acquire a vanity set
@@ -1579,6 +1641,11 @@ Mods: {
 				// DisplayName: Soda Suit
 				// Tooltip: ""
 			}
+
+			MagicBulletBullet: {
+				// Tooltip: ""
+				// DisplayName: Magic Bullet Bullet
+			}
 		}
 
 		// LobotomyRedMistRequirement: Supress the Red Mist
@@ -1599,6 +1666,35 @@ Mods: {
 					爱-增加防御，降低命中敌人时的伤害。
 					|仇恨-获得命中减少防御，增加伤害。在被击中足够多次后，将此武器的所有攻击转化为激光。
 					'''
+				/* PassiveList2:
+					'''
+					Arcana Slave - Summon a laser of Love and Justice that costs {0} mana, Resets to maximum when used
+					Arcana Beats - Realeasing channeling uses Arcana Beats, marking enemies as 'Villain'
+					Justice - When 'Love' or 'Hate' activates, reduces 'Arcana Slave' cost
+					Villain - 25% increased damage taken from this EGO, 
+					Love - Chance to heal allies on hit
+					|Hate - Taking damage or killing enemies increases this weapon's damage
+					Hysteria - When 'Hate' reaches maximum, temporarily transform this EGO changing its effects
+					This Item is incomplete and unobtainable
+					''' */
+				/* PassiveList3:
+					'''
+					Love! - Killing enemies increases this weapon's damage
+					A Real Magical Girl - When 'Love' reaches maximum, transform this EGO to normal
+					|Arcana Slave - Channel a laser of Hate that drains {0} mana
+					Hate... - 50% increased mana cost, reduced over time
+					Villain - 15% increased damage taken when held, Getting hit increases 'Love' and 'Hate'
+					''' */
+				/* PassiveList4:
+					'''
+					Arcana Slave = Alternate attack summons a laser of Love and Justice, costs {0} mana (unaffected by mana cost)
+					Arcana Beats - Releasing attack marks enemies hit as 'Villain'
+					Villain - Takes 25% increased damage from this EGO, only 1 Villain can exist at a time
+					Justice - Attacking 'Villain' reduces Arcana Slave cost. Arcana Slave cost resets when used
+					Love - Above 50% Health, attacks give nearby allies life regeneration
+					|Hate - Under 50% health, attacks are changed to lasers. Recieve 25% more damage while held
+					Hysteria - Arcana Slave lasts longer and can be aimed under 'Hate', Temporarily unable to use items afterwards
+					''' */
 			}
 
 			TheSwordSharpenedWithTears: {
@@ -1612,6 +1708,35 @@ Mods: {
 					|绝望-如果没有祝福的队友在场，攻击造成一个单位数额的伤害并减少10防御，如果剑没打到人，它将会刺穿使用者。
 					This Item is incomplete and unobtainable
 					'''
+				/* PassiveList4:
+					'''
+					Heart-piercing Sword - Summon four swords, swords return after a few seconds or can be picked up
+					Whetted with Teardrops - Critical hits ignores defense
+					Blessing - Right click a team mate to bless them, granting them 'Blessed'. Blessing another players transfers 'Blessed'
+					Blessed - 50% decreased damage taken, 10% chance to recieve double damage instead.
+					|A Broken Heart - If an ally with 'Blessed' dies, gain 'Despair' for 30 seconds and be unable to use 'Blessing'
+					Despair - 'Whetted with Teardrops' is always active. If a sword misses it impales the user
+					''' */
+				/* PassiveList2:
+					'''
+					Heart-piercing sword - Summon three swords that floats around you, 
+					Blessing - Alternate attack to give a nearby ally 'Blessed'
+					Blessed - 50% decreased damage taken, 10% chance to recieve additional double damage with no reduction instead
+					Whetted with Teardrops - Critical hits ignores defense, Active if there is no ally with 'Blessed'
+					|Despair - If no ally has 'Blessed'. If a sword misses it attempts to impale the user dealing 20% of its damage
+					A Broken Heart - If an ally with 'Blessed' dies, transform this EGO changing its effects
+					This Item is incomplete and unobtainable
+					''' */
+				/* PassiveList3:
+					'''
+					Justice! - Alternate attack to give a nearby ally 'Blessed'
+					Blessed - 50% decreased damage taken, 10% chance to recieve additional double damage with no reduction instead
+					A Real Magical Girl - If an ally with 'Blessed' is alive, unimpale all swords and transform this EGO to normal
+					|Heart-breaking sword - Summon four swords that floats around you, swords are not summoned back while impaled
+					Laced with Grief - Attacks deal additional 20% of the enemy's maximum health and ignores defense (2% of health if a boss)
+					Despair... - If a sword misses, it impales the user dealing 20% of your maximum health and remains impaled
+					Sword that Pierces Despair - If all four swords impale the user, die
+					''' */
 			}
 
 			GoldRush: {
@@ -1623,6 +1748,32 @@ Mods: {
 					放纵-致命一击治疗其10%的伤害并暂时降低敌人的防御力
 					|贪婪-在50%生命值下，降低40%攻击速度和移动，获得30%暴击几率，闪金之路只针对1个敌人。
 					'''
+				/* PassiveList2:
+					'''
+					Brilliant Bliss - Hit enemies gain 'Brilliant Bliss', only 5 can be active at a time. If an enemy dies it stays on its current spot
+					Road of Gold - Alternate attack to destroy all 'Brilliant Bliss', Teleporting through them sequentially
+					Intemperance - Critical hits heal 5% of its damage and reduces enemy defense
+					Happineess - Gain damage reduction based on current health
+					|Greed - Gain increased damage while health is low
+					Momentary Bliss - Under 50% health, all 'Brilliant Bliss' is destroyed and temporarily transform this EGO, changing its effects
+					''' */
+				/* PassiveList3:
+					'''
+					Happiness! - Gain damage reduction based on current health 
+					A Real Magical Girl - After reaching maximum health, transform this EGO to normal
+					|Road of the King - Alternate attack to teleport to an area, costs {0} health
+					Greed - Gain increased damage while health is low
+					Voracity - Lose heatlh while attacking but gain health on hit
+					''' */
+				/* PassiveList4:
+					'''
+					Road of the King - Alternate attack to break all 'Fragments of Bliss', Becoming invincible and hit each enemy sequentially
+					Fragment of Bliss - Increases defense until broken, Reduces defense while broken. Up to 5 unbroken Fragment can be active
+					Intemperance - Critical hits heal 10% of its damage and applies a 'Fragment of Bliss'
+					Happiness - Increased damage after breaking a 'Fragment of Bliss' and heal 10 health
+					|Voracity - When activating 'Road of King' under 50% health, gain 'Greed' instead
+					Greed - 'Road of King' costs 50 health and rushes through enemies 
+					''' */
 			}
 
 			BlindRage: {
@@ -1678,18 +1829,6 @@ Mods: {
 					'''
 			}
 
-			Smile: {
-				ItemTooltip: “那张笑脸陌生却又悲伤。”
-				PassiveList:
-					'''
-					吸收-杀死敌人掉落尸体，击中或抓取尸体增加尸体堆叠，最多12具。
-					融合-增加持有者的伤害，较少增加攻击速度，随着尸体堆叠数量增加。
-					恐怖惨叫-在拥有12具尸体时，右键攻击变为惨叫，每次消耗2具尸体。
-					呕吐-当有超过6具尸体时，右键攻击变为远距离呕吐，每次消耗1具尸体。
-					|寻找尸体-被击中减少1尸体，尸体归零后瞬间死亡。
-					'''
-			}
-
 			Dipsia: {
 				ItemTooltip: “……而渴望永远无法真正得到满足。”
 				PassiveList:
@@ -1699,18 +1838,14 @@ Mods: {
 					血酒-如果有队友，在使用血之盛宴时对队友施放吸血和恐水症。
 					|恐水症-减少生命再生，攻击消耗最大生命值的1%，此武器的攻击在50%生命值下改变，当达到75%生命值时恢复正常
 					'''
-			}
-
-			Mimicry: {
-				ItemTooltip: “主管!主管!主管!主管!主管!主管!"
-				PassiveList:
+				/* PassiveList2:
 					'''
-					哈喽-在你面前发射穿孔弹。
-					古德拜-造成200%更多的伤害时，攻击你的敌人会受到伤害。
-					拟态-杀死一个敌人恢复你20%的生命值，并给予一个新的躯壳buff，禁用以前的躯壳。
-					|躯壳-使用此武器时获得1分钟的躯壳。当buff时间结束时，当场去世
-					This Item is incomplete and unobtainable
-					'''
+					Banquet of Blood - Alternate attack to deal damage to nearby enemies. costs 20% of maximum health (10% if below 50% of maximum health)
+					Wine - Apply 'Vampirism' to nearby allies when using 'Banquet of Blood'
+					Vampirism - Attacks heal 20% of damage dealt, attacks inflcits 'Vampirism' and 'Fear of Water'
+					|Fear of Water - Lose 1% Maximum health when using an item. Decreased life regeneration on Npc instead
+					Bloodfeast - Under 50% health, this weapon's attacks changes, gaining more 
+					''' */
 			}
 
 			#Social
@@ -2117,6 +2252,93 @@ Mods: {
 				Tired3: 赶尽杀绝！！！
 				Tired4: 我不能...停下...
 				Tired5: 还不够...还不够！！！
+			}
+
+			GeburaAlt: {
+				// Penitence: Repent
+				// FairyFestival: Festival
+				// Soda: One
+				// Tough: Two
+				// Beak1: Executioner
+				// Beak2: Punishment
+				// CherryBlossoms1: Cherry Blossoms
+				// CherryBlossoms2: From the graves
+				// EngulfingDream: Wake up
+				// FourthMatchFlame: From ashes to ashes
+				// FragmentsFromSomewhere: Understand
+				// Horn: Before I break again
+				// Lantern: Lantern
+				// RedEyes: I see you
+				// Regret: It ends, begin
+				// SoCute: Haah...
+				// Solitude: Solitude
+				// TodaysExpression1: Today's Mask is
+				// TodaysExpression2: Anger
+				// TodaysExpression3: Sad
+				// TodaysExpression4: Happy
+				// TodaysExpression5: Joy
+				// WristCutter: Sacrifice
+				// LifeForADaredevil: Be brave, be courageous
+				// ScreamingWedge: Screaming Wedge
+				// BearPaw1: Don't run
+				// BearPaw2: Caught you
+				// Christmas: All of my hatred
+				// FrostSplinter: Be encased
+				// Gaze: Observe me
+				// GrinderMk4: I'll chase you to the ends
+				// Harmony: Harmony
+				// Harvest: Harvest
+				// Laetitia: Laetitia
+				// Lumber: Lumber
+				// OurGalaxy: You cannot hide
+				// SanguineDesire: Feel this bloodlust
+				// Syrinx: The nameless
+				// MagicBullet1: Aim true, Magic Bullet
+				// SolemnLament1: For the Living
+				// SolemnLament2: For the Departed
+				// Amrita: Amrita
+				// BlackSwan: Dream of the Black Swan
+				// CobaltScar: Cobalt Strike
+				// CrimsonScar: Crimson Strike
+				// Diffraction: Diffraction
+				// Discord: Discord
+				// Ecstacy: Ecstacy
+				// Exuviae: Shed Skin
+				// FaintAroma: Reverberate
+				// FeatherOfHonor: The Great Hunt begins
+				// GreenStem1: Green Stem
+				// GreenStem2: Receive my malice
+				// Heaven1: Burrowing Heaven
+				// Heaven2: Lean, Bloody wings
+				// Hornet: Hornet
+				// Hypocrisy: Hypocrisy
+				// InTheNameOfLoveAndHate: Arcana Slave
+				// Lamp1: Jury
+				// Lamp2: Lamp
+				// Moonlight: Moonlight
+				// Pleasure: Pleasure
+				// Spore: Spore
+				// SwordSharpenedWithTears: Despair
+				// GoldRush: The Road to Happiness opens
+				// Justitia1: Justitia
+				// Justitia2: Judgement
+				// Adoration: Adoration
+				// Censored: Be Horrified
+				// DaCapo1: Legato
+				// DaCapo2: From the Overture
+				// Mimicry1: Nothing will Remain
+				// Mimicry2: I'll mow you down
+				// Pink: Hold still
+				// Smile1: Black Laughter
+				// Smile2: Be Eaten
+				// SoundOfAStar: Twilight1: The apocalypse is here
+				// Twilight2: Be torn apart
+				// ParadiseLost1: Rapture begins
+				// ParadiseLost2: Kneel
+				// ParadiseLost3: It's over, I won't break this time
+				// ParadiseLost4: ....!?
+				// ParadiseLost5: Ah.. I'm breaking again... through all this power...
+				// ParadiseLost6: I can't change a single thing...
 			}
 
 			Binah: {
@@ -2691,11 +2913,24 @@ Mods: {
 			// WingbeatFairy2.DisplayName: Wingbeat Fairy2
 			// WingbeatSlash.DisplayName: Wingbeat Slash
 			// SmileRSword.DisplayName: Smile R Sword
+			// SmileCorpse.DisplayName: Smile Corpse
+			// SmileRSwordAlt.DisplayName: Smile R Sword Alt
+			// SmileREffectSlash.DisplayName: Smile R Effect Slash
+			// SmileRVomit.DisplayName: Smile R Vomit
+			// SmileRBite.DisplayName: Smile R Bite
+			// SmileCorpseSmall.DisplayName: Smile Corpse Small
+			// SmileRScream.DisplayName: Smile R Scream
+			// ArcanaBeatsv2.DisplayName: Arcana Beatsv2
+			// CherryBlossomsPetal2.DisplayName: Cherry Blossoms Petal2
+			// EngulfingDreamStar.DisplayName: Engulfing Dream Star
+			// HornThrown.DisplayName: Horn Thrown
+			// FragmentsFromSomewhereCut.DisplayName: Fragments From Somewhere Cut
+			// StarShot2.DisplayName: Star Shot2
 		}
 
 		Buffs: {
 			WillBeBad: {
-				// Description: 10% increased melee damage
+				// Description: 10% increased melee damage and movement speed
 				// DisplayName: Blue Moon
 			}
 
@@ -2803,11 +3038,11 @@ Mods: {
 
 			Matchstick: {
 				// Description: Reduce to ashes...
-				// DisplayName: Matchstick
+				// DisplayName: Scorched Embers
 			}
 
 			Lament: {
-				// Description: A Solemn Lament gun is disabled
+				// Description: Grief for the dead, Early lament for the living
 				// DisplayName: Lament
 			}
 
@@ -2848,6 +3083,7 @@ Mods: {
 
 			Festival: {
 				// Description: Everything will be peaceful
+				// HealPoolDesc: "{0} Healing stored"
 				// DisplayName: Festival
 			}
 
@@ -2913,7 +3149,7 @@ Mods: {
 
 			PleasureTail: {
 				// DisplayName: Pleasure Tail
-				// Description: A tail of your very own
+				// Description: They call it the "Game of Trust"
 			}
 
 			Husk: {
@@ -2936,6 +3172,32 @@ Mods: {
 				// Tooltip4: Movement 4(Stringendo): 15% decreased damage taken
 				// Tooltip4Alt: Movement 4(Stringendo): 15% increased damage taken
 			}
+
+			Absorption: {
+				// DisplayName: Mountain of Corpses
+				// Description: Carry the smile of many
+				// Tooltip1: "{0} Corpses"
+				// Tooltip2: "{0}% increased damage"
+				// Tooltip3: "{0}% decreased damage taken"
+				// Tooltip4: "{0}% decreased melee swing speed"
+				// Tooltip5: "{0}% decreased movement speed"
+			}
+
+			SmileMelting: {
+				// DisplayName: Melted Corpses
+				// Description: 10% increased damage taken
+			}
+
+			Hatred: {
+				// DisplayName: Love and Hate
+				// Description: If.. if the world is peaceful
+			}
+
+			Love: {
+				// DisplayName: Love and Justice
+				// Description: Power of Love and Friendship
+				// ArcanaSlaveCost: Arcana Slave {0} mana cost
+			}
 		}
 
 		Tiles: {
@@ -2952,12 +3214,13 @@ Mods: {
 			// WhiteNight.DisplayName: White Night
 			// SmileCorpses.DisplayName: Melted Corpses
 			// SmileBitsBreakable.DisplayName: Smile Bits Breakable
+			// RedMistAlt.DisplayName: Red Mist Alt
 		}
 
 		BossChecklistIntegration: {
 			RedMist: {
 				// EntryName: Red Mist
-				// SpawnInfo: Place [i:LobotomyCorp/DisciplinaryShell] and right click it, can also be obtained by right clicking [i:LobotomyCorp/BlackBox3] while placed during Hardmode if Red Mist has not been defeated
+				// SpawnInfo: Place [i:LobotomyCorp/DisciplinaryShell] and right click it, can also be obtained by right clicking [i:LobotomyCorp/BlackBox3] while placed during Hardmode if Red Mist has not been defeated (Only in single player)
 			}
 		}
 	}

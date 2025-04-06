@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class SwordSharpenedWithTears : ModItem
+    public class SwordSharpenedWithTears : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -30,13 +30,14 @@ namespace LobotomyCorp.Items.Waw
             Item.knockBack = 6;
             Item.value = 10000;
             Item.rare = ItemRarityID.Purple;
-            Item.shootSpeed = 2.4f;
+            Item.shootSpeed = 3.2f;
             Item.shoot = ModContent.ProjectileType<Projectiles.SwordSharpenedWithTearsProj>();
 
             Item.noUseGraphic = true;
             Item.UseSound = SoundID.Item1;
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         private bool AlternateAttack;
@@ -56,7 +57,7 @@ namespace LobotomyCorp.Items.Waw
             if (AlternateAttack)
             {
                 knockback = 6f;
-                damage = (int)(damage * 0.8f);
+                damage = (int)(damage * 0.9f);
                 if (player.itemAnimation != player.itemAnimationMax)
                 {
                     type = ModContent.ProjectileType<Projectiles.SpearExtender>();

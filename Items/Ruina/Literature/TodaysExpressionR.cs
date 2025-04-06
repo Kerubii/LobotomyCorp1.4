@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using LobotomyCorp.Items.Teth;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Literature
 {
@@ -46,7 +47,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
         {
 			if (player.altFunctionUse != 2)
             {
-				return LobotomyModPlayer.ModPlayer(player).TodaysExpressionActive;
+				return player.GetModPlayer<LobotomyTethPlayer>().TodaysExpressionActive;
             }
 
 			return base.SafeCanUseItem(player);
@@ -62,8 +63,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			if (player.altFunctionUse == 2)
             {
 				player.AddBuff(ModContent.BuffType<Buffs.TodaysLook>(), 10);
-				LobotomyModPlayer modplayer = LobotomyModPlayer.ModPlayer(player);
-				modplayer.TodayExpressionChangeFace(Main.rand.Next(5));
+                player.GetModPlayer<LobotomyTethPlayer>().TodayExpressionChangeFace(Main.rand.Next(5));
 				return true;
             }
 
@@ -82,7 +82,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
         {
 			if (Main.myPlayer == player.whoAmI && player.altFunctionUse != 2)
             {
-				int face = LobotomyModPlayer.ModPlayer(player).TodaysExpressionFace;
+				int face = player.GetModPlayer<LobotomyTethPlayer>().TodaysExpressionFace;
 				switch (face)
 				{
 					case 0://Happy

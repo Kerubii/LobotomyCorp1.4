@@ -64,7 +64,7 @@ namespace LobotomyCorp.Projectiles
                 if (Projectile.ai[1] < 2)
                 {
                     Projectile.ai[1] = 2;
-                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/silent2_2") with { Volume = 0.25f });
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/silent2_2") with { Volume = 0.25f }, Projectile.Center);
                     if (Main.myPlayer == Projectile.owner)
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), ownerMountedCenter, Projectile.velocity * 8f, ModContent.ProjectileType<FirstMovement>(), Projectile.damage * 4 / 5, Projectile.knockBack * 0.2f, Projectile.owner, Main.rand.NextFloat(1f, 5.5f) * projOwner.direction);
                 }
@@ -77,7 +77,7 @@ namespace LobotomyCorp.Projectiles
                 if (Projectile.ai[1] < 3)
                 {
                     Projectile.ai[1] = 3;
-                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/silent2_3") with { Volume = 0.25f });
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/silent2_3") with { Volume = 0.25f }, Projectile.Center);
                     if (Main.myPlayer == Projectile.owner)
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), ownerMountedCenter, Projectile.velocity * 8f, ModContent.ProjectileType<FirstMovement>(), Projectile.damage * 4 / 5, Projectile.knockBack * 0.2f, Projectile.owner, Main.rand.NextFloat(1f, 5.5f) * projOwner.direction * -1);
                 }

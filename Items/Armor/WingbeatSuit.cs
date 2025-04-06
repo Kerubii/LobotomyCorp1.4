@@ -7,6 +7,11 @@ namespace LobotomyCorp.Items.Armor
     [AutoloadEquip(EquipType.Head)]
     public class WingbeatGift : LobItemBase
     {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
         public override void SetStaticDefaults()
         {
             ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
@@ -32,6 +37,11 @@ namespace LobotomyCorp.Items.Armor
     [AutoloadEquip(EquipType.Body)]
     public class WingbeatSuit : LobItemBase
     {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
         public override void SetDefaults()
         {
             Item.vanity = true;
@@ -47,6 +57,11 @@ namespace LobotomyCorp.Items.Armor
     [AutoloadEquip(EquipType.Legs)]
     public class WingbeatPants : LobItemBase
     {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
         public override void SetDefaults()
         {
             Item.vanity = true;

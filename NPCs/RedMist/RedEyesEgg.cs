@@ -43,7 +43,7 @@ namespace LobotomyCorp.NPCs.RedMist
             return false;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             if (Projectile.timeLeft < 20)
             {
@@ -54,9 +54,9 @@ namespace LobotomyCorp.NPCs.RedMist
             {
                 Vector2 target = Projectile.Center + Projectile.velocity;
                 float nearest = -1;
-                foreach(Player p in Main.player)
+                foreach(Player p in Main.ActivePlayers)
                 {
-                    if (p.active && !p.dead)
+                    if (!p.dead)
                     {
                         if (nearest == -1)
                         {
@@ -90,10 +90,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 Main.dust[d].noGravity = true;
                 Main.dust[d].velocity *= 0;
             }
-        }
 
-        public override void OnKill(int timeLeft)
-        {
             float anglevar = Main.rand.NextFloat(1.57f);
             for (int i = 0; i < 16; i++)
             {

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -21,7 +22,7 @@ namespace LobotomyCorp.Buffs
 
             player.GetDamage(DamageClass.Generic) += 0.12f;
             player.GetAttackSpeed(DamageClass.Generic) += 0.08f;
-            LobotomyModPlayer.ModPlayer(player).HarmonyAddiction = true;
+            player.GetModPlayer<LobotomyHePlayer>().HarmonyAddiction = true;
         }
     }
 }

@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
-    public class Harvest : ModItem
+    public class Harvest : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -17,13 +17,13 @@ namespace LobotomyCorp.Items.He
 
         public override void SetDefaults()
         {
-            Item.damage = 30;
+            Item.damage = 45;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 22;
-            Item.useAnimation = 20;
+            Item.useTime = 26;
+            Item.useAnimation = 24;
 
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
@@ -36,6 +36,7 @@ namespace LobotomyCorp.Items.He
             Item.UseSound = LobotomyCorp.WeaponSounds.Spear;
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override bool CanUseItem(Player player)

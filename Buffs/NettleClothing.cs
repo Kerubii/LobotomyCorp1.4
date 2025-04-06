@@ -5,6 +5,7 @@ using Terraria.Audio;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Audio;
 using Terraria.Localization;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -28,7 +29,7 @@ namespace LobotomyCorp.Buffs
         */
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
-            float NettleCount = LobotomyModPlayer.ModPlayer(Main.LocalPlayer).BlackSwanNettleClothing;
+            float NettleCount = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing;
             if (NettleCount < 1)
                 tip += "\n" + Language.GetTextValue("Mods.LobotomyCorp.Buffs.NettleClothing.Description2");
             else
@@ -47,7 +48,7 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
             if (modPlayer.BlackSwanNettleClothing < 6)
             {
                 modPlayer.BlackSwanNettleAdd(0.00333f);

@@ -14,18 +14,9 @@ namespace LobotomyCorp.Items.ItemTiles
 
         public override void SetDefaults()
         {
-            Item.width = 24;
-            Item.height = 14;
-            Item.maxStack = 99;
-            Item.useTurn = true;
-            Item.autoReuse = true;
-            Item.useAnimation = 15;
-            Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.consumable = true;
-            Item.rare = ItemRarityID.Red;
+            Item.DefaultToPlaceableTile(ModContent.TileType<Tiles.BlackBox>());
             Item.value = Item.buyPrice(0, 0, 0, 35);
-            Item.createTile = ModContent.TileType<Tiles.BlackBox>();
+            Item.rare = ItemRarityID.Red;
         }
 
         public override void AddRecipes()

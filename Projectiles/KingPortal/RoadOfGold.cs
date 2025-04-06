@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Projectiles.KingPortal
@@ -29,7 +32,7 @@ namespace LobotomyCorp.Projectiles.KingPortal
 
             Projectile.tileCollide = false;
             Projectile.hostile = true;
-            //Projectile.netImportant = true;
+            Projectile.netImportant = true;
         }
 
         public float portalCounter
@@ -47,18 +50,37 @@ namespace LobotomyCorp.Projectiles.KingPortal
                 Projectile.scale += 0.3f;
 
             portalCounter++;
-            if (portalCounter > 30 && Projectile.ai[1] > 0)
+            if (portalCounter > 30 && Projectile.ai[1] > 0 && Main.netMode != NetmodeID.MultiplayerClient)
             {
-                Vector2 center = Main.LocalPlayer.Center;
-                int dir = Main.rand.Next(2) == 0 ? 1 : -1;
+                Vector2 center = Vector2.Zero;
+                int height = 0;
+
+                foreach (NPC npc in Main.ActiveNPCs)
+                {
+                    if (npc.type == ModContent.NPCType<NPCs.RedMist.RedMist>())
+                    {
+                        if (npc.HasValidTarget)
+                        {
+                            height = npc.GetTargetData().Height;
+                            center = npc.GetTargetData().Center;
+                        }
+                        else
+                        {
+                            center = npc.Center;
+                        }
+                        break;
+                    }
+                }
+
+                int dir = Main.rand.NextBool(2) ? 1 : -1;
                 if (Projectile.ai[0] == -1)
                 {
                     int y = 0;
                     if (Projectile.ai[1] == 1)
-                        y = Main.LocalPlayer.height / 2 - 50;
-                    Projectile.ai[0] = Projectile.NewProjectile(Projectile.GetSource_FromThis(), center + new Vector2(400 * dir, y), new Vector2(-22f * dir, 0), Projectile.type, 0, 0, 0, -2, -1);
+                        y = height / 2 - 50;
+                    Projectile.ai[0] = Projectile.NewProjectile(Projectile.GetSource_FromThis(), center + new Vector2(400 * dir, y), new Vector2(-22f * dir, 0), Projectile.type, 0, 0, -1, -2, -1);
                     if (Projectile.ai[1] > 1)
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), center - new Vector2(400 * dir, 0), new Vector2(-24f * dir, 0), Projectile.type, 0, 0, 0, -1, Projectile.ai[1] - 1);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), center - new Vector2(400 * dir, 0), new Vector2(-24f * dir, 0), Projectile.type, 0, 0, -1, -1, Projectile.ai[1] - 1);
                     //Main.NewText(Projectile.ai[0]);
                     //Main.NewText(Projectile.ai[1]);
                     Projectile.netUpdate = true;
@@ -72,56 +94,59 @@ namespace LobotomyCorp.Projectiles.KingPortal
                         dir = -1;
                         norm = new Vector2(0, 1);
                     }
-                    Projectile.ai[0] = Projectile.NewProjectile(Projectile.GetSource_FromThis(), center + norm * (400 * dir), norm * (-24f * dir), Projectile.type, 0, 0, 0, -2, -1);
+                    Projectile.ai[0] = Projectile.NewProjectile(Projectile.GetSource_FromThis(), center + norm * (400 * dir), norm * (-24f * dir), Projectile.type, 0, 0, -1, -2, -1);
                     if (Projectile.ai[1] > 1)
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), center - norm * (400 * dir), norm * (-24f * dir), Projectile.type, 0, 0, 0, -3, Projectile.ai[1] - 1);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), center - norm * (400 * dir), norm * (-24f * dir), Projectile.type, 0, 0, -1, -3, Projectile.ai[1] - 1);
 
                     Projectile.netUpdate = true;
                 }
             }
 
-            if (Projectile.ai[0] >= 0 && Projectile.timeLeft > 10 && Main.netMode != NetmodeID.MultiplayerClient)
+            if (Projectile.ai[0] >= 0 && Projectile.timeLeft > 10)
             {
                 //Teleport
                 foreach (NPC npc in Main.npc)
                 {
-                    if (npc.active && npc.type == ModContent.NPCType<NPCs.RedMist.RedMist>() && Projectile.getRect().Intersects(npc.getRect()))
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
-                        Projectile otherPortal = Main.projectile[(int)Projectile.ai[0]];
-                        npc.Center = otherPortal.Center;
-                        npc.velocity = otherPortal.velocity;
-                        npc.spriteDirection = Math.Sign(npc.velocity.X);
-                        if (npc.spriteDirection == 0)
-                            npc.spriteDirection = 1;
-                        npc.netUpdate = true;
-                        otherPortal.timeLeft = 10;
-                        otherPortal.netUpdate = true;
-                        Projectile.timeLeft = 10;
-                        Projectile.netUpdate = true;
-
-                        SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
-
-                        for (int i = 0; i < 8; i++)
+                        if (npc.active && npc.type == ModContent.NPCType<NPCs.RedMist.RedMist>() && Projectile.getRect().Intersects(npc.getRect()))
                         {
-                            Vector2 Box = new Vector2(50, 100);
-                            Dust d = Main.dust[Dust.NewDust(Projectile.Center - Box / 2, (int)Box.X, (int)Box.Y, 87)];
-                            d.noGravity = true;
-                            d.fadeIn = 1.8f;
-                            d = Main.dust[Dust.NewDust(otherPortal.Center - Box / 2, (int)Box.X, (int)Box.Y, 87)];
-                            d.noGravity = true;
-                            d.fadeIn = 1.8f;
-                        }
+                            Projectile otherPortal = Main.projectile[(int)Projectile.ai[0]];
+                            npc.Center = otherPortal.Center;
+                            npc.velocity = otherPortal.velocity;
+                            npc.spriteDirection = Math.Sign(npc.velocity.X);
+                            if (npc.spriteDirection == 0)
+                                npc.spriteDirection = 1;
+                            npc.netUpdate = true;
+                            otherPortal.timeLeft = 10;
+                            otherPortal.netUpdate = true;
+                            Projectile.timeLeft = 10;
+                            Projectile.netUpdate = true;
 
-                        if (Main.expertMode && Main.netMode != NetmodeID.MultiplayerClient)
-                        {
-                            for (int i = -1; i < 2; i += 2)
+                            SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
+
+                            for (int i = 0; i < 8; i++)
                             {
-                                float rot = otherPortal.velocity.ToRotation();
-                                Vector2 vel = new Vector2(4, 6 * i).RotatedBy(rot);
-                                Projectile.NewProjectile(Projectile.GetSource_FromAI(), otherPortal.Center, vel, ModContent.ProjectileType<NPCs.RedMist.GoldRushCrystal>(), 15, 2, -1, rot);
+                                Vector2 Box = new Vector2(50, 100);
+                                Dust d = Main.dust[Dust.NewDust(Projectile.Center - Box / 2, (int)Box.X, (int)Box.Y, 87)];
+                                d.noGravity = true;
+                                d.fadeIn = 1.8f;
+                                d = Main.dust[Dust.NewDust(otherPortal.Center - Box / 2, (int)Box.X, (int)Box.Y, 87)];
+                                d.noGravity = true;
+                                d.fadeIn = 1.8f;
                             }
+
+                            if (Main.expertMode && Main.netMode != NetmodeID.MultiplayerClient)
+                            {
+                                for (int i = -1; i < 2; i += 2)
+                                {
+                                    float rot = otherPortal.velocity.ToRotation();
+                                    Vector2 vel = new Vector2(4, 6 * i).RotatedBy(rot);
+                                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), otherPortal.Center, vel, ModContent.ProjectileType<NPCs.RedMist.GoldRushCrystal>(), 15, 2, -1, rot);
+                                }
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
@@ -237,7 +262,7 @@ namespace LobotomyCorp.Projectiles.KingPortal
                 Projectile.scale += 0.3f;
 
             portalTimer--;
-            if (portalTimer < 0 && portalPair == -1 && IsRedMistActive())
+            if (portalTimer < 0 && portalPair == -1 && IsRedMistActive() && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 Player targetPlayer = getNearest();
 
@@ -249,7 +274,7 @@ namespace LobotomyCorp.Projectiles.KingPortal
                     Vector2 velocity = new Vector2(goldRushSpeed, 0);
 
                     Vector2 portalPos = portalCenter - velocity * NPCs.RedMist.RedMist.GOLDRUSH4DELAY;
-                    portalPair = Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, 0, -2);
+                    portalPair = Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, -1, -2);
                 }
                 else
                 {
@@ -265,11 +290,14 @@ namespace LobotomyCorp.Projectiles.KingPortal
                     Vector2 velocity = new Vector2(goldRushSpeed, 0).RotatedBy(nextAngle);
 
                     Vector2 portalPos = portalCenter - velocity * NPCs.RedMist.RedMist.GOLDRUSH4DELAY;
-                    portalPair = Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, 0, -2);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        portalPair = Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, -1, -2);
 
                     portalPos = portalCenter + velocity * NPCs.RedMist.RedMist.GOLDRUSH4DELAY;
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, 0, -1, NPCs.RedMist.RedMist.GOLDRUSH4DELAY * 2 + 1);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, -1, -1, NPCs.RedMist.RedMist.GOLDRUSH4DELAY * 2 + 1);
                 }
+                Projectile.netUpdate = true;
                 //Main.NewText("Beep boop made new Portal");
             }
 
@@ -288,7 +316,9 @@ namespace LobotomyCorp.Projectiles.KingPortal
                     Vector2 velocity = new Vector2(goldRushSpeed, 0).RotatedBy(nextAngle);
 
                     Vector2 portalPos = portalCenter - velocity * NPCs.RedMist.RedMist.GOLDRUSH4DELAY / 2;
-                    portalPair = Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, 0, -4);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        portalPair = Projectile.NewProjectile(Projectile.GetSource_FromThis(), portalPos, velocity, Projectile.type, 0, 0, -1, -4);
+                    Projectile.netUpdate = true;
                 }
             }
 
@@ -351,9 +381,17 @@ namespace LobotomyCorp.Projectiles.KingPortal
                         foreach(Projectile portal in Main.projectile)
                         {
                             if (portal.active && portal.type == Projectile.type && portal.ai[0] == -1)
+                            {
                                 portal.ai[0] = -3;
+                                portal.netUpdate = true;
+                            }
                         }
-                    }    
+                    }
+
+                    Projectile.netUpdate = true;
+                    pair.netUpdate = true;
+                    p.netUpdate = true;
+
                     return;
                 }
             }
@@ -375,7 +413,7 @@ namespace LobotomyCorp.Projectiles.KingPortal
                     Projectile.timeLeft = 60;
                     pair.timeLeft = 60;
 
-                    
+                    Projectile.netUpdate = true;
                     return;
                 }
             }
@@ -387,9 +425,9 @@ namespace LobotomyCorp.Projectiles.KingPortal
             {
                 Player target = null;
                 float distance = 12000;
-                foreach (Player p in Main.player)
+                foreach (Player p in Main.ActivePlayers)
                 {
-                    if (p.active && !p.dead)
+                    if (!p.dead)
                     {
                         float checkDist = Vector2.Distance(Projectile.Center, p.Center);
                         if (checkDist < distance)

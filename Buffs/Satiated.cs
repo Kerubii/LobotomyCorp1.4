@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -13,7 +14,7 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).HarmonyConnected = true;
+            player.GetModPlayer<LobotomyHePlayer>().HarmonyConnected = true;
         }
     }
 }

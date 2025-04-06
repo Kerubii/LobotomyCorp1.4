@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -14,12 +15,17 @@ namespace LobotomyCorp.Buffs
 		public override void Update(NPC npc, ref int BuffIndex)
 		{
 			LobotomyGlobalNPC.LNPC(npc).WingbeatFairyMeal = true;
-            npc.defDefense -= 5;
-		}
+            if (npc.defense < -5)
+            {
+                npc.defense = 0;
+            }
+            else
+                npc.defense -= 5;
+        }
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).WingbeatFairyMeal = true;
+            player.GetModPlayer<LobotomyZayinPlayer>().WingbeatFairyMeal = true;
             player.statDefense -= 5;
         }
     }

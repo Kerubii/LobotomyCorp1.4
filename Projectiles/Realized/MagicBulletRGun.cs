@@ -10,6 +10,7 @@ using LobotomyCorp.Utils;
 using Terraria.GameContent;
 using ReLogic.Content;
 using Terraria.Graphics.Shaders;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -62,7 +63,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
 			if (Main.myPlayer == Projectile.owner && Projectile.ai[0] % player.itemAnimationMax == (int)(player.itemAnimationMax * 0.1f))
             {
-				LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+				LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
 				if (modPlayer.MagicBulletRequest >= 0)
                 {
 					if (modPlayer.MagicBulletNthShot < 6)
@@ -392,9 +393,9 @@ namespace LobotomyCorp.Projectiles.Realized
 			float distance = EFFECTIVEDISTANCE;
 			if (Main.netMode == NetmodeID.SinglePlayer)
 				return -1;
-			foreach (Player p in Main.player)
+			foreach (Player p in Main.ActivePlayers)
             {
-				if (p.active && !p.dead && player.whoAmI != p.whoAmI && p.team == player.team && p.Center.Distance(player.Center) < distance)
+				if (!p.dead && player.whoAmI != p.whoAmI && p.team == player.team && p.Center.Distance(player.Center) < distance)
                 {
 					distance = p.Center.Distance(player.Center);
 					target = p.whoAmI;

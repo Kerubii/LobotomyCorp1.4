@@ -1,4 +1,5 @@
 ﻿using LobotomyCorp.Items.He;
+using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -130,14 +131,15 @@ namespace LobotomyCorp.Projectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            foreach (Player p in Main.player)
+            foreach (Player p in Main.ActivePlayers)
             {
-                if (p.active && (p.whoAmI == Projectile.owner || p.team == Main.player[Projectile.owner].team) && !p.dead)
+                if ((p.whoAmI == Projectile.owner || p.team == Main.player[Projectile.owner].team) && !p.dead)
                 {
-                    LobotomyModPlayer.ModPlayer(p).HarmonyTime += 90;
-                    if (LobotomyModPlayer.ModPlayer(p).HarmonyTime > 600)
-                        LobotomyModPlayer.ModPlayer(p).HarmonyTime = 600;   
-                    p.AddBuff(ModContent.BuffType<Buffs.MusicalAddiction>(), LobotomyModPlayer.ModPlayer(p).HarmonyTime, true);
+                    LobotomyHePlayer modPlayer = p.GetModPlayer<LobotomyHePlayer>();
+                    modPlayer.HarmonyTime += 90;
+                    if (modPlayer.HarmonyTime > 600)
+                        modPlayer.HarmonyTime = 600;   
+                    p.AddBuff(ModContent.BuffType<Buffs.MusicalAddiction>(), modPlayer.HarmonyTime, true);
                 }
             }
             foreach (NPC n in Main.npc)
@@ -170,7 +172,7 @@ namespace LobotomyCorp.Projectiles
                 Projectile.localAI[0] = 60 - 30 * (Projectile.ai[0] / 60);
             }
 
-            if (Projectile.ai[0] > 30 && Projectile.ai[1] <= 0 && LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).HarmonyAddiction)
+            if (Projectile.ai[0] > 30 && Projectile.ai[1] <= 0 && Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>().HarmonyAddiction)
             {
                 Projectile.ai[1] = 15;
                 if (Main.myPlayer == Projectile.owner)

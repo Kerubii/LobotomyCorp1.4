@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Buffs;
+using LobotomyCorp.Players;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -231,7 +233,7 @@ namespace LobotomyCorp.Projectiles.Realized.Nihil
                 Projectile.ai[1]--;
             }
 
-            if (player.HeldItem.type != ModContent.ItemType<Items.Ruina.Natural.NihilR>() || !LobotomyModPlayer.ModPlayer(player).NihilActive)
+            if (player.HeldItem.type != ModContent.ItemType<Items.Ruina.Natural.NihilR>() || !player.GetModPlayer<LobotomyAlephPlayer>().NihilActive)
             {
                 Projectile.Kill();
             }

@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class GreenStem : ModItem
+    public class GreenStem : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -35,6 +35,8 @@ namespace LobotomyCorp.Items.Waw
             Item.UseSound = LobotomyCorp.WeaponSounds.Spear;
             Item.noMelee = true;
             Item.autoReuse = true;
+
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool CanUseItem(Player player)

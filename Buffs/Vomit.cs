@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -18,7 +19,12 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).SmileDebuff = true;
+            player.GetModPlayer<LobotomyAlephPlayer>().SmileDebuff = true;
+        }
+
+        public override void Update(NPC npc, ref int buffIndex)
+        {
+            npc.GetGlobalNPC<LobotomyGlobalNPC>().SmileVomit = true;
         }
     }
 }

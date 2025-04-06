@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.Audio;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Audio;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -19,10 +20,11 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).OurGalaxyStone = true;
+            LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
+            modPlayer.OurGalaxyStone = true;
             player.buffTime[buffIndex] = 5;
 
-            if (LobotomyModPlayer.ModPlayer(player).OurGalaxyOwner < 0)
+            if (modPlayer.OurGalaxyOwner < 0)
             {
                 player.DelBuff(buffIndex);
                 buffIndex--;

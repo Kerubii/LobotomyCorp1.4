@@ -20,8 +20,8 @@ namespace LobotomyCorp.Items.Teth
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 26;
-            Item.useAnimation = 26;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
@@ -29,6 +29,7 @@ namespace LobotomyCorp.Items.Teth
             Item.UseSound = LobotomyCorp.WeaponSounds.Mace;
             Item.autoReuse = true;
             Item.scale = 1.3f;
+            EGORiskLevel = RiskLevel.Teth;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

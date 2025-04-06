@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Aleph
 {
-    public class ParadiseLost : ModItem
+    public class ParadiseLost : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -37,6 +37,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.shoot = ModContent.ProjectileType<Projectiles.ParadiseLostBase>();
             Item.shootSpeed = 14f;
             Item.noUseGraphic = true;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

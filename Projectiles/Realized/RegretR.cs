@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -304,7 +305,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			if (!screencrackAttack && Projectile.ai[0] != 0)
 			{
 				Player player = Main.player[Projectile.owner];
-				LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+				LobotomyTethPlayer modPlayer = player.GetModPlayer<LobotomyTethPlayer>();
 				if (modPlayer.RegretShockwave < 2)
 				{
 					modPlayer.RegretShockwave++;

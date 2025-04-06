@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
@@ -47,14 +48,14 @@ namespace LobotomyCorp
 
         public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyTethPlayer modPlayer = player.GetModPlayer<LobotomyTethPlayer>();
             if (modPlayer.TodaysExpressionActive)
                 modifiers.FinalDamage *= modPlayer.TodaysExpressionDamage();
         }
 
         public override void ModifyHitPvp(Item item, Player player, Player target, ref Player.HurtModifiers modifiers)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyTethPlayer modPlayer = player.GetModPlayer<LobotomyTethPlayer>();
             if (modPlayer.TodaysExpressionActive)
                 modifiers.FinalDamage *= modPlayer.TodaysExpressionDamage();
         }

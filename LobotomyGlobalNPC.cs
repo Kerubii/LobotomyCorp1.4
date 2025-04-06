@@ -16,6 +16,10 @@ using LobotomyCorp.Items.Ruina.Art;
 using Microsoft.CodeAnalysis;
 using System.Transactions;
 using Terraria.Audio;
+using LobotomyCorp.Players;
+using LobotomyCorp.Items.NonEgo;
+using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Items.Ruina.Technology;
 
 namespace LobotomyCorp
 {
@@ -32,7 +36,7 @@ namespace LobotomyCorp
         {
             var c = new ILCursor(il);
             if (!c.TryGotoNext(i => i.MatchLdloc(3)))
-                throw new NotImplementedException("A Mod is Incompatible, Report to Mod Author");
+                throw new NotImplementedException("A Mod is Incompatible, Report to Lobotomy Mod Author Kerubii");
 
             c.Emit(Mono.Cecil.Cil.OpCodes.Ldarg_0);
             c.EmitDelegate<Action<NPC>>((npc) =>
@@ -100,6 +104,10 @@ namespace LobotomyCorp
         public bool SanguineDesireExtensiveBleeding = false;
         public float SanguineDesireExtensiveBleedAmount = 0;
 
+        public bool SmileVomit = false;
+
+        public float SmileCorpseThreshold = 1f;
+
         public bool WingbeatFairyMeal = false;
         public int WingbeatFairyHeal = 0;
         public int WingbeatRotation = Main.rand.Next(360);
@@ -150,6 +158,8 @@ namespace LobotomyCorp
             SanguineDesireGlitter = false;
             SanguineDesireExtensiveBleeding = false;
 
+            SmileVomit = false;
+
             if (RedEyesCocoonCooldown > 0)
                 RedEyesCocoonCooldown--;
 
@@ -158,7 +168,7 @@ namespace LobotomyCorp
                 WingbeatFairyHeal = 0;
                 WingbeatRotation = Main.rand.Next(360);
             }
-            if (WingbeatTarget > -1 && LobotomyModPlayer.ModPlayer(Main.player[WingbeatTarget]).RealizedWingbeatMeal != npc.whoAmI)
+            if (WingbeatTarget > -1 && Main.player[WingbeatTarget].GetModPlayer<LobotomyZayinPlayer>().RealizedWingbeatMeal != npc.whoAmI)
                 WingbeatTarget = -1;
             WingbeatFairyMeal = false;
 
@@ -237,6 +247,12 @@ namespace LobotomyCorp
             {
                 npc.lifeRegen -= 30;
                 damage += 10;
+            }
+
+            if (SmileVomit)
+            {
+                npc.lifeRegen -= 40;
+                damage += 30;
             }
 
             if (WristCutterScars)
@@ -447,9 +463,9 @@ namespace LobotomyCorp
 
             if (Main.netMode != NetmodeID.Server)
             {
-                if (RedEyesMealAmount > 0 && LobotomyModPlayer.ModPlayer(Main.LocalPlayer).RedEyesAlerted)// Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>())
+                if (RedEyesMealAmount > 0 && Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted)// Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>())
                 {
-                    int RedEyesMax = LobotomyModPlayer.ModPlayer(Main.LocalPlayer).RedEyesMealMax;
+                    int RedEyesMax = Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax;
                     if (RedEyesMealAmount > RedEyesMax)
                     {
                         drawColor = Color.Lerp(Color.Red, Color.Pink, (float)Math.Sin(6.28f * ((float)Main.timeForVisualEffects % 30) / 30f));
@@ -540,6 +556,10 @@ namespace LobotomyCorp
 
             if (Main.netMode != NetmodeID.Server)
             {
+                LobotomyTethPlayer modTethPlayer = Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>();
+                LobotomyHePlayer modHePlayer = Main.LocalPlayer.GetModPlayer<LobotomyHePlayer>();
+                LobotomyWawPlayer modWawPlayer = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>();
+
                 if (WingbeatIndicator > 0)
                 {
                     Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/WingbeatTarget").Value;
@@ -552,7 +572,7 @@ namespace LobotomyCorp
                     spriteBatch.Draw(texture, position, frame, color, rotation, new Vector2(20, 15), scale, SpriteEffects.None, 0f);
                 }
 
-                if (LobotomyModPlayer.ModPlayer(Main.LocalPlayer).ForgottenAffectionResistance >= 0.03f && LobotomyModPlayer.ModPlayer(Main.LocalPlayer).ForgottenAffection == npc.whoAmI)
+                if (modHePlayer.ForgottenAffectionResistance >= 0.03f && modHePlayer.ForgottenAffection == npc.whoAmI)
                 {
                     Texture2D texture = Mod.Assets.Request<Texture2D>("Misc/HappyMemories").Value;
                     Vector2 position = npc.position + new Vector2(npc.width / 2, npc.gfxOffY) - Main.screenPosition;
@@ -567,11 +587,11 @@ namespace LobotomyCorp
                         dir = -1;
                     float rotation = 0.174f * dir;
 
-                    float opacity = LobotomyModPlayer.ModPlayer(Main.LocalPlayer).ForgottenAffectionResistance / 0.4f;
+                    float opacity = modHePlayer.ForgottenAffectionResistance / 0.4f;
 
                     spriteBatch.Draw(texture, position, null, Color.White * opacity, rotation + 0.03f, origin, 1f, 0, 0);
 
-                    if (LobotomyModPlayer.ModPlayer(Main.LocalPlayer).ForgottenAffectionResistance >= 0.4f)
+                    if (modHePlayer.ForgottenAffectionResistance >= 0.4f)
                     {
                         texture = Mod.Assets.Request<Texture2D>("Misc/HappyMemoriesW").Value;
                         opacity = (float)Math.Sin(((int)Main.timeForVisualEffects % 60) / 60f * 3.14) * 0.5f;
@@ -580,7 +600,7 @@ namespace LobotomyCorp
                     }
                 }
                 
-                if (LobotomyModPlayer.ModPlayer(Main.LocalPlayer).MagicBulletRequest == npc.whoAmI)
+                if (modWawPlayer.MagicBulletRequest == npc.whoAmI)
                 {
                     Texture2D texture = Mod.Assets.Request<Texture2D>("Misc/MagicBulletCircle").Value;
                     Vector2 position = npc.Center + new Vector2(0, npc.gfxOffY) - Main.screenPosition;
@@ -591,6 +611,15 @@ namespace LobotomyCorp
                     float rotation = MathHelper.ToRadians((5 + 20f * scale) * (float)Main.timeForVisualEffects);
 
                     spriteBatch.Draw(texture, position, null, Color.White * 0.7f, rotation, texture.Size() / 2, scale, 0, 0);
+                }
+
+                if (RedEyesMealAmount >= modTethPlayer.RedEyesMealMax && modTethPlayer.RedEyesAlerted)
+                {
+                    Texture2D texture = Mod.Assets.Request<Texture2D>("Misc/MarkedMeal").Value;
+                    Vector2 position = npc.Center + new Vector2(0, npc.gfxOffY) - Main.screenPosition;
+                    float scale = 1f + 0.2f * (float)Math.Sin(0.052f * Main.timeForVisualEffects);
+
+                    spriteBatch.Draw(texture, position, null, Color.White * (0.5f + 0.2f * (float)Math.Sin(0.15f * Main.timeForVisualEffects)), 0f, texture.Size() / 2, scale, 0, 0);
                 }
             }
 
@@ -620,17 +649,6 @@ namespace LobotomyCorp
 
                 spriteBatch.Draw(texture, position, frame, drawColor, 0f, frame.Size()/2, scale, SpriteEffects.None, 0f);
             }
-            if (Main.netMode != NetmodeID.Server)
-            {
-                if (RedEyesMealAmount >= LobotomyModPlayer.ModPlayer(Main.LocalPlayer).RedEyesMealMax && LobotomyModPlayer.ModPlayer(Main.LocalPlayer).RedEyesAlerted)
-                {
-                    Texture2D texture = Mod.Assets.Request<Texture2D>("Misc/MarkedMeal").Value;
-                    Vector2 position = npc.Center + new Vector2(0, npc.gfxOffY) - Main.screenPosition;
-                    float scale = 1f + 0.2f * (float)Math.Sin(0.052f * Main.timeForVisualEffects);
-
-                    spriteBatch.Draw(texture, position, null, Color.White * (0.5f + 0.2f * (float)Math.Sin(0.15f * Main.timeForVisualEffects)), 0f, texture.Size() / 2, scale, 0, 0);
-                }
-            }
         }
 
         public override bool CheckDead(NPC npc)
@@ -640,14 +658,6 @@ namespace LobotomyCorp
                 SpawnHornet(npc);
             }
             return true;
-        }
-
-        public override void HitEffect(NPC npc, NPC.HitInfo hit)
-        {
-            if (npc.life <= 0 && LobotomyModPlayer.ModPlayer(Main.LocalPlayer).MagicBulletRequest == npc.whoAmI)
-            {
-                LobotomyModPlayer.ModPlayer(Main.LocalPlayer).MagicBulletRequest = -1;
-            }
         }
 
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
@@ -681,6 +691,15 @@ namespace LobotomyCorp
                 {
                     shopCustomPrice = 100000
                 }, Condition.DownedQueenBee, Condition.DownedSkeletron);
+            }
+            else if (shop.NpcType == NPCID.ArmsDealer)
+            {
+                Condition condition = new Condition("Lobotomy:HasMagicBullet", new Func<bool>(() => Main.LocalPlayer.HasItem(ModContent.ItemType<MagicBullet>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<MagicBulletR>())));
+
+                shop.Add(new Item(ModContent.ItemType<MagicBulletBullet>())
+                {
+                    shopCustomPrice = 50
+                }, condition);
             }
         }
 
@@ -783,9 +802,9 @@ namespace LobotomyCorp
 
             if (npc.realLife > -1)
             {
-                foreach (NPC n in Main.npc)
+                foreach (NPC n in Main.ActiveNPCs)
                 {
-                    if (n.active && npc.whoAmI != n.whoAmI && (n.whoAmI == npc.realLife || n.realLife == npc.realLife))
+                    if (npc.whoAmI != n.whoAmI && (n.whoAmI == npc.realLife || n.realLife == npc.realLife))
                     {
                         Lnpc = LNPC(n);
                         Lnpc.FragmentsFromSomewhereTentacles += amount;
@@ -808,9 +827,9 @@ namespace LobotomyCorp
 
             if (npc.realLife > -1)
             {
-                foreach (NPC n in Main.npc)
+                foreach (NPC n in Main.ActiveNPCs)
                 {
-                    if (n.active && npc.whoAmI != n.whoAmI && (n.whoAmI == npc.realLife || n.realLife == npc.realLife))
+                    if (npc.whoAmI != n.whoAmI && (n.whoAmI == npc.realLife || n.realLife == npc.realLife))
                     {
                         Lnpc = LNPC(n);
                         if (Lnpc.FragmentsFromSomewhereEnlightenment || n.HasBuff<EnlightenmentPre>())

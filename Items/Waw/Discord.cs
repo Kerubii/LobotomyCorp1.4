@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class Discord : ModItem
+    public class Discord : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -38,6 +38,7 @@ namespace LobotomyCorp.Items.Waw
             Item.UseSound = SoundID.Item1;
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool AltFunctionUse(Player player)
@@ -53,7 +54,7 @@ namespace LobotomyCorp.Items.Waw
             }
             else
             {
-                damage /= 3;
+                damage /= 2;
             }
         }
 
@@ -89,6 +90,13 @@ namespace LobotomyCorp.Items.Waw
             .AddIngredient(ItemID.DarkLance)
             .AddIngredient(ItemID.BlackDye)
             .AddIngredient(ItemID.EbonsandBlock, 100)
+            .AddTile(Mod, "BlackBox3")
+            .Register();
+
+            CreateRecipe()
+            .AddIngredient(ItemID.DarkLance)
+            .AddIngredient(ItemID.BlackDye)
+            .AddIngredient(ItemID.CrimsandBlock, 100)
             .AddTile(Mod, "BlackBox3")
             .Register();
         }

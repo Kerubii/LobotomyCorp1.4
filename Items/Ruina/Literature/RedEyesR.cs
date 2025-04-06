@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using System;
 using LobotomyCorp.Items.Teth;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Literature
 {
@@ -51,13 +52,13 @@ namespace LobotomyCorp.Items.Ruina.Literature
 		public static int NearestMarkedMeal(Vector2 position, float distance = 10000)
         {
 			int target = -1;
-			foreach(NPC n in Main.npc)
+			foreach(NPC n in Main.ActiveNPCs)
             {
-				if (n.active && !n.dontTakeDamage)
+				if (!n.dontTakeDamage)
                 {
 					LobotomyGlobalNPC modNPC = n.GetGlobalNPC<LobotomyGlobalNPC>();
 					float dist = Vector2.Distance(n.Center, position);
-					if (modNPC.RedEyesMealAmount > LobotomyModPlayer.ModPlayer(Main.LocalPlayer).RedEyesMealMax && dist < distance)
+					if (modNPC.RedEyesMealAmount > Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax && dist < distance)
                     {
 						distance = dist;
 						target = n.whoAmI;
@@ -273,13 +274,13 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
         public override void HoldItem(Player player)
         {
-			LobotomyModPlayer.ModPlayer(player).RedEyesAlerted = true;
+			player.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted = true;
 
 			if (Main.myPlayer == player.whoAmI)
 			{
-				foreach (NPC n in Main.npc)
+				foreach (NPC n in Main.ActiveNPCs)
 				{
-					if (!(n.active && n.life > 0 && n.GetGlobalNPC<LobotomyGlobalNPC>().RedEyesCocoonPlayer == player.whoAmI && n.GetGlobalNPC<LobotomyGlobalNPC>().RedEyesCocoonCooldown <= 0))
+					if (!(n.life > 0 && n.GetGlobalNPC<LobotomyGlobalNPC>().RedEyesCocoonPlayer == player.whoAmI && n.GetGlobalNPC<LobotomyGlobalNPC>().RedEyesCocoonCooldown <= 0))
 						continue;
 					n.GetGlobalNPC<LobotomyGlobalNPC>().RedEyesCocoonCooldown = 20;
 					Vector2 vel = new Vector2(6, 0).RotatedByRandom(6.28f);
@@ -320,7 +321,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			if (player.altFunctionUse == 2)
             {
 				LobotomyGlobalNPC modNPC = target.GetGlobalNPC<LobotomyGlobalNPC>();
-				if (modNPC.RedEyesMealAmount > LobotomyModPlayer.ModPlayer(player).RedEyesMealMax && target.immune[player.whoAmI] <= 0)
+				if (modNPC.RedEyesMealAmount > player.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax && target.immune[player.whoAmI] <= 0)
 					return true;
 				else
 					return false;

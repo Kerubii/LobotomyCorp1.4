@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.Audio;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Audio;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -26,8 +27,8 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).BlackSwanBrokenDream = true;
-            LobotomyModPlayer.ModPlayer(player).BlackSwanNettleClothing = 0;
+            player.GetModPlayer<LobotomyWawPlayer>().BlackSwanBrokenDream = true;
+            player.GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing = 0;
             player.endurance -= 0.3f;
             player.moveSpeed += 0.2f;
         }

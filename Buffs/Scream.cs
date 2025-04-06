@@ -21,9 +21,25 @@ namespace LobotomyCorp.Buffs
             player.wingTime = 0;
             player.moveSpeed -= 0.08f;
 
-            if (Main.rand.Next(4) == 0)
+            if (Main.rand.NextBool(4))
             {
-                Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.head, DustID.Wraith)];
+                Dust d = Main.dust[Dust.NewDust(player.position, player.width, player.height, DustID.Wraith)];
+                d.noGravity = true;
+            }
+        }
+
+        public override void Update(NPC npc, ref int buffIndex)
+        {
+            if (npc.defense < -5)
+            {
+                npc.defense = 0;
+            }
+            else
+                npc.defense -= 5;
+
+            if (Main.rand.NextBool(4))
+            {
+                Dust d = Main.dust[Dust.NewDust(npc.position, npc.width, npc.height, DustID.Wraith)];
                 d.noGravity = true;
             }
         }

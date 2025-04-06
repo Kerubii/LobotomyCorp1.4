@@ -29,18 +29,33 @@ namespace LobotomyCorp.Projectiles
 
         public override void AI()
         {
-            /*Player projOwner = Main.player[Projectile.owner];
-            if (Projectile.ai[0] < 3)
-                foreach (Player teammate in Main.player)
+            Player projOwner = Main.player[Projectile.owner];
+            if (Projectile.ai[0] < 3 && Projectile.ai[2] == 0)
+            {
+                foreach (Player teammate in Main.ActivePlayers)
                 {
-                    if (teammate.active && teammate.team == projOwner.team && teammate.whoAmI != projOwner.whoAmI && Projectile.getRect().Intersects(teammate.Hitbox))
+                    if (teammate.team == projOwner.team && teammate.whoAmI != projOwner.whoAmI && Projectile.getRect().Intersects(teammate.Hitbox))
                     {
-                        if (Projectile.ai[0] == 1)
+                        switch (Projectile.ai[0])
                         {
-
+                            case 0:
+                                teammate.AddBuff(BuffID.Regeneration, 60);
+                                break;
+                            case 1:
+                                teammate.AddBuff(BuffID.ManaRegeneration, 60);
+                                break;
+                            case 2:
+                                teammate.AddBuff(BuffID.Regeneration, 30);
+                                teammate.AddBuff(BuffID.ManaRegeneration, 30);
+                                break;
+                            case 3:
+                                Projectile.ai[2] = 1;
+                                teammate.Heal(5);
+                                break;
                         }
                     }
-                }*/
+                }
+            }
             Projectile.rotation += 0.12f * Math.Sign(Projectile.velocity.X);
             if (Main.rand.Next(4) == 0)
             {
@@ -49,7 +64,7 @@ namespace LobotomyCorp.Projectiles
             }
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
             for (int num107 = 0; num107 < 10; num107++)

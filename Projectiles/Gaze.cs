@@ -76,14 +76,23 @@ namespace LobotomyCorp.Projectiles
         {
 			Projectile.ai[1]++;
             target.immune[Projectile.owner] = 5;
+            Player player = Main.player[Projectile.owner];
+            int duration = player.itemAnimationMax;
+            float ThirdDuration = (int)(duration / 3f);
+            if (player.itemAnimation >= ThirdDuration && player.itemAnimation <= ThirdDuration * 2)
+            {
+                player.itemAnimation = (int)(ThirdDuration * 2);
+                player.itemTime = player.itemAnimation;
+                Projectile.timeLeft = player.itemAnimation;
+            }
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-			float mult = Projectile.ai[1] / 6;
+			float mult = Projectile.ai[1] / 10;
 			if (mult > 1f)
 				mult = 1f;
-			modifiers.FinalDamage += 0.5f * mult;
+			modifiers.FinalDamage += 1f * mult;
         }
     }
 }

@@ -18,6 +18,7 @@ namespace LobotomyCorp.Projectiles
             Projectile.aiStyle = -1;
             Projectile.penetrate = 2;
             Projectile.DamageType = DamageClass.Melee;
+            Projectile.friendly = true;
             Projectile.timeLeft = 10;
             Projectile.tileCollide = false;
 
@@ -108,7 +109,7 @@ namespace LobotomyCorp.Projectiles
             }
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             if (State < 2)
             {
@@ -144,7 +145,9 @@ namespace LobotomyCorp.Projectiles
 
         public override bool? CanHitNPC(NPC target)
         {
-            return Projectile.penetrate > 1;
+            if (Projectile.penetrate > 1)
+                return null;
+            return false;
         }
 
         public override bool ShouldUpdatePosition()

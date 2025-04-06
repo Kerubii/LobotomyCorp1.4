@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using System;
 using System.Drawing.Drawing2D;
@@ -11,8 +12,6 @@ namespace LobotomyCorp
 {
     public class LobotomyDashPlayer : ModPlayer
     {
-        private LobotomyModPlayer modPlayer => LobotomyModPlayer.ModPlayer(Player);
-
         // These indicate what direction is what in the timer arrays used
         public const int DashDown = 0;
         public const int DashUp = 1;
@@ -61,7 +60,7 @@ namespace LobotomyCorp
         // If they double tapped this frame, they'll move fast this frame
         public override void PreUpdateMovement()
         {
-            if (modPlayer.GrinderMk2Active)
+            if (Player.GetModPlayer<LobotomyHePlayer>().GrinderMk2Active)
             {
                 GrinderMK2Dash(16f, 60, 40);
                 return;

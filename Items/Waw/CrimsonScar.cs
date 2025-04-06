@@ -7,6 +7,7 @@ using Terraria.GameContent;
 using Terraria.DataStructures;
 using Terraria.Audio;
 using System.Collections.Generic;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Waw
 {
@@ -40,11 +41,12 @@ namespace LobotomyCorp.Items.Waw
             Item.shootSpeed = 12f;
             Item.shoot = 10;
             Item.useAmmo = AmmoID.Bullet;
-            Item.useTime = 24;
-            Item.useAnimation = 24;
+            Item.useTime = 18;
+            Item.useAnimation = 18;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.autoReuse = true;
             Item.DamageType = DamageClass.Melee;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
@@ -60,40 +62,54 @@ namespace LobotomyCorp.Items.Waw
         {
             return true;
         }
+        /*
+        public override float UseTimeMultiplier(Player player)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                return 0.3f;
+            }
+            return base.UseTimeMultiplier(player);
+        }
 
         public override float UseSpeedMultiplier(Player player)
         {
             if (player.altFunctionUse == 2)
             {
-                return 1.2f;
+                return 0.3f;
             }
             return base.UseSpeedMultiplier(player);
-        }
+        }*/
 
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
-                //Item.DamageType = DamageClass.Ranged;
-                Item.useTime = 36;
-                Item.useAnimation = 36;
+                Item.useTime = 50;
+                Item.useAnimation = 50;
                 Item.useStyle = ItemUseStyleID.Shoot;
                 TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarGun");
                 Item.noMelee = true;
-                Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Gun") with { Volume = 0.5f, PitchVariance = 0.1f };
+                Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Gun") with { Volume = 0.2f, PitchVariance = 0.1f };
             }
             else
             {
-                //Item.DamageType = DamageClass.Melee;
                 Item.useTime = 18;
                 Item.useAnimation = 18;
                 Item.useStyle = 15;
                 TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarScythe");
                 Item.noMelee = false;
-                Item.UseSound = SoundID.Item1;
-                Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Atk1") with { Volume = 0.5f, PitchVariance = 0.1f };
+                Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Atk1") with { Volume = 0.2f, PitchVariance = 0.1f };
             }
             return base.CanUseItem(player);
+        }
+
+        public override void HoldItem(Player player)
+        {
+            if (player.statLife <= player.statLifeMax / 4)
+            {
+                player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower = 3;
+            }
         }
 
         public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
@@ -139,33 +155,37 @@ namespace LobotomyCorp.Items.Waw
 
         public override bool CanShoot(Player player)
         {
-            return player.altFunctionUse == 2 || LobotomyModPlayer.ModPlayer(player).CrimsonScarEmpower == 1;
+            int empower = player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower;
+            return player.altFunctionUse == 2 || empower == 1 || empower == 3;
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
+            int empower = player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower;
             if (player.altFunctionUse == 2)
             {
                 damage = (int)(damage * 0.7f);
                 knockback *= 0.7f;
             }
-            else if (LobotomyModPlayer.ModPlayer(player).CrimsonScarEmpower == 1)
+            else if (empower == 1 || empower == 3)
                 type = ModContent.ProjectileType<Projectiles.CrimsonScarScythe>();
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            int empower = LobotomyModPlayer.ModPlayer(player).CrimsonScarEmpower;
+            int empower = player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower;
             EmpowerReset(player);
 
             if (player.altFunctionUse != 2)
             {
+                if (empower == 3)
+                    damage = (int)(damage * 0.5f);
                 return true;
             }
 
-            int p = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            int p = Projectile.NewProjectile(source, position, velocity, type, (int)(damage * .8f), knockback, player.whoAmI);
             Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().CrimsonScarBullet = true;
-            if (empower == 2)
+            if (empower >= 2)
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -178,12 +198,12 @@ namespace LobotomyCorp.Items.Waw
 
         private void EmpowerReset(Player player)
         {
-            LobotomyModPlayer.ModPlayer(player).CrimsonScarEmpower = 0;
+            player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower = 0;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            LobotomyModPlayer.ModPlayer(player).CrimsonScarEmpower = 2;
+            player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower = 2;
             base.OnHitNPC(player, target, hit, damageDone);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using LobotomyCorp.ModSystems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -43,7 +44,7 @@ namespace LobotomyCorp.Projectiles
             target.immune[Projectile.owner] = 5;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             if (Main.myPlayer == Projectile.owner)
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(),Projectile.Center, Vector2.Zero, ModContent.ProjectileType<FourthMatchFlameExplosion>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
@@ -135,6 +136,13 @@ namespace LobotomyCorp.Projectiles
             SoundEngine.PlaySound(SoundID.Item14, Projectile.position);
             Projectile.rotation += 0.01f;
             Dust dust = new Dust();
+            for (int i = 0; i < 15; i++)
+            {
+                dust = Main.dust[Dust.NewDust(Projectile.Center, 1, 1, DustID.Torch)];
+                dust.noGravity = true;
+                dust.velocity *= Main.rand.NextFloat(12, 25);
+                dust.fadeIn = 2f;
+            }
             for (int i = 0; i < 20; i++)
             {
                 dust = Main.dust[Dust.NewDust(Projectile.Center, 1, 1, 31, 0, 0, 100, new Color(), 1.5f)];
@@ -164,18 +172,39 @@ namespace LobotomyCorp.Projectiles
             gore.velocity *= 0.4f;
             gore.velocity.X -= 1f;
             gore.velocity.Y -= 1f;
+            if (Projectile.owner == Main.myPlayer)
+            {
+                ModContent.GetInstance<ScreenSystem>().ScreenShake(15, 10f, 0.1f);
+            }
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             Player player = Main.player[Projectile.owner];
-            player.statLife = 0;
-            player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was reduced to ashes..."), 4000, 1);
+            player.statLife -= Projectile.damage;
+            if (player.statLife <= 0)
+            {
+                player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was reduced to ashes..."), Projectile.damage, 1);
+            }
+            else
+            {
+                player.immune = true;
+                player.immuneTime = 30;
+                CombatText.NewText(player.getRect(), CombatText.DamagedFriendly, (int)Projectile.damage);
+            }
+            //player.statLife = 0;
+            //player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was reduced to ashes..."), 4000, 1);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            modifiers.SourceDamage += 5f; 
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            target.AddBuff(BuffID.OnFire, 180);
+            target.AddBuff(ModContent.BuffType<Buffs.Matchstick>(), 260);
+            target.AddBuff(BuffID.OnFire, 300);
         }
     }
 }

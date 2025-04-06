@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Players;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -32,11 +33,11 @@ namespace LobotomyCorp.Projectiles
 			Projectile.tileCollide = false;
 			Projectile.friendly = true;
 		}
-        
-		public override void AI() {
-			Player projOwner = Main.player[Projectile.owner];
-            LobotomyModPlayer ModPlayer = LobotomyModPlayer.ModPlayer(projOwner);
-			Vector2 ownerMountedCenter = projOwner.RotatedRelativePoint(projOwner.MountedCenter, true);
+
+        public override void AI() {
+            Player projOwner = Main.player[Projectile.owner];
+            LobotomyWawPlayer modPlayer = projOwner.GetModPlayer<LobotomyWawPlayer>();
+            Vector2 ownerMountedCenter = projOwner.RotatedRelativePoint(projOwner.MountedCenter, true);
 			Projectile.direction = projOwner.direction;
 			projOwner.heldProj = Projectile.whoAmI;
 			projOwner.itemTime = projOwner.itemAnimation;
@@ -160,9 +161,10 @@ namespace LobotomyCorp.Projectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Player player = Main.player[Projectile.owner];
+            LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
             if (Projectile.ai[0] >= 2 && player.ownedProjectileCounts[ModContent.ProjectileType<AlriuneDeathAnimation>()] == 0)
             {
-                LobotomyModPlayer.ModPlayer(player).FaintAromaPetal = 0;
+                modPlayer.FaintAromaPetal = 0;
                 for (int i = 0; i < 32; i++)
                 {
                     Dust dust;
@@ -179,9 +181,9 @@ namespace LobotomyCorp.Projectiles
                 }
             }
             target.immune[Projectile.owner] = player.itemAnimation;
-            LobotomyModPlayer.ModPlayer(player).FaintAromaPetal += 30f;
-            if (LobotomyModPlayer.ModPlayer(player).FaintAromaPetal > LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax * 3 + 30)
-                LobotomyModPlayer.ModPlayer(player).FaintAromaPetal = LobotomyModPlayer.ModPlayer(player).FaintAromaPetalMax * 3 + 30;
+            modPlayer.FaintAromaPetal += 30f;
+            if (modPlayer.FaintAromaPetal > modPlayer.FaintAromaPetalMax * 3 + 30)
+                modPlayer.FaintAromaPetal = modPlayer.FaintAromaPetalMax * 3 + 30;
         }
     }
 }

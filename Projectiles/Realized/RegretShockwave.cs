@@ -20,7 +20,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			Projectile.width = 100;
 			Projectile.height = 100;
 			Projectile.aiStyle = -1;
-			Projectile.penetrate = -1;
+			Projectile.penetrate = 11;
 			Projectile.scale = 1f;
 			Projectile.timeLeft = 35;
 			Projectile.tileCollide = false;
@@ -57,6 +57,19 @@ namespace LobotomyCorp.Projectiles.Realized
 			{
 				Filters.Scene["LobotomyCorp:BrokenScreen"].GetShader().UseProgress(1f * (Projectile.timeLeft / 10f));
 			}
+        }
+
+        public override bool? CanHitNPC(NPC target)
+        {
+			if (Projectile.penetrate <= 1)
+				return false;
+            return base.CanHitNPC(target);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+			modifiers.FinalDamage *= 0.4f + 0.6f * (Projectile.penetrate / 11);
+            base.ModifyHitNPC(target, ref modifiers);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

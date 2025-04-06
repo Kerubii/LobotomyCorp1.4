@@ -1,11 +1,12 @@
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class Horn : ModItem
+    public class Horn : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -18,13 +19,13 @@ namespace LobotomyCorp.Items.Teth
 
         public override void SetDefaults()
         {
-            Item.damage = 26;
+            Item.damage = 28;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 22;
-            Item.useAnimation = 20;
+            Item.useTime = 26;
+            Item.useAnimation = 24;
 
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
@@ -37,6 +38,21 @@ namespace LobotomyCorp.Items.Teth
             Item.UseSound = LobotomyCorp.WeaponSounds.Spear;
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Teth;
+        }
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (RedMistMaskUpgrade(player) && player.altFunctionUse != 2)
+            {
+                velocity *= 8f;
+                type = ModContent.ProjectileType<Projectiles.HornThrown>();
+            }
+        }
+
+        public override bool AltFunctionUse(Player player)
+        {
+            return RedMistMaskUpgrade(player);
         }
 
         public override bool CanUseItem(Player player)

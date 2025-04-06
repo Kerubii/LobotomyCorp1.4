@@ -21,13 +21,13 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void SetDefaults()
         {
-            Item.damage = 88;
+            Item.damage = 94;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 64;
-            Item.useAnimation = 64;
+            Item.useTime = 68;
+            Item.useAnimation = 68;
             Item.useStyle = 15;
 
             Item.knockBack = 6;
@@ -42,6 +42,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.noMelee = false;
 
             hasHitEnemy = false;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override bool AltFunctionUse(Player player)

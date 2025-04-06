@@ -52,7 +52,7 @@ namespace LobotomyCorp.NPCs.RedMist
             return false;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             Projectiles.GoldRushHold.DiamondDust(Projectile.Center, DustID.GoldCoin, 5, 8, 4, 1.2f, Projectile.ai[0]);
             if (Main.netMode != NetmodeID.MultiplayerClient)

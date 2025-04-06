@@ -19,7 +19,7 @@ namespace LobotomyCorp.Items.He
 
         public override void SetDefaults()
         {
-            Item.damage = 25;
+            Item.damage = 30;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
@@ -33,6 +33,7 @@ namespace LobotomyCorp.Items.He
             Item.shootSpeed = 10f;
             Item.UseSound = LobotomyCorp.WeaponSound("Galaxy");
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -41,7 +42,7 @@ namespace LobotomyCorp.Items.He
             for (int i = 0; i < num; i++)
             {
                 Vector2 vel = velocity.RotatedByRandom(MathHelper.ToRadians(30));
-                Projectile.NewProjectile(player.GetSource_FromThis(), position, vel, type, (int)(damage * 0.4f), knockback, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_FromThis(), position, vel, type, (int)(damage * 0.6f), knockback, player.whoAmI);
             }
             return false;
             //return base.Shoot(player, source, position, velocity, type, damage, knockback);

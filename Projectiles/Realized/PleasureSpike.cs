@@ -11,6 +11,7 @@ using LobotomyCorp.Items.Ruina.Art;
 using Steamworks;
 using static Humanizer.In;
 using LobotomyCorp.Items.He;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -43,7 +44,7 @@ namespace LobotomyCorp.Projectiles.Realized
         public override void AI()
 		{
 			Player owner = Main.player[Projectile.owner];
-			LobotomyModPlayer lobPlayer = LobotomyModPlayer.ModPlayer(owner);
+			LobotomyWawPlayer lobPlayer = owner.GetModPlayer<LobotomyWawPlayer>();
             if (!owner.active || owner.dead || !lobPlayer.PleasureTail)// || owner.HeldItem.type != ModContent.ItemType<PleasureR>())
                 Projectile.Kill();
 

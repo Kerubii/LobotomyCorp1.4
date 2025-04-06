@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using System;
 using LobotomyCorp.Items.He;
 using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Art
 {
@@ -46,7 +47,7 @@ namespace LobotomyCorp.Items.Ruina.Art
         public override bool? UseItem(Player player)
         {
 			player.AddBuff(ModContent.BuffType<Buffs.PleasureTail>(), 60);
-			LobotomyModPlayer.ModPlayer(player).PleasureTail = true;
+			player.GetModPlayer<LobotomyWawPlayer>().PleasureTail = true;
             return base.UseItem(player);
         }
 

@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.Audio;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Audio;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -21,7 +22,7 @@ namespace LobotomyCorp.Buffs
         {
             player.GetDamage(DamageClass.Generic) -= 0.35f;
             player.statDefense -= 10;
-            LobotomyModPlayer.ModPlayer(player).RegretBinded = true;
+            player.GetModPlayer<LobotomyTethPlayer>().RegretBinded = true;
         }
     }
 }

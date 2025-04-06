@@ -8,6 +8,7 @@ using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using static tModPorter.ProgressUpdate;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -49,11 +50,21 @@ namespace LobotomyCorp.Projectiles.Realized
             wave = 30 * (float)Math.Sin(Projectile.ai[1] * 0.2f);
             wavePosition = new Vector2(0, wave).RotatedBy(rotation);
             Projectile.position += wavePosition;
+
+			if (Projectile.ai[0] < Projectile.ai[1])
+			{
+				Projectile.Kill();
+				for (int i = 0; i < 10; i++)
+				{
+					int n = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Wraith);
+					Main.dust[n].noGravity = true;
+				}
+			}
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyAlephPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyAlephPlayer>();
             if (modPlayer.DaCapoSilentMusic)
                 modPlayer.DaCapoTotalDamage += damageDone;
         }

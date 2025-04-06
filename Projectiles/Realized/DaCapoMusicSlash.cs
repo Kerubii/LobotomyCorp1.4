@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,15 +44,15 @@ namespace LobotomyCorp.Projectiles.Realized
             {
                 if ((int)Projectile.ai[0] == -1)
                 {
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("silent2_1"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("silent2_1"), Projectile.Center);
                 }
                 else if ((int)Projectile.ai[0] == 1)
                 {
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("silent2_2"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("silent2_2") , Projectile.Center);
                 }
                 else
                 {
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("silent2_3"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("silent2_3"), Projectile.Center);
                 }
 
                 Projectile.localAI[0] = Main.rand.Next(2000);
@@ -113,7 +114,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 Items.Ruina.Art.DaCapoR.SetPlayerCombo(player, 4, 60);
             }
 
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyAlephPlayer modPlayer = player.GetModPlayer<LobotomyAlephPlayer>();
             if (modPlayer.DaCapoSilentMusic)
                 modPlayer.DaCapoTotalDamage += damageDone;
         }

@@ -46,7 +46,7 @@ namespace LobotomyCorp.Projectiles
             Projectile.rotation += MathHelper.ToRadians(8) * Projectile.velocity.X / 12f;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(SoundID.Item54, Projectile.Center);
             Dust dust;

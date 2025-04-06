@@ -49,7 +49,7 @@ namespace LobotomyCorp.NPCs.RedMist
             {
                 float length = 90;
                 Vector2 pos = Projectile.Center + new Vector2(length * 0.6f, 0).RotatedBy(Projectile.rotation);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Projectile.velocity, Projectile.type, Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1] * -1);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Projectile.velocity, Projectile.type, Projectile.damage, Projectile.knockBack, -1, Projectile.ai[0] - 1, Projectile.ai[1] * -1);
             }
 
             if (Projectile.timeLeft < 30)

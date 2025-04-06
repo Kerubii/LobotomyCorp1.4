@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Aleph
 {
-    public class Pink : ModItem
+    public class Pink : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -34,6 +34,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.shoot = 10; //idk why but all the guns in the vanilla source have this
             Item.shootSpeed = 16f; // the speed of the projectile (measured in pixels per frame)
             Item.useAmmo = AmmoID.Bullet; // The "ammo Id" of the ammo Item that this weapon uses. Note that this is not an Item Id, but just a magic value.
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         /*public override bool CanUseItem(Player player)
@@ -52,7 +53,7 @@ namespace LobotomyCorp.Items.Aleph
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             float velVar = velocityVariance(player);
-            Main.NewText(velVar);
+            //Main.NewText(velVar);
             velocity = velocity.RotatedBy(velVar * MathHelper.ToRadians(Main.rand.Next(-30, 31)));
 
             if (type == ProjectileID.Bullet)

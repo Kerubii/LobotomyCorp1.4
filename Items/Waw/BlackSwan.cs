@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using LobotomyCorp.Projectiles;
 using Terraria;
 using Terraria.Audio;
@@ -19,14 +20,14 @@ namespace LobotomyCorp.Items.Waw
 
         public override void SetDefaults()
         {
-            Item.damage = 38;
+            Item.damage = 42;
             Item.knockBack = 6;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 26;
-            Item.useAnimation = 26;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.useStyle = 15;
 
             Item.value = 10000;
@@ -35,12 +36,13 @@ namespace LobotomyCorp.Items.Waw
             Item.autoReuse = true;
 
             Item.shoot = ModContent.ProjectileType<BlackSwanGlob>();
-            Item.shootSpeed = 12f;  
+            Item.shootSpeed = 12f;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void HoldItem(Player player)
         {
-            LobotomyModPlayer.ModPlayer(player).BlackSwanParryChance += 10;
+            player.GetModPlayer<LobotomyWawPlayer>().BlackSwanParryChance += 10;
         }
 
         public override void AddRecipes()

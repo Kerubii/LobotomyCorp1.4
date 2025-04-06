@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class Pleasure : ModItem
+    public class Pleasure : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -22,8 +22,8 @@ namespace LobotomyCorp.Items.Waw
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 22;
-            Item.useAnimation = 26;
+            Item.useTime = 26;
+            Item.useAnimation = 30;
 
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
@@ -36,6 +36,7 @@ namespace LobotomyCorp.Items.Waw
             Item.UseSound = LobotomyCorp.WeaponSound("Porccu");
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool CanUseItem(Player player)

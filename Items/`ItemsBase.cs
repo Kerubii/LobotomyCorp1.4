@@ -43,31 +43,46 @@ namespace LobotomyCorp.Items
 
         public sealed override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            var RealizedEGOTooltip = new TooltipLine(Mod, "PositivePassive", $"{Language.GetTextValue("Mods.LobotomyCorp.EgoItemTooltip.RealizedEgo")}"){ OverrideColor = Color.Lerp(Color.Yellow, Color.Cyan, 0.5f + 0.5f * (float)Math.Sin(6.28f * (Main.timeForVisualEffects % 120 / 120f))) };
-            int index = tooltips.FindIndex(x => x.Mod == "Terraria" && x.Name == "Tooltip0");
-            tooltips.Insert(index, RealizedEGOTooltip);
-
-            bool ExtraShow = ModContent.GetInstance<LobotomyConfig>().ExtraPassivesShow;
-            //int tooltipIndex = tooltips.IndexOf()
-            var Passive = new TooltipLine(Mod, "PositivePassive", $"{PassiveInitialize(ExtraShow)}"
-                ) { OverrideColor =  LobotomyCorp.PositivePE};
-            tooltips.Add(Passive);
-
-            Passive = new TooltipLine(Mod, "NegativePassive", $"{PassiveInitialize(ExtraShow, true)}") { OverrideColor = LobotomyCorp.NegativePE };
-            tooltips.Add(Passive);
-
-            foreach (TooltipLine line in tooltips)
+            int arg = 0;
+            if (LobModifyTooltips(tooltips, ref arg))
             {
-                if (line.Mod == "Terraria" && line.Name == "ItemName")
+                var RealizedEGOTooltip = new TooltipLine(Mod, "PositivePassive", $"{Language.GetTextValue("Mods.LobotomyCorp.EgoItemTooltip.RealizedEgo")}") { OverrideColor = Color.Lerp(Color.Yellow, Color.Cyan, 0.5f + 0.5f * (float)Math.Sin(6.28f * (Main.timeForVisualEffects % 120 / 120f))) };
+                int index = tooltips.FindIndex(x => x.Mod == "Terraria" && x.Name == "Tooltip0");
+                tooltips.Insert(index, RealizedEGOTooltip);
+
+                bool ExtraShow = ModContent.GetInstance<LobotomyConfig>().ExtraPassivesShow;
+                //int tooltipIndex = tooltips.IndexOf()
+                var Passive = new TooltipLine(Mod, "PositivePassive", $"{PassiveInitialize(GetPassiveList(arg) ,ExtraShow)}"
+                    )
+                { OverrideColor = LobotomyCorp.PositivePE };
+                tooltips.Add(Passive);
+
+                Passive = new TooltipLine(Mod, "NegativePassive", $"{PassiveInitialize(GetPassiveList(arg), ExtraShow, true)}") { OverrideColor = LobotomyCorp.NegativePE };
+                tooltips.Add(Passive);
+
+                foreach (TooltipLine line in tooltips)
                 {
-                    line.OverrideColor = EgoColor;
+                    if (line.Mod == "Terraria" && line.Name == "ItemName")
+                    {
+                        line.OverrideColor = EgoColor;
+                    }
                 }
-            }
+            }            
         }
 
-        private string PassiveInitialize(bool Extra, bool Negative = false)
+        /// <summary>
+        /// Used to modify "Modify Tooltips" hehe
+        /// </summary>
+        /// <param name="tooltips"></param>
+        /// <returns></returns>
+        public virtual bool LobModifyTooltips(List<TooltipLine> tooltips, ref int num)
         {
-            string[] Passive = GetPassiveList().Split('|');// PassiveText.Split('|');
+            return true;
+        }
+
+        private string PassiveInitialize(string PassiveList, bool Extra, bool Negative = false)
+        {
+            string[] Passive = PassiveList.Split('|');// PassiveText.Split('|');
             string result = "Voided";
             if (!Negative)
             {
@@ -115,10 +130,10 @@ namespace LobotomyCorp.Items
             return Language.GetTextValue("Mods.LobotomyCorp.EgoItemTooltip.RealizedEgo") + "\n\"" + Language.GetTextValue("Mods.LobotomyCorp.EgoItemTooltip." + ItemName() + ".ItemTooltip") + "\"";
         }
 
-        public virtual string GetPassiveList()
+        public virtual string GetPassiveList(int arg)
         {
             string key = "Mods.LobotomyCorp.Items." + ItemName() + ".PassiveList";
-            string list = Language.GetTextValue(key);
+            string list = Language.GetTextValue(key, arg);
             if (list == key)
                 list = PassiveText;
             return list;

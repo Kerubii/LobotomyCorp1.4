@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Players;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -51,7 +52,8 @@ namespace LobotomyCorp.Projectiles.Realized
 			// Here we set some of the Projectile's owner properties, such as held item and itemtime, along with Projectile direction and position based on the player
 			Vector2 ownerMountedCenter = projOwner.RotatedRelativePoint(projOwner.MountedCenter, true);
 			Projectile.direction = projOwner.direction;
-			bool ExtenderActive = (LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).BlackSwanNettleClothing >= 4 || LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).BlackSwanBrokenDream);
+			LobotomyWawPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>();
+			bool ExtenderActive = (modPlayer.BlackSwanNettleClothing >= 4 || modPlayer.BlackSwanBrokenDream);
 			if (!ExtenderActive)
 				projOwner.heldProj = Projectile.whoAmI;
 			projOwner.itemTime = projOwner.itemAnimation;
@@ -192,13 +194,13 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-			if (LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).BlackSwanNettleClothing >= 4 || LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).BlackSwanBrokenDream)
+			if (Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing >= 4 || Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().BlackSwanBrokenDream)
 				modifiers.FinalDamage *= 2;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-			if (LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).BlackSwanNettleClothing >= 5 || LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).BlackSwanBrokenDream)
+			if (Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().BlackSwanNettleClothing >= 5 || Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().BlackSwanBrokenDream)
 			{
 				target.AddBuff(BuffID.Ichor, 300);
 			}

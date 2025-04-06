@@ -10,6 +10,7 @@ using Terraria.GameContent;
 using System.IO;
 using ReLogic.Content;
 using Terraria.Graphics.Shaders;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -96,7 +97,7 @@ namespace LobotomyCorp.Projectiles.Realized
             if (Projectile.ai[1] == shotTime)
             {
                 int damage = Projectile.damage;
-                if (LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).MagicBulletDarkFlame)
+                if (Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().MagicBulletDarkFlame)
                     damage = (int)(damage * 1.7f);
                 //WHY IS ITS TRAIL OFFSETTED SO MUCH???
                 Vector2 offset = Projectile.velocity * 2;

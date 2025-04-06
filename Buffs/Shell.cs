@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -23,7 +24,7 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyAlephPlayer modPlayer = player.GetModPlayer<LobotomyAlephPlayer>();
             modPlayer.MimicryShell = true;
 
             player.statLifeMax2 += modPlayer.MimicryBonusHealth;

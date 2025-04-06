@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class SoCute : ModItem
+    public class SoCute : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -24,6 +24,7 @@ namespace LobotomyCorp.Items.Teth
             Item.autoReuse = true;
             Item.rare = ItemRarityID.Blue;
             Item.UseSound = LobotomyCorp.WeaponSounds.Fist;
+            EGORiskLevel = RiskLevel.Teth;
 
         }
         /*

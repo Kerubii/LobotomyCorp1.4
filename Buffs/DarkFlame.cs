@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.DataStructures;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -26,15 +27,14 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
-            modPlayer.MagicBulletDarkFlame = true;
+            player.GetModPlayer<LobotomyWawPlayer>().MagicBulletDarkFlame = true;
 
             //Vector2 center = player.RotatedRelativePoint(player.MountedCenter) + new Vector2(0, -11);
             //Dust d = Dust.NewDustPerfect(center, 172, new Vector2(-1f * player.direction, 0));
             //d.fadeIn = 0.2f;
             //d.noGravity = true;
             DarkFlameDust(player);
-            modPlayer.CurrentAura = buffAura;
+            player.GetModPlayer<LobotomyModPlayer>().CurrentAura = buffAura;
         }
 
         private void DarkFlameDust(Player player)

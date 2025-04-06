@@ -1,4 +1,5 @@
 using LobotomyCorp.Buffs;
+using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -79,7 +80,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
             if (Time == 0)
             {
-                SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Art/Sym_movment_0_clap"));
+                SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Art/Sym_movment_0_clap"), Projectile.Center);
             }
 
             Projectile.ai[0]++;
@@ -129,7 +130,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     Time = move1 - 1;
                     Projectile.ai[1]++;
                     Projectile.timeLeft += 6252;
-                    LobotomyModPlayer.ModPlayer(owner).DaCapoTotalDamage = 0;
+                    owner.GetModPlayer<LobotomyAlephPlayer>().DaCapoTotalDamage = 0;
                     break;
             }
             if (playSound)
@@ -166,16 +167,16 @@ namespace LobotomyCorp.Projectiles.Realized
                     }
                 }
 
-                foreach (Player p in Main.player)
+                foreach (Player p in Main.ActivePlayers)
                 {
-                    if (p.active && !p.dead)
+                    if (!p.dead)
                     {
                         float dist = p.Distance(Projectile.Center);
                         if (dist < soundRange)
                         {
                             // Apply Debuffs to here
                             p.AddBuff(ModContent.BuffType<SilentMusic>(), 60, true);
-                            p.GetModPlayer<LobotomyModPlayer>().DaCapoSilentMusicPhase = phase;
+                            p.GetModPlayer<LobotomyAlephPlayer>().DaCapoSilentMusicPhase = phase;
                         }
                     }
                 }
@@ -348,14 +349,15 @@ namespace LobotomyCorp.Projectiles.Realized
 
         private void ApplyFinaleEffects(Player player)
         {
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyAlephPlayer modPlayer = player.GetModPlayer<LobotomyAlephPlayer>();
             int damage = (int)(modPlayer.DaCapoTotalDamage * 0.05f);
             if (damage > 240 * 100)
                 damage = 240 * 100;
             //Main.NewText(damage);
+            int Distance = 4000;
             foreach (NPC n in Main.npc)
             {
-                if (n.active && n.life > 0 && !n.friendly && n.realLife < 0 && !n.dontTakeDamage)
+                if (n.active && n.life > 0 && !n.friendly && n.realLife < 0 && !n.dontTakeDamage && n.Distance(Projectile.Center) < Distance)
                     player.ApplyDamageToNPC(n, damage, 0, 1, false, DamageClass.Melee, true);
             }
 

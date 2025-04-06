@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.DataStructures;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -26,9 +27,9 @@ namespace LobotomyCorp.Buffs
         {
             player.GetAttackSpeed(DamageClass.Melee) += 0.1f;
 			player.moveSpeed += 0.1f;
-            LobotomyModPlayer.ModPlayer(player).LifeForADareDevilGiftActive = true;
+            player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGiftActive = true;
             LobotomyModPlayer.ModPlayer(player).CurrentAura = BuffAura;
-            if (LobotomyModPlayer.ModPlayer(player).LifeForADareDevilGift < 1200)
+            if (player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGift < 1200)
             {
                 player.AddBuff(ModContent.BuffType<RecklessFoolishness>(), 10);
                 player.DelBuff(buffIndex);

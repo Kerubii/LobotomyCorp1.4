@@ -17,9 +17,9 @@ namespace LobotomyCorp.Utils
     {
         //For General Use
         //Unsure How good this is? compared to something that exists out there, probly more fun to make up my own though
-        public Dictionary<int, BonePart> BoneName;
+        public Dictionary<Enum, BonePart> BoneName;
 
-        public SkeletonBase(Dictionary<int, BonePart> BoneList)
+        public SkeletonBase(Dictionary<Enum, BonePart> BoneList)
         {
             BoneName = BoneList;
         }
@@ -42,11 +42,16 @@ namespace LobotomyCorp.Utils
             List<BonePart> list = new List<BonePart>();
             if (forDraw)
             {
-                for (int index = 0; index < BoneName.Count; index++)
+                foreach (Enum key in BoneName.Keys)
+                {
+                    if ((forDraw && BoneName[key].Visible) || !forDraw)
+                        list.Add(BoneName[key]);
+                }
+                /*for (int index = 0; index < BoneName.Count; index++)
                 {
                     if ((forDraw && BoneName[index].Visible) || !forDraw)
                         list.Add(BoneName[index]);
-                }
+                }*/
             }
             return list;
         }
@@ -92,19 +97,19 @@ namespace LobotomyCorp.Utils
             return rotations;
         }
 
-        public void RotationIK(int Bone1, int Bone2, int BoneIK,int dir = 1)
+        public void RotationIK(Enum Bone1, Enum Bone2, Enum BoneIK,int dir = 1)
         {
             float[] rotations = RotationIK(BoneName[Bone1].GetPosition(), BoneName[BoneIK].EndPoint(), BoneName[Bone1].Length, BoneName[Bone2].Length, dir);
             BoneName[Bone1].ChangeRotation(rotations[0]);
             BoneName[Bone2].ChangeRotation(rotations[1]);
         }
 
-        public float DistanceBone(int Bone1, int Bone2)
+        public float DistanceBone(Enum Bone1, Enum Bone2)
         {
             return BoneName[Bone1].GetPosition().Distance(BoneName[Bone2].EndPoint());
         }
 
-        public float TotalLength(int[] BoneList)
+        public float TotalLength(Enum[] BoneList)
         {
             float length = 0;
             for (int i = 0; i < BoneList.Length; i++)

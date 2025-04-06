@@ -74,7 +74,9 @@ namespace LobotomyCorp.Projectiles
         {
 			if (Projectile.ai[0] > -1 && target.whoAmI != (int)Projectile.ai[0])
 				return false;
-            return Projectile.localNPCImmunity[target.whoAmI] == 0;
+            if (Projectile.localNPCImmunity[target.whoAmI] == 0)
+                return null;
+            return null;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)

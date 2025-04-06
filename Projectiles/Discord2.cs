@@ -49,7 +49,7 @@ namespace LobotomyCorp.Projectiles
                     {
                         Projectile.velocity = new Vector2(Projectile.velocity.Length(), 0).RotatedBy((Main.MouseWorld - player.Center).ToRotation());
                     }
-                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("YinYang2"));
+                    SoundEngine.PlaySound(LobotomyCorp.WeaponSound("YinYang2"), Projectile.Center);
 				}
 				progress = (limit - Projectile.timeLeft % limit) / halfLimit;
             }

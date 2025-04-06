@@ -1,5 +1,6 @@
 using LobotomyCorp.Items.He;
 using LobotomyCorp.Items.Teth;
+using LobotomyCorp.Players;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -65,7 +66,7 @@ namespace LobotomyCorp.Items.Ruina
 
         public override bool AltFunctionUse(Player player)
         {
-			return LobotomyModPlayer.ModPlayer(player).LifeForADareDevilGiftActive;
+			return player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGiftActive;
         }
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -76,14 +77,14 @@ namespace LobotomyCorp.Items.Ruina
 
         public override bool SafeCanUseItem(Player player)
         {
-			LobotomyModPlayer.ModPlayer(player).LifeForADareDevilCounterStance = false;
+            player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilCounterStance = false;
 
 			return base.SafeCanUseItem(player);
         }
 
         public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
-			noHitbox = player.itemAnimation >= player.itemAnimationMax || player.ownedProjectileCounts[Item.shoot] == 0 || LobotomyModPlayer.ModPlayer(player).LifeForADareDevilCounterStance;
+			noHitbox = player.itemAnimation >= player.itemAnimationMax || player.ownedProjectileCounts[Item.shoot] == 0 || player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilCounterStance;
 
 			hitbox = new Rectangle((int)player.itemLocation.X, (int)player.itemLocation.Y, 32, 32);
 			if (!Main.dedServ)
@@ -156,7 +157,7 @@ namespace LobotomyCorp.Items.Ruina
 			}
 			else
 			{
-				LobotomyModPlayer.LifeForADareDevilPierceEffect(player, target.Center, 20, 20);
+                player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilPierceEffect(target.Center, 20, 20);
 			}
         }
 

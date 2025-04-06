@@ -75,7 +75,7 @@ namespace LobotomyCorp.NPCs.RedMist
             Main.EntitySpriteDraw(tex, pos, tex.Frame(), color, rotation + 1.57f, origin, scale * 0.6f, 0, 0);
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {

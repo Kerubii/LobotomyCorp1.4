@@ -1,16 +1,21 @@
 using LobotomyCorp.Configs;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Projectiles;
+using LobotomyCorp.Tiles;
 using LobotomyCorp.UI;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -60,6 +65,10 @@ namespace LobotomyCorp
         public static Color HeRarity => new Color(255, 250, 4);
         public static Color WawRarity => new Color(122, 48, 241);
         public static Color AlephRarity => new Color(255, 1, 0);
+
+        public static Color FragmentShaderColor => new Color(255, 128, 255);
+
+        public static DynamicSpriteFont LobNorwester;
 
         public static ModKeybind SynchronizeEGO;
 
@@ -142,6 +151,7 @@ namespace LobotomyCorp
                     Asset<Effect> RedMistEffect = Assets.Request<Effect>("Effects/OverlayShader", AssetRequestMode.ImmediateLoad);
                     Asset<Effect> Fragment = Assets.Request<Effect>("Effects/FragmentUniverse", AssetRequestMode.ImmediateLoad);
                     Asset<Effect> Fragment2 = Assets.Request<Effect>("Effects/FragmentEnlightened", AssetRequestMode.ImmediateLoad);
+                    Asset<Effect> Fragment3 = Assets.Request<Effect>("Effects/FragmentScreen", AssetRequestMode.ImmediateLoad);
                     //GameShaders.Misc["Punish"] = new MiscShaderData(punishingRef, "PunishingBird");
 
                     GameShaders.Misc["LobotomyCorp:Rotate"] = new MiscShaderData(ArcanaSlaveRef, "ArcanaResize").UseSaturation(0f);
@@ -149,6 +159,10 @@ namespace LobotomyCorp
                     ScreenShaderData shaderData = new ScreenShaderData(BrokenScreen, "BrokenScreenShader");
                     shaderData.UseImage(Assets.Request<Texture2D>("Misc/CameraFilterPack_TV_BrokenGlass5", AssetRequestMode.ImmediateLoad).Value, 0, SamplerState.LinearWrap);
                     Filters.Scene["LobotomyCorp:BrokenScreen"] = new Filter(shaderData, EffectPriority.Medium);
+                    shaderData = new ScreenShaderData(Fragment3, "FragmentScreen");
+                    shaderData.UseImage(Assets.Request<Texture2D>("Misc/PurpleNebula5", AssetRequestMode.ImmediateLoad).Value, 0, SamplerState.LinearWrap);
+                    shaderData.UseColor(1f, 128f / 255f, 1f);
+                    Filters.Scene["LobotomyCorp:FragmentScreen"] = new Filter(shaderData, EffectPriority.VeryHigh);
 
                     shaderData = new ScreenShaderData(RedMistEffect, "OverlayRedMist");
                     shaderData.UseImage(Assets.Request<Texture2D>("Misc/Hexagons2", AssetRequestMode.ImmediateLoad).Value, 0, SamplerState.LinearWrap);
@@ -228,6 +242,12 @@ namespace LobotomyCorp
                     WeaponSounds.Rifle = WeaponSound("rifle");
                     WeaponSounds.Spear = WeaponSound("spear", true, 2);
                 }
+
+                PlatformID id = Environment.OSVersion.Platform;
+                if (id == PlatformID.Win32NT)
+                    LobNorwester = ModContent.Request<DynamicSpriteFont>("LobotomyCorp/Fonts/Norwester", AssetRequestMode.ImmediateLoad).Value;
+                else
+                    LobNorwester = FontAssets.CombatText[1].Value;
             }
         }
 
@@ -271,6 +291,89 @@ namespace LobotomyCorp
 
             base.Close();
         }*/
+        
+        public enum modPackets
+        {
+            SpawnBoss,
+            DestroyTileSpecial,
+            RedMistGoldTeleport
+        }
+
+        //Mod Packets        
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            //ID
+            byte id = reader.ReadByte();
+            if (id == 0) // Red Mist Spawn Sync
+            {
+                int i = reader.ReadInt32();
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
+                int player = reader.ReadInt32();
+                NPC.SpawnBoss(x, y, i, player);
+            }
+            else if (id == 1) // Kill Shells
+            {
+
+            }
+            else if (id == 2)// Red Mist 
+            {
+
+            }
+            else if (id == 3)// LobEventFlagRead
+            {
+                LobEventFlags flags = ModContent.GetInstance<LobEventFlags>();
+                if (flags != null)
+                {
+                    byte flagid = reader.ReadByte();
+                    bool state = reader.ReadBoolean();
+                    flags.BinahEntityRecievePacket(flagid, state);
+                }
+            }
+            else if (id == 4)// Supression Text stuff
+            {
+
+            }
+            else if (id == 5)// Tile Entity update for Binah
+            {
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
+                if (TileUtils.TryGetTileEntityAs(x, y, out BlackBox3TileEntity entity))
+                {
+                    entity.InitiateText(reader.ReadInt32());
+                }
+            }
+        }
+
+        public static void RedMistGoldRushTeleport(int redMist, int portal)
+        {
+
+        }
+
+        public static void SendBossSpawnCoords(int bossType, int posX, int posY, int target)
+        {
+            ModPacket bossSpawn = ModContent.GetInstance<LobotomyCorp>().GetPacket();
+            bossSpawn.Write((byte)0);
+            bossSpawn.Write(bossType);
+            bossSpawn.Write(posX);
+            bossSpawn.Write(posY);
+            bossSpawn.Write(target);
+            bossSpawn.Send();
+        }
+
+        public static void TileEntityBlackBoxInitialize(int posX, int posY, int i)
+        {
+            ModPacket packet = ModContent.GetInstance<LobotomyCorp>().GetPacket();
+            packet.Write((byte)5);
+            packet.Write(posX);
+            packet.Write(posY);
+            packet.Write(i);
+        }
+
+        public static void SendKillTile(int i)
+        {
+
+        }
 
         //General Static stuffs
 
@@ -278,10 +381,10 @@ namespace LobotomyCorp
         {
             bool valid = true;
             float health = (float)t.life / (float)t.lifeMax;
-            foreach (NPC n in Main.npc)
+            foreach (NPC n in Main.ActiveNPCs)
             {
                 float health2 = (float)n.life / (float)n.lifeMax;
-                if (n.active && !n.dontTakeDamage && !n.friendly && n.life > 0 && n.whoAmI != t.whoAmI && health2 < health && n.chaseable && n.CanBeChasedBy(p) && n.realLife < 0)
+                if (!n.dontTakeDamage && !n.friendly && n.life > 0 && n.whoAmI != t.whoAmI && health2 < health && n.chaseable && n.CanBeChasedBy(p) && n.realLife < 0)
                 {
                     valid = false;
                     break;

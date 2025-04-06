@@ -8,6 +8,7 @@ using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using System.Collections.Generic;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -29,11 +30,11 @@ namespace LobotomyCorp.Projectiles.Realized
 		public override void AI()
 		{
 			Player player;
-			LobotomyModPlayer modPlayer;
+			LobotomyHePlayer modPlayer;
 			if (Projectile.owner > -1 && !Main.player[Projectile.owner].dead)
 			{
 				player = Main.player[Projectile.owner];
-				modPlayer = LobotomyModPlayer.ModPlayer(player);
+				modPlayer = player.GetModPlayer<LobotomyHePlayer>();
 			}
 			else
 			{
@@ -371,7 +372,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-			int gift = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).LifeForADareDevilGift;
+			int gift = Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGift;
 			if (gift > 600)
 			{
 				int slashes = 1;

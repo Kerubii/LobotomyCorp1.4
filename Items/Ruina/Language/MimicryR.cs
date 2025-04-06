@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -63,14 +64,14 @@ namespace LobotomyCorp.Items.Ruina.Language
 
         public override float UseAnimationMultiplier(Player player)
         {
-            if (player.altFunctionUse == 2 && !LobotomyModPlayer.ModPlayer(player).MimicryShell)
+            if (player.altFunctionUse == 2 && !player.GetModPlayer<LobotomyAlephPlayer>().MimicryShell)
                 return 1.5f;
             return base.UseAnimationMultiplier(player);
         }
 
         public override float UseTimeMultiplier(Player player)
         {
-            if (player.altFunctionUse == 2 && !LobotomyModPlayer.ModPlayer(player).MimicryShell)
+            if (player.altFunctionUse == 2 && !player.GetModPlayer<LobotomyAlephPlayer>().MimicryShell)
                 return 1.5f;
             return base.UseTimeMultiplier(player);
         }

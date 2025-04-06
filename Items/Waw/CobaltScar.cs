@@ -19,13 +19,14 @@ namespace LobotomyCorp.Items.Waw
         public override void SetDefaults()
         {
             Item.CloneDefaults(ItemID.FetidBaghnakhs);
-            Item.damage = 56;
-            Item.useTime = 26;
-            Item.useAnimation = 26;
+            Item.damage = 60;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
             Item.useStyle = 15;
             Item.rare = ItemRarityID.Purple;
             Item.scale = 1.2f;
             Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Wolf_Scratch") with { Volume = 0.5f, PitchVariance = 0.1f };
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
@@ -36,16 +37,24 @@ namespace LobotomyCorp.Items.Waw
             }
         }
 
+        public override void HoldItem(Player player)
+        {
+            if (player.statLife <= player.statLifeMax / 2)
+            {
+                player.AddBuff(ModContent.BuffType<Buffs.WillBeBad>(), 5);
+            }
+        }
+
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
             if (Main.rand.NextBool(3))
-                player.AddBuff(ModContent.BuffType<Buffs.WillBeBad>(), 180);
+                player.AddBuff(ModContent.BuffType<Buffs.WillBeBad>(), 600);
         }
 
         public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo)
         {
             if (Main.rand.NextBool(3))
-                player.AddBuff(ModContent.BuffType<Buffs.WillBeBad>(), 180);
+                player.AddBuff(ModContent.BuffType<Buffs.WillBeBad>(), 600);
         }
 
         public override void AddRecipes()

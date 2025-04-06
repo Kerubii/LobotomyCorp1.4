@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using LobotomyCorp.Projectiles.Realized;
 using System;
 using Terraria;
@@ -16,7 +17,7 @@ namespace LobotomyCorp.Buffs
 
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
-            int phase = LobotomyModPlayer.ModPlayer(Main.LocalPlayer).DaCapoSilentMusicPhase;
+            int phase = Main.LocalPlayer.GetModPlayer<LobotomyAlephPlayer>().DaCapoSilentMusicPhase;
             if (phase > 4)
                 tip += "\n" + Language.GetTextValue("Mods.LobotomyCorp.Buffs.SilentMusic.Tooltip1Alt");
             else
@@ -39,8 +40,9 @@ namespace LobotomyCorp.Buffs
             Player player = Main.LocalPlayer;
             if (player.townNPCs > 2)
             {
-                LobotomyModPlayer.ModPlayer(player).DaCapoSilentMusic = false;
-                foreach( Projectile p in Main.projectile)
+                player.GetModPlayer<LobotomyAlephPlayer>().DaCapoSilentMusic = false;
+                player.GetModPlayer<LobotomyAlephPlayer>().DaCapoSilentMusicPhase = 0;
+                foreach (Projectile p in Main.ActiveProjectiles)
                 {
                     if (p.type == ModContent.ProjectileType<DaCapoPerformance>() && p.owner == player.whoAmI)
                         p.Kill();
@@ -52,8 +54,10 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(player).DaCapoSilentMusic = true;
-            int phase = LobotomyModPlayer.ModPlayer(player).DaCapoSilentMusicPhase;
+            LobotomyAlephPlayer modPlayer = player.GetModPlayer<LobotomyAlephPlayer>();
+
+            modPlayer.DaCapoSilentMusic = true;
+            int phase = modPlayer.DaCapoSilentMusicPhase;
             if (phase > 4)
                 player.statDefense -= 10;
             if (phase % 5 > 0)

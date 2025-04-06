@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
-    public class FrostSplinter : ModItem
+    public class FrostSplinter : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -24,8 +24,8 @@ namespace LobotomyCorp.Items.He
             Item.width = 40;
             Item.height = 40;
 
-            Item.useTime = 22;
-            Item.useAnimation = 20;
+            Item.useTime = 26;
+            Item.useAnimation = 24;
 
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
@@ -38,6 +38,7 @@ namespace LobotomyCorp.Items.He
             Item.UseSound = LobotomyCorp.WeaponSounds.Spear;
             Item.noMelee = true;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override bool CanUseItem(Player player)

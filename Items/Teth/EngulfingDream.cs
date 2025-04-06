@@ -1,10 +1,14 @@
+using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class EngulfingDream : ModItem
+    public class EngulfingDream : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -15,8 +19,8 @@ namespace LobotomyCorp.Items.Teth
 
         public override void SetDefaults()
         {
-            Item.damage = 12;
-            Item.DamageType = DamageClass.Magic; ;
+            Item.damage = 18;
+            Item.DamageType = DamageClass.Magic;
             Item.mana = 3;
             Item.width = 26;
             Item.height = 20;
@@ -27,15 +31,43 @@ namespace LobotomyCorp.Items.Teth
             Item.knockBack = 0;
             Item.value = 10000;
             Item.rare = ItemRarityID.Blue;
-            Item.UseSound = LobotomyCorp.WeaponSound("Dreamy", false, 2);
+            Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/Dreamy", 2) with { Volume = 0.5f, MaxInstances = 1, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew };
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.EngulfingDreamCall>();
             Item.shootSpeed = 0.1f;
+            EGORiskLevel = RiskLevel.Teth;
         }
 
         public override Vector2? HoldoutOffset()
         {
             return new Vector2(8, 0);
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            int ai1 = 0;
+            if (RedMistMaskUpgrade(player))
+            {
+                ai1 = 1;
+                if (Main.rand.NextBool(6))
+                {
+                    int amount = 3 + Main.rand.Next(3);
+                    for (int i = 0; i < amount; i++)
+                    {
+                        Vector2 starVel = velocity * 40;
+                        starVel = starVel.RotatedByRandom(MathHelper.ToRadians(360));
+                        Projectile.NewProjectile(source, position, starVel, ModContent.ProjectileType<EngulfingDreamStar>(), damage, knockback, player.whoAmI);
+                    }
+                }
+            }
+            
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0, ai1);
+            return false;
+        }
+
+        public override float UseTimeMultiplier(Player player)
+        {
+            return base.UseTimeMultiplier(player);
         }
 
         public override void AddRecipes()

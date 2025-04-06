@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Players;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -117,14 +118,15 @@ namespace LobotomyCorp.Projectiles
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			foreach (Player p in Main.player)
+			foreach (Player p in Main.ActivePlayers)
 			{
-				if (p.active && (p.whoAmI == Projectile.owner || p.team == Main.player[Projectile.owner].team) && !p.dead)
+				if ((p.whoAmI == Projectile.owner || p.team == Main.player[Projectile.owner].team) && !p.dead)
 				{
-					LobotomyModPlayer.ModPlayer(p).HarmonyTime += 30;
-					if (LobotomyModPlayer.ModPlayer(p).HarmonyTime > 600)
-						LobotomyModPlayer.ModPlayer(p).HarmonyTime = 600;
-					p.AddBuff(ModContent.BuffType<Buffs.MusicalAddiction>(), LobotomyModPlayer.ModPlayer(p).HarmonyTime, true);
+                    LobotomyHePlayer modPlayer = p.GetModPlayer<LobotomyHePlayer>();
+                    modPlayer.HarmonyTime += 30;
+					if (modPlayer.HarmonyTime > 600)
+                        modPlayer.HarmonyTime = 600;
+					p.AddBuff(ModContent.BuffType<Buffs.MusicalAddiction>(), modPlayer.HarmonyTime, true);
 				}
 			}
 			foreach (NPC n in Main.npc)

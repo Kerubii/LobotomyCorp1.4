@@ -10,6 +10,7 @@ using LobotomyCorp.Utils;
 using ReLogic.Content;
 using Terraria.Audio;
 using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Technology
 {
@@ -49,8 +50,8 @@ namespace LobotomyCorp.Items.Ruina.Technology
 			Item.width = 40;
 			Item.height = 40;
 
-			Item.useTime = 24;
-            Item.useAnimation = 12;
+			Item.useTime = 52;
+            Item.useAnimation = 52;
 
             Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 0;
@@ -63,17 +64,82 @@ namespace LobotomyCorp.Items.Ruina.Technology
             Item.noUseGraphic = true;
             Item.noMelee = true;
 			Item.autoReuse = true;
-            PerfectSwitch = false;
+            AltGun = false;
+            //PerfectSwitch = false;
             LobotomyGlobalItem.LobItem(Item).CustomDraw = true;
         }
 
         public override bool AltFunctionUse(Player player)
         {
-            return (!modPlayer(player).SolemnSwitch || player.itemTime == 0) && AltAmmo(player);
+            return modPlayer(player).SolemnLamentDisable == 0;
+            //return (!modPlayer(player).SolemnSwitch || player.itemTime == 0) && AltAmmo(player);
         }
 
-        public bool PerfectSwitch;
+        public bool AltGun;
+        //public bool PerfectSwitch;
 
+        public override bool SafeCanUseItem(Player player)
+        {
+            LobotomyGlobalItem lobItem = LobotomyGlobalItem.LobItem(Item);
+            if (!modPlayer(player).SolemnSwitch)
+            {
+                lobItem.CustomTexture = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS2").Value;
+                if (AltAmmo(player))
+                {
+                    if (Main.rand.NextBool(3) || player.altFunctionUse == 2)
+                        Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_Black") with { Volume = 0.1f, MaxInstances = -1 };
+                    else
+                        Item.UseSound = SoundID.Item11;
+                }
+                else
+                    Item.UseSound = null;
+                modPlayer(player).SolemnSwitch = true;
+            }
+            else
+            {
+                lobItem.CustomTexture = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS2").Value;
+                if (Main.rand.NextBool(3) || player.altFunctionUse == 2)
+                    Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_White") with { Volume = 0.1f , MaxInstances = -1};
+                else
+                    Item.UseSound = SoundID.Item11;
+                modPlayer(player).SolemnSwitch = false;
+            }
+            return base.SafeCanUseItem(player);
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            if (player.altFunctionUse == 2 && modPlayer(player).SolemnLamentFireRate > 0)
+            {
+                modPlayer(player).SolemnLamentFireRate -= 0.05f;
+                if (modPlayer(player).SolemnLamentFireRate <= 0f)
+                    modPlayer(player).SolemnLamentFireRate = 0;
+                return true;
+            }
+            else if (player.altFunctionUse != 2 && modPlayer(player).SolemnLamentFireRate <= 1.5f)
+            {
+                modPlayer(player).SolemnLamentFireRate += 0.05f;
+                if (modPlayer(player).SolemnLamentFireRate > 1.5f)
+                    modPlayer(player).SolemnLamentFireRate = 1.5f;
+                return true;
+            }
+
+            return base.UseItem(player);
+        }
+
+        public override float UseTimeMultiplier(Player player)
+        {
+            float rate = Math.Min(1f, modPlayer(player).SolemnLamentFireRate);
+            return 1f - .75f * rate;
+        }
+
+        public override float UseAnimationMultiplier(Player player)
+        {
+            float rate = Math.Min(1f, modPlayer(player).SolemnLamentFireRate);
+            return 1f - .75f * rate;
+        }
+
+        /*
         public override bool SafeCanUseItem(Player player)
         {
             LobotomyGlobalItem lobItem = LobotomyGlobalItem.LobItem(Item);
@@ -102,44 +168,85 @@ namespace LobotomyCorp.Items.Ruina.Technology
                 return modPlayer(player).SolemnLamentDisable != 1;
             }
             return false;
-        }
+        }*/
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            if (player.altFunctionUse == 2)
-                AltAmmoConsume(player, ref type, ref velocity.X, ref velocity.Y, ref damage);
             if (Main.myPlayer == player.whoAmI)
             {
-                if (!PerfectSwitch)
-                    Main.projectile[Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI)].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = LobotomyModPlayer.ModPlayer(player).SolemnSwitch ? (byte)1 : (byte)2;
+                if (player.altFunctionUse != 2)
+                {
+                    bool fire = true;
+                    if (!modPlayer(player).SolemnSwitch)
+                    {
+                        if (AltAmmo(player))
+                            AltAmmoConsume(player, ref type, ref velocity.X, ref velocity.Y, ref damage);
+                        else
+                            fire = false;
+                    }
+                    if (fire)
+                    {
+                        Main.projectile[Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI)].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = modPlayer(player).SolemnSwitch ? (byte)1 : (byte)2;
+                        int dustType = modPlayer(player).SolemnSwitch ? 91 : 109;
+                        for (int i = 0; i < 10; i++)
+                        {
+                            Vector2 tempVel = velocity;
+                            tempVel *= Main.rand.NextFloat(4f);
+                            tempVel = tempVel.RotatedByRandom(MathHelper.ToRadians(15));
+
+                            Dust d = Dust.NewDustPerfect(position, dustType, tempVel);
+                            d.noGravity = true;
+                            d.fadeIn = 1.2f;
+                        }
+                    }
+                }
                 else
                 {
-                    damage = (int)(damage * 0.6f);
-
-                    int amount = Main.rand.Next(6, 9);
-                    for (int i = 0; i < amount; i++)
+                    bool fire = true;
+                    if (!modPlayer(player).SolemnSwitch)
                     {
-                        Vector2 tempVel = velocity;
-                        if (i > 0)
-                        {
-                            tempVel *= Main.rand.NextFloat(0.6f, 1f);
-                            tempVel = tempVel.RotatedByRandom(MathHelper.ToRadians(15));
-                        }
-                        int p = Projectile.NewProjectile(source, position, tempVel, ModContent.ProjectileType<Projectiles.Kaleidoscope>(), damage, knockback, player.whoAmI, -type);
-                        Main.projectile[p].localAI[0] = LobotomyModPlayer.ModPlayer(player).SolemnSwitch ? 1 : 2;
-                        Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = LobotomyModPlayer.ModPlayer(player).SolemnSwitch ? (byte)1 : (byte)2;
+                        if (AltAmmo(player))
+                            AltAmmoConsume(player, ref type, ref velocity.X, ref velocity.Y, ref damage);
+                        else
+                            fire = false;
                     }
-                    for (int i = 0; i < 10; i++)
+                    if (fire)
                     {
-                        int dustType = LobotomyModPlayer.ModPlayer(player).SolemnSwitch ? 91 : 109;
+                        damage = (int)(damage * 0.5f);
 
-                        Vector2 tempVel = velocity;
-                        tempVel *= Main.rand.NextFloat(4f);
-                        tempVel = tempVel.RotatedByRandom(MathHelper.ToRadians(15));
+                        int amount = Main.rand.Next(6, 9);
+                        for (int i = 0; i < amount; i++)
+                        {
+                            Vector2 tempVel = velocity;
+                            if (i > 0)
+                            {
+                                tempVel *= Main.rand.NextFloat(0.6f, 1f);
+                                tempVel = tempVel.RotatedByRandom(MathHelper.ToRadians(15));
+                            }
+                            int p = Projectile.NewProjectile(source, position, tempVel, ModContent.ProjectileType<Projectiles.Kaleidoscope>(), damage, knockback, player.whoAmI, -type);
+                            Main.projectile[p].localAI[0] = modPlayer(player).SolemnSwitch ? 1 : 2;
+                            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = modPlayer(player).SolemnSwitch ? (byte)1 : (byte)2;
+                        }
+                        int dustType = modPlayer(player).SolemnSwitch ? 91 : 109;
+                        for (int i = 0; i < 10; i++)
+                        {
+                            Vector2 tempVel = velocity;
+                            tempVel *= Main.rand.NextFloat(4f);
+                            tempVel = tempVel.RotatedByRandom(MathHelper.ToRadians(15));
 
-                        Dust d = Dust.NewDustPerfect(position, dustType, tempVel);
-                        d.noGravity = true;
-                        d.fadeIn = 1.2f;
+                            Dust d = Dust.NewDustPerfect(position, dustType, tempVel);
+                            d.noGravity = true;
+                            d.fadeIn = 1.2f;
+                        }
+                        for (int i = 0; i < 24; i++)
+                        {
+                            float angle = 6.28f * i / 24f;
+                            Vector2 offset = new Vector2(50f, 0).RotatedBy(velocity.ToRotation());
+                            Vector2 ellipse = new Vector2(4f * (float)Math.Cos(angle), 10f * (float)Math.Sin(angle)).RotatedBy(velocity.ToRotation()) * (modPlayer(player).SolemnLamentFireRate > 1f ? 1f : 0.5f);
+                            Dust d = Dust.NewDustPerfect(position + offset, dustType, ellipse);
+                            d.noGravity = true;
+                            d.fadeIn = 1.2f;
+                        }
                     }
                 }
             }
@@ -159,7 +266,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
 
         public override bool CanConsumeAmmo(Item ammo, Player player)
         {
-            return player.altFunctionUse != 2;
+            return modPlayer(player).SolemnSwitch;
         }
 
         public override void AddRecipes() 
@@ -179,9 +286,9 @@ namespace LobotomyCorp.Items.Ruina.Technology
             return new Vector2(-8, 0);
         }
 
-        LobotomyModPlayer modPlayer(Player player)
+        LobotomyWawPlayer modPlayer(Player player)
         {
-            return LobotomyModPlayer.ModPlayer(player);
+            return player.GetModPlayer<LobotomyWawPlayer>();
         }
 
         /*public override void HoldStyle(Player player)
@@ -282,7 +389,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
                 damage = Item.damage;
 
             shoot = ammo.shoot;
-            bool consume = (player.itemAnimation < Item.useAnimation - 2);
+            bool consume = false;// (player.itemAnimation < Item.useAnimation - 2);
             if (player.ammoBox && Main.rand.Next(5) == 0)
                 consume = true;
             if (player.ammoPotion && Main.rand.Next(5) == 0)

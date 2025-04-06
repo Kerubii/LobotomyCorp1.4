@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.Audio;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Audio;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -16,7 +17,7 @@ namespace LobotomyCorp.Buffs
 
         public override bool RightClick(int buffIndex)
         {
-            LobotomyModPlayer.ModPlayer(Main.LocalPlayer).GrinderMk2Battery = 0;
+            Main.LocalPlayer.GetModPlayer<LobotomyHePlayer>().GrinderMk2Battery = 0;
             return base.RightClick(buffIndex);
         }
 
@@ -25,7 +26,7 @@ namespace LobotomyCorp.Buffs
             player.moveSpeed += 0.40f;
             player.dashType = -1;
 
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
             modPlayer.GrinderMk2Active = true;
             player.GetModPlayer<LobotomyDashPlayer>().SpecialDash = true;
 

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class Exuviae : ModItem
+    public class Exuviae : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -32,6 +32,7 @@ namespace LobotomyCorp.Items.Waw
             Item.shoot = ModContent.ProjectileType<Projectiles.ExuviaeShot>(); //idk why but all the guns in the vanilla source have this
             Item.shootSpeed = 8f; // the speed of the projectile (measured in pixels per frame)
             Item.mana = 6;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)

@@ -83,11 +83,13 @@ namespace LobotomyCorp.Projectiles
                 target.buffTime[target.FindBuffIndex(ModContent.BuffType<Buffs.Matchstick>())] += 300;
             else
                 target.AddBuff(ModContent.BuffType<Buffs.Matchstick>(), 300);*/
-            target.AddBuff(BuffID.OnFire, 300); 
+            target.AddBuff(ModContent.BuffType<Buffs.Matchstick>(), 260);
+            target.AddBuff(BuffID.OnFire, 300);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info)
         {
+            target.AddBuff(ModContent.BuffType<Buffs.Matchstick>(), 260);
             target.AddBuff(BuffID.OnFire, 300);
         }
 

@@ -36,7 +36,7 @@ namespace LobotomyCorp.Projectiles
             Projectile.rotation += 0.18f;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             if (Main.myPlayer == Projectile.owner)
                 for (int i = 0; i < 3; i++)

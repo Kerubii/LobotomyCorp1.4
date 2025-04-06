@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class FeatherOfHonor : ModItem
+    public class FeatherOfHonor : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -39,6 +39,7 @@ namespace LobotomyCorp.Items.Waw
             Item.noUseGraphic = true;
             Item.channel = true;
             FeatherShoot = 0;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void HoldItem(Player player)

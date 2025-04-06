@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -15,7 +16,7 @@ namespace LobotomyCorp.Buffs
 
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
-			int todaysLook = LobotomyModPlayer.ModPlayer(Main.LocalPlayer).TodaysExpressionFace;
+			int todaysLook = Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().TodaysExpressionFace;
 			switch (todaysLook)
             {
 				case 0://Happy
@@ -44,9 +45,11 @@ namespace LobotomyCorp.Buffs
 
 		public override void Update(Player player, ref int buffIndex)
         {
-			LobotomyModPlayer.ModPlayer(player).TodaysExpressionActive = true;
+			LobotomyTethPlayer modPlayer = player.GetModPlayer<LobotomyTethPlayer>();
+
+            modPlayer.TodaysExpressionActive = true;
 			player.buffTime[buffIndex] = 10;
-			int todaysLook = LobotomyModPlayer.ModPlayer(player).TodaysExpressionFace;
+			int todaysLook = modPlayer.TodaysExpressionFace;
 
 			switch (todaysLook)
             {

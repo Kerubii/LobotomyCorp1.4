@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -20,7 +21,7 @@ namespace LobotomyCorp.Buffs
         public override void Update(Player player, ref int buffIndex)
         {
             player.wingRunAccelerationMult += 0.15f;
-            LobotomyModPlayer.ModPlayer(player).PleasureTail = true;
+            player.GetModPlayer<LobotomyWawPlayer>().PleasureTail = true;
         }
 
         public override bool RightClick(int buffIndex)

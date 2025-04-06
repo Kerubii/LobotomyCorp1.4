@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.DataStructures;
 using Terraria.Localization;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -21,16 +22,12 @@ namespace LobotomyCorp.Buffs
 			// Description.SetDefault("");
 			BuffID.Sets.TimeLeftDoesNotDecrease[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
-        }
-
-        public override bool RightClick(int buffIndex)
-        {
-            return false;
+            Main.debuff[Type] = true;
         }
 
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
-            int gift = LobotomyModPlayer.ModPlayer(Main.LocalPlayer).LifeForADareDevilGift;
+            int gift = Main.LocalPlayer.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGift;
             if (gift < 600)
             {
                 tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.RecklessFoolishness.Description2");
@@ -44,8 +41,8 @@ namespace LobotomyCorp.Buffs
             player.GetAttackSpeed(DamageClass.Melee) += 0.15f;
 			player.moveSpeed += 0.15f;
 
-            LobotomyModPlayer.ModPlayer(player).LifeForADareDevilGiftActive = true;
-            int gift = LobotomyModPlayer.ModPlayer(player).LifeForADareDevilGift;
+            player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGiftActive = true;
+            int gift = player.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGift;
             if (gift < 600)
             {
                 player.endurance -= 0.15f;

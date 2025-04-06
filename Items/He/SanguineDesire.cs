@@ -14,12 +14,12 @@ namespace LobotomyCorp.Items.He
 
         public override void SetDefaults()
         {
-            Item.damage = 24;
+            Item.damage = 28;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 12;
-            Item.useAnimation = 12;
+            Item.useTime = 16;
+            Item.useAnimation = 16;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
@@ -27,6 +27,7 @@ namespace LobotomyCorp.Items.He
             Item.UseSound = LobotomyCorp.WeaponSounds.Axe;
             Item.autoReuse = true;
             Item.scale = 0.7f;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override void AddRecipes()

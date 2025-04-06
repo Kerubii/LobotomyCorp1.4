@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Aleph
 {
-    public class DaCapo : ModItem
+    public class DaCapo : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -35,6 +35,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.shootSpeed = 1f;
             Item.scale = 0.8f;
             PreviousTarget = -1;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override bool AltFunctionUse(Player player)

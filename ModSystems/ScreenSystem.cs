@@ -1,5 +1,6 @@
 ﻿using LobotomyCorp.Configs;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -16,8 +17,36 @@ namespace LobotomyCorp.ModSystems
             {
                 Filters.Scene["LobotomyCorp:RedMistOverlay"].Deactivate();
             }
-
+            if (Main.netMode != NetmodeID.Server)
+            {
+                if (FragmentShader)
+                {
+                    
+                    Filters.Scene["LobotomyCorp:FragmentScreen"].GetShader().UseIntensity(0.0001f * (float)Main.timeForVisualEffects);
+                    if (FragmentShaderTime > 0)
+                        FragmentShaderTime--;
+                    else
+                        FragmentShader = false;
+                }
+                else
+                {
+                    Filters.Scene["LobotomyCorp:FragmentScreen"].Opacity = 0;
+                    Filters.Scene["LobotomyCorp:FragmentScreen"].Deactivate();
+                }
+            }
+            
             base.PostUpdateEverything();
+        }
+
+        public void FragmentScreenActivate()
+        {
+            if (!Filters.Scene["LobotomyCorp:FragmentScreen"].IsActive())
+            {
+                Filters.Scene.Activate("LobotomyCorp:FragmentScreen");
+                Filters.Scene["LobotomyCorp:FragmentScreen"].Opacity = 0;
+            }
+            FragmentShader = true;
+            FragmentShaderTime = 60;
         }
 
         public override void AddRecipeGroups()
@@ -178,5 +207,8 @@ namespace LobotomyCorp.ModSystems
         {
 
         }
+
+        public bool FragmentShader = false;
+        private int FragmentShaderTime = 0;
     }
 }

@@ -35,7 +35,7 @@ namespace LobotomyCorp.Projectiles
                 Projectile.rotation += 3.14f;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             for (int i = 0; i < 4; i++)
             {

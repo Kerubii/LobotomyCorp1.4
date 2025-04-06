@@ -109,7 +109,7 @@ namespace LobotomyCorp.Projectiles
             }
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             if (Projectile.ai[0] == 0)
                 for (int i = 0; i < 16; i++)    

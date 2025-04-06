@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class WristCutter : ModItem
+    public class WristCutter : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -21,6 +21,7 @@ namespace LobotomyCorp.Items.Teth
             Item.damage = 16;
             Item.rare = ItemRarityID.Blue;
             Item.UseSound = LobotomyCorp.WeaponSounds.Dagger;
+            EGORiskLevel = RiskLevel.Teth;
         }
 
         public override void AddRecipes()

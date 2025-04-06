@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Aleph
 {
-    public class Censored : ModItem
+    public class Censored : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -38,6 +38,7 @@ namespace LobotomyCorp.Items.Aleph
 
             Item.shoot = ModContent.ProjectileType<Projectiles.CensoredGrab>();
             Item.shootSpeed = 1f;
+            EGORiskLevel = RiskLevel.Aleph;
         }
 
         public override bool CanUseItem(Player player)

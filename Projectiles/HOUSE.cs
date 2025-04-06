@@ -47,7 +47,7 @@ namespace LobotomyCorp.Projectiles
             {
                 Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
                 Projectile.ai[0]++;
-                SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/House_HouseBoom") with {Volume = 0.25f});
+                SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/House_HouseBoom") with {Volume = 0.25f}, Projectile.Center);
             }
             return false;
         }

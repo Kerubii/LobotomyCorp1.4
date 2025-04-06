@@ -17,6 +17,16 @@ namespace LobotomyCorp.ModSystems
         public static bool downedAnArbiter = false;
         public static bool killedByRedMist = true;
 
+        public enum FlagIDs
+        {
+            DownedRedMist,
+            BinahIntroTalk,
+            BinahRedmistTalk,
+            BinahDoneTalk,
+            DownedAnArbiter,
+            KilledByRedMist
+        }
+
         public override void ClearWorld()
         {
             downedRedMist = false;
@@ -86,6 +96,50 @@ namespace LobotomyCorp.ModSystems
             binahRedmistTalk = false;
             binahDoneTalk = false;
             downedAnArbiter = false;
+        }
+
+        /// <summary>
+        /// Used by LobotomyCorp to recieve data sent by BinahEntitySendPacket
+        /// </summary>
+        /// <param name="flagID"></param>
+        /// <param name="flagValue"></param>
+        public void BinahEntityRecievePacket(byte flagID, bool flagValue)
+        {
+            switch(flagID)
+            {
+                case 0:
+                    downedRedMist = flagValue;
+                    break;
+                case 1:
+                    binahIntroTalk = flagValue;
+                    break;
+                case 2:
+                    binahRedmistTalk = flagValue;
+                    break;
+                case 3:
+                    binahDoneTalk = flagValue;
+                    break;
+                case 4:
+                    downedAnArbiter = flagValue;
+                    break;
+                case 5:
+                    killedByRedMist = flagValue;
+                    break;
+
+            }
+        }
+
+        /// <summary>
+        /// Manually sends an update to a mod flag, used mostly by the power of Binah Yaps (Black Box 3)
+        /// </summary>
+        /// <param name="flagID"></param>
+        /// <param name="flagValue"></param>
+        public static void BinahEntitySendPacket(FlagIDs flagID, bool flagValue)
+        {
+            ModPacket bossSpawn = ModContent.GetInstance<LobotomyCorp>().GetPacket();
+            bossSpawn.Write((byte)3);
+            bossSpawn.Write((byte)flagID);
+            bossSpawn.Write(flagValue);
         }
     }
 }

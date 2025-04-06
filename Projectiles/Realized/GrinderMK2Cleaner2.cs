@@ -8,6 +8,7 @@ using LobotomyCorp.Utils;
 using Terraria.Audio;
 using Terraria.GameContent;
 using System.IO;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -50,7 +51,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
         private Vector2 HitboxExtension => new Vector2(Projectile.width / 2, 0).RotatedBy(Projectile.rotation);
 
-        private bool CanAttack(Player player, LobotomyModPlayer modPlayer, Item heldItem)
+        private bool CanAttack(Player player, LobotomyHePlayer modPlayer, Item heldItem)
         {
             if (player.altFunctionUse != 2 && heldItem.type == ModContent.ItemType<Items.Ruina.Technology.GrinderMk52R>() && ((Items.Ruina.Technology.GrinderMk52R)heldItem.ModItem).GrinderWeaponOrder == order)
                 return true;
@@ -64,7 +65,7 @@ namespace LobotomyCorp.Projectiles.Realized
         public override void AI()
         {
             Player player = Main.player[Projectile.owner];
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
             LobotomyDashPlayer dashPlayer = player.GetModPlayer<LobotomyDashPlayer>();
 
             //Add Movespeed Buff
@@ -229,7 +230,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
             //When Charge runs out, Kill Projectile
             ChangeBatteryValue(-1);
-            if (LobotomyModPlayer.ModPlayer(player).GrinderMk2Battery <= 0 || LobotomyModPlayer.ModPlayer(player).GrinderMk2Recharging)
+            if (modPlayer.GrinderMk2Battery <= 0 || modPlayer.GrinderMk2Recharging)
             {
                 Projectile.Kill();
             }
@@ -249,7 +250,7 @@ namespace LobotomyCorp.Projectiles.Realized
             if (firstOnly && order != 0)
                 return;
 
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]);
+            LobotomyHePlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>();
             modPlayer.GrinderMk2Battery += amount;
             if (modPlayer.GrinderMk2Battery > modPlayer.GrinderMk2BatteryMax)
                 modPlayer.GrinderMk2Battery = modPlayer.GrinderMk2BatteryMax;
@@ -290,19 +291,20 @@ namespace LobotomyCorp.Projectiles.Realized
         private float GetOwnerBatteryLife()
         {
             Player player = Main.player[Projectile.owner];
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
 
             return (float)modPlayer.GrinderMk2Battery / modPlayer.GrinderMk2BatteryMax;
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             Main.player[Projectile.owner].AddBuff(ModContent.BuffType<Buffs.GrinderMk2Recharge>(), 180);
-            if (LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).GrinderMk2Recharging == false)
+            LobotomyHePlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>();
+            if (modPlayer.GrinderMk2Recharging == false)
             {
-                LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).GrinderMk2Dash = 0;
-                LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).GrinderMk2Active = false;
-                LobotomyModPlayer.ModPlayer(Main.player[Projectile.owner]).GrinderMk2Recharging = true;
+                modPlayer.GrinderMk2Dash = 0;
+                modPlayer.GrinderMk2Active = false;
+                modPlayer.GrinderMk2Recharging = true;
                 Main.player[Projectile.owner].velocity *= 0;
 
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Helper_Down") with { Volume = 0.25f }, Projectile.Center);
@@ -317,7 +319,7 @@ namespace LobotomyCorp.Projectiles.Realized
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Player player = Main.player[Projectile.owner];
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
             ChangeBatteryValue(16, false);
 
             if (modPlayer.GrinderMk2Dash > 0 || Projectile.ai[1] > 0)
@@ -348,7 +350,7 @@ namespace LobotomyCorp.Projectiles.Realized
         public override bool PreDraw(ref Color lightColor)
         {
             Player player = Main.player[Projectile.owner];
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
             Vector2 ownerMountedCenter = player.RotatedRelativePoint(player.MountedCenter, true);
 
             //Elbow Direction
@@ -435,7 +437,7 @@ namespace LobotomyCorp.Projectiles.Realized
             Main.EntitySpriteDraw(texture, pos, new Rectangle?(frame), lightColor, 0, origin, Projectile.scale, SpriteEffects.None, 0);
 
             texture = Mod.Assets.Request<Texture2D>("Projectiles/Realized/GrinderMk2Bar").Value;
-            LobotomyModPlayer ModPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyHePlayer ModPlayer = player.GetModPlayer<LobotomyHePlayer>();
             int frameY = (int)((ModPlayer.GrinderMk2BatteryMax - (float)ModPlayer.GrinderMk2Battery) / ((float)ModPlayer.GrinderMk2BatteryMax / 5)) * texture.Height / 6;
             if (ModPlayer.GrinderMk2Battery < ModPlayer.GrinderMk2BatteryMax / 5 && ModPlayer.GrinderMk2Battery % 30 < 15)
                 frameY += texture.Height / 6;

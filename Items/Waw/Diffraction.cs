@@ -15,18 +15,19 @@ namespace LobotomyCorp.Items.Waw
 
         public override void SetDefaults()
         {
-            Item.damage = 46;
+            Item.damage = 50;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 26;
-            Item.useAnimation = 22;
+            Item.useTime = 28;
+            Item.useAnimation = 26;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 5000;
             Item.rare = ItemRarityID.Purple;
             Item.UseSound = LobotomyCorp.WeaponSounds.Mace;
             Item.autoReuse = true;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override void AddRecipes()

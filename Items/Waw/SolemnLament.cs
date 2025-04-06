@@ -1,13 +1,17 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class SolemnLament : ModItem
+    public class SolemnLament : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -16,6 +20,8 @@ namespace LobotomyCorp.Items.Waw
                                "Switches between range and magic depending on the gun used"); */
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
+
+        private bool AlternateAttack;
 
         public override void SetDefaults()
         {
@@ -27,12 +33,43 @@ namespace LobotomyCorp.Items.Waw
             Item.shootSpeed = 12f;
             Item.shoot = 10;
             Item.useAmmo = AmmoID.Bullet;
-            Item.useTime = 24;
-            Item.useAnimation = 24;
+            Item.useTime = 16;
+            Item.useAnimation = 16;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.autoReuse = true;
             Item.DamageType = DamageClass.Ranged;
             Item.UseSound = LobotomyCorp.WeaponSounds.Gun;
+            Item.noMelee = true;
+            AlternateAttack = false;
+            EGORiskLevel = RiskLevel.Waw;
+        }
+
+        public override void LobModifyTooltips(List<TooltipLine> tooltips)
+        {
+            var RealizedEGOTooltip = new TooltipLine(Mod, "LobotomyCorp.SolemnLamentMana", $"{Language.GetTextValue("Mods.LobotomyCorp.Items.SolemnLament.ManaTooltip", ManaCost(Main.LocalPlayer))}");
+            int index = tooltips.FindIndex(x => x.Mod == "Terraria" && x.Name == "Tooltip0");
+            tooltips.Insert(index, RealizedEGOTooltip);
+
+            base.LobModifyTooltips(tooltips);
+        }
+
+        public override float UseTimeMultiplier(Player player)
+        {
+            if (player.altFunctionUse == 2)
+                return 1.5f;
+            return base.UseTimeMultiplier(player);
+        }
+
+        public override float UseAnimationMultiplier(Player player)
+        {
+            if (player.altFunctionUse == 2)
+                return 1.5f;
+            return base.UseAnimationMultiplier(player);
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
+        {
+            damage.CombineWith(player.GetDamage(DamageClass.Magic));
         }
 
         public override bool AltFunctionUse(Player player)
@@ -40,23 +77,72 @@ namespace LobotomyCorp.Items.Waw
             return true;
         }
 
+        /*
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
-                Item.DamageType = DamageClass.Magic;
-                Item.shoot = 10;
-                Item.mana = 8;
-                TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament2");
+                
             }
             else
             {
-                Item.DamageType = DamageClass.Ranged;
-                Item.shoot = 10;
-                Item.mana = 0;
-                TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament1");
+                
             }
             return base.CanUseItem(player);
+        }*/
+
+        private int ManaCost(Player player)
+        {
+            return (int)(8 * player.manaCost);
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament1");
+                player.manaRegenDelay = player.maxRegenDelay;
+                return base.UseItem(player);
+            }
+            else
+            {
+                AlternateAttack = Main.rand.NextBool(2);
+                if (AlternateAttack)
+                {
+                    TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament2");
+
+                }
+                else
+                {
+                    TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament1");
+                }
+                player.manaRegenDelay = player.maxRegenDelay;
+                return true;
+            }
+            //return base.UseItem(player);
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+
+            if (player.altFunctionUse == 2)
+            {
+                Vector2 vel = new Vector2(0, -6).RotatedBy(velocity.ToRotation());
+                if (player.CheckMana(ManaCost(player), true))
+                    Projectile.NewProjectile(source, position + vel, velocity, type, damage, knockback);
+                return true;
+            }
+            else
+            {
+                if (AlternateAttack)
+                {
+                    if (player.CheckMana(ManaCost(player), true))
+                        return true;
+                    else
+                        return false;
+                }    
+            }
+            return true;
         }
 
         public override void HoldItem(Player player)
@@ -66,7 +152,7 @@ namespace LobotomyCorp.Items.Waw
 
         public override bool CanConsumeAmmo(Item ammo, Player player)
         {
-            if (player.altFunctionUse == 2)
+            if (AlternateAttack)
                 return false;
             return base.CanConsumeAmmo(ammo, player);
         }
@@ -113,8 +199,8 @@ namespace LobotomyCorp.Items.Waw
         {
             CreateRecipe()
             .AddIngredient(ItemID.IllegalGunParts)
-            .AddIngredient(ItemID.SilverDye, 3)
-            .AddIngredient(ItemID.BlackDye, 3)
+            .AddIngredient(ItemID.SilverDye, 2)
+            .AddIngredient(ItemID.BlackDye, 2)
             .AddRecipeGroup("LobotomyCorp:Butterflies", 5)
             .AddTile(Mod, "BlackBox2")
             .Register();

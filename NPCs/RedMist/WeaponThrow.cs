@@ -66,7 +66,7 @@ namespace LobotomyCorp.NPCs.RedMist
             }
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             NPC redmist = Main.npc[(int)Projectile.ai[0]];
             if (redmist.active && redmist.life >= 0 && redmist.type == ModContent.NPCType<RedMist>())
@@ -175,7 +175,7 @@ namespace LobotomyCorp.NPCs.RedMist
             d.velocity *= 0;*/
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             NPC redmist = Main.npc[(int)Projectile.ai[0]];
             if (redmist.active && redmist.life >= 0 && redmist.type == ModContent.NPCType<RedMist>())

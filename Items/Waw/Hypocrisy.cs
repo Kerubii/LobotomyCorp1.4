@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Waw
 {
-    public class Hypocrisy : ModItem
+    public class Hypocrisy : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -35,6 +35,7 @@ namespace LobotomyCorp.Items.Waw
             Item.shootSpeed = 10f;
             Item.useAmmo = AmmoID.Arrow;
             Item.scale = 0.8f;
+            EGORiskLevel = RiskLevel.Waw;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

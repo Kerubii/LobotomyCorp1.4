@@ -1,3 +1,4 @@
+using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -15,7 +16,7 @@ namespace LobotomyCorp.Buffs
         {
             player.GetDamage(DamageClass.Generic) += 0.08f;
 
-            LobotomyModPlayer.ModPlayer(player).HarmonyConnected = true;
+            player.GetModPlayer<LobotomyHePlayer>().HarmonyConnected = true;
         }
 
         public override void Update(NPC npc, ref int buffIndex)

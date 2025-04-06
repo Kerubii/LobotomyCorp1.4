@@ -1,6 +1,8 @@
+using LobotomyCorp.Players;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using rail;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -52,10 +54,12 @@ namespace LobotomyCorp.Items.Ruina.Art
                 return false;
             }
 
-            if (LobotomyModPlayer.ModPlayer(player).DaCapoSilentMusicPhase % 5 > 1)
+            bool silentMusic = player.GetModPlayer<LobotomyAlephPlayer>().DaCapoSilentMusic;
+            int musicPhase = player.GetModPlayer<LobotomyAlephPlayer>().DaCapoSilentMusicPhase % 5;
+            if (silentMusic)
             {
                 int extraType = ModContent.ProjectileType<DaCapoClef>();
-                Projectile.NewProjectile(source, position, velocity * 14, extraType, damage / 2, knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity * (8f + 20 * (musicPhase / 5f)), extraType, damage / 2, knockback, player.whoAmI, 30 * musicPhase);
             }
             if (GetPlayerCombo(player) <= 2)
             {
@@ -224,7 +228,7 @@ namespace LobotomyCorp.Items.Ruina.Art
                 SetPlayerCombo(player, 4, 60);
             }
 
-            LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
+            LobotomyAlephPlayer modPlayer = player.GetModPlayer<LobotomyAlephPlayer>();
             if (modPlayer.DaCapoSilentMusic)
                 modPlayer.DaCapoTotalDamage += damageDone;
 
@@ -238,8 +242,8 @@ namespace LobotomyCorp.Items.Ruina.Art
 
         public static void SetPlayerCombo(Player player, int combo, int cooldown)
 		{
-			LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
-			modPlayer.AttackComboOrder = combo;
+            LobotomyModPlayer modPlayer = player.GetModPlayer<LobotomyModPlayer>();
+            modPlayer.AttackComboOrder = combo;
 			modPlayer.AttackComboOrderCooldown = cooldown;
         }
 

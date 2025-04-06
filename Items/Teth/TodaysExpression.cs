@@ -1,10 +1,12 @@
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Teth
 {
-    public class TodaysExpression : ModItem
+    public class TodaysExpression : LobItemBase
     {
         public override void SetStaticDefaults()
         {
@@ -32,6 +34,24 @@ namespace LobotomyCorp.Items.Teth
             Item.shootSpeed = 14f;
             Item.useAmmo = AmmoID.Bullet;
             Item.scale = 0.8f;
+            EGORiskLevel = RiskLevel.Teth;
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            int amount = Main.rand.Next(5);
+            if (amount > 0)
+            {
+                int start = amount / 2 * -1;
+                for (int i = start; i < amount; i++)
+                {
+                    if (i == 0)
+                        continue;
+                    float rotation = velocity.ToRotation();
+                    Vector2 offset = new Vector2();
+                }
+            }
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
 
         public override Vector2? HoldoutOffset()
