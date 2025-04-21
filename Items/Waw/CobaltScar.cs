@@ -23,7 +23,7 @@ namespace LobotomyCorp.Items.Waw
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.useStyle = 15;
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<WawB>();
             Item.scale = 1.2f;
             Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Wolf_Scratch") with { Volume = 0.5f, PitchVariance = 0.1f };
             EGORiskLevel = RiskLevel.Waw;

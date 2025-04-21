@@ -38,7 +38,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			Item.UseSound = SoundID.Item1;
 			Item.autoReuse = true;
 			Item.channel = true;
-			Item.rare = ItemRarityID.Yellow;
+			Item.rare = ModContent.RarityType<WawR>();
 
 			Item.shoot = ModContent.ProjectileType<Projectiles.Realized.BlackSwanR>();
 			Item.shootSpeed = 4f;

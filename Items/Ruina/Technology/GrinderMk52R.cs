@@ -30,7 +30,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 2;
 			Item.value = 10000;
-			Item.rare = ItemRarityID.Yellow;
+			Item.rare = ModContent.RarityType<HeR>();
 			Item.UseSound = SoundID.Item1;
             Item.noMelee = true;
             Item.noUseGraphic = true;

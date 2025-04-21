@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.Armor
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Green;
+            Item.rare = ModContent.RarityType<ZayinB>();
             EGORiskLevel = RiskLevel.Zayin;
         }
     }
@@ -49,7 +49,7 @@ namespace LobotomyCorp.Items.Armor
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Green;
+            Item.rare = ModContent.RarityType<ZayinB>();
             EGORiskLevel = RiskLevel.Zayin;
         }
     }
@@ -69,7 +69,7 @@ namespace LobotomyCorp.Items.Armor
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Green;
+            Item.rare = ModContent.RarityType<ZayinB>();
             EGORiskLevel = RiskLevel.Zayin;
         }
     }

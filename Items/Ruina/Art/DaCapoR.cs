@@ -26,7 +26,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 			Item.useStyle = 15;
 			Item.knockBack = 5;
 			Item.value = 10000;
-		    Item.rare = 2;
+		    Item.rare = ModContent.RarityType<AlephR>();
             Item.UseSound = null;
 			Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<DaCapoMusicSlash>();

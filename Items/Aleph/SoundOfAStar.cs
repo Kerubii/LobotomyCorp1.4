@@ -31,7 +31,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.noMelee = true;
             Item.knockBack = 2.4f;
             Item.value = 5000;
-            Item.rare = ItemRarityID.Red;
+            Item.rare = ModContent.RarityType<AlephB>();
             Item.UseSound = LobotomyCorp.WeaponSound("blueStar");
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.SoundOfAStar>();

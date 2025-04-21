@@ -28,7 +28,7 @@ namespace LobotomyCorp.Items.Teth
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.defense = 6;
             EGORiskLevel = RiskLevel.Teth;
         }
@@ -49,7 +49,7 @@ namespace LobotomyCorp.Items.Teth
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.defense = 6;
             EGORiskLevel = RiskLevel.Teth;
         }
@@ -65,7 +65,7 @@ namespace LobotomyCorp.Items.Teth
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.defense = 6;
             EGORiskLevel = RiskLevel.Teth;
         }

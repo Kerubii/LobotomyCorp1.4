@@ -56,7 +56,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 0;
 			Item.value = 10000;
-			Item.rare = 2;
+			Item.rare = ModContent.RarityType<WawR>();
             Item.shootSpeed = 9f;
             Item.shoot = 1;
             Item.useAmmo = AmmoID.Bullet;

@@ -19,7 +19,7 @@ namespace LobotomyCorp.Items.Teth
             Item.CloneDefaults(ItemID.CopperShortsword);
             Item.shoot = ModContent.ProjectileType<Projectiles.WristCutter>();
             Item.damage = 16;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Dagger;
             EGORiskLevel = RiskLevel.Teth;
         }

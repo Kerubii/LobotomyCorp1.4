@@ -37,7 +37,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
             Item.noUseGraphic = false;
 			Item.UseSound = null;//SoundID.Item1;
 			Item.autoReuse = true;
-			Item.rare = ItemRarityID.Yellow;
+			Item.rare = ModContent.RarityType<TethR>();
 
 			Item.shoot = ModContent.ProjectileType<Projectiles.Realized.Spiderbud>();
 			Item.shootSpeed = 1f;

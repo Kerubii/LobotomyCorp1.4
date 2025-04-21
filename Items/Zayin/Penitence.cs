@@ -30,7 +30,7 @@ namespace LobotomyCorp.Items.Zayin
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Green;
+            Item.rare = ModContent.RarityType<ZayinB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Mace;
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<PenitencePlayerSwing>();

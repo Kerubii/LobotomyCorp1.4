@@ -37,7 +37,7 @@ namespace LobotomyCorp.Items.Ruina.Philosophy
 			Item.useStyle = 1;
 			Item.knockBack = 0.1f;
 			Item.value = 10000;
-			Item.rare = 2;
+			Item.rare = ModContent.RarityType<TethR>();
 			Item.UseSound = SoundID.Item1;
 			Item.autoReuse = true;
 		}

@@ -40,7 +40,7 @@ namespace LobotomyCorp.Items.Ruina.History
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 0;
 			Item.value = 10000;
-			Item.rare = 2;
+			Item.rare = ModContent.RarityType<ZayinR>();
             Item.shootSpeed = 16f;
             Item.shoot = ModContent.ProjectileType<Projectiles.WingbeatR>();
 

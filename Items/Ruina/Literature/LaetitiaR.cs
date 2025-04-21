@@ -40,7 +40,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
             Item.noUseGraphic = true;
 			Item.UseSound = SoundID.Item1;
 			Item.autoReuse = true;
-			Item.rare = ItemRarityID.Yellow;
+			Item.rare = ModContent.RarityType<HeR>();
 
 			Item.shoot = ModContent.ProjectileType<Projectiles.Realized.LaetitiaR>();
 			Item.shootSpeed = 6f;

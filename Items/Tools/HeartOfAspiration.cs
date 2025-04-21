@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.Tools
             Item.height = 28;
             Item.accessory = true;
             Item.value = 1000;
-            Item.rare = 1;
+            Item.rare = RarityType<TethB>();
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual)

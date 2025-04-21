@@ -22,7 +22,7 @@ namespace LobotomyCorp.Items.Teth
             Item.useAnimation = 12;
             Item.useTime = 12;
             Item.autoReuse = true;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Fist;
             EGORiskLevel = RiskLevel.Teth;
 

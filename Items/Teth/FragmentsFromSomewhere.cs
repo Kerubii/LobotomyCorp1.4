@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.Teth
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.shootSpeed = 3.7f;
             Item.shoot = ModContent.ProjectileType<Projectiles.FragmentsFromSomewhere>();
 

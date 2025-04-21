@@ -23,7 +23,7 @@ namespace LobotomyCorp.Items.He
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Axe;
             Item.autoReuse = true;
             Item.scale = 0.7f;

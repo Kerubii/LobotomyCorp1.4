@@ -22,7 +22,7 @@ namespace LobotomyCorp.Items.Ruina.History
             EgoColor = LobotomyCorp.WawRarity;
 
             Item.damage = 48;
-            Item.DamageType = DamageClass.Magic;;
+            Item.DamageType = DamageClass.Magic;
             Item.width = 40;
             Item.height = 40;
 
@@ -32,7 +32,7 @@ namespace LobotomyCorp.Items.Ruina.History
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 0;
             Item.value = 10000;
-            Item.rare = 2;
+            Item.rare = ModContent.RarityType<WawR>();
             Item.shootSpeed = 1f;
             Item.shoot = ModContent.ProjectileType<Projectiles.GreenStemArea>();
             

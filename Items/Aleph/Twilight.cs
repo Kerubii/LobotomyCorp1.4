@@ -32,7 +32,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Red;
+            Item.rare = ModContent.RarityType<AlephB>();
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
 

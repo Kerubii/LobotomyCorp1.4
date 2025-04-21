@@ -35,7 +35,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.knockBack = 0;
 			Item.value = 10000;
-			Item.rare = 2;
+			Item.rare = ModContent.RarityType<WawR>();
 			Item.UseSound = SoundID.Item1;
 			Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.AlriuneDeathAnimation>();

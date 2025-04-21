@@ -11,7 +11,7 @@ namespace LobotomyCorp.Items.He
         public override void SetStaticDefaults()
         {
             /* Tooltip.SetDefault("Its adorable appearance makes it something that might even appeal to a child as a gift.\n" +
-                               "Do not underestimate the weaponÅ's power because of its fluffy exterior."); */
+                               "Do not underestimate the weaponÔøΩ's power because of its fluffy exterior."); */
         }
 
         public override void SetDefaults()
@@ -23,7 +23,7 @@ namespace LobotomyCorp.Items.He
             Item.useTime = 12;
             Item.autoReuse = true;
             Item.UseSound = LobotomyCorp.WeaponSounds.Fist;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             EGORiskLevel = RiskLevel.He;
         }
         /*

@@ -36,7 +36,7 @@ namespace LobotomyCorp.Items.Ruina.History
 			Item.useStyle = 1;
 			Item.knockBack = 6;
 			Item.value = 10000;
-			Item.rare = 2;
+			Item.rare = ModContent.RarityType<TethR>();
 			Item.UseSound = SoundID.Item1;
             Item.shoot = ModContent.ProjectileType<Projectiles.FourthMatchFlameGigaSlash>();
             Item.shootSpeed = 1f;

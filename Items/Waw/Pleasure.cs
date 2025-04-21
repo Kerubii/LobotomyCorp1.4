@@ -28,7 +28,7 @@ namespace LobotomyCorp.Items.Waw
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             Item.shootSpeed = 10.3f;
             Item.shoot = ModContent.ProjectileType<Projectiles.PleasureSpear>();
 

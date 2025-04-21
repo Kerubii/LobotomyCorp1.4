@@ -21,7 +21,7 @@ namespace LobotomyCorp.Items.Teth
             Item.noMelee = true;
             Item.knockBack = 2.4f;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = LobotomyCorp.WeaponSound("sakura");
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.CherryBlossomsPetal>();

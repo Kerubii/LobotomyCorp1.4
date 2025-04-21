@@ -25,7 +25,7 @@ namespace LobotomyCorp.Items.He
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             SwingSound = new SoundStyle("LobotomyCorp/Sounds/Item/Lumberjack_Atk2") with { Volume = 0.5f, PitchVariance = 0.1f }; ;
             Item.autoReuse = true;
             EGORiskLevel = RiskLevel.He;

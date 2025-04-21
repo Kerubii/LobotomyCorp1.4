@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 4;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Red;
+            Item.rare = ModContent.RarityType<AlephB>();
             Item.shootSpeed = 11f;
             Item.shoot = ModContent.ProjectileType<Projectiles.GoldRushPunches>();
 
