@@ -35,7 +35,7 @@ namespace LobotomyCorp.Items.Waw
             Item.width = 34;
             Item.height = 32;
             Item.value = 3000;
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<WawB>();
             Item.damage = 58;
             Item.knockBack = 3f;
             Item.shootSpeed = 12f;

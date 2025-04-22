@@ -31,7 +31,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.noMelee = true;
             Item.knockBack = 0.8f;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Red;
+            Item.rare = ModContent.RarityType<AlephB>();
             Item.UseSound = LobotomyCorp.WeaponSound("DeathAngel1");
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.ParadiseLostBase>();

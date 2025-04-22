@@ -34,7 +34,7 @@ namespace LobotomyCorp.Items.Ruina
 			Item.useStyle = 1;// ItemUseStyleID.Shoot;
 			Item.knockBack = 6;
 			Item.value = 10000;
-			Item.rare = 3;
+			Item.rare = ModContent.RarityType<HeR>();
 
 			Item.shootSpeed = 1f;
 			Item.shoot = ModContent.ProjectileType<Projectiles.Realized.LifeForADaredevilR>();

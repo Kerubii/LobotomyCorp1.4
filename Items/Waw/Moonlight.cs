@@ -26,7 +26,7 @@ namespace LobotomyCorp.Items.Waw
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<WawB>();
             Item.UseSound = LobotomyCorp.WeaponSound("blackSwan1");
             Item.autoReuse = true;
             EGORiskLevel = RiskLevel.Waw;

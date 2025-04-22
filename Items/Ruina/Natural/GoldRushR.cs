@@ -35,7 +35,7 @@ namespace LobotomyCorp.Items.Ruina.Natural
 			Item.noMelee = true;
 			Item.knockBack = 4;
 			Item.value = 10000; 
-			Item.rare = ItemRarityID.Purple;
+			Item.rare = ModContent.RarityType<WawR>();
         }
     }
 }

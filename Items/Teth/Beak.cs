@@ -23,7 +23,7 @@ namespace LobotomyCorp.Items.Teth
 
             Item.noMelee = true;
             Item.value = 7500;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Gun;
             Item.autoReuse = true;
 

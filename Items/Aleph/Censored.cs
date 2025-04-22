@@ -31,7 +31,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.useStyle = 5;
 
             Item.value = 10000;
-            Item.rare = ItemRarityID.Red;
+            Item.rare = ModContent.RarityType<AlephB>();
             Item.autoReuse = true;
             Item.noMelee = true;
             Item.noUseGraphic = true;

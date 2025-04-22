@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.Waw
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
             Item.value = 20000;
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<WawB>();
             Item.shootSpeed = 3f;
             Item.shoot = ModContent.ProjectileType<Projectiles.Amrita>();
 

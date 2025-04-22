@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.He
             Item.noMelee = true;
             Item.knockBack = 4;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/fetus", 3) with { Volume = 0.5f, MaxInstances = 1, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew };
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.SyrinxSound>();

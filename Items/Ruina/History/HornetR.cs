@@ -28,7 +28,7 @@ namespace LobotomyCorp.Items.Ruina.History
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 6;
 			Item.value = 10000;
-			Item.rare = 2;
+			Item.rare = ModContent.RarityType<WawR>();
 			Item.UseSound = SoundID.Item1;
             Item.noMelee = true;
             Item.noUseGraphic = true;

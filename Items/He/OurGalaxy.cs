@@ -28,7 +28,7 @@ namespace LobotomyCorp.Items.He
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             Item.shoot = ModContent.ProjectileType<Projectiles.OurGalaxySparkle>();
             Item.shootSpeed = 10f;
             Item.UseSound = LobotomyCorp.WeaponSound("Galaxy");

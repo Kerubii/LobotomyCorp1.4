@@ -37,7 +37,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 			//Item.UseSound = SoundID.Item1;
 			Item.autoReuse = true;
 			Item.channel = true;
-			Item.rare = ItemRarityID.Yellow;
+			Item.rare = ModContent.RarityType<TethR>();
 
 			Item.shoot = ModContent.ProjectileType<Projectiles.Realized.FragmentsFromSomewhereRSpear>();
 			Item.shootSpeed = 5.6f;

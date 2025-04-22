@@ -30,7 +30,7 @@ namespace LobotomyCorp.Items.He
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             Item.shootSpeed = 4.7f;
             Item.shoot = ModContent.ProjectileType<Projectiles.FrostSplinter>();
 

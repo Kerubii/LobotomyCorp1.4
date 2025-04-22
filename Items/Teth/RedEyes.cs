@@ -25,7 +25,7 @@ namespace LobotomyCorp.Items.Teth
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Mace;
             Item.autoReuse = true;
             Item.scale = 1.3f;

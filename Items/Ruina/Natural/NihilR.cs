@@ -37,6 +37,7 @@ namespace LobotomyCorp.Items.Ruina.Natural
 			Item.UseSound = SoundID.Item11; 
 			Item.autoReuse = true;
             Item.channel = true;
+            Item.rare = ModContent.RarityType<AlephR>();
         }
 
         public override void HoldItem(Player player)

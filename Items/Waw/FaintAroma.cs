@@ -27,7 +27,7 @@ namespace LobotomyCorp.Items.Waw
             Item.noMelee = true;
             Item.knockBack = 4;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Purple;
+            Item.rare = ModContent.RarityType<WawB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.BowGun;
             Item.autoReuse = true;
             Item.shoot = 10;

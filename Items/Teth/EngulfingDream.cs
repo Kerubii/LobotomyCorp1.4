@@ -30,7 +30,7 @@ namespace LobotomyCorp.Items.Teth
             Item.noMelee = true;
             Item.knockBack = 0;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Blue;
+            Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/Dreamy", 2) with { Volume = 0.5f, MaxInstances = 1, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew };
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.EngulfingDreamCall>();

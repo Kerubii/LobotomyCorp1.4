@@ -36,7 +36,7 @@ namespace LobotomyCorp.Items.Ruina.Art
             Item.noUseGraphic = true;
 			Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Art/Galaxy_Strong_Big_Shot") with { Volume = 0.25f };
             Item.autoReuse = true;
-			Item.rare = ItemRarityID.Yellow;
+			Item.rare = ModContent.RarityType<HeR>();
 
 			Item.shoot = ModContent.ProjectileType<Projectiles.Realized.OurGalaxyComet>();
 			Item.shootSpeed = 14;

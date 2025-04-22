@@ -27,7 +27,7 @@ namespace LobotomyCorp.Items.Accessories
             Item.height = 16;
             Item.accessory = true;
             Item.value = 1000;
-            Item.rare = ItemRarityID.Red;
+            Item.rare = ModContent.RarityType<AlephB>();
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual)

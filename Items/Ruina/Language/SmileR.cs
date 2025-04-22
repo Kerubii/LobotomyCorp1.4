@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.Ruina.Language
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 6;
 			Item.value = 10000;
-			Item.rare = ItemRarityID.Red;
+			Item.rare = ModContent.RarityType<AlephR>();
 			//Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/NothingThere_Goodbye");
             Item.autoReuse = true;
             Item.noMelee = true;

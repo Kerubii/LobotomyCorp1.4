@@ -20,7 +20,7 @@ namespace LobotomyCorp.Items.He
             Item.useStyle = 15;
             Item.damage = 32;
             Item.DamageType = DamageClass.Generic;
-            Item.rare = ItemRarityID.Yellow;
+            Item.rare = ModContent.RarityType<HeB>();
             Item.UseSound = LobotomyCorp.WeaponSound("katana");
             EGORiskLevel = RiskLevel.He;
         }

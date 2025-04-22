@@ -26,7 +26,7 @@ namespace LobotomyCorp.Items.Zayin
             Item.noMelee = true;
             Item.knockBack = 4;
             Item.value = 10000;
-            Item.rare = ItemRarityID.Green;
+            Item.rare = ModContent.RarityType<ZayinB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Gun;
             Item.autoReuse = true;
             Item.shoot = 10;
