@@ -14,11 +14,11 @@ namespace LobotomyCorp.Items.Ruina.Language
             // DisplayName.SetDefault("Penitence"); // By default, capitalization in classnames will damage spaces to the display name. You can customize the display name here by uncommenting this line.
             // Tooltip.SetDefault("\"And the many shells cried out one word, \"Manager\".\"");
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
-            EgoColor = LobotomyCorp.AlephRarity;
         }
 
-        public override void SetDefaults() 
-		{
+        public override void SetDefaults()
+        {
+            EgoColor = LobotomyCorp.AlephRarity;
             Item.damage = 265;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 40;

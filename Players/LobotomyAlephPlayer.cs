@@ -7,6 +7,7 @@ using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,6 +34,12 @@ namespace LobotomyCorp.Players
         public int DaCapoSilentMusicPhase = 0;
         public int DaCapoTotalDamage = 0;
 
+        public int[] GoldRushBrilliantBliss = { -1, -1, -1, -1, -1 };
+        public int GoldRushHappiness = 0;
+        public bool GoldRushHappinessBuff = false;
+        public bool GoldRushGreed = false;
+        public bool GoldRushRoadCooldown = false;
+
         public int TwilightSpecial = 10;
 
         public bool MimicryShell = false;
@@ -53,6 +60,11 @@ namespace LobotomyCorp.Players
         public override void ResetEffects()
         {
             DaCapoSilentMusic = false;
+
+            GoldRushHappinessBuff = false;
+            GoldRushRoadCooldown = false;
+            GoldRushGreed = false;
+
             MimicryShell = false;
             MimicryHusk = false;
             MimicryHuskDeficit = 0;
@@ -141,6 +153,87 @@ namespace LobotomyCorp.Players
                     Player.HealEffect((int)healing);
                 }
             }
+        }
+
+        public bool GoldRushApplyBliss(NPC n)
+        {
+            // If the enemy has Brilliant Bliss or Broken Bliss, return
+            if (n.GetGlobalNPC<LobotomyGlobalNPC>().GoldRushBrokenBlissBuff || n.GetGlobalNPC<LobotomyGlobalNPC>().GoldRushBlissBuff)
+                return false;
+
+            // Check for available slots
+            for (int i = 0; i < 5; i++)
+            {
+                // If the slot is active, Check if the npc is still alive
+                if (GoldRushBrilliantBliss[i] > -1)
+                {
+                    NPC npc = Main.npc[GoldRushBrilliantBliss[i]];
+                    // If the npc is dead or any other, remove this slot
+                    if (npc.life <= 0 || !npc.active || npc.dontTakeDamage || !npc.GetGlobalNPC<LobotomyGlobalNPC>().GoldRushBlissBuff)
+                    {
+                        GoldRushBrilliantBliss[i] = -1;
+                    }
+                }
+
+                // If the slot is inactive, apply Bliss and exit
+                if (GoldRushBrilliantBliss[i] == -1)
+                {
+                    GoldRushBrilliantBliss[i] = n.whoAmI;
+                    n.AddBuff(ModContent.BuffType<Bliss>(), 10);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool GoldRushHasBliss(NPC n)
+        {
+            for (int i = 0;i < 5; i++)
+            {
+                if (GoldRushBrilliantBliss[i] == n.whoAmI)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void GoldRushBreakBliss(NPC n, int cooldownReduction)
+        {
+            for (int i = 0; i <5; i++)
+            {
+                if (GoldRushBrilliantBliss[i] == n.whoAmI)
+                {
+                    GoldRushBrilliantBliss[i] = -1;
+                    GoldRushHappiness++;
+                    if (Player.HasBuff<Buffs.RoadOfGold>())
+                    {
+                        Player.buffTime[Player.FindBuffIndex(ModContent.BuffType<Buffs.RoadOfGold>())] -= cooldownReduction;
+                    }
+                    n.AddBuff(ModContent.BuffType<BrokenBliss>(), 600);
+                    GoldRushHold.DiamondDust(n.position + new Vector2(n.width / 2, -40), DustID.GoldCoin, 8, 10, 10, 1);
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/Greed_StrongAtk_Defensed") with { Volume = 0.2f }, n.Center);
+                    Player.Heal(10);
+                    return;
+                }
+            }
+        }
+
+        public bool GoldRushRoadOfGoldUsable()
+        {
+            bool has = false;
+            for (int i = 0; i < 5; i++)
+            {
+                int bliss = GoldRushBrilliantBliss[i];
+                if (bliss > -1)
+                {
+                    if (Main.npc[bliss].active && Main.npc[bliss].GetGlobalNPC<LobotomyGlobalNPC>().GoldRushBlissBuff)
+                        has = true;
+                    else
+                        GoldRushBrilliantBliss[i] = -1;
+                }
+            }
+            return has;
         }
 
         /// <summary>

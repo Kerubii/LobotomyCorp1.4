@@ -20,6 +20,8 @@ using LobotomyCorp.Players;
 using LobotomyCorp.Items.NonEgo;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Items.Ruina.Technology;
+using FullSerializer;
+using LobotomyCorp.Items.Ruina.Natural;
 
 namespace LobotomyCorp
 {
@@ -77,7 +79,12 @@ namespace LobotomyCorp
         public bool FragmentsFromSomewhereEnlightenment = false;
         public int FragmentsFromSomewherePlayer = -1;
 
+        public bool GoldRushBlissBuff = false;
+        public bool GoldRushBrokenBlissBuff = false;
+
         public bool HarmonyMusicalAddiction = false;
+
+        public bool InTheNameOfLoveAndHateVillain = false;
 
         public int LaetitiaGiftDamage = 0;
         public int LaetitiaGiftOwner = -1;
@@ -132,7 +139,12 @@ namespace LobotomyCorp
 
             FragmentsFromSomewhereEnlightenment = false;
 
+            GoldRushBlissBuff = false;
+            GoldRushBrokenBlissBuff = false;
+
             HarmonyMusicalAddiction = false;
+
+            InTheNameOfLoveAndHateVillain = false;
 
             MatchstickBurn = false;
 
@@ -387,6 +399,15 @@ namespace LobotomyCorp
                 if (DaCapoSilentMusicPhase > 4 && DaCapoSilentMusicPhase % 5 > 2)
                     modifiers.SourceDamage *= 0.9f;
             }
+
+            if (GoldRushBlissBuff)
+            {
+                modifiers.Defense.Flat += 5;
+            }
+            else if (GoldRushBrokenBlissBuff)
+            {
+                modifiers.Defense.Flat -= 10;
+            }
         }
 
         public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
@@ -488,6 +509,15 @@ namespace LobotomyCorp
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            if (InTheNameOfLoveAndHateVillain && Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateVillain == npc.whoAmI)
+            {
+                Texture2D mark = LobotomyCorp.VillainMark.Value;
+                Vector2 position = npc.position - Main.screenPosition + new Vector2(npc.width/2, 0);
+                float scale = 1.05f + 0.05f * (float)Math.Sin(Main.timeForVisualEffects / 120 * 6.34f);
+
+                spriteBatch.Draw(mark, position, mark.Frame(), Color.White * 0.8f, 0, mark.Frame().Size() / 2, scale, SpriteEffects.None, 0f);
+            }
+
             if (FragmentsFromSomewhereTentacles > 0f && Main.LocalPlayer.HeldItem.type == ModContent.ItemType<FragmentsFromSomewhereR>())
             {
                 spriteBatch.End();
@@ -559,6 +589,7 @@ namespace LobotomyCorp
                 LobotomyTethPlayer modTethPlayer = Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>();
                 LobotomyHePlayer modHePlayer = Main.LocalPlayer.GetModPlayer<LobotomyHePlayer>();
                 LobotomyWawPlayer modWawPlayer = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>();
+                LobotomyAlephPlayer modAlephPlayer = Main.LocalPlayer.GetModPlayer<LobotomyAlephPlayer>();
 
                 if (WingbeatIndicator > 0)
                 {
@@ -599,7 +630,7 @@ namespace LobotomyCorp
                         spriteBatch.Draw(texture, position, null, Color.White * opacity, rotation + 0.03f, origin, 1f, 0, 0);
                     }
                 }
-                
+
                 if (modWawPlayer.MagicBulletRequest == npc.whoAmI)
                 {
                     Texture2D texture = Mod.Assets.Request<Texture2D>("Misc/MagicBulletCircle").Value;
@@ -620,6 +651,32 @@ namespace LobotomyCorp
                     float scale = 1f + 0.2f * (float)Math.Sin(0.052f * Main.timeForVisualEffects);
 
                     spriteBatch.Draw(texture, position, null, Color.White * (0.5f + 0.2f * (float)Math.Sin(0.15f * Main.timeForVisualEffects)), 0f, texture.Size() / 2, scale, 0, 0);
+                }
+
+                if ((GoldRushBlissBuff && modAlephPlayer.GoldRushHasBliss(npc)) || GoldRushBrokenBlissBuff)
+                {
+                    Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/KingPortal/BrilliantBliss").Value;
+                    Vector2 position = npc.position - Main.screenPosition + new Vector2(npc.width / 2, -40);
+                    Color color = Color.White;
+                    if (GoldRushBrokenBlissBuff)
+                    {
+                        texture = Mod.Assets.Request<Texture2D>("Projectiles/KingPortal/BrokenBliss").Value;
+                        if (npc.HasBuff<BrokenBliss>())
+                        {
+                            int time = npc.buffTime[npc.FindBuffIndex(ModContent.BuffType<BrokenBliss>())];
+                            if (time < 60)
+                            {
+                                color *= (time / 60f);
+                            }
+                        }
+                        spriteBatch.Draw(texture, position, texture.Frame(), color, 0, texture.Size() / 2, 1f, SpriteEffects.None, 0f);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(texture, position, texture.Frame(), color, 0, texture.Size() / 2, 1f, SpriteEffects.None, 0f);
+                        Color lightColor = new Color(1f, 1f, 1f, 0.8f) * 0.4f;
+                        spriteBatch.Draw(texture, position, texture.Frame(), lightColor, 0, texture.Size() / 2, 1.1f + 0.1f * (float)Math.Sin(3.14f * Main.timeForVisualEffects / 120f), SpriteEffects.None, 0f);
+                    }
                 }
             }
 
@@ -706,7 +763,7 @@ namespace LobotomyCorp
         public bool WingbeatNear(NPC npc)
         {
             if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.History.WingbeatR>())
-                return Vector2.Distance(npc.Center, Main.LocalPlayer.Center) - (npc.width < npc.height ? npc.height/2 : npc.width/2) < 200;
+                return Vector2.Distance(npc.Center, Main.LocalPlayer.Center) - (npc.width < npc.height ? npc.height/2 : npc.width/2) < Projectiles.WingbeatR.WingbeatRDistance;
             return false;
         }
 

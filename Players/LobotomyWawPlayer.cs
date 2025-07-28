@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Aleph;
+using LobotomyCorp.Items.Ruina.Natural;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
@@ -43,8 +44,14 @@ namespace LobotomyCorp.Players
         public bool PleasureDebuff = false;
         public bool PleasureTail = false;
 
+        public bool LoveAndHateLove = false;
+        public bool LoveAndHateRegenBuff = false;
+        public bool LoveAndHateHatred = false;
+        public int LoveAndHateHysteria = 0;
+        public int LoveAndHateHysteriaDecay = 0;
         public int LoveAndHateArcanaCost = 0;
         public int LoveAndHateVillain = -1;
+        public int LoveAndHateArcanaCooldown = 0;
 
         public int MagicBulletNthShot = 0;
         public int MagicBulletRequest = -1;
@@ -56,10 +63,28 @@ namespace LobotomyCorp.Players
         public int SolemnLamentCooldown = 0;
         public float SolemnLamentFireRate = 0;
 
+        public bool SwordSharpenedBlessing = false;
+        public bool SwordSharpenedJustice = false;
+        public bool SwordSharpenedDespair = false;
+        public int SwordSharpenedImpaledCount = 0;
+
         public override void ResetEffects()
         {
             BlackSwanParryChance = 0;
             BlackSwanBrokenDream = false;
+
+            LoveAndHateLove = false;
+            LoveAndHateRegenBuff = false;
+            LoveAndHateHatred = false;
+            if (LoveAndHateArcanaCooldown > 0)
+            {
+                LoveAndHateArcanaCooldown--;
+            }
+            if (LoveAndHateVillain > -1)
+            {
+                if (!Main.npc[LoveAndHateVillain].HasBuff<Villain>())
+                    LoveAndHateVillain = -1;
+            }
 
             PleasureDebuff = false;
             PleasureTail = false;
@@ -102,6 +127,32 @@ namespace LobotomyCorp.Players
                 Player.manaRegenDelayBonus = 0;
                 Player.wingAccRunSpeed += 0.15f;
             }
+
+            LoveAndHateHysteriaUpdate();
+            if (LoveAndHateLove)
+            {
+                if (Main.netMode != NetmodeID.SinglePlayer)
+                {
+                    foreach (Player ally in Main.player)
+                    {
+                        if (ally.active && ally.whoAmI != Player.whoAmI && !ally.dead && ally.team == Player.team)
+                        {
+                            ally.AddBuff(ModContent.BuffType<LoveTeam>(), 5);
+                        }
+                    }
+                }
+            }
+            if (LoveAndHateArcanaCooldown > 0)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    int d = Dust.NewDust(Player.position, Player.width, Player.height, DustID.GemAmethyst);
+                    Main.dust[d].noGravity = true;
+                }
+                Player.statDefense -= 10;
+                Player.noItems = true;
+                Player.cursed = true;
+            }
         }
 
         public override void PostUpdate()
@@ -121,6 +172,10 @@ namespace LobotomyCorp.Players
 
         public override void UpdateLifeRegen()
         {
+            if (LoveAndHateRegenBuff)
+            {
+                Player.lifeRegen += 10;
+            }
             if (FaintAromaPetal > 0 && Player.lifeRegen < 0)
                 Player.lifeRegen = 0;
         }
@@ -158,7 +213,27 @@ namespace LobotomyCorp.Players
             {
                 Player.ApplyDamageToNPC(npc, hurtInfo.Damage, 0, Player.direction, false);
             }
+            if (LoveAndHateLove)
+            {
+                LoveAndHateHysteriaIncrease(hurtInfo.Damage);
+            }
         }
+
+        public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
+        {
+            if (LoveAndHateLove)
+            {
+                LoveAndHateHysteriaIncrease(hurtInfo.Damage);
+            }
+        }
+        /*
+        public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
+        {
+            if (LoveAndHateLove)
+            {
+                LoveAndHateHysteriaIncrease(-healValue);
+            }
+        }*/
 
         public override bool FreeDodge(Player.HurtInfo info)
         {
@@ -398,10 +473,77 @@ namespace LobotomyCorp.Players
             if (LoveAndHateArcanaCost < 0)
                 LoveAndHateArcanaCost = 0;
         }
-
+        /// <summary>
+        /// Change Arcana Slave cost to default
+        /// </summary>
         public void LoveAndHateCostReset()
         {
-            LoveAndHateArcanaCost = Player.statManaMax2;// + 200;
+            LoveAndHateArcanaCost = Player.statManaMax2 + 200;
+        }
+        public float LoveAndHateHysteriaPercent()
+        {
+            return Math.Min(LoveAndHateHysteria / (Player.statLifeMax2 / 2f), 1f);
+        }
+        /// <summary>
+        /// Increase or decrease Hysteria, If it goes over the limit, Hate is automatically applied to the Player
+        /// </summary>
+        /// <param name="amount"></param>
+        public void LoveAndHateHysteriaIncrease(int amount)
+        {
+            if (LoveAndHateHatred)
+                return;
+
+            LoveAndHateHysteria += amount;
+            if (LoveAndHateHysteria > Player.statLifeMax2 / 2)
+            {
+                LoveAndHateHysteria = Player.statLifeMax2 / 2;
+                Player.AddBuff(ModContent.BuffType<Hatred>(), 10);
+                LoveAndHateCostReset();
+            }
+            if (LoveAndHateHysteria < 0)
+                LoveAndHateHysteria = 0;
+            LoveAndHateHysteriaDecay = 60;
+        }
+        /// <summary>
+        /// Reset Hysteria back to 0, used after firing Arcana Slave under Hatred
+        /// </summary>
+        public void LoveAndHateHysteriaReset()
+        {
+            LoveAndHateHysteria = 0;
+            LoveAndHateHysteriaDecay = 0;
+        }
+        private void LoveAndHateHysteriaUpdate()
+        {
+            if (LoveAndHateHysteria <= 0)
+                return;
+
+            if (LoveAndHateHysteriaDecay > 0)
+                LoveAndHateHysteriaDecay--;
+            else
+            {
+                LoveAndHateHysteria--;
+                LoveAndHateHysteriaDecay = 60;
+            }
+        }
+
+        public void SwordSharpenedImpaledBy(Projectile proj, int damage)
+        {
+            if (damage > Player.statLife)
+                damage = Player.statLife - 1;
+            if (damage > 0)
+            {
+                Player.Hurt(new PlayerDeathReason(), damage, 0, false, false, -1, false, 0, 0, 0);
+            }
+
+            if (SwordSharpenedJustice)
+            {
+                SwordSharpenedImpaledCount++;
+                if (SwordSharpenedImpaledCount >= 3)
+                {
+                    SwordSharpenedImpaledCount = 0;
+                    //AddBuff
+                }
+            }
         }
     }
 }

@@ -38,7 +38,10 @@ namespace LobotomyCorp
     public class LobotomyCorp : Mod
     {
         public static Asset<Texture2D> ArcanaSlaveLaser = null;
+        public static Asset<Texture2D> ArcanaSlaveLaser2 = null;
         public static Asset<Texture2D> ArcanaSlaveBackground = null;
+        public static Asset<Texture2D> ArcanaSlaveBase = null;
+        public static Asset<Texture2D> VillainMark = null;
 
         public static Asset<Texture2D> KingPortal1 = null;
         public static Asset<Texture2D> KingPortal2 = null;
@@ -109,7 +112,10 @@ namespace LobotomyCorp
                 if (Main.netMode != NetmodeID.Server)
                 {
                     ArcanaSlaveLaser = Assets.Request<Texture2D>("Projectiles/QueenLaser/Laser", AssetRequestMode.ImmediateLoad);
+                    ArcanaSlaveLaser2 = Assets.Request<Texture2D>("Projectiles/QueenLaser/Laser2", AssetRequestMode.ImmediateLoad);
                     ArcanaSlaveBackground = Assets.Request<Texture2D>("Projectiles/QueenLaser/CircleBackground", AssetRequestMode.ImmediateLoad);
+                    ArcanaSlaveBase = Assets.Request<Texture2D>("Projectiles/QueenLaser/LaserBase", AssetRequestMode.ImmediateLoad);
+                    VillainMark = Assets.Request<Texture2D>("Misc/VillainMark", AssetRequestMode.ImmediateLoad);
                     KingPortal1 = Assets.Request<Texture2D>("Projectiles/KingPortal/KingPortal1", AssetRequestMode.ImmediateLoad);
                     KingPortal2 = Assets.Request<Texture2D>("Projectiles/KingPortal/KingPortal2", AssetRequestMode.ImmediateLoad);
                     KingPortal3 = Assets.Request<Texture2D>("Projectiles/KingPortal/KingPortal3", AssetRequestMode.ImmediateLoad);
@@ -125,7 +131,10 @@ namespace LobotomyCorp
                     Main.QueueMainThreadAction(() =>
                     {
                         PremultiplyTexture(ArcanaSlaveLaser.Value);
+                        PremultiplyTexture(ArcanaSlaveLaser2.Value);
                         PremultiplyTexture(ArcanaSlaveBackground.Value);
+                        PremultiplyTexture(ArcanaSlaveBase.Value);
+                        PremultiplyTexture(VillainMark.Value);
 
                         PremultiplyTexture(KingPortal1.Value);
                         PremultiplyTexture(KingPortal2.Value);

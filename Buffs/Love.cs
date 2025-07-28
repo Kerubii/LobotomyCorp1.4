@@ -25,17 +25,27 @@ namespace LobotomyCorp.Buffs
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
             tip += $"\n{Language.GetTextValue("Mods.LobotomyCorp.Buffs.Love.ArcanaSlaveCost", Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost)}";
+            tip += $"\n{Language.GetTextValue("Mods.LobotomyCorp.Buffs.Love.Hysteria", (int)(Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateHysteriaPercent() * 100))}";
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
+        public override bool PreDraw(SpriteBatch spriteBatch, int buffIndex, ref BuffDrawParams drawParams)
         {
-            string cost = "" + Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost;
+            LobotomyWawPlayer wawPlayer = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>();
+            string cost = "" + wawPlayer.LoveAndHateArcanaCost;
+            Texture2D texture = Mod.Assets.Request<Texture2D>("Buffs/Hatred").Value;
+            int length = (int)(30 * wawPlayer.LoveAndHateHysteriaPercent());
+            Rectangle frame = new Rectangle(0, 0, length, 32);
+            spriteBatch.Draw(texture, drawParams.Position, frame, drawParams.DrawColor, 0, new Vector2(0, 0), 1, 0, 0);
+            frame = new Rectangle(length, 0, 32 - length, 32);
+            spriteBatch.Draw(drawParams.Texture, drawParams.Position + new Vector2(length, 0), frame, drawParams.DrawColor, 0, new Vector2(0, 0), 1, 0, 0);
             DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.ItemStack.Value, cost, drawParams.TextPosition, drawParams.DrawColor, 0f, default(Vector2), 0.8f, (SpriteEffects)0, 0f);
+            return false;
         }
 
         public override void Update(Player player, ref int buffIndex)
         {
-            LobotomyZayinPlayer modPlayer = player.GetModPlayer<LobotomyZayinPlayer>();
+            LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
+            modPlayer.LoveAndHateLove = true;
             if (player.HeldItem.type != ModContent.ItemType<InTheNameOfLoveAndHateR>())
             {
                 player.DelBuff(buffIndex);

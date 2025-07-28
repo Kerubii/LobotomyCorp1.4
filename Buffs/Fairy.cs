@@ -1,5 +1,6 @@
 using LobotomyCorp.Players;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Buffs
@@ -8,6 +9,7 @@ namespace LobotomyCorp.Buffs
 	{
 		public override void SetStaticDefaults()
 		{
+            BuffID.Sets.CanBeRemovedByNetMessage[Type] = true;
 			// DisplayName.SetDefault("Fairy");
 			// Description.SetDefault("Under the Fairy's care");
 		}

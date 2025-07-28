@@ -1,4 +1,5 @@
-﻿using LobotomyCorp.ModSystems;
+﻿using LobotomyCorp.Buffs;
+using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
@@ -12,6 +13,8 @@ namespace LobotomyCorp.Projectiles
 {
 	public class WingbeatR : ModProjectile
 	{
+        public const int WingbeatRDistance = 400;
+
 		public override void SetStaticDefaults() {
             // DisplayName.SetDefault("Wingbeat");
         }
@@ -43,7 +46,7 @@ namespace LobotomyCorp.Projectiles
 
                 Projectile.localAI[0] = 1 + Main.rand.Next(2);
 
-                float distance = 200;
+                float distance = WingbeatRDistance;
                 foreach (NPC n in Main.npc)
                 {
                     if (n.active && !n.friendly && !n.dontTakeDamage && n.HasBuff<Buffs.Fairy>())
@@ -58,8 +61,9 @@ namespace LobotomyCorp.Projectiles
                         if (currDistance < distance)
                         {
                             distance = currDistance;
+                            float x = Math.Max(1f, distance / 200f);
                             delta.Normalize();
-                            Projectile.velocity = delta * Projectile.velocity.Length();
+                            Projectile.velocity = delta * Projectile.velocity.Length() * x;
                             Main.player[Projectile.owner].direction = Math.Sign(Projectile.velocity.X);
                         }
                     }
@@ -149,7 +153,7 @@ namespace LobotomyCorp.Projectiles
                     owner.velocity *= 0;
                     owner.immune = true;
                     owner.immuneNoBlink = true;
-                    owner.immuneTime = 2;
+                    owner.immuneTime = 6;
 
                     if (owner.itemTime > 5)
                     {
@@ -179,7 +183,7 @@ namespace LobotomyCorp.Projectiles
 
             owner.immune = true;
             owner.immuneNoBlink = true;
-            owner.immuneTime = 2;
+            owner.immuneTime = 5;
 
             //Main.NewText(Projectile.ai[1]);
         }
@@ -209,7 +213,7 @@ namespace LobotomyCorp.Projectiles
                     Main.player[Projectile.owner].GetModPlayer<LobotomyZayinPlayer>().WingbeatStoreHeal(heal);
                 }
             }
-            
+
             /*if (damageDone > 10)
             {
                 int heal = 0;
@@ -224,7 +228,21 @@ namespace LobotomyCorp.Projectiles
                 }
             }*/
             if (Projectile.ai[0] <= 15 && Projectile.ai[1] < 0)
+            {
                 Projectile.ai[1] = target.whoAmI;
+                if (Main.rand.NextBool(7))
+                {
+                    //Vector2 pos = Main.player[Projectile.owner].Center;
+                    //for (int i = 0; i < 16; i++)
+                    //{
+                    //    Dust d = Dust.NewDustPerfect(pos, DustID.Blood, new Vector2(4, 0).RotatedBy(6.28f * (i/16f)));
+                    //    d.noGravity = true;
+                    //}
+
+                    target.RequestBuffRemoval(ModContent.BuffType<Fairy>());
+                    Projectile.ai[1] = -1;
+                }
+            }
             else if (Main.player[Projectile.owner].itemTime > 5)
             {
                 Main.player[Projectile.owner].itemTime = 5;

@@ -16,7 +16,16 @@ namespace LobotomyCorp.Items.He
 
         public override void SetDefaults()
         {
-            Item.CloneDefaults(ItemID.Katana);
+            Item.autoReuse = true;
+            Item.useTurn = true;
+            Item.useAnimation = 20;
+            Item.knockBack = 3.5f;
+            Item.width = 34;
+            Item.height = 34;
+            Item.crit = 15;
+            Item.scale = 1f;
+            Item.value = Item.buyPrice(0, 10);
+
             Item.useStyle = 15;
             Item.damage = 32;
             Item.DamageType = DamageClass.Generic;

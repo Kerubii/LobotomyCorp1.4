@@ -27,6 +27,7 @@ namespace LobotomyCorp.NPCs.RedMist
             Projectile.height = 60;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 1200;
+            Projectile.penetrate = -1;
 
             Projectile.hostile = true;
             Projectile.friendly = false;

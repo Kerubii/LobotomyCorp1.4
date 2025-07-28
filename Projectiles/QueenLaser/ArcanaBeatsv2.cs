@@ -1,11 +1,13 @@
 ﻿using System;
-using LobotomyCorp.Items.Ruina.Natural;
-using LobotomyCorp.Items.Waw;
+using System.Collections.Generic;
+using LobotomyCorp.Buffs;
 using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using rail;
+using ReLogic.Content;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -15,203 +17,335 @@ namespace LobotomyCorp.Projectiles.QueenLaser
 {
 	public class ArcanaBeatsv2 : ModProjectile
 	{
+        public override void SetStaticDefaults() {
+            // DisplayName.SetDefault("Arcana Slave");
+        }
+
         public override void SetDefaults()
         {
-            Projectile.width = 16;
-            Projectile.height = 16;
+            Projectile.width = 125;
+            Projectile.height = 125;
             Projectile.aiStyle = -1;
             Projectile.penetrate = -1;
             Projectile.scale = 1f;
-            Projectile.timeLeft = 300;
+            Projectile.timeLeft = 600;
 
+            Projectile.alpha = 255;
             Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = false;
             Projectile.friendly = true;
-        }    
-            
+            Projectile.localNPCHitCooldown = -1;
+            Projectile.usesLocalNPCImmunity = true;
+        }
+
+        private bool channel = false;
+
         public override void AI() {
-            Projectile.localAI[1]++;
-            Player player = Main.player[Projectile.owner];
-            Vector2 mountedCenter = player.RotatedRelativePoint(player.MountedCenter, true);
-            Vector2 targetPos = mountedCenter - new Vector2(40 * player.direction, 10 * (float)Math.Sin(MathHelper.ToRadians(1 * Projectile.localAI[1])));
-            Vector2 delta = targetPos - Projectile.Center;
+            Player owner = Main.player[Projectile.owner];
 
-            if (delta.LengthSquared() > 4 * 4)
-                Projectile.velocity = (delta * 0.1f);
-            else
-                Projectile.velocity = delta;
-
-            if (Projectile.ai[0] != 0)
+            // Right click Channeling system
+            if (Projectile.ai[0] == 0)
             {
-                player.heldProj = Projectile.whoAmI;
+                if (owner.controlUseItem && owner.altFunctionUse == 2)
+                    channel = true;
+                Projectile.ai[0]++;
+            }
+            else if (Main.myPlayer == Projectile.owner)
+            {
+                if (Main.mouseRightRelease || !Main.mouseRight || Projectile.timeLeft < 60)
+                {
+                    channel = false;
+                }
             }
 
-            Projectile.spriteDirection = Projectile.direction = player.direction;
-            if (Projectile.ai[0] == 0) // Follow player from behind
+            if (channel)
             {
+                Projectile.ai[1]++;
+                owner.itemTime = owner.itemAnimation = owner.itemAnimationMax;
                 if (Projectile.alpha > 0)
                 {
-                    Projectile.alpha -= 20;
+                    Projectile.alpha -= 8;
                     if (Projectile.alpha < 0)
                         Projectile.alpha = 0;
                 }
-                Projectile.rotation = -1.57f - .3f * Projectile.direction;
-                if (player.HeldItem.type != ModContent.ItemType<InTheNameOfLoveAndHateR>())
+                if (Main.myPlayer == Projectile.owner)
                 {
-                    Projectile.Kill();
-                    Projectile.alpha = 255;
+                    float rot = (Main.MouseWorld - owner.Center).ToRotation();
+                    Projectile.velocity = new Vector2(12, 0).RotatedBy(rot);
+                    if (Projectile.velocity.X > 0)
+                        owner.direction = 1;
+                    else
+                        owner.direction = -1;
                 }
-                if (Projectile.ai[1] > 0)
-                    Projectile.ai[1] --;
-                if (Projectile.ai[1] <= 0 && player.itemAnimation > 0)
+            }
+            else
+            {
+                if (Projectile.ai[1] > 30)
                 {
-                    Projectile.ai[0]++;
-                    Projectile.ai[1] = player.itemAnimationMax;
-
-                    Projectile.alpha = 255;
-
-                    for (int i = 0; i < 25; i++)
+                    if (Projectile.ai[2] == 0)
                     {
-                        //62 x 124
-                        Dust.NewDust(Projectile.Center - new Vector2(31, 62), 62, 124, DustID.GemAmethyst);
+                        if (Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().LoveAndHateHatred)
+                            SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/MagicalGirl_SnakeAtk_gun") with { Volume = 0.2f }, owner.Center);
+                        else
+                            SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/MagicalGirl_Gun") with { Volume = 0.2f }, owner.Center);
+                    }
+
+                    float rand = Main.rand.NextFloat(0, 1.57f);
+                    for (int i = 0; i <= 24; i++)
+                    {
+                        Vector2 norm = new Vector2(0.5f * (float)Math.Cos(6.28f * i / 25f), 1 * (float)Math.Sin(6.28f * i / 25f)).RotatedBy(Projectile.velocity.ToRotation());
+                        Vector2 pos = Projectile.Center + norm * 8;
+                        Vector2 vel = norm * 8;
+                        Dust d = Dust.NewDustPerfect(pos, DustID.GemAmethyst, vel);
+                        d.noGravity = true;
+                        vel = norm * 6;
+                        d = Dust.NewDustPerfect(pos, DustID.GemAmethyst, vel);
+                        d.noGravity = true;
+                    }
+                    Projectile.ai[1] = 29;
+                    Projectile.ai[2] = 1;
+                    if (owner.GetModPlayer<LobotomyWawPlayer>().LoveAndHateHatred)
+                    {
+                        Projectile.ai[2] = 3;
+                    }
+                }
+                else
+                {
+                    if (Projectile.ai[2] > 0)
+                    {
+                        Projectile.frameCounter++;
+                        if (Projectile.frameCounter > 3)
+                        {
+                            Projectile.frame++;
+                            Projectile.frameCounter = 0;
+                        }
+                        if (Projectile.ai[1] > 20)
+                        {
+                            //Create a splash of Dust
+                            for (int i = 0; i < 10; i++)
+                            {
+                                int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.GemAmethyst, Projectile.velocity.X, Projectile.velocity.Y);
+                                Main.dust[d].noGravity = true;
+                            }
+                        }
+                        if (Projectile.ai[2] > 2)
+                        {
+                            Projectile.ai[0] += 60;
+
+                            Vector2 normVel = Vector2.Normalize(Projectile.velocity);
+                            bool collide = false;
+                            for (float i = 0; i <= Projectile.ai[0]; i += 5f)
+                            {
+                                var start = Projectile.Center + normVel * i;
+                                if (!Collision.CanHit(Projectile.Center, 1, 1, start, 1, 1))
+                                {
+                                    for (int j = 0; j < 3; j++)
+                                    {
+                                        Dust.NewDust(start - new Vector2(15, 15), 30, 30, DustID.GemAmethyst, -normVel.X * 2f, -normVel.Y * 2f);
+                                    }
+                                    collide = true;
+                                    Projectile.ai[0] = i - 5f;
+                                    break;
+                                }
+                            }
+                            if (!collide)
+                            {
+                                for (int i = 0; i < 10; i++)
+                                {
+                                    Dust.NewDust(Projectile.Center + normVel * Projectile.ai[0] - new Vector2(15, 15), 30, 30, DustID.GemAmethyst, 0, 0);
+                                }
+                            }
+                        }
+                    }
+
+                    Projectile.ai[1]--;
+                    if (Projectile.ai[1] < 0)
+                    {
+                        Projectile.alpha += 25;
+                        if (Projectile.alpha > 255)
+                        {
+                            Projectile.alpha = 255;
+                            Projectile.Kill();
+                        }
                     }
                 }
             }
-            else if (Projectile.ai[0] == 1) // Arcana Swing
+            Projectile.Center = owner.MountedCenter + new Vector2(73, 0).RotatedBy(Projectile.velocity.ToRotation());
+            Projectile.spriteDirection = Projectile.direction = owner.direction;
+
+            Projectile.rotation += MathHelper.ToRadians(1);
+            if (Projectile.rotation > (float)Math.PI * 2)
+                Projectile.rotation -= (float)Math.PI * 2;
+        }
+
+        public override bool ShouldUpdatePosition()
+        {
+            return false;
+        }
+
+        public override void ModifyDamageHitbox(ref Rectangle hitbox)
+        {
+            Vector2 move = Vector2.Normalize(Projectile.velocity) * 50;
+            hitbox.X += (int)move.X;
+            hitbox.Y += (int)move.Y;
+        }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            LobotomyWawPlayer wawPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>();
+            if (wawPlayer.LoveAndHateVillain == target.whoAmI || (target.realLife > -1 && wawPlayer.LoveAndHateVillain == target.realLife))
             {
-                if (Projectile.ai[1] < 5)
-                { 
-                    Projectile.alpha += 51;
-                    if (Projectile.alpha > 255)
-                        Projectile.alpha = 255;
-                }
-                else
-                {
-                    Projectile.alpha -= 51;
-                    if (Projectile.alpha < 0)
-                        Projectile.alpha = 0;
-                }
-
-                float time = Projectile.ai[1] / player.itemAnimationMax;
-                Projectile.rotation = Projectile.direction > 0 ? 0 : 90;
-                if (time > .3f)
-                {
-                    time = 1f - (time - .3f) / .7f;
-                    Projectile.rotation += -130 + 270 * (float)Math.Sin(time * 1.57f) * Projectile.direction;
-                    Projectile.rotation = MathHelper.ToRadians(Projectile.rotation);
-                }
-                else
-                {
-                    Projectile.rotation += -130 + 270 * Projectile.direction;
-                    Projectile.rotation = MathHelper.ToRadians(Projectile.rotation);
-                }
-
-                Projectile.ai[1]--; // Attack Speed
-                //player.itemTime = player.itemAnimation = player.itemAnimationMax;
-                Projectile.ai[2]++; // Arcana Beats Charge
-
-                if (Projectile.ai[1] == 1 && player.channel)
-                {
-                    Projectile.ai[1] = player.itemAnimationMax;
-                }
-                else if (Projectile.ai[1] == 0)
-                {
-                    Projectile.ai[0] = 0;
-                    Projectile.ai[1] = player.itemAnimation = player.itemTime = (int)(player.itemAnimationMax * 1.5f);
-                }
+                modifiers.FinalDamage *= 1.1f;
             }
-            else // Arcana Beats
-            {
-                if (player.itemAnimation < 5)
-                {
-                    Projectile.alpha += 51;
-                    if (Projectile.alpha > 255)
-                        Projectile.alpha = 255;
-                }
-                else
-                {
-                    Projectile.alpha -= 51;
-                    if (Projectile.alpha < 0)
-                        Projectile.alpha = 0;
-                }
-
-                if (Main.myPlayer == Projectile.owner)
-                {
-                    Projectile.rotation = Vector2.Normalize(Main.MouseWorld - mountedCenter).ToRotation();
-                }
-
-                if (player.itemAnimation == 1)
-                {
-                    Projectile.ai[0] = 0;
-                }
-            }
-
-            Projectile.timeLeft = 300;
+        }
+        public override bool? CanHitNPC(NPC target)
+        {
+            if ((Projectile.ai[1] > 20 && Projectile.ai[2] > 0) || Projectile.ai[2] > 2)
+                return base.CanHitNPC(target);
+            return false;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            //Player owner = Main.player[Projectile.owner];
-            Texture2D texture = TextureAssets.Item[ModContent.ItemType<InTheNameOfLoveAndHateR>()].Value;
-            float rot = Projectile.rotation;
-            if (Projectile.spriteDirection < 0)
-                rot -= MathHelper.ToRadians(180);
+            Texture2D texture = LobotomyCorp.ArcanaSlaveBackground.Value;
+            float rot = Projectile.velocity.ToRotation();
             Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
-            Vector2 origin = texture.Size() / 2;
-            Rectangle frame = texture.Frame();
-            Vector2 scale = new Vector2(1, 1);
-            Color color = lightColor * (1f - Projectile.alpha / 255f);
-            if (Projectile.ai[0] != 0)
-            {
-                origin = new Vector2(10, frame.Height / 2);
-                if (Projectile.spriteDirection < 0)
-                {
-                    origin.X = frame.Width - origin.X;
-                }
-                Player player = Main.player[Projectile.owner];
-                Vector2 mountedCenter = player.RotatedRelativePoint(player.MountedCenter, true);
-                position = mountedCenter + new Vector2(60, 0).RotatedBy(Projectile.rotation) - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
-            }
-            Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, scale, Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            
+            Vector2 origin = new Vector2(61, 61);
+            Rectangle frame = new Rectangle(0, 0, 122, 122);
+            Vector2 scale = new Vector2(0.5f, 1f);
+            Color color = Color.White * (1 - ((float)Projectile.alpha / 255));
 
-            
-            /*
-            texture = LobotomyCorp.ArcanaSlaveBackground.Value;
-            rot = Projectile.velocity.ToRotation();
-            position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
-            origin = new Vector2(61, 61);
-            frame = new Rectangle(0, 0, 122, 122);
-            scale = new Vector2(0.5f, 1f);
-            color = Color.White * (1 - ((float)Projectile.alpha / 255));
-
-            
             float mult = 1f;
-            MultRange(ref mult,  10, 30);
-            Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color * 0.5f, rot, origin, (scale + new Vector2(0.03f + 0.02f * (float)Math.Sin(Projectile.rotation))) * mult * 0.5f, SpriteEffects.None, 0);
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-            var rotateShader = GameShaders.Misc["LobotomyCorp:Rotate"];
-            rotateShader.UseShaderSpecificData(LobotomyCorp.ShaderRotation(Projectile.rotation / (2 * (float)Math.PI)));
-            rotateShader.Apply(null);
-
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1Color").Value;
+            MultRange(ref mult, 0, 13);
             Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, (scale + new Vector2(0.03f + 0.02f * (float)Math.Sin(Projectile.rotation))) * mult, SpriteEffects.None, 0);
 
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+
+            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1Color").Value;
+            DrawData circle = new DrawData(texture, position, frame, color, rot, origin, (scale + new Vector2(0.03f + 0.02f * (float)Math.Sin(Projectile.rotation))) * mult, SpriteEffects.None, 0);
+
+            var rotateShader = GameShaders.Misc["LobotomyCorp:Rotate"];
+            float rotateprog = Projectile.rotation / (2 * (float)Math.PI);
+            rotateShader.UseShaderSpecificData(LobotomyCorp.ShaderRotation(rotateprog));
+            rotateShader.UseOpacity(1f);
+            //Main.NewText(Projectile.rotation / (2 * (float)Math.PI));
+            rotateShader.Apply();
+
+            Main.EntitySpriteDraw(circle);
+
             texture = TextureAssets.Projectile[Projectile.type].Value;
-            Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, SpriteEffects.None, 0);
+            circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, SpriteEffects.None, 0);
+            //rotateShader.Apply(null);
+            Main.EntitySpriteDraw(circle);
+
+            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/ArcanaBeatsInner").Value;
+            circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, Projectile.spriteDirection > 0 ? 0 : SpriteEffects.FlipVertically, 0);
+            rotateShader.UseShaderSpecificData(LobotomyCorp.ShaderRotation(0));
+            rotateShader.Apply();
+            Main.EntitySpriteDraw(circle);
+
+            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1Outer").Value;
+            MultRange(ref mult, 6, 24);
+            circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, SpriteEffects.None, 0);
+
+            rotateShader.UseShaderSpecificData(LobotomyCorp.ShaderRotation(1f - rotateprog));
+            rotateShader.Apply(null);
+                        
+            Main.EntitySpriteDraw(circle);
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.TransformationMatrix);
-            */
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+
+            if (Projectile.ai[2] > 2 && Projectile.ai[1] >= 5)
+            {
+                position = Projectile.Center - Main.screenPosition + new Vector2(20, 0).RotatedBy(rot) + new Vector2(0, Projectile.gfxOffY);
+                float alpha = 1f;
+                MultRange(ref mult, 0, 10);
+                Vector2 laserScale = new Vector2(mult, 1f) * Projectile.scale;
+
+                texture = MiniLaser.MiniLaserTexture;
+                Rectangle baseFrame = new Rectangle(0, 8, 36, 40);
+                Main.EntitySpriteDraw(texture, position, baseFrame, Color.White * alpha * (1 - ((float)Projectile.alpha / 255)), rot + 1.57f, baseFrame.Size() / 2, laserScale, 0, 0);
+
+                float step = 8f * laserScale.X;
+                laserScale.X *= 0.8f;
+                for (float i = 28; i <= Projectile.ai[0]; i += step)
+                {
+                    Vector2 normVel = Vector2.Normalize(Projectile.velocity);
+                    Color c = Color.White;
+                    origin = Projectile.Center + i * normVel;
+                    Main.EntitySpriteDraw(texture, origin - Main.screenPosition,
+                        new Rectangle(0, 0, 36, 8), Color.White * alpha * (1 - ((float)Projectile.alpha / 255)), rot + 1.57f,
+                        new Vector2(18, 4), laserScale, 0, 0);
+                }
+            }
+
+            if (Projectile.ai[2] > 0 && Projectile.frame < 4)
+            {
+                texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/ArcanaBeatsBlast2").Value;
+                frame = texture.Frame(1, 4, 0, Projectile.frame);
+                origin = new Vector2(76, 160);
+                Main.EntitySpriteDraw(texture, position, frame, color, rot + 1.57f, origin, Projectile.scale, SpriteEffects.None, 0);
+            }
+
             return false;
         }
 
-        public override bool? CanHitNPC(NPC target)
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-            return false;
+            LobotomyWawPlayer wawPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>();
+            if (Projectile.ai[2] == 1 || Projectile.ai[2] == 3)
+            {
+                if (target.realLife > -1)
+                    target = Main.npc[target.realLife];
+                target.AddBuff(ModContent.BuffType<Villain>(), 6000);
+                wawPlayer.LoveAndHateVillain = target.whoAmI;
+                Projectile.ai[2]++;
+            }                
+            if (Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<Circle1>()] == 0)
+            {
+                wawPlayer.LoveAndHateArcanaCost -= 5;
+                if (wawPlayer.LoveAndHateArcanaCost < 5)
+                    wawPlayer.LoveAndHateArcanaCost = 5;
+            }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            if (Projectile.ai[2] < 3)
+                return base.Colliding(projHitbox, targetHitbox);
+
+            bool hit = false;
+            if (Projectile.ai[1] > 20)
+            {
+                ModifyDamageHitbox(ref projHitbox);
+                hit = projHitbox.Intersects(targetHitbox);
+            }
+            if (!hit)
+            {
+                Vector2 unit = Vector2.Normalize(Projectile.velocity);
+                float point = 0f;
+                // Run an AABB versus Line check to look for collisions, look up AABB collision first to see how it works
+                // It will look for collisions on the given line using AABB
+                hit = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center,
+                    Projectile.Center + unit * Projectile.ai[0], 22, ref point);
+            }
+            return hit;
+        }
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+        {
+            overPlayers.Add(index);
+        }
+
+        private void MultRange(ref float mult , float min, float max)
+        {
+            if (Projectile.ai[1] < min)
+                mult = 0;
+            else if (Projectile.ai[1] > max)
+                mult = 1;
+            else
+                mult = (Projectile.ai[1] - min) / (max - min);
         }
     }
 }

@@ -270,6 +270,8 @@ namespace LobotomyCorp.NPCs.RedMist
                         Timer = 0;
                         NPC.dontTakeDamage = false;
                         NPC.netUpdate = true;
+                        // Multiplayer sometimes spawns her with lower HP, this is here to circumvent that
+                        NPC.life = NPC.lifeMax;
                     }
                 }
                 // Follow Mode
@@ -460,6 +462,7 @@ namespace LobotomyCorp.NPCs.RedMist
                         AiState = FollowState;
                         GoldRushCount++;
                         Timer = 0;
+                        NPC.netUpdate = true;
                     }
                 }
             }
@@ -1108,7 +1111,6 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(320 * NPC.spriteDirection, 0), Vector2.Zero, ModContent.ProjectileType<RoadOfGold>(), 0, 0, -1, -1, 5);
                 }
-
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Start") with { Volume = 0.25f }, NPC.position);
             }
             //GoldRush Charging
@@ -1157,6 +1159,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     ChangeAnimation(AnimationState.Idle1);
                     AiState = 0;
                     Timer = 0;
+                    NPC.netUpdate = true;
                 }
             }
 
@@ -1688,6 +1691,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     ChangeAnimation(AnimationState.Idle1);
                     AiState = 0;
                     Timer = 0;
+                    NPC.netUpdate = true;
                 }
             }
 
@@ -1706,6 +1710,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     NPC.ai[0] = 3;
                     AiState = 0;// -60;
                     Timer = 0;
+                    NPC.netUpdate = true;
                 }
                 if (Timer == 30)
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase3_Change") with { Volume = 0.5f }, NPC.position);
@@ -3931,6 +3936,31 @@ namespace LobotomyCorp.NPCs.RedMist
 
             if ((NPC.Center - Main.player[projectile.owner].Center).Length() > max)
                 SoundEngine.PlaySound(SoundID.NPCHit43, NPC.Center);
+        }
+
+        public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+        {
+            if (!LobEventFlags.downedRedMist)
+            {
+                bool reduce = false;
+                if (Phase == 0)
+                {
+                    if (AiState == 5 || AiState == 6 || AiState == SwitchPhase)
+                        reduce = true;
+                }
+                if (Phase == 1)
+                {
+                    if (AiState == SpecialAttackStart || AiState == SpecialAttackStart + 1 || AiState == SwitchPhase)
+                        reduce = true;
+                }
+                if (Phase == 2)
+                {
+                    if (AiState == 6 || AiState == 7 || AiState == 8 || AiState == SwitchPhase)
+                        reduce = true;
+                }
+                if (reduce)
+                    modifiers.FinalDamage *= 0;
+            }
         }
 
         private void fighterAI(Terraria.DataStructures.NPCAimedTarget target, float EffectiveRange, float speed, float maxSpeed)

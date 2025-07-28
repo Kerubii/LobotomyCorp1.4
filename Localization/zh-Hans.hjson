@@ -815,7 +815,10 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Fire rate increased
-					Sometimes converts Ammo into Butterflies
+					Needs to be reloaded first
+					Reloads after a few seconds of not firing or when emptying a clip
+					Right click for faster fire rate and empty the clip
+					Converts ammo into Butterflies
 					''' */
 				// ManaTooltip: Black gun costs {0} Mana instead of using ammo
 				DisplayName: 圣宣
@@ -974,13 +977,6 @@ Mods: {
 				// Tooltip: I am coming to you. You, who will be reduced to ash like me.
 				/* PassiveList:
 					'''
-					Warmth of a Flame - 400% damage on fourth use
-					Fourth Match - Alternate attack makes you explode on fourth use that deals 4000% increased damage
-					Matchlight - 16% increased damage while on fire
-					|Scorching Embers - Sets self on fire every fourth use
-					''' */
-				/* PassiveListRework:
-					'''
 					Warmth of a Flame - 400% damage on fourth use, Inflict Scorching Embers
 					Matchlight - Inflicts 'On Fire'. 16% increased damage while user is 'On Fire'
 					Scorching Embers - Increases damage taken from on fire debuffs. Counts as 'On Fire'
@@ -991,13 +987,6 @@ Mods: {
 			ForgottenR: {
 				DisplayName: 忘却
 				Tooltip: 它的记忆始于一个温暖的拥抱。
-				/* PassiveOld:
-					'''
-					Display of Affection - Attacking the same enemy three times in a row marks them, unmarks enemies when far away or switching weapons
-					Happy Memories - Attacking the same enemy in a row gives 1% increased contact damage resistance against them, up to 40%. Lost when switching targets
-					Nostalgic Embrace - Alternate attack to hug a marked enemy for a short while based on Happy Memories, become invincible if Happy Memories is max.
-					|Unattended - After marking an enemy, Unable to hit any other enemies other than the marked enemy
-					''' */
 				PassiveList:
 					'''
 					谨慎示爱-连续攻击同一个敌人时第三次会标记他们，距离过远或切换武器时取消标记。
@@ -1093,7 +1082,7 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					Ends, Begins, Ends - The third succesful attack inflicts 'Metallic Ringing' on the first enemy hit
-					Metallic Ringing - Reduces defense and creates shockwaves when hit
+					Metallic Ringing - Reduces defense and creates shockwaves when hit with this E.G.O
 					Violence - Minimum and maximum damage variance is decreased and increased respectively by 20% and 50%
 					Chained Wrath - Alternate attack to convert increased movement speed to increased damage (50% conversion), Removed while on a mount or minecart
 					|Binding Jacket - 'Chained Wrath' buff is removed while having any form of debuff
@@ -1300,7 +1289,7 @@ Mods: {
 					An Eternal Farewell - Heal the nearest, most injured ally on hit
 					A Token of Friendship - Allies healed by this weapon gain a Pebble, Removing a Pebble costs 25% of your maximum health
 					Pebble - Gain increased life regeneration based on how many other allies have Pebble, Effect is nullified under Potion Sickness
-					|Teardrop - If an ally loses a Pebble, all allies with Pebble take 25% of their maximum health as damage.
+					|Teardrop - If an ally loses a Pebble, all allies with Pebble take 25% of their maximum health as damage
 					''' */
 			}
 
@@ -1438,14 +1427,13 @@ Mods: {
 				// Tooltip: In the name of Love and Justice~ Here comes Magical Girl!
 				/* PassiveList:
 					'''
-					Arcana Slave = Alternate attack summons a laser of Love and Justice, costs {0} mana (unaffected by mana cost reduction)
-					Arcana Beats - If unable to use 'Arcana Slave', Alternate attack to mark an Enemy as a 'Villain' if it does not exist
-					Villain - Takes 25% increased damage from this EGO, only 1 Villain can exist at a time
-					Justice - Attacking 'Villain' reduces Arcana Slave cost. Arcana Slave cost resets when used
-					Love - Attacks give nearby allies life regeneration, disabled while Hate is active
-					|Hate - Under 50% health until reaching 75% health, attacks are changed to lasers. Recieve 25% more damage while held
-					Hysteria - Arcana Slave lasts longer and can be aimed under 'Hate', Temporarily unable to use items afterwards
-					This Item is incomplete and unobtainable
+					Arcana Slave - Alternate attack summons a laser of Love and Justice, costs {0} mana (Unaffected by mana cost reduction)
+					Arcana Beats - If unable to use 'Arcana Slave', Charge up Alternate attack to mark the first enemy hit as a 'Villain'
+					Villain - Takes 10% more damage from this EGO, only 1 Villain can exist at a time
+					Justice - Attacking 'Villain' reduces 'Arcana Slave' cost by 5. 'Arcana Slave' cost resets when used
+					Love - Attacks give nearby allies life regeneration, disabled while 'Hate' is active
+					|Hysteria - Taking enough damage activates 'Hate'. 'Arcana Slave' cost resets when 'Hate' is activated
+					Hate - Attacks become lasers. While using 'Arcana Slave', It can be aimed, Temporarily lose defense, become cursed and lose 'Hate'
 					''' */
 				// DisplayName: In The Name Of Love And Hate
 			}
@@ -1454,15 +1442,15 @@ Mods: {
 				// ItemTooltip: ...Sadness says: 'Begone, pass away!' But greed seeks eternity... seeks deep, deep eternity.
 				/* PassiveList:
 					'''
-					Road of the King - Alternate attack to break all 'Fragments of Bliss', Becoming invincible and hit each enemy sequentially
-					Fragment of Bliss - Increases defense until broken, Reduces defense while broken. Up to 5 unbroken Fragment can be active
-					Intemperance - Critical hits heal 10% of its damage and applies a 'Fragment of Bliss'
-					Happiness - Increased damage after breaking a 'Fragment of Bliss' and heal 10 health
-					|Voracity - When activating 'Road of King' under 50% health, gain 'Greed' instead
-					Greed - 'Road of King' costs 50 health and rushes through enemies 
+					Road of the King - Alternate attack to target all 'Fragment of Bliss' and additional nearest enemies (Up to 5). 30 second cooldown
+					Intemperance - Critical hits apply a 'Fragment of Bliss', Only 5 enemies can have 'Fragment of Bliss'
+					Fragment of Bliss - +5 defense. Reduces 'Road of King' cooldown, heals 10 health and -10 defense when broken
+					Happiness - 5% increased damage for each 'Fragment of Bliss' broken with 'Road of the King'
+					|Voracity - When activating 'Road of King' under 50% health, Gain 'Greed' instead 'Happiness' for 1 minute
+					Greed - This E.G.O gains 300% increased damage. 'Road of King' costs up to 50 health with no cooldown
 					''' */
 				// Tooltip: ""
-				// DisplayName: Gold Rush R
+				// DisplayName: Gold Rush
 			}
 
 			#Social
@@ -1644,7 +1632,7 @@ Mods: {
 
 			MagicBulletBullet: {
 				// Tooltip: ""
-				// DisplayName: Magic Bullet Bullet
+				// DisplayName: Magic Bullet
 			}
 		}
 
@@ -1736,43 +1724,6 @@ Mods: {
 					Laced with Grief - Attacks deal additional 20% of the enemy's maximum health and ignores defense (2% of health if a boss)
 					Despair... - If a sword misses, it impales the user dealing 20% of your maximum health and remains impaled
 					Sword that Pierces Despair - If all four swords impale the user, die
-					''' */
-			}
-
-			GoldRush: {
-				ItemTooltip: “‘去死吧，消失吧!‘悲伤说道。然而欲望是想要永生，永远不可摧毁的永生。“
-				PassiveList:
-					'''
-					闪金之路/暴君之路-右键摧毁所有幸福碎片，创建一个穿越双方的传送门入口并依次传送。
-					闪耀的幸福-被攻击的敌人被给予辉煌的幸福碎片。
-					放纵-致命一击治疗其10%的伤害并暂时降低敌人的防御力
-					|贪婪-在50%生命值下，降低40%攻击速度和移动，获得30%暴击几率，闪金之路只针对1个敌人。
-					'''
-				/* PassiveList2:
-					'''
-					Brilliant Bliss - Hit enemies gain 'Brilliant Bliss', only 5 can be active at a time. If an enemy dies it stays on its current spot
-					Road of Gold - Alternate attack to destroy all 'Brilliant Bliss', Teleporting through them sequentially
-					Intemperance - Critical hits heal 5% of its damage and reduces enemy defense
-					Happineess - Gain damage reduction based on current health
-					|Greed - Gain increased damage while health is low
-					Momentary Bliss - Under 50% health, all 'Brilliant Bliss' is destroyed and temporarily transform this EGO, changing its effects
-					''' */
-				/* PassiveList3:
-					'''
-					Happiness! - Gain damage reduction based on current health 
-					A Real Magical Girl - After reaching maximum health, transform this EGO to normal
-					|Road of the King - Alternate attack to teleport to an area, costs {0} health
-					Greed - Gain increased damage while health is low
-					Voracity - Lose heatlh while attacking but gain health on hit
-					''' */
-				/* PassiveList4:
-					'''
-					Road of the King - Alternate attack to break all 'Fragments of Bliss', Becoming invincible and hit each enemy sequentially
-					Fragment of Bliss - Increases defense until broken, Reduces defense while broken. Up to 5 unbroken Fragment can be active
-					Intemperance - Critical hits heal 10% of its damage and applies a 'Fragment of Bliss'
-					Happiness - Increased damage after breaking a 'Fragment of Bliss' and heal 10 health
-					|Voracity - When activating 'Road of King' under 50% health, gain 'Greed' instead
-					Greed - 'Road of King' costs 50 health and rushes through enemies 
 					''' */
 			}
 
@@ -2131,7 +2082,7 @@ Mods: {
 					'''
 					No Fear for Death - Channeling the attack holds a stance. When released before being hit, kill nearby projectiles and do a Counter attack
 					Mortal Life - Successful counters deal additional true damage equal to missing health and increased radius
-					Inspired Bravery - After successfully countering an attack, applies a buff that enhances movement speed, melee swing speed and counter damage by 10% and improves this EGO
+					Inspired Bravery - After successfully countering an attack, applies a buff that enhances movement speed, melee swing speed and counter damage by 10% and improves this E.G.O
 					|Reckless Foolishness - Failing to counter any attack for a period of time decreases damage reduction up to 15%
 					''' */
 			}
@@ -2926,6 +2877,16 @@ Mods: {
 			// HornThrown.DisplayName: Horn Thrown
 			// FragmentsFromSomewhereCut.DisplayName: Fragments From Somewhere Cut
 			// StarShot2.DisplayName: Star Shot2
+			// ItnolahVisual.DisplayName: Itnolah Visual
+			// GoldRushFlurryR.DisplayName: Gold Rush Flurry R
+			// GoldRushRoadOfGold.DisplayName: Gold Rush Road Of Gold
+			// RoadOfGoldPlayer.DisplayName: Road Of Gold Player
+			// GoldRushEffect.DisplayName: Gold Rush Effect
+			// GoldRushFlurryRAlt.DisplayName: Gold Rush Flurry R Alt
+			// RoadOfKingPlayer.DisplayName: Road Of King Player
+			// GoldRushRoadOfGoldAlt.DisplayName: Gold Rush Road Of Gold Alt
+			// GoldRushUpperR.DisplayName: Gold Rush Upper R
+			// MiniLaser.DisplayName: Mini Laser
 		}
 
 		Buffs: {
@@ -3189,14 +3150,52 @@ Mods: {
 			}
 
 			Hatred: {
-				// DisplayName: Love and Hate
+				// DisplayName: Hatred
 				// Description: If.. if the world is peaceful
+				// Hysteria: "{0}% Hysteria"
 			}
 
 			Love: {
 				// DisplayName: Love and Justice
 				// Description: Power of Love and Friendship
 				// ArcanaSlaveCost: Arcana Slave {0} mana cost
+				// Hysteria: "{0}% Hysteria"
+			}
+
+			BrokenBliss: {
+				// Description: More Vulnerable to Gold Rush
+				// DisplayName: Broken Bliss
+			}
+
+			Bliss: {
+				// Description: Cannot be critically hit by Gold Rush
+				// DisplayName: Fragment of Bliss
+			}
+
+			Happiness: {
+				// DisplayName: Happiness
+				// Description: Wishing for everyone’s happiness must include my own, too
+				// Tooltip1: "{0}% increased damage ({1} enemies hit)"
+			}
+
+			RoadOfGold: {
+				// DisplayName: Temperance
+				// Description: Unable to use 'Road of the King'
+			}
+
+			Greed: {
+				// Description: 25% increased Gold Rush damage
+				// DisplayName: Greed
+			}
+
+			Villain: {
+				// DisplayName: Villain
+				// Description: A Villain shows up!
+			}
+
+			LoveTeam: {
+				// DisplayName: Love
+				// Description: Increased life regeneration
 			}
 		}
 

@@ -90,6 +90,7 @@ namespace LobotomyCorp.Items.Waw
                 Item.useStyle = ItemUseStyleID.Shoot;
                 TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarGun");
                 Item.noMelee = true;
+                Item.useTurn = false;
                 Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Gun") with { Volume = 0.2f, PitchVariance = 0.1f };
             }
             else
@@ -99,6 +100,7 @@ namespace LobotomyCorp.Items.Waw
                 Item.useStyle = 15;
                 TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarScythe");
                 Item.noMelee = false;
+                Item.useTurn = true;
                 Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Atk1") with { Volume = 0.2f, PitchVariance = 0.1f };
             }
             return base.CanUseItem(player);
@@ -115,9 +117,25 @@ namespace LobotomyCorp.Items.Waw
         public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
             if (player.altFunctionUse != 2)
+            {
                 Item.useStyle = 15;
+                float prog = player.itemAnimation / (float)player.itemAnimationMax;
+                if (prog < 0.5f)
+                {
+                    TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarScytheHalf");
+                }
+            }
             base.UseStyleAlt(player, heldItemFrame);
         }
+
+        /*public override void ModifyItemScale(Player player, ref float scale)
+        {
+            if (player.altFunctionUse != 2)
+            {
+                scale *= 1.1f;
+            }
+            base.ModifyItemScale(player, ref scale);
+        }*/
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {

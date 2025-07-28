@@ -1,10 +1,23 @@
-0.8.9 Changelog (non hotfix edition)
-Regret R third hit effect now has limited piercing and lowered damage each pierce
-Fixed Smile R dropping a lot of corpses against worm bosses
-Fixed Da Capo R's Extra Projectile being active even if the performance is cancelled
-Da Capo R's Extra Projectile is now active during 1st movement onward, increasing in speed and range the further the performance is
-Limited Da Capo's Finale radius to prevent unintended map wide kills
-Wingbeat R regeneration removing hp under certain conditions
-Red Mist's health now properly scales depending on difficulty
-Red Mist's health is also readjusted to account for this (Health is now 23000/41400/52785)
-Red Mist Suppression text modified to look closer to Lobcorp (not the font though, I cant find the font for the life of me)
+0.9.0 Changelog
+Misc Bug fixing and restructuring
+Rework of the Rarity System (by noawx)
+Crimson Scar Melee has a tiny bit more range
+Red Mist takes 1 damage during Gold Rush and her Phase Transitions if she hasn't been killed in the world yet
+
+2 new R Weapons
+In the name of Love and Hate
+Arcana Slave - Alternate attack summons a laser of Love and Justice, costs {0} mana (Unaffected by mana cost reduction)
+Arcana Beats - If unable to use 'Arcana Slave', Charge up Alternate attack to mark the first enemy hit as a 'Villain'
+Villain - Takes 10% more damage from this EGO, only 1 Villain can exist at a time
+Justice - Attacking 'Villain' reduces 'Arcana Slave' cost by 5. 'Arcana Slave' cost resets when used
+Love - Attacks give nearby allies life regeneration, disabled while 'Hate' is active
+!Hysteria - Taking enough damage activates 'Hate'. 'Arcana Slave' cost resets when 'Hate' is activated
+!Hate - Attacks become lasers. While using 'Arcana Slave', It can be aimed, Temporarily lose defense, become cursed and lose 'Hate'
+
+Gold Rush
+Road of the King - Alternate attack to target all 'Fragment of Bliss' and additional nearest enemies (Up to 5). 30 second cooldown
+Intemperance - Critical hits apply a 'Fragment of Bliss', Only 5 enemies can have 'Fragment of Bliss'
+Fragment of Bliss - +5 defense. Reduces 'Road of King' cooldown, heals 10 health and -10 defense when broken
+Happiness - 5% increased damage for each 'Fragment of Bliss' broken with 'Road of the King'
+!Voracity - When activating 'Road of King' under 50% health, Gain 'Greed' instead 'Happiness' for 1 minute
+!Greed - This E.G.O gains 300% increased damage. 'Road of King' costs up to 50 health with no cooldown
