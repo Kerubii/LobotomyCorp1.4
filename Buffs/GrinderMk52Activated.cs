@@ -5,6 +5,7 @@ using Terraria.Audio;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Audio;
 using LobotomyCorp.Players;
+using LobotomyCorp.ParticlesAura;
 
 namespace LobotomyCorp.Buffs
 {
@@ -29,6 +30,7 @@ namespace LobotomyCorp.Buffs
             LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
             modPlayer.GrinderMk2Active = true;
             player.GetModPlayer<LobotomyDashPlayer>().SpecialDash = true;
+            player.GetModPlayer<LobotomyModPlayer>().CurrentAura.Add(new HelperMk4Aura());
 
             if (player.buffTime[buffIndex] > 0)
                 player.buffTime[buffIndex] = modPlayer.GrinderMk2Battery/4;

@@ -49,7 +49,7 @@ Mods: {
 				Tooltip2:
 					'''
 					Firing speed increased
-					Inaccurate while firing speed is increased
+					Less accurate while firing speed is increased
 					After getting hit, Alternate attack to fire an empowered single shot
 					Empowered shot has increased damage and reduced firing speed
 					'''
@@ -150,22 +150,23 @@ Mods: {
 			}
 
 			CrimsonScar: {
-				Tooltip:
+				TTooltip:
 					'''
 					'With steel in one hand and gunpowder in the other, there's nothing to fear in this place.
 					It's more important to deliver a decisive strike in blind hatred without hesitation than to hold on to insecure courage.'
 					Benefits from Ranged damage increases
 					Empowers next Range attack after hitting with a Normal Melee attack and vice versa
-					50% increased damage and attacks are always Empowered under 25% health
+					50% increased damage under 50% health
 					'''
 				Tooltip2:
 					'''
 					All attacks are empowered
 					If attacks are empowered normally, they are further empowered
-					Scythes creates a rain of Scythes
-					Bullet Shots aims semi randomly consecutively
+					Empowered Scythes creates a rain of Scythes
+					Empowered Shots aims semi randomly consecutively
 					'''
 				DisplayName: Crimson Scar
+				Tooltip: ""
 			}
 
 			Diffraction: {
@@ -465,7 +466,7 @@ Mods: {
 					Grows additional Branches
 					Right click to throw
 					Creates Branches when hitting a tile
-					Branches grow on enemies with no direct line of sight
+					Branches grow on nearby enemies with no direct line of sight
 					'''
 				DisplayName: Heaven
 			}
@@ -483,7 +484,7 @@ Mods: {
 					Arrows are converted to Great Tree Arrows
 					Great Tree Arrows creates a fruit on hit for 3 seconds that restores health
 					If a fruit is not consumed it turns into a poisonous fruit instead that damages you
-					After 1 more seconds, the fruit explodes
+					After 1 more second, the fruit explodes
 					'''
 				DisplayName: Hypocrisy
 			}
@@ -605,7 +606,6 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Redirects to an enemy if it misses
 					Inflicts dark flame
 					First hit of each bullets increases next bullet damage by 7%
 					Resets on the 7th bullet
@@ -647,6 +647,7 @@ Mods: {
 				Tooltip2:
 					'''
 					Star projectiles orbit around you
+					Right click sends stars towards the cursor
 					Getting hit homes all Star projectiles to an enemy
 					'''
 				DisplayName: Our Galaxy
@@ -724,7 +725,7 @@ Mods: {
 				Tooltip2:
 					'''
 					Grants Hunter buff while held
-					Right click to teleport to an enemy
+					Right click to teleport to an enemy and attack
 					Teleports back after 2 seconds
 					'''
 				DisplayName: Red Eyes
@@ -762,7 +763,7 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Arrows are converted to Screaming Arrows
+					Wooden Arrows are converted to Screaming Arrows
 					Screaming Arrows are unaffected by gravity
 					Screaming Arrows create a piercing scream on hit
 					'''
@@ -837,7 +838,13 @@ Mods: {
 					Its bullets create a void that cannot be filled on the victim's soul.
 					It was a rusty weapon from the beginning.'
 					'''
-				Tooltip2: Hit enemies produce damaging smoke
+				Tooltip2:
+					'''
+					Bullets leave a trail of damaging smoke
+					Smoke attaches itself to enemies hit
+					Bullets dispel nearby smoke when hitting enemies
+					Dispelled smoke explodes
+					'''
 				DisplayName: Solitude
 			}
 
@@ -850,7 +857,7 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Summons Orbs equal to 3 plus unused minion slots
+					Summons Orbs equal to unused minion slots + 3
 					Orbs automatically attack nearby enemies
 					Can be fired all at once
 					Impact radius increased
@@ -920,8 +927,8 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Hit enemies explodes after a few seconds
-					Explosion damage and radius increased while looking away
+					Increased damage based on speed
+					Increased damage while on a mount
 					'''
 				DisplayName: Tough
 			}
@@ -933,8 +940,8 @@ Mods: {
 					The scale that could measure any and all sin...
 					The beak that could swallow everything, protected the peace of the Black Forest...
 					The wielder of this armament may also bring peace as they did'
-					Alternate attack to perform to leap forward and back and slash the target with invincibility frames
-					Alternate attack be used again after 8 seconds while holding this weapon
+					Alternate attack to leap back and forth, slashing with invincibility frames
+					Alternate attack has 8 seconds of cooldown while holding this weapon
 					'''
 				Tooltip2:
 					'''
@@ -1015,7 +1022,7 @@ Mods: {
 					Fairies Care - Alternate attack to send a fairy to heal an enemy, Marking and making them easier to hit
 					Prepared Meal - 15% increased damage and 10% lifesteal against enemies under 'Fairies Care'
 					Gluttony - Heal 10% of enemy maximum health on kill
-					|Predation - Healing recieved from Wingbeat is applied over time, removed when hit or under Potion sickness
+					|Predation - Healing recieved from Wingbeat is applied over time, reduced when hit or removed under Potion Sickness
 					'''
 				Simplified:
 					'''
@@ -1100,7 +1107,7 @@ Mods: {
 					Metallic Ringing - Reduces defense and creates shockwaves when hit with this E.G.O
 					Violence - Minimum and maximum damage variance is decreased and increased respectively by 20% and 50%
 					Chained Wrath - Alternate attack to convert increased movement speed to increased damage (50% conversion), Removed while on a mount or minecart
-					|Binding Jacket - 'Chained Wrath' buff is removed while having any form of debuff
+					|Binding Jacket - While under 'Chained Wrath', acquiring a debuff removes it and gain minor stat debuffs
 					'''
 			}
 
@@ -1118,12 +1125,12 @@ Mods: {
 					'''
 				PassiveListRework:
 					'''
-					Charge - A battery displays current Charge, Activates effects below with Charge
-					Disable Limiter - Gain 40% increased movement speed while active, up to 20% increased damage with 'Charge'
-					Clean - Allows the player to dash through enemies if the player does not have a dash, Costs 'Charge'
-					Protocol - Automatically attacks nearby enemies while not held, Increased swing rate while using 'Clean'
-					Repetitive Pattern Recognition - Hitting an enemy generates 'Charge', killing an enemy refills 'Charge'
-					|Recharge - Right click buff to remove and refill 'Charge' at the cost of being immobilized
+					Charge - A battery displays current Charge (Max 4 Charge)
+					Disable Limiter - Alternate attack to consume 1 Charge to gain 40% movement speed for 30 seconds
+					Clean - During 'Disable Limiter', Allows the player to dash if they have no dash. Removes 'Disable Limiter'
+					Protocol - Automatically attacks nearby enemies when not held during 'Disable Limiter'
+					Repetitive Pattern Recognition - Killing an enemy during 'Disable Limiter' gives 1 Charge
+					|Recharge - Right click 'Disable Limiter' buff to refill 'Charge' to max at the cost of being immobilized
 					'''
 			}
 
@@ -1166,13 +1173,6 @@ Mods: {
 					Magic Bullet - Each shot has a special damage, target and property. The bullets always hits its mark
 					Request - Right click to Mark a target, The bullets only targets the marked target. Removed when switching weapons
 					Dark Flame - After the Seventh shot, Gain Dark Flame buff, boosting this weapon's damage by 70%
-					|The Seventh Bullet - The 7th Bullet always targets Town NPCs. If there is none, targets allies. Pierces the user's heart if there are none left
-					'''
-				PassiveListRework:
-					'''
-					Magic Bullet - Each shot has a special damage, target and property. The bullets always hits its mark
-					Request - Right click to Mark a target, The bullets only targets the marked target. Removed when switching items
-					Dark Flame - After 'The Seventh Bullet', Gain Dark Flame buff, boosting Magic Bullet's damage by 70%
 					|The Seventh Bullet - The 7th Bullet always targets Town NPCs. If there is none, targets allies. Pierces the user's heart if there are none left
 					'''
 			}
@@ -1380,6 +1380,31 @@ Mods: {
 
 			#Language
 			
+			CrimsonScarR: {
+				DisplayName: Crimson Scar
+				Tooltip: FromI'll hang his head over my bed. Only then can I get up in the morning without having a nightmare.
+				PassiveList:
+					'''
+					Hollow Point Shell - Alternate attack to shoot then throw a sickle, enemies hit by the bullet is marked as 'Prey'
+					Bullet Shower - Under 50% health, Alternate attack to shoot a barrage of bullets, enemies hit is marked as 'Prey'
+					No Hesitation - Under 50% health, Throw multiple sickles. Sickles and bullets has a chance to deal extra damage
+					Prey - This EGO deals 20% increased damage to marked Prey, 50% if hit with a true melee
+					Rudded Welts - Gain increased damage and decreased damage taken proportional to health lost. Effects halved when using other weapons
+					Vengeance - 10% increased damage for 10 seconds when hit and mark them as 'Prey', 20% increased damage when hit by 'Prey'
+					|Fury with no Outlet - Negate all life regeneration with 'Rudded Welts' above 50% health
+					'''
+				Simplified:
+					'''
+					Gain damage and damage reduction while low health
+					Attacks change while in low health
+					Getting hit increases damage and marks enemies
+					Hitting with a bullet also marks enemies
+					Marked enemies take increased damage from this E.G.O
+					Cannot regenerate health above 50% while held for 10 seconds
+					'''
+				Extra: Howling Nightmare - If an ally has Cobalt Scar buff, Attacks do friendly fire and lose Passive conditionals. Disables 'Fury with no Outlet'
+			}
+
 			MimicryR: {
 				Tooltip: And the many shells cried out one word, "Manager".
 				DisplayName: Mimicry
@@ -1391,6 +1416,14 @@ Mods: {
 					heLLo? - Alternate attack shoots a piercing Projectile, reducing enemy defense
 					|Cocoon - Shell reduces quickly when not holding this weapon, When 'Shell' runs out, gain 'Hollow Husk'
 					Hollow Husk - Enables 'GoDdByE', -8 Defense. Timer set to 5 seconds while holding this weapon
+					'''
+				Simplified:
+					'''
+					Killing an enemy grants a stat boost buff
+					Buff also improves this weapon
+					Hitting an enemy with a charged hit's sweetspot does more damage
+					Buff decays quicker while not using this weapon
+					Gain a debuff after Buff timer runs out, also improves this weapon 
 					'''
 			}
 
@@ -1406,22 +1439,39 @@ Mods: {
 					|Division - Damage reduced by 'Mountain of Corpses' stack reduces it, Lose all stacks when healed by the nurse
 					Melted Corpses - If 'Mountain of Corpses' reaches 0, Temporarily Disable 'Absorption' and take 10% increased damage
 					'''
+				Simplified:
+					'''
+					Killing or Hitting enemies drops corpses that can be hit
+					Corpses collected provides damage reduction
+					Corpses also decrease movement speed and swing speed
+					Right click has additional functions the higher your corpses, also consumes it
+					Lose Corpses when hit, take increased damage when losing all of it
+					'''
 			}
 
 			#Natural Science
 			
 			SwordSharpenedWithTearsR: {
+				DisplayName: Sword Sharpened With Tears
 				Tooltip: All that remains is the hollow pride of a weathered knight.
 				PassiveList:
 					'''
-					Heart-piercing sword - Summon three swords that floats around you
-					Whetted with Teardrops - Critical hits ignores defense
-					Blessing - When a teammate stands near you while using with this weapon, they gain Blessed buff. Only one Blessed at a time
-					Blessed - 50% decreased damage taken, 10% chance to recieve double damage with no reduction instead, Only active while this weapon is held
-					|Despair - If no Blessed teammate is present, Attacks deals a flat amount of damage, -10 defense and if a sword misses, it impales the user
-					This Item is incomplete and unobtainable
+					Sword of a Forgotten Knight - Summon 2 swords, Summons additional swords that occupies minion slots. Auto attacks with 3 or more
+					Whetted by Tears - Alternate attack to gain 'Justice' and bless an ally near the cursor with 'Blessed' if there isn't one. Lose 'Despair'
+					Blessed - 10% decreased projectile damage taken, 20% increased contact damage taken
+					Justice - Swords are aimed and can be charged, Critical hits ignores defense. Lost when switching weapons
+					|Hollow Pride - If a 'Justice' Sword miss, it attempts to pierce the user. If 'Blessed' dies, 3 Swords pierces the user	
+					Despair - When 3 Swords pierce the user, lose 'Justice', gain 20% increased summon damage and lose 25% maximum health
 					'''
-				DisplayName: Sword Sharpened With Tears
+				Simplified:
+					'''
+					Summons 2 extra swords when used without swords
+					Right click takes manual control of three swords
+					Also grants a buff to one nearby ally
+					If a manually controlled sword misses, it attempts to pierce you
+					If the buffed ally dies, 3 swords will pierce you
+					After 3 swords impale you, lose manual control and gain a buff
+					'''
 			}
 
 			NihilR: {
@@ -1471,21 +1521,19 @@ Mods: {
 				DisplayName: Gold Rush
 			}
 
-			#Social
-			
 			TheHomingInstinctS: {
 				Tooltip: ""
 				DisplayName: The Homing Instinct
 			}
 
-			#Philosophy
+			#Social
 			
 			BeakR: {
 				Tooltip: ""
 				DisplayName: Beak
 			}
 
-			#Originals
+			#Philosophy
 			
 			LifeForADaredevilR: {
 				DisplayName: Life For A Daredevil
@@ -1500,7 +1548,7 @@ Mods: {
 					'''
 			}
 
-			#Crafting Stations // Furnitures
+			#Originals
 			
 			BlackBox3: {
 				Tooltip:
@@ -1516,6 +1564,8 @@ Mods: {
 				DisplayName: Black Box - Extraction
 			}
 
+			#Crafting Stations // Furnitures
+			
 			BlackBox2: {
 				Tooltip:
 					'''
@@ -1559,13 +1609,13 @@ Mods: {
 				DisplayName: Disciplinary Shell
 			}
 
-			#Accessories
-			
 			BehaviorAdjustment: {
 				DisplayName: Behavior Adjustment
 				Tooltip: ""
 			}
 
+			#Accessories
+			
 			HeartOfAspiration: {
 				DisplayName: Heart Of Aspiration
 				Tooltip: ""
@@ -1662,100 +1712,6 @@ Mods: {
 
 			#Natural
 			
-			InTheNameOfLoveAndHate: {
-				ItemTooltip: In the name of Love and Justice~ Here comes Magical Girl!
-				PassiveList:
-					'''
-					Arcana Slave - Summon a laser of Love and Justice that costs {0} mana, Resets to maximum when used
-					Justice - Hitting an enemy or getting hit reduces Arcana Slave cost, resets when used
-					Villain - Hitting an enemy with Arcana Beats marks them, increasing Justice and Hate gained
-					Love - Increases defense and lowers damage when hitting enemies
-					|Hate - Getting hit reduces defense and increases damage. After getting hit enough times, turns all attacks of this weapon into lasers
-					This Item is incomplete and unobtainable
-					'''
-				PassiveList2:
-					'''
-					Arcana Slave - Summon a laser of Love and Justice that costs {0} mana, Resets to maximum when used
-					Arcana Beats - Realeasing channeling uses Arcana Beats, marking enemies as 'Villain'
-					Justice - When 'Love' or 'Hate' activates, reduces 'Arcana Slave' cost
-					Villain - 25% increased damage taken from this EGO, 
-					Love - Chance to heal allies on hit
-					|Hate - Taking damage or killing enemies increases this weapon's damage
-					Hysteria - When 'Hate' reaches maximum, temporarily transform this EGO changing its effects
-					This Item is incomplete and unobtainable
-					'''
-				PassiveList3:
-					'''
-					Love! - Killing enemies increases this weapon's damage
-					A Real Magical Girl - When 'Love' reaches maximum, transform this EGO to normal
-					|Arcana Slave - Channel a laser of Hate that drains {0} mana
-					Hate... - 50% increased mana cost, reduced over time
-					Villain - 15% increased damage taken when held, Getting hit increases 'Love' and 'Hate'
-					'''
-				PassiveList4:
-					'''
-					Arcana Slave = Alternate attack summons a laser of Love and Justice, costs {0} mana (unaffected by mana cost)
-					Arcana Beats - Releasing attack marks enemies hit as 'Villain'
-					Villain - Takes 25% increased damage from this EGO, only 1 Villain can exist at a time
-					Justice - Attacking 'Villain' reduces Arcana Slave cost. Arcana Slave cost resets when used
-					Love - Above 50% Health, attacks give nearby allies life regeneration
-					|Hate - Under 50% health, attacks are changed to lasers. Recieve 25% more damage while held
-					Hysteria - Arcana Slave lasts longer and can be aimed under 'Hate', Temporarily unable to use items afterwards
-					'''
-			}
-
-			TheSwordSharpenedWithTears: {
-				ItemTooltip: All that remains is the hollow pride of a weathered knight.
-				PassiveList:
-					'''
-					Heart-piercing sword - Summon three swords that floats around you
-					Whetted with Teardrops - Critical hits ignores defense
-					Blessing - When a teammate stands near you while using with this weapon, they gain Blessed buff. Only one Blessed at a time
-					Blessed - 50% decreased damage taken, 10% chance to recieve double damage with no reduction instead, Only active while this weapon is held
-					|Despair - If no Blessed teammate is present, Attacks deals a flat amount of damage, -10 defense and if a sword misses, it impales the user
-					This Item is incomplete and unobtainable
-					'''
-				PassiveList4:
-					'''
-					Heart-piercing Sword - Summon four swords, swords return after a few seconds or can be picked up
-					Whetted with Teardrops - Critical hits ignores defense
-					Blessing - Right click a team mate to bless them, granting them 'Blessed'. Blessing another players transfers 'Blessed'
-					Blessed - 50% decreased damage taken, 10% chance to recieve double damage instead.
-					|A Broken Heart - If an ally with 'Blessed' dies, gain 'Despair' for 30 seconds and be unable to use 'Blessing'
-					Despair - 'Whetted with Teardrops' is always active. If a sword misses it impales the user
-					'''
-				PassiveList2:
-					'''
-					Heart-piercing sword - Summon three swords that floats around you, 
-					Blessing - Alternate attack to give a nearby ally 'Blessed'
-					Blessed - 50% decreased damage taken, 10% chance to recieve additional double damage with no reduction instead
-					Whetted with Teardrops - Critical hits ignores defense, Active if there is no ally with 'Blessed'
-					|Despair - If no ally has 'Blessed'. If a sword misses it attempts to impale the user dealing 20% of its damage
-					A Broken Heart - If an ally with 'Blessed' dies, transform this EGO changing its effects
-					This Item is incomplete and unobtainable
-					'''
-				PassiveList3:
-					'''
-					Justice! - Alternate attack to give a nearby ally 'Blessed'
-					Blessed - 50% decreased damage taken, 10% chance to recieve additional double damage with no reduction instead
-					A Real Magical Girl - If an ally with 'Blessed' is alive, unimpale all swords and transform this EGO to normal
-					|Heart-breaking sword - Summon four swords that floats around you, swords are not summoned back while impaled
-					Laced with Grief - Attacks deal additional 20% of the enemy's maximum health and ignores defense (2% of health if a boss)
-					Despair... - If a sword misses, it impales the user dealing 20% of your maximum health and remains impaled
-					Sword that Pierces Despair - If all four swords impale the user, die
-					'''
-				PassiveList5:
-					'''
-					Sword of a Forgotten Knight - Summon up to 4 swords occupying minion slots
-					Whetted by Tears - Alternate attack to gain 'Justice' and bless one nearby ally with 'Blessed' if there isn't one
-					Blessed - 10% decreased projectile damage taken, 20% increased contact damage taken
-					Justice - Swords are aimed and can be charged to piercem, dealing more damage, Critical hits ignores defense. Lose 'Despair'
-					|Hollow Pride - If a 'Justice' Sword miss, it attempts to pierce the user. If 'Blessed' dies, 4 Swords pierces the user. Cannot kill the user
-					Despair - When 4 Swords pierce the user, lose 'Justice', gain 20% increased summon damage and lose 25% maximum health
-					This Item is incomplete and unobtainable
-					'''
-			}
-
 			BlindRage: {
 				ItemTooltip: We... We were true friends... Right?
 				PassiveList:
@@ -1782,30 +1738,6 @@ Mods: {
 
 			#Language
 			
-			CrimsonScar: {
-				ItemTooltip: I'll hang his head over my bed. Only then can I get up in the morning without having a nightmare.
-				PassiveList:
-					'''
-					Hollow Point Shell - Alternate attack to shoot, enemies hit by the bullet is marked as 'Prey'
-					Strike without Hesitation - Under 50% health, Throw two sickles and 'Hollow Point Round' turns into 'Bullet Shower'
-					Prey - Deal 20% increased damage to marked Prey, 50% if hitting with a true melee
-					Rudded Welts - Gain increased damage and damage resistance depending on health loss (up to 20% at 50% health)
-					Vengeance - Getting hit by Prey temporarily increases damage by 20%
-					|Fury with no Outlet - Gain bleed while holding this weapon above 50% health, 'Strike without Hesitation' can hit allies
-					'''
-				PassiveList2:
-					'''
-					Hollow Point Shell - Alternate attack to shoot then throw a sickle, enemies hit by the bullet is marked as 'Prey'
-					Bullet Shower - Under 50% health, Alternate attack to shoot a barrage of bullets, enemies hit is marked as 'Prey'
-					No Hesitation - Under 50% health, Throw multiple sickles. Sickles and bullets has a chance to deal extra damage
-					Prey - This EGO deals 20% increased damage to marked Prey, 50% if hit with a true melee
-					Rudded Welts - Gain increased damage and decreased damage taken proportional to health lost
-					Vengeance - 10% increased damage for 10 seconds when hit and mark them as 'Prey', 20% increased damage when hit by 'Prey'
-					|Fury with no Outlet - Negate all life regeneration while holding this weapon above 50% health
-					//Howling Nightmare - If an ally used 'Howl', gain 50% increased damage and friendly fire until you or the ally who used 'Howl' dies
-					'''
-			}
-
 			CobaltScar: {
 				ItemTooltip: Still, it didn�t matter to him. After all, he was "destined" to be a big bad wolf.
 				PassiveList:
@@ -1977,7 +1909,7 @@ Mods: {
 					The Thirteenth Toll - Do a special attack during 'Time' and remove it, Lose 1 'Silence' on hit
 					Inevitable Demise - Gain 100% damage for each accumulated 'Silence'
 					|The Price - Gain 1 Silence every 2 seconds during stopped time
-					Silence - Lose 1/13th of your Maximum Health. At 13, die after 13 seconds.
+					Silence - Lose 1/13th of your Maximum Health. At 13, auto activates 'Time' and die after 13 seconds.
 					'''
 			}
 
@@ -1985,10 +1917,12 @@ Mods: {
 				ItemTooltip: Let us meet again as stars.
 				PassiveList:
 					'''
-					Into the Star's Embrace - Alternate attack to summon Blue Star temporarily for Mana. It sends shockwaves 3 times before dissapearing, dealing damage
-					Penance - Enemies have a chance to be sucked when damaged by Blue Star 
-					A Nostalgic Sound - All enemies sucked by the Star heals and restores mana
-					|Martyr - The user is vulnerable to Blue Star and reduces its damage by 75%	
+					Blue Star - Alternate attack to summon Blue Star as a sentry, Increases in power based on empty sentry slots
+					Into the Star's Embrace - 'Blue Star' periodically creates a sound, damaging enemies nearby
+					Penance - Non boss enemies under 20% health can be instantly killed by 'Into the Star's Embrace' and increase 'Blue Star' power
+					A Nostalgic Sound - Restore health whenever 'Penance' activates and increase this EGO's range
+					|Martyr - Summoning a non Sound of a Star minion nearby 'Blue Star' will consume its slot and activate 'Penance'
+					I Can Hear The Sound of the Star! - The user is vulnerable to 'Into the Star's Embrace', getting hit by it increases damage
 					'''
 			}
 
@@ -2035,6 +1969,14 @@ Mods: {
 					Pulsation - Damage increases when perfectly timed
 					|Fervent Beats - After using Beats of Aspiration, die after 1 minute
 					'''
+				PassiveList2:
+					'''
+					Beats of Aspiration - Range increases when used slow, Damage increase when used fast
+					Pulsation - Increases range and damage when used rhythmically consistently. Decreases overtime
+					Urging - Gain maximum health based on 'Pulsation', Apply 'Fervent Beats' to self and nearby allies for 1 minute
+					|Fervent Beats - 12% increased attack speed, 8% increased damage, 15 defense and 20% increased movement speed
+					Excessive Aspiration - When 'Fervent Beats' run out, the user dies
+					'''
 			}
 
 			Marionette: {
@@ -2060,13 +2002,23 @@ Mods: {
 			}
 
 			Remorse: {
-				ItemTooltip: a
+				ItemTooltip: You’re trembling so much. What makes you so afraid?
 				PassiveList:
 					'''
-					Broken to Pieces - Alternate attack throws a nail, it deals no damage but also applies it to nearby enemies. Uses nails
-					Hammer and Nail - When hitting an enemy with a hammer, deal extra damage equal to the amount of nails
-					Leer - Enemies that hit you permanently recieves twice the damage from Nails
-					|Guilt - This weapon gains no bonus from any form of damage increase
+					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit
+					Hammer - Deal 10 bonus damage equal to the amount of 'Nail' on an enemy
+					Broken to Pieces - Increased damage for each 'Nail' activated by 'Hammer' and inflict 'Guilt'
+					Guilt - Take increased bonus damage from 'Hammer'
+					|Leer - If the enemy has no 'Guilt', Normal attacks deal no damage and inflict twice the amount of nails
+					'''
+				PassiveListAleph:
+					'''
+					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit
+					Hammer - Deal 10 bonus damage equal to the amount of 'Nail' on an enemy
+					Broken to Pieces - Increased damage for each 'Nail' activated by 'Hammer' and inflict 'Guilt'
+					Guilt - Take increased bonus damage from 'Hammer'. At certain total of Guilt, gain 'A Crack in the Mind'
+					|Leer - If the enemy has no 'Guilt', Normal attacks deal no damage and inflict twice the amount of nails
+					A Crack in the Mind - Summons two giant hands that wields a Nail and Hammer, Removed when theres not enough 'Guilt'
 					'''
 			}
 
@@ -2930,6 +2882,16 @@ Mods: {
 			GoldRushRoadOfGoldAlt.DisplayName: Road of Gold
 			GoldRushUpperR.DisplayName: Gold Rush Uppercut
 			MiniLaser.DisplayName: Mini Laser
+			SodaGeyser.DisplayName: Soda Geyser
+			SolitudeSmoke.DisplayName: Solitude Smoke
+			CrimsonScarRSickle.DisplayName: Crimson Scar
+			SwordSharpenedWithTearsRDespair.DisplayName: Sword Sharpened With Tears
+			SwordSharpenedWithTearsRSword.DisplayName: Sword Sharpened With Tears
+			CrimsonScarRSickle2.DisplayName: Crimson Scar
+			WristCutterThrown.DisplayName: Wrist Cutter Thrown
+			WristCutterSlash.DisplayName: Wrist Cutter Slash
+			OurGalaxySparkleOrbit.DisplayName: Our Galaxy Sparkle Orbit
+			SwordSharpenedWithTearsRSwordExtra.DisplayName: Sword Sharpened With Tears R Sword Extra
 		}
 
 		Buffs: {
@@ -3239,6 +3201,44 @@ Mods: {
 			LoveTeam: {
 				DisplayName: Love
 				Description: Increased life regeneration
+			}
+
+			Despair: {
+				DisplayName: Despair
+				Description: I swore to protect, yet I lost them again...
+			}
+
+			Justice: {
+				DisplayName: Justice
+				Description: If I could have another chance to protect...
+			}
+
+			Blessing: {
+				DisplayName: Blessing
+				Description: All that remains is the hollow pride of a weathered knight
+				Description2: 10% decreased projectile damage taken, 20% increased contact damage
+			}
+
+			Prey: {
+				DisplayName: Prey
+				Description: 20% increased damage taken from Crimson Scar
+			}
+
+			RuddedWelts: {
+				DisplayName: Rudded Welts
+				Description: The more scars you get, the stronger your will to survive becomes
+				Description2: "{0}% increased damage and decreased damage taken"
+			}
+
+			Vengeance: {
+				DisplayName: Vengeance
+				Description: I’ll hang his head over my bed
+				Description2: "{0}% increased damage"
+			}
+
+			SwordSharpened: {
+				DisplayName: Sword Sharpened with Tears
+				Description: The swords will eventually point at those she could not protect.
 			}
 		}
 

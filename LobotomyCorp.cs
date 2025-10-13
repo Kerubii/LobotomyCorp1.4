@@ -1,5 +1,8 @@
+using LobotomyCorp.Buffs;
 using LobotomyCorp.Configs;
+using LobotomyCorp.Items.Ruina.Literature;
 using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Tiles;
 using LobotomyCorp.UI;
@@ -11,6 +14,7 @@ using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -23,6 +27,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LobotomyCorp
 {
@@ -305,7 +310,10 @@ namespace LobotomyCorp
         {
             SpawnBoss,
             DestroyTileSpecial,
-            RedMistGoldTeleport
+            RedMistGoldTeleport,
+            TalkSuppressionTextSync = 6,
+            BlessingSync,
+            SwordSharpenedVisualImpale
         }
 
         //Mod Packets        
@@ -319,7 +327,8 @@ namespace LobotomyCorp
                 int x = reader.ReadInt32();
                 int y = reader.ReadInt32();
                 int player = reader.ReadInt32();
-                NPC.SpawnBoss(x, y, i, player);
+                NPC.SpawnBoss(x, y, i, 0);
+                //ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("RM Spawned at "+x+", "+y), Color.White);
             }
             else if (id == 1) // Kill Shells
             {
@@ -352,6 +361,48 @@ namespace LobotomyCorp
                     entity.InitiateText(reader.ReadInt32());
                 }
             }
+            else if (id == (int)modPackets.TalkSuppressionTextSync)
+            {
+                byte npc = reader.ReadByte();
+                if (npc == 0)
+                {
+                    bool direction = reader.ReadBoolean();
+                    int posx = reader.ReadInt32();
+                    int posy = reader.ReadInt32();
+                    string text = reader.ReadString();
+
+                    SuppressionText.AddText(text, new Vector2(posx, posy), Main.rand.NextFloat(-0.12f, 0.12f), 0.5f, Color.Red, 0.75f, 30, direction ? -1 : 1, 0);
+                }
+            }
+            else if (id == (int)modPackets.BlessingSync)
+            {
+                int owner = reader.ReadInt32();
+                int reciever = reader.ReadInt32();
+                Main.player[reciever].GetModPlayer<LobotomyWawPlayer>().SwordSharpenedBlessingBestower = owner;
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetworkBlessingSync(owner, reciever);
+                    //ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Blessing data recieved"), Color.White);
+                }
+            }
+            else if (id == (int)modPackets.SwordSharpenedVisualImpale)
+            {
+                int owner = reader.ReadInt32();
+                Vector3 pos = new Vector3(reader.ReadInt16(), reader.ReadInt16(), reader.ReadSingle());
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetworkSharpenedVisual(pos, owner);
+                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Blessing data recieved"), Color.White);
+                }
+                else
+                {
+                    LobotomyWawPlayer wawPlayer = Main.player[owner].GetModPlayer<LobotomyWawPlayer>();
+                    wawPlayer.SwordSharpenedImpalePosition[wawPlayer.SwordSharpenedImpaledCount] = pos;
+                    wawPlayer.SwordSharpenedImpaledCount++;
+                    Main.player[owner].AddBuff(ModContent.BuffType<Despair>(), 60);
+                    Main.NewText("Recieved");
+                }
+            }
         }
 
         public static void RedMistGoldRushTeleport(int redMist, int portal)
@@ -367,7 +418,7 @@ namespace LobotomyCorp
             bossSpawn.Write(posX);
             bossSpawn.Write(posY);
             bossSpawn.Write(target);
-            bossSpawn.Send();
+            bossSpawn.Send(ignoreClient: Main.myPlayer);
         }
 
         public static void TileEntityBlackBoxInitialize(int posX, int posY, int i)
@@ -379,9 +430,43 @@ namespace LobotomyCorp
             packet.Write(i);
         }
 
+        public static void TalkNetUpdate(int id, string talkid, Vector2 position, int direction)
+        {
+            ModPacket packet = ModContent.GetInstance<LobotomyCorp>().GetPacket();
+            packet.Write((byte)modPackets.TalkSuppressionTextSync);
+            packet.Write((byte)id);
+            packet.Write(direction < 0 ? false : true);
+            packet.Write((int)position.X);
+            packet.Write((int)position.Y);
+            packet.Write(talkid);
+            packet.Send();
+        }
+
         public static void SendKillTile(int i)
         {
 
+        }
+
+        public static void NetworkBlessingSync(int owner, int reciever)
+        {
+            ModPacket packet = ModContent.GetInstance<LobotomyCorp>().GetPacket();
+            packet.Write((byte)modPackets.BlessingSync);
+            packet.Write(owner);
+            packet.Write(reciever);
+            packet.Send(ignoreClient: owner);
+            //Main.NewText("Blessing Sent");
+        }
+
+        public static void NetworkSharpenedVisual(Vector3 pos, int whoAmI)
+        {
+            ModPacket packet = ModContent.GetInstance<LobotomyCorp>().GetPacket();
+            packet.Write((byte)modPackets.SwordSharpenedVisualImpale);
+            packet.Write(whoAmI);
+            packet.Write((short)pos.X);
+            packet.Write((short)pos.Y);
+            packet.Write(pos.Z);
+            packet.Send(ignoreClient: whoAmI);
+            //Main.NewText("Impale Sent");
         }
 
         //General Static stuffs

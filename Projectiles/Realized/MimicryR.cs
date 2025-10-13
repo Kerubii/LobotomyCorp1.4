@@ -229,7 +229,7 @@ namespace LobotomyCorp.Projectiles.Realized
             float angle = Projectile.velocity.ToRotation();
             float range = MathHelper.ToRadians(15);
             float targetAngle = (targetCenter - Projectile.Center).ToRotation();
-            if (LobHelper.AngleDistance(angle, targetAngle) < range)
+            if (AIHelper.AngleDistance(angle, targetAngle) < range)
                 return true;
             return false;
         }

@@ -1,23 +1,25 @@
-0.9.0 Changelog
-Misc Bug fixing and restructuring
-Rework of the Rarity System (by noawx)
-Crimson Scar Melee has a tiny bit more range
-Red Mist takes 1 damage during Gold Rush and her Phase Transitions if she hasn't been killed in the world yet
+0.10.0 Changelog (Not Live Yet)
+R Wingbeat - Healing is massively reduced instead of dissapearing when hit (Predation)
+       - Gives more invincibility and momentum when the fairy mark dissapears
+R Goldrush - 50% more damage when fists hit at point blank range (Before it becomes an afterimage)
 
-2 new R Weapons
-In the name of Love and Hate
-Arcana Slave - Alternate attack summons a laser of Love and Justice, costs {0} mana (Unaffected by mana cost reduction)
-Arcana Beats - If unable to use 'Arcana Slave', Charge up Alternate attack to mark the first enemy hit as a 'Villain'
-Villain - Takes 10% more damage from this EGO, only 1 Villain can exist at a time
-Justice - Attacking 'Villain' reduces 'Arcana Slave' cost by 5. 'Arcana Slave' cost resets when used
-Love - Attacks give nearby allies life regeneration, disabled while 'Hate' is active
-!Hysteria - Taking enough damage activates 'Hate'. 'Arcana Slave' cost resets when 'Hate' is activated
-!Hate - Attacks become lasers. While using 'Arcana Slave', It can be aimed, Temporarily lose defense, become cursed and lose 'Hate'
+New R Weapons
+CrimsonScarR
+Hollow Point Shell - Alternate attack to shoot then throw a sickle, enemies hit by the bullet is marked as 'Prey'
+Bullet Shower - Under 50% health, Alternate attack to shoot a barrage of bullets, enemies hit is marked as 'Prey'
+No Hesitation - Under 50% health, Throw multiple sickles. Sickles and bullets has a chance to deal extra damage
+Prey - This EGO deals 20% increased damage to marked Prey, 50% if hit with a true melee
+Rudded Welts - Gain increased damage and decreased damage taken proportional to health lost. Effects halved when using other weapons
+Vengeance - 10% increased damage for 10 seconds when hit and mark them as 'Prey', 20% increased damage when hit by 'Prey'
+!Fury with no Outlet - Negate all life regeneration with 'Rudded Welts' above 50% health
 
-Gold Rush
-Road of the King - Alternate attack to target all 'Fragment of Bliss' and additional nearest enemies (Up to 5). 30 second cooldown
-Intemperance - Critical hits apply a 'Fragment of Bliss', Only 5 enemies can have 'Fragment of Bliss'
-Fragment of Bliss - +5 defense. Reduces 'Road of King' cooldown, heals 10 health and -10 defense when broken
-Happiness - 5% increased damage for each 'Fragment of Bliss' broken with 'Road of the King'
-!Voracity - When activating 'Road of King' under 50% health, Gain 'Greed' instead 'Happiness' for 1 minute
-!Greed - This E.G.O gains 300% increased damage. 'Road of King' costs up to 50 health with no cooldown
+Sword Sharpened With Tears
+Sword of a Forgotten Knight - Summon 2 swords, Summons additional swords that occupies minion slots. Auto attacks with 3 or more
+Whetted by Tears - Alternate attack to gain 'Justice' and bless an ally near the cursor with 'Blessed' if there isn't one. Lose 'Despair'
+Blessed - 10% decreased projectile damage taken, 20% increased contact damage taken
+Justice - Swords are aimed and can be charged, Critical hits ignores defense. Lost when switching weapons
+!Hollow Pride - If a 'Justice' Sword miss, it attempts to pierce the user. If 'Blessed' dies, 3 Swords pierces the user
+!Despair - When 3 Swords pierce the user, lose 'Justice', gain 20% increased summon damage and lose 25% maximum health
+
+Visuals
+Some EGOs now have an player particles associated with their buffs (Fourth Match, GrinderMk4, In The Name of Love and Hate), more soon

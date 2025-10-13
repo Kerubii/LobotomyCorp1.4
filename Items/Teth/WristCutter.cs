@@ -1,5 +1,7 @@
+using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -22,6 +24,25 @@ namespace LobotomyCorp.Items.Teth
             Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Dagger;
             EGORiskLevel = RiskLevel.Teth;
+        }
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                type = ModContent.ProjectileType<WristCutterThrown>();
+                velocity *= 14;
+            }
+        }
+
+        public override bool CanUseItem(Player player)
+        {
+            return player.ownedProjectileCounts[ModContent.ProjectileType<WristCutterThrown>()] == 0;
+        }
+
+        public override bool AltFunctionUse(Player player)
+        {
+            return RedMistMaskUpgrade(player);
         }
 
         public override void AddRecipes()

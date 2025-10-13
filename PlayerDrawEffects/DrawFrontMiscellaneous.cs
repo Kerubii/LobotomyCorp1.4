@@ -16,6 +16,8 @@ namespace LobotomyCorp.PlayerDrawEffects
         private static Asset<Texture2D> TodaysLook;
         private static Asset<Texture2D> BlackSwan;
         private static Asset<Texture2D> OurGalaxy;
+        private static Asset<Texture2D> SwordSharpenedWithTears;
+        private static Asset<Texture2D> SwordSharpenedBlessing;
 
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
         {
@@ -27,7 +29,8 @@ namespace LobotomyCorp.PlayerDrawEffects
                 modHePlayer.HarmonyAddiction ||
                 modTethPlayer.TodaysExpressionActive ||
                 modWawPlayer.BlackSwanNettleClothing > 0 ||
-                modHePlayer.OurGalaxyStone);
+                modHePlayer.OurGalaxyStone ||
+                modWawPlayer.SwordSharpenedImpaledCount > 0);
         }
 
         public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccFront);
@@ -39,6 +42,8 @@ namespace LobotomyCorp.PlayerDrawEffects
             TodaysLook = Mod.Assets.Request<Texture2D>("Misc/TodaysExpression");
             BlackSwan = Mod.Assets.Request<Texture2D>("Misc/Nettle");
             OurGalaxy = Mod.Assets.Request<Texture2D>("Misc/OurGalaxyStone");
+            SwordSharpenedBlessing = Mod.Assets.Request<Texture2D>("Misc/KnightBlessing");
+            SwordSharpenedWithTears = Mod.Assets.Request<Texture2D>("Projectiles/Realized/SwordSharpenedWithTearsRSword");
         }
 
         protected override void Draw(ref PlayerDrawSet drawInfo)
@@ -163,6 +168,31 @@ namespace LobotomyCorp.PlayerDrawEffects
 
                 DrawData data = new DrawData(texture, new Vector2(drawX, drawY), texture.Frame(), color, 0, new Vector2(texture.Width / 2f, texture.Height / 2f), 1f, 0, 0);
                 drawInfo.DrawDataCache.Add(data);
+            }
+
+            if (modWawPlayer.SwordSharpenedImpaledCount > 0)
+            {
+                for (int i = 0; i < modWawPlayer.SwordSharpenedImpaledCount; i++)
+                {
+                    Texture2D texture = SwordSharpenedWithTears.Value;
+                    int num = 24;
+                    Rectangle frame = new Rectangle(num, num, texture.Width - num, texture.Height - num);
+                    Vector2 origin = texture.Size() / 2 - new Vector2(num, num);
+                    Vector3 swordData = modWawPlayer.SwordSharpenedImpalePosition[i];
+                    Vector2 pos = drawInfo.Center - Main.screenPosition + new Vector2(swordData.X * Player.direction, swordData.Y - Player.gfxOffY);
+                    float rotation = swordData.Z;
+                    if (Player.direction == -1)
+                        rotation = 3.14f - rotation;
+                    rotation += 2.35619f;
+
+                    DrawData data = new DrawData(texture, pos, frame, Color.White, rotation, origin, 1f, 0, 0);
+                    drawInfo.DrawDataCache.Add(data);
+                }
+            }
+        
+            if (modWawPlayer.SwordSharpenedBlessing)
+            {
+
             }
         }
     }

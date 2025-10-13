@@ -1,3 +1,4 @@
+using LobotomyCorp.ParticlesAura;
 using LobotomyCorp.Players;
 using System;
 using Terraria;
@@ -26,6 +27,7 @@ namespace LobotomyCorp.Buffs
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetModPlayer<LobotomyTethPlayer>().MatchstickBurn = true;
+            player.GetModPlayer<LobotomyModPlayer>().CurrentAura.Add(new FootfallsAura());
         }
     }
 }

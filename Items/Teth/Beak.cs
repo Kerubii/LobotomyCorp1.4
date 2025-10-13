@@ -53,7 +53,7 @@ namespace LobotomyCorp.Items.Teth
                 }
                 else
                 {
-                    velocity = velocity.RotatedBy(Main.rand.NextFloat(MathHelper.ToRadians(-10), MathHelper.ToRadians(10)));
+                    velocity = velocity.RotatedBy(Main.rand.NextFloat(MathHelper.ToRadians(-2), MathHelper.ToRadians(2)));
                 }
             }
             base.ModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
@@ -71,32 +71,24 @@ namespace LobotomyCorp.Items.Teth
             base.ModifyWeaponDamage(player, ref damage);
         }*/
 
-        public override float UseAnimationMultiplier(Player player)
+        public override float UseSpeedMultiplier(Player player)
         {
             if (RedMistMaskUpgrade(player))
             {
                 if (player.altFunctionUse == 2)
                 {
-                    return 2f;
+                    return 0.5f;
                 }
-                return 0.1f;
-            }
-
-            return base.UseAnimationMultiplier(player);
-        }
-
-        public override float UseTimeMultiplier(Player player)
-        {
-            if (RedMistMaskUpgrade(player))
-            {
-                if (player.altFunctionUse == 2)
-                {
-                    return 2f;
-                }
-                return 0.1f;
+                return 2f;
             }
 
             return base.UseTimeMultiplier(player);
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
+        {
+            if (RedMistMaskUpgrade(player))
+                damage += 2f;
         }
 
         public override bool AltFunctionUse(Player player)
@@ -108,7 +100,7 @@ namespace LobotomyCorp.Items.Teth
         {
             if (RedMistMaskUpgrade(player) && player.altFunctionUse != 2)
             {
-                return Main.rand.NextBool(50);
+                return Main.rand.NextBool(5);
             }
             return base.CanConsumeAmmo(ammo, player);
         }

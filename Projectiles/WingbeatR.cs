@@ -161,6 +161,18 @@ namespace LobotomyCorp.Projectiles
                         owner.itemAnimation = 5;
                     }
                 }
+                else if (Projectile.ai[1] == -3)
+                {
+                    if (Projectile.ai[0] == 16)
+                        owner.velocity *= 1.2f;
+
+                    if (Projectile.ai[0] <= 25)
+                    {
+                        owner.immune = true;
+                        owner.immuneNoBlink = true;
+                        owner.immuneTime = 6;
+                    }
+                }
 
                 if (Projectile.ai[0] > 30)
                     Projectile.Kill();
@@ -240,7 +252,7 @@ namespace LobotomyCorp.Projectiles
                     //}
 
                     target.RequestBuffRemoval(ModContent.BuffType<Fairy>());
-                    Projectile.ai[1] = -1;
+                    Projectile.ai[1] = -3;
                 }
             }
             else if (Main.player[Projectile.owner].itemTime > 5)

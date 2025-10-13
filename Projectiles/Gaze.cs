@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Items;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -72,6 +73,13 @@ namespace LobotomyCorp.Projectiles
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), lightColor, Projectile.localAI[1], tex.Size()/2 , 1f, 0f, 0);
         }
 
+        public override bool? CanHitNPC(NPC target)
+        {
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.He) && Collision.CanHit(Projectile, target))
+                return true;
+            return base.CanHitNPC(target);
+        }
+
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
 			Projectile.ai[1]++;
@@ -93,6 +101,11 @@ namespace LobotomyCorp.Projectiles
 			if (mult > 1f)
 				mult = 1f;
 			modifiers.FinalDamage += 1f * mult;
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Waw) && !Projectile.getRect().Intersects(target.getRect()))
+            {
+                modifiers.FinalDamage -= 0.5f;
+                modifiers.DisableKnockback();
+            }
         }
     }
 }

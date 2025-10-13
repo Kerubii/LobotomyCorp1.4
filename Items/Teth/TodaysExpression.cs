@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -39,19 +40,30 @@ namespace LobotomyCorp.Items.Teth
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            int amount = Main.rand.Next(5);
-            if (amount > 0)
+            if (RedMistMaskUpgrade(player))
             {
-                int start = amount / 2 * -1;
-                for (int i = start; i < amount; i++)
+                int amount = Main.rand.Next(5);
+                if (amount > 0)
                 {
-                    if (i == 0)
-                        continue;
-                    float rotation = velocity.ToRotation();
-                    Vector2 offset = new Vector2();
+                    int floor = (int)Math.Floor(amount / 2f);
+                    int start = floor * -1;
+                    for (int i = start; i <= Math.Ceiling(amount / 2f); i++)
+                    {
+                        if (i == 0)
+                            continue;
+                        float rotation = velocity.ToRotation();
+                        Vector2 offset = new Vector2(0, 4 * i).RotatedBy(velocity.ToRotation());
+                        Projectile.NewProjectile(source, position + offset, velocity, type, damage, knockback, player.whoAmI);
+                    }
                 }
-            }
+            }            
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
+        {
+            if (RedMistMaskUpgrade(player))
+                damage += 3f;
         }
 
         public override Vector2? HoldoutOffset()

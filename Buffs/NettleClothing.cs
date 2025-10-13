@@ -16,6 +16,7 @@ namespace LobotomyCorp.Buffs
 			// DisplayName.SetDefault("Clothing of Nettle");
 			// Description.SetDefault("Nettle regenerating, 75% reduced damage and Attackers also take damage");
             Main.buffNoTimeDisplay[Type] = true;
+            Main.buffNoSave[Type] = true;
         }
 
         /*

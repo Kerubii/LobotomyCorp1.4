@@ -64,7 +64,20 @@ namespace LobotomyCorp.Utils
 			Main.pixelShader.CurrentTechnique.Passes[0].Apply();
 		}
 
-		public void DrawSpecific(Vector2[] position, float[]rotation, Vector2 offset, CustomShaderData shader)
+        public void DrawTrail(Projectile proj, MiscShaderData shader)
+        {
+            /*float[] rotation = (float[])proj.oldRot.Clone();
+			for (int i = 0; i < rotation.Length; i++)
+			{
+				rotation[i] += RotationOffset;
+			}*/
+            shader.Apply();
+            _vertexStrip.PrepareStrip(proj.oldPos, proj.oldRot, StripColors, StripWidth, -Main.screenPosition + proj.Size / 2f, RotationOffset, proj.oldPos.Length, includeBacksides: true);
+            _vertexStrip.DrawTrail();
+            Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+        }
+
+        public void DrawSpecific(Vector2[] position, float[]rotation, Vector2 offset, CustomShaderData shader)
         {
 			shader.Apply();
 			_vertexStrip.PrepareStrip(position, rotation, StripColors, StripWidth, -Main.screenPosition + offset, RotationOffset,position.Length, includeBacksides: true);

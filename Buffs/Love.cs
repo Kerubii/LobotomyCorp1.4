@@ -1,4 +1,5 @@
 using LobotomyCorp.Items.Ruina.Natural;
+using LobotomyCorp.ParticlesAura;
 using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,6 +47,7 @@ namespace LobotomyCorp.Buffs
         {
             LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
             modPlayer.LoveAndHateLove = true;
+            player.GetModPlayer<LobotomyModPlayer>().CurrentAura.Add(new LoveAndHateAura());
             if (player.HeldItem.type != ModContent.ItemType<InTheNameOfLoveAndHateR>())
             {
                 player.DelBuff(buffIndex);

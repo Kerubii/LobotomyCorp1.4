@@ -7,6 +7,7 @@ using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.ParticlesAura;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -57,14 +58,11 @@ namespace LobotomyCorp
 
         public int LuminousGreed = 0;
 
-        public int RealizedSword = 0;
-        public bool RealizedSwordShoot = false;
-
         private bool forcePlayerVelocity = false;
         private Vector2 forcePlayerVelocityValue;
 
         //Aura Vanity
-        public AuraBehavior CurrentAura;
+        public List<AuraBehavior> CurrentAura;
         public AuraParticle[] PlayerParticles = new AuraParticle[100];
 
         public static LobotomyModPlayer ModPlayer(Player Player)
@@ -98,7 +96,7 @@ namespace LobotomyCorp
 
             //RemoveMaxFallSpeed = false;
 
-            CurrentAura = null;
+            CurrentAura = new List<AuraBehavior>();
         }
 
         private void ResetAttackCombo()
@@ -218,10 +216,13 @@ namespace LobotomyCorp
         public override void PostUpdateMiscEffects()
         {
             //Aura Effects
-            if (CurrentAura != null)
+            if (CurrentAura.Count > 0)
             {
-                if (Main.timeForVisualEffects % CurrentAura.intensity == 0)
-                    LobotomyPlayerParticle.GenerateAuraParticle(this, CurrentAura);
+                foreach (AuraBehavior aura in CurrentAura)
+                {
+                    if (aura.SpawnCond)
+                        LobotomyPlayerParticle.GenerateAuraParticle(this, aura);
+                }
             }
             for (int i = 0; i < PlayerParticles.Length; i++)
             {

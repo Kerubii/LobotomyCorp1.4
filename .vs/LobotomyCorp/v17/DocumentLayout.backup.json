@@ -1,0 +1,270 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\localization\\en-us.hjson||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:localization\\en-us.hjson||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\projectiles\\realized\\swordsharpenedwithtearsrsword.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:projectiles\\realized\\swordsharpenedwithtearsrsword.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\items\\waw\\swordsharpenedwithtears.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:items\\waw\\swordsharpenedwithtears.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\items\\ruina\\natural\\swordsharpenedwithtearsr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:items\\ruina\\natural\\swordsharpenedwithtearsr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\items\\ruina\\natural\\inthenameofloveandhater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:items\\ruina\\natural\\inthenameofloveandhater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\items\\ruina\\language\\crimsonscarr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:items\\ruina\\language\\crimsonscarr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\items\\\u0060itemsbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:items\\\u0060itemsbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\items\\ruina\\natural\\goldrushr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:items\\ruina\\natural\\goldrushr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\lobotomycorp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:lobotomycorp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\utils\\skeletonii.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:utils\\skeletonii.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\players\\lobotomywawplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:players\\lobotomywawplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\npcs\\redmist\\redmist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:npcs\\redmist\\redmist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\tiles\\disciplinaryshell.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:tiles\\disciplinaryshell.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|c:\\users\\my pc\\documents\\my games\\terraria\\tmodloader\\modsources\\lobotomycorp\\npcs\\redmist\\redmistskeleton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85DAD4C8-D4E9-41B8-8C95-5B4DE5ECD3CA}|LobotomyCorp.csproj|solutionrelative:npcs\\redmist\\redmistskeleton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\OldBackups\\RedMistOld.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 474,
+          "SelectedChildIndex": 14,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "\u0060ItemsBase.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\\u0060ItemsBase.cs",
+              "RelativeDocumentMoniker": "Items\\\u0060ItemsBase.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\\u0060ItemsBase.cs",
+              "RelativeToolTip": "Items\\\u0060ItemsBase.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAmwEQAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T14:32:12.634Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SwordSharpenedWithTearsRSword.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Projectiles\\Realized\\SwordSharpenedWithTearsRSword.cs",
+              "RelativeDocumentMoniker": "Projectiles\\Realized\\SwordSharpenedWithTearsRSword.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Projectiles\\Realized\\SwordSharpenedWithTearsRSword.cs",
+              "RelativeToolTip": "Projectiles\\Realized\\SwordSharpenedWithTearsRSword.cs",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAwwIoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T14:11:56.344Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CrimsonScarR.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Language\\CrimsonScarR.cs",
+              "RelativeDocumentMoniker": "Items\\Ruina\\Language\\CrimsonScarR.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Language\\CrimsonScarR.cs",
+              "RelativeToolTip": "Items\\Ruina\\Language\\CrimsonScarR.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAA1wBwAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T13:43:17.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "GoldRushR.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Natural\\GoldRushR.cs",
+              "RelativeDocumentMoniker": "Items\\Ruina\\Natural\\GoldRushR.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Natural\\GoldRushR.cs",
+              "RelativeToolTip": "Items\\Ruina\\Natural\\GoldRushR.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAABgAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T13:41:27.436Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "InTheNameOfLoveAndHateR.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Natural\\InTheNameOfLoveAndHateR.cs",
+              "RelativeDocumentMoniker": "Items\\Ruina\\Natural\\InTheNameOfLoveAndHateR.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Natural\\InTheNameOfLoveAndHateR.cs",
+              "RelativeToolTip": "Items\\Ruina\\Natural\\InTheNameOfLoveAndHateR.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAgwCUAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T13:40:41.397Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SwordSharpenedWithTears.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Waw\\SwordSharpenedWithTears.cs",
+              "RelativeDocumentMoniker": "Items\\Waw\\SwordSharpenedWithTears.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Waw\\SwordSharpenedWithTears.cs",
+              "RelativeToolTip": "Items\\Waw\\SwordSharpenedWithTears.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-13T13:40:29.453Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SwordSharpenedWithTearsR.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Natural\\SwordSharpenedWithTearsR.cs",
+              "RelativeDocumentMoniker": "Items\\Ruina\\Natural\\SwordSharpenedWithTearsR.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Items\\Ruina\\Natural\\SwordSharpenedWithTearsR.cs",
+              "RelativeToolTip": "Items\\Ruina\\Natural\\SwordSharpenedWithTearsR.cs",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAwwGAAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T01:36:35.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "LobotomyWawPlayer.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Players\\LobotomyWawPlayer.cs",
+              "RelativeDocumentMoniker": "Players\\LobotomyWawPlayer.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Players\\LobotomyWawPlayer.cs",
+              "RelativeToolTip": "Players\\LobotomyWawPlayer.cs",
+              "ViewState": "AgIAAIkCAAAAAAAAAAAmwJkCAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T03:36:28.376Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "RedMistOld.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\OldBackups\\RedMistOld.cs",
+              "RelativeDocumentMoniker": "..\\OldBackups\\RedMistOld.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\OldBackups\\RedMistOld.cs",
+              "RelativeToolTip": "..\\OldBackups\\RedMistOld.cs",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAAAKYAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T03:49:33.101Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Skeletonii.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Utils\\Skeletonii.cs",
+              "RelativeDocumentMoniker": "Utils\\Skeletonii.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Utils\\Skeletonii.cs",
+              "RelativeToolTip": "Utils\\Skeletonii.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T03:08:03.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "RedMistSkeleton.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\NPCs\\RedMist\\RedMistSkeleton.cs",
+              "RelativeDocumentMoniker": "NPCs\\RedMist\\RedMistSkeleton.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\NPCs\\RedMist\\RedMistSkeleton.cs",
+              "RelativeToolTip": "NPCs\\RedMist\\RedMistSkeleton.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAqwIAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T02:47:27.398Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "DisciplinaryShell.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Tiles\\DisciplinaryShell.cs",
+              "RelativeDocumentMoniker": "Tiles\\DisciplinaryShell.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Tiles\\DisciplinaryShell.cs",
+              "RelativeToolTip": "Tiles\\DisciplinaryShell.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAgwDAAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T01:58:51.055Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "RedMist.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\NPCs\\RedMist\\RedMist.cs",
+              "RelativeDocumentMoniker": "NPCs\\RedMist\\RedMist.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\NPCs\\RedMist\\RedMist.cs",
+              "RelativeToolTip": "NPCs\\RedMist\\RedMist.cs",
+              "ViewState": "AgIAAIAKAAAAAAAAAAAiwMYKAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-12T01:25:27.614Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "LobotomyCorp.cs",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\LobotomyCorp.cs",
+              "RelativeDocumentMoniker": "LobotomyCorp.cs",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\LobotomyCorp.cs",
+              "RelativeToolTip": "LobotomyCorp.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAADwv0kAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T15:03:52.836Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "en-US.hjson",
+              "DocumentMoniker": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Localization\\en-US.hjson",
+              "RelativeDocumentMoniker": "Localization\\en-US.hjson",
+              "ToolTip": "C:\\Users\\My PC\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\LobotomyCorp\\Localization\\en-US.hjson",
+              "RelativeToolTip": "Localization\\en-US.hjson",
+              "ViewState": "AgIAAJ8FAAAAAAAAAAAAALUFAABuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-13T18:06:26.275Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

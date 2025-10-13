@@ -160,6 +160,11 @@ namespace LobotomyCorp.Projectiles.Realized
                 modifiers.FinalDamage -= 0.5f;
                 modifiers.DisableCrit();
             }
+            else if (Projectile.ai[2] < 8)
+            {
+                modifiers.FinalDamage += 0.5f;
+                modifiers.CritDamage += 0.1f;
+            }
         }
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)

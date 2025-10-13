@@ -60,13 +60,13 @@ namespace LobotomyCorp.Items
                 Passive = new TooltipLine(Mod, "NegativePassive", $"{PassiveInitialize(GetPassiveList(arg), ExtraShow, true)}") { OverrideColor = LobotomyCorp.NegativePE };
                 tooltips.Add(Passive);
 
-                foreach (TooltipLine line in tooltips)
+                /*foreach (TooltipLine line in tooltips)
                 {
                     if (line.Mod == "Terraria" && line.Name == "ItemName")
                     {
                         line.OverrideColor = EgoColor;
                     }
-                }
+                }*/
             }            
         }
 
@@ -172,6 +172,35 @@ namespace LobotomyCorp.Items
         }
 
         /// <summary>
+        /// Static version of LobItemBase.RedMiskMaskUpgrade for Projectiles or other things
+        /// </summary>
+        /// <returns></returns>
+        public static bool RedMistMaskUpgrade(Player player, RiskLevel riskLevel)
+        {
+            if (LobotomyModPlayer.ModPlayer(player).RedMistMask)
+            {
+                switch (riskLevel)
+                {
+                    case RiskLevel.Zayin:
+                    case RiskLevel.Teth:
+                        return true;
+                    case RiskLevel.He:
+                        if (NPC.downedMechBossAny) return true;
+                        break;
+                    case RiskLevel.Waw:
+                        if (NPC.downedPlantBoss) return true;
+                        break;
+                    case RiskLevel.Aleph:
+                        if (NPC.downedGolemBoss) return true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Return Base to keep Red Mist Mask Upgrade tooltip :) 
         /// </summary>
         /// <param name="tooltips"></param>
@@ -181,9 +210,15 @@ namespace LobotomyCorp.Items
             {
                 string text = Language.GetTextValue("Mods.LobotomyCorp.Items." + Name + ".Tooltip2");
                 TooltipLine tooltip2 = new TooltipLine(Mod, "RedMistMask", text);
-                tooltip2.OverrideColor = Color.Maroon;
+                tooltip2.OverrideColor = Color.Crimson;
                 tooltips.Add(tooltip2);
             }
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
+        {
+            if (RedMistMaskUpgrade(player))
+                damage += 3f;
         }
 
         public sealed override void ModifyTooltips(List<TooltipLine> tooltips)

@@ -22,6 +22,7 @@ using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Items.Ruina.Technology;
 using FullSerializer;
 using LobotomyCorp.Items.Ruina.Natural;
+using LobotomyCorp.Items.Ruina.Language;
 
 namespace LobotomyCorp
 {
@@ -66,6 +67,8 @@ namespace LobotomyCorp
 
         public int BeakTarget = 0;
 		public bool BODExecute = false;
+
+        public bool CrimsonScarPrey = false;
 
         public int DaCapoSilentMusicPhase = 0;
         public bool DaCapoSilentMusic = false;
@@ -134,6 +137,8 @@ namespace LobotomyCorp
         {
             if (BeakTarget > 0)
                 BeakTarget--;
+
+            CrimsonScarPrey = false;
 
             DaCapoSilentMusic = false;
 
@@ -567,6 +572,14 @@ namespace LobotomyCorp
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            if (CrimsonScarPrey && Main.LocalPlayer.HeldItem.type == ModContent.ItemType<CrimsonScarR>())
+            {
+                Texture2D mark = Mod.Assets.Request<Texture2D>("Misc/LittleRedMark").Value;
+                Vector2 position = npc.position - Main.screenPosition + new Vector2(npc.width / 2, - 40);
+
+                spriteBatch.Draw(mark, position, mark.Frame(), Color.White, 0, mark.Frame().Size() / 2, 1f, SpriteEffects.None, 0f);
+            }
+
             if (FragmentsFromSomewhereTentacles > 0f ||
                 FragmentsFromSomewhereEnlightenment)
             {

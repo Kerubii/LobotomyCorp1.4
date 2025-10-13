@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using LobotomyCorp.Buffs;
-using LobotomyCorp.Items.Aleph;
-using LobotomyCorp.Items.Ruina.Natural;
+using LobotomyCorp.Items.Ruina.Language;
 using LobotomyCorp.Items.Waw;
-using LobotomyCorp.ModSystems;
-using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Projectiles.Realized;
+using LobotomyCorp.ParticlesAura;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -36,6 +35,12 @@ namespace LobotomyCorp.Players
         /// Use 1 to empower Melee, Use 2 to empower Range
         /// </summary>
         public int CrimsonScarEmpower = 0;
+
+        public bool CrimsonScarRuddedWelts = false;
+        public bool CrimsonScarPrey = false;
+        public float CrimsonScarVengeanceBoost = 0;
+        public bool CrimsonScarHowlingNightmare = false;
+        public static float CrimsonScarPreyBoost = 0.2f;
 
         public float FaintAromaPetal = 0;
         public int FaintAromaPetalMax = 60;
@@ -64,14 +69,21 @@ namespace LobotomyCorp.Players
         public float SolemnLamentFireRate = 0;
 
         public bool SwordSharpenedBlessing = false;
+        public int SwordSharpenedBlessingBestower = -1;
         public bool SwordSharpenedJustice = false;
         public bool SwordSharpenedDespair = false;
         public int SwordSharpenedImpaledCount = 0;
+        public int[] SwordSharpenedCurrentSword = { -1, -1, -1};
+        public Vector3[] SwordSharpenedImpalePosition = new Vector3[30];
 
         public override void ResetEffects()
         {
             BlackSwanParryChance = 0;
             BlackSwanBrokenDream = false;
+
+            CrimsonScarPrey = false;
+            CrimsonScarRuddedWelts = false;
+            CrimsonScarHowlingNightmare = false;
 
             LoveAndHateLove = false;
             LoveAndHateRegenBuff = false;
@@ -92,6 +104,10 @@ namespace LobotomyCorp.Players
             if (MagicBulletRequest >= 0 && Player.HeldItem.type != ModContent.ItemType<Items.Ruina.Technology.MagicBulletR>())
                 MagicBulletRequest = -1;
             MagicBulletDarkFlame = false;
+
+            SwordSharpenedBlessing = false;
+            SwordSharpenedJustice = false;
+            SwordSharpenedDespair = false;
         }
 
         public override void UpdateDead()
@@ -103,17 +119,35 @@ namespace LobotomyCorp.Players
             SolemnLamentDisable = 0;
 
             LoveAndHateCostReset();
+
+            SwordSharpenedImpaledReset();
+        }
+
+        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+        {
+            if (SwordSharpenedBlessing)
+            {
+                SwordSharpenedBlessingBestower = -1;
+                for (int i = 0; i < 3; i++)
+                {
+                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<SwordSharpenedWithTearsRDespair>(), 15, 0, SwordSharpenedBlessingBestower, 1);
+                }
+            }
         }
 
         public override void OnEnterWorld()
         {
             LoveAndHateCostReset();
 
-            if (Player.HasBuff<Buffs.NettleClothing>())
-                Player.ClearBuff(ModContent.BuffType<Buffs.NettleClothing>());
+            SwordSharpenedImpaledReset();
+        }
 
-            if (Player.HasBuff<PleasureTail>())
-                Player.ClearBuff(ModContent.BuffType<PleasureTail>());
+        public override void PreUpdateBuffs()
+        {
+            if (SwordSharpenedBlessingBestower > -1)
+            {
+                Player.AddBuff(ModContent.BuffType<Blessing>(), 60);
+            }
         }
 
         public override void PostUpdateBuffs()
@@ -153,6 +187,21 @@ namespace LobotomyCorp.Players
                 Player.noItems = true;
                 Player.cursed = true;
             }
+
+            if (CrimsonScarRuddedWelts && CrimsonScarLowHealthActive)
+            {
+                AuraBehavior buffAura = new CrimsonScarAura();
+                Player.GetModPlayer<LobotomyModPlayer>().CurrentAura.Add(buffAura);
+            }
+
+            // Just incase Swords weren't cleared when Justice buff is active
+            if (SwordSharpenedJustice && !SwordSharpenedDespair)
+            {
+                if (SwordSharpenedImpaledCount == 3)
+                {
+                    SwordSharpenedImpaledReset();
+                }
+            }
         }
 
         public override void PostUpdate()
@@ -182,6 +231,15 @@ namespace LobotomyCorp.Players
 
         public override void UpdateBadLifeRegen()
         {
+            if (CrimsonScarRuddedWelts && !CrimsonScarHowlingNightmare && Player.statLife >= Player.statLifeMax2 / 2)
+            {
+                if (Player.lifeRegen > 0)
+                {
+                    Player.lifeRegen = 0;
+                }
+                Player.lifeRegenTime = 0;
+            }
+
             if (PleasureDebuff)
             {
                 if (Player.lifeRegen > 0)
@@ -209,6 +267,16 @@ namespace LobotomyCorp.Players
 
         public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
         {
+            if (CrimsonScarRuddedWelts)
+            {
+                CrimsonScarVengeanceBoost = 0.1f;
+                if (npc.GetGlobalNPC<LobotomyGlobalNPC>().CrimsonScarPrey)
+                {
+                    CrimsonScarVengeanceBoost = 0.2f;
+                }
+                Player.AddBuff(ModContent.BuffType<Vengeance>(), 10 * 60);
+                npc.AddBuff(ModContent.BuffType<Prey>(), 60 * 15);
+            }
             if (Player.HeldItem.type == ModContent.ItemType<BlackSwan>() && Main.rand.Next(100) < 10)
             {
                 Player.ApplyDamageToNPC(npc, hurtInfo.Damage, 0, Player.direction, false);
@@ -221,11 +289,33 @@ namespace LobotomyCorp.Players
 
         public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
         {
+            if (CrimsonScarRuddedWelts)
+            {
+                CrimsonScarVengeanceBoost = 0.1f;
+                Player.AddBuff(ModContent.BuffType<Vengeance>(), 10 * 60);
+            }
             if (LoveAndHateLove)
             {
                 LoveAndHateHysteriaIncrease(hurtInfo.Damage);
             }
         }
+
+        public override void PostHurt(Player.HurtInfo info)
+        {
+            if (CrimsonScarRuddedWelts)
+            {
+                if (CrimsonScarLowHealthActive && Player.statLife + info.Damage > Player.statLifeMax2 / 2)
+                {
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Language/RedHood_Change") with { Volume = 0.2f }, Player.Center);
+                }
+            }
+            if (SwordSharpenedImpaledCount < 3 && info.DamageSource.SourceProjectileType == ModContent.ProjectileType<SwordSharpenedWithTearsRDespair>())
+            {
+                Player.immune = false;
+                Player.immuneTime = 0;
+            }
+        }
+
         /*
         public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
         {
@@ -356,6 +446,18 @@ namespace LobotomyCorp.Players
                     modifiers.FinalDamage *= (1.1f + ((float)FaintAromaPetal / (float)FaintAromaPetalMax));
                 else
                     modifiers.FinalDamage *= 1.2f;
+            }
+            else if (SwordSharpenedBlessing)
+            {
+                modifiers.SourceDamage += 0.2f;
+            }
+        }
+
+        public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
+        {
+            if (SwordSharpenedBlessing)
+            {
+                modifiers.SourceDamage -= 0.1f;
             }
         }
 
@@ -526,6 +628,24 @@ namespace LobotomyCorp.Players
             }
         }
 
+        public static bool SwordSharpenedIsType(int type)
+        {
+            return type == ModContent.ProjectileType<SwordSharpenedWithTearsRSword>() ||
+                   type == ModContent.ProjectileType<SwordSharpenedWithTearsRSwordExtra>();
+        }
+
+        public static int SwordSharpenedTotalOwned(Player player)
+        {
+            return player.ownedProjectileCounts[ModContent.ProjectileType<SwordSharpenedWithTearsRSword>()] +
+                   player.ownedProjectileCounts[ModContent.ProjectileType<SwordSharpenedWithTearsRSwordExtra>()];
+        }
+
+        public void SwordSharpenedImpaledReset()
+        {
+            SwordSharpenedImpaledCount = 0;
+            SwordSharpenedImpalePosition = new Vector3[3];
+        }
+
         public void SwordSharpenedImpaledBy(Projectile proj, int damage)
         {
             if (damage > Player.statLife)
@@ -535,15 +655,183 @@ namespace LobotomyCorp.Players
                 Player.Hurt(new PlayerDeathReason(), damage, 0, false, false, -1, false, 0, 0, 0);
             }
 
-            if (SwordSharpenedJustice)
+            if (SwordSharpenedImpaledCount < SwordSharpenedImpalePosition.Count())
             {
+                Vector2 delta = (proj.Center + proj.velocity * 5f) - Player.Center;
+                float rotation = proj.rotation;
+                // Mirrors it if player is facing opposite
+                if (Player.direction == -1)
+                    rotation = 3.14f - rotation;
+                SwordSharpenedImpalePosition[SwordSharpenedImpaledCount] = new Vector3(delta.X * Player.direction, delta.Y, MathHelper.WrapAngle(rotation));
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                    LobotomyCorp.NetworkSharpenedVisual(SwordSharpenedImpalePosition[SwordSharpenedImpaledCount], Main.myPlayer);
                 SwordSharpenedImpaledCount++;
-                if (SwordSharpenedImpaledCount >= 3)
+                if (SwordSharpenedImpaledCount >= SwordSharpenedImpalePosition.Count())
                 {
-                    SwordSharpenedImpaledCount = 0;
-                    //AddBuff
+                    if (SwordSharpenedJustice)
+                        Player.ClearBuff(ModContent.BuffType<Justice>());
+                    Player.AddBuff(ModContent.BuffType<Despair>(), 2);
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/KnightOfDespair_Groggy") with { Volume = 0.2f}, Player.Center);
                 }
             }
         }
+
+        /// <summary>
+        /// Sets CurrentSword to the next available sword, if a sword is not available sets it to -1
+        /// </summary>
+        /// <returns></returns>
+        public bool SwordSharpenedFindNextValidSword()
+        {
+            SwordSharpenedCurrentSword[0] = SwordSharpenedCurrentSword[1];
+            if (SwordSharpenedCurrentSword[0] == -1)
+            {
+                SwordSharpenedCurrentSword[0] = SwordSharpenedCurrentSword[2];
+                SwordSharpenedCurrentSword[1] = -1;
+            }
+            else
+            {
+                SwordSharpenedCurrentSword[1] = SwordSharpenedCurrentSword[2];
+            }
+            SwordSharpenedCurrentSword[2] = -1;
+            for (int i = 0; i < 3; i++)
+            {
+                int order = -1;
+                if (SwordSharpenedCurrentSword[i] >= 0)
+                    continue;
+                foreach (Projectile p in Main.ActiveProjectiles)
+                {
+                    if (SwordSharpenedIsType(p.type) && p.owner == Player.whoAmI)
+                    {
+                        order++;
+                        if (!SwordSharpenedCurrentSword.Contains(order) && p.ai[1] <= 0)
+                        {
+                            SwordSharpenedCurrentSword[i] = order;
+                            //Main.NewText("Added " + order + " to " + i);
+                            break;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void SSListScript()
+        {
+            string test = "Current Sword List:";
+            for (int i = 0; i < 3; i++)
+            {
+                test += " " + SwordSharpenedCurrentSword[i];
+            }
+            Main.NewText(test);
+        }
+
+        /// <summary>
+        /// Add sword's order to the queue, if the queue is full returns false
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        public bool SwordSharpenedAddSwordToQueue(int order)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (SwordSharpenedCurrentSword[i] == order)
+                    return false;
+                if (SwordSharpenedCurrentSword[i] == -1)
+                {
+                    SwordSharpenedCurrentSword[i] = order;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Finds all available swords, sets it to nothing if no sword is available
+        /// </summary>
+        public void SwordSharpenedResetCurrentSwords()
+        {
+            int order = -1;
+            int i = 0;
+            foreach (Projectile p in Main.ActiveProjectiles)
+            {
+                if (SwordSharpenedIsType(p.type) && p.owner == Player.whoAmI)
+                {
+                    order++;
+                    if (p.ai[1] <= 0)
+                    {
+                        SwordSharpenedCurrentSword[i] = order;
+                        i++;
+                        if (i > 2)
+                            return;
+                    }
+                }
+            }
+            for (int j = i; j < 3; j++)
+            {
+                SwordSharpenedCurrentSword[j] = -1;
+            }
+        }
+
+        public void SwordSharpenedApplyBlessing()
+        {
+            int applyTo = -1;
+            float dist = 16 * 2;
+            foreach (Player ally in Main.ActivePlayers)
+            {
+                if (ally.whoAmI != Player.whoAmI && ally.team == Player.team)
+                {
+                    if (ally.GetModPlayer<LobotomyWawPlayer>().SwordSharpenedBlessingBestower == Player.whoAmI)
+                        return;
+                    float pDist = ally.Center.Distance(Main.MouseWorld);
+                    if (pDist < dist)
+                    {
+                        dist = pDist;
+                        applyTo = ally.whoAmI;
+                    }
+                }
+            }
+            if (applyTo > -1)
+            {
+                Main.player[applyTo].GetModPlayer<LobotomyWawPlayer>().SwordSharpenedBlessingBestower = Player.whoAmI;
+                LobotomyCorp.NetworkBlessingSync(Player.whoAmI, applyTo);
+            }
+        }
+
+        /*
+        public void SwordSharpenedApplyBlessing()
+        {
+            if (SwordSharpenedBlessingBestowed > -1)
+            {
+                Player blesee = Main.player[SwordSharpenedBlessingBestowed];
+                if (!blesee.active || blesee.dead || !blesee.GetModPlayer<LobotomyWawPlayer>().SwordSharpenedBlessing)
+                {
+                    SwordSharpenedBlessingBestowed = -1;
+                }
+            }
+            if (SwordSharpenedBlessingBestowed == -1)
+            {
+                float dist = 16 * 2;
+                foreach (Player ally in Main.ActivePlayers)
+                {
+                    if (ally.team == Player.team)
+                    {
+                        float pDist = ally.Center.Distance(Main.MouseWorld);
+                        if (pDist < dist)
+                        {
+                            dist = pDist;
+                            SwordSharpenedBlessingBestowed = ally.whoAmI;
+                        }
+                    }
+                }
+                if (SwordSharpenedBlessingBestowed > -1)
+                {
+                    //int type = ModContent.BuffType<Blessing>();
+                    //Main.player[SwordSharpenedBlessingBestowed].AddBuff(type, 60, false);
+                    LobotomyCorp.NetworkBlessingSync(Player.whoAmI, SwordSharpenedBlessingBestowed);
+                }
+            }
+        }*/
+
+        public bool CrimsonScarLowHealthActive => Player.statLife <= Player.statLifeMax2 / 2;
     }
 }

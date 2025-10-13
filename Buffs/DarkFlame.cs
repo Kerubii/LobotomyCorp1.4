@@ -7,13 +7,12 @@ using Terraria.ID;
 using Terraria.DataStructures;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
+using LobotomyCorp.ParticlesAura;
 
 namespace LobotomyCorp.Buffs
 {
 	public class DarkFlame : ModBuff
 	{
-        private static AuraBehavior buffAura = new DarkFlameAura();
-
 		public override void SetStaticDefaults()
         {
 			// DisplayName.SetDefault("Dark Flame");
@@ -34,7 +33,8 @@ namespace LobotomyCorp.Buffs
             //d.fadeIn = 0.2f;
             //d.noGravity = true;
             DarkFlameDust(player);
-            player.GetModPlayer<LobotomyModPlayer>().CurrentAura = buffAura;
+            AuraBehavior darkFlame = new DarkFlameAura();
+            player.GetModPlayer<LobotomyModPlayer>().CurrentAura.Add(darkFlame);
         }
 
         private void DarkFlameDust(Player player)
@@ -78,49 +78,6 @@ namespace LobotomyCorp.Buffs
             dust.noGravity = true;
             dust.velocity = new Vector2(-1.5f * player.direction, 0);
             dust.scale = 1.2f;
-        }
-    }
-
-    public class DarkFlameAura : AuraBehavior
-    {
-        public int intensity => 3;
-
-        public Texture2D GetTexture(Mod mod) { return mod.Assets.Request<Texture2D>("Misc/FlameParticlesL").Value; }
-
-        public Rectangle GetSourceRect(Texture2D texture, int index)
-        {
-            return texture.Frame(4, 1, index);
-        }
-
-        public Color GetColor(PlayerDrawSet drawInfo, AuraParticle particle) 
-        {
-            Color color = Color.Lerp(Color.DarkBlue, Color.Black, (particle.particleTime / 20f)) * 0.9f;
-            if (particle.particleTime > 5)
-                color *= 1f - (particle.particleTime - 5) / 20f;
-            return color;
-        }
-
-        public void SpawnParam(Player player, int dir, float gravDir, float time, AuraParticle particle, int index)
-        {
-            particle.textureIndex = Main.rand.Next(4);
-            particle.Position.Y += player.height / 2 - 10;
-            particle.Velocity = new Vector2(Main.rand.NextFloat(-2,2), Main.rand.NextFloat(-2, -3));
-
-            particle.Rotation = Main.rand.NextFloat(6.28f);
-            particle.Scale = 1f;
-        }
-
-        public void Behavior(Player player, int dir, float gravDir, float time, AuraParticle particle)
-        {
-            particle.Position += particle.Velocity;
-            particle.Scale -= 0.04f;
-            particle.Velocity.Y *= 0.9f;
-            particle.Velocity.X *= 0.95f;
-
-            if (particle.particleTime > 20f)
-            {
-                particle.Active = false;
-            }
         }
     }
 }

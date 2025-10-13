@@ -1,4 +1,5 @@
 ﻿using System;
+using LobotomyCorp.Items;
 using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -70,7 +71,7 @@ namespace LobotomyCorp.Projectiles
         public override void OnKill(int timeLeft)
         {
             Player player = Main.player[Projectile.owner];
-            if (player.GetModPlayer<LobotomyModPlayer>().RedMistMask && Projectile.ai[1] == 1 && Main.myPlayer == Projectile.owner)
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Teth) && Projectile.ai[1] == 1 && Main.myPlayer == Projectile.owner)
             {
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Projectile.type, Projectile.damage, Projectile.knockBack, Projectile.owner, 0, 2);
             }

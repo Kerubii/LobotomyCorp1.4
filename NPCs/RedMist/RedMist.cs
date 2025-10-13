@@ -1,23 +1,31 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Audio;
-using LobotomyCorp;
-using LobotomyCorp.Utils;
-using LobotomyCorp.UI;
-using System.Collections.Generic;
-using System.IO;
+﻿using LobotomyCorp;
+using LobotomyCorp.Items.Teth;
+using LobotomyCorp.Items.Zayin;
+using LobotomyCorp.ModSystems;
+using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.KingPortal;
-using LobotomyCorp.ModSystems;
+using LobotomyCorp.UI;
+using LobotomyCorp.Utils;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using Terraria;
+using Terraria.Audio;
+using Terraria.Chat;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.NetModules;
+using Terraria.ID;
 using Terraria.Localization;
-using Terraria.Chat;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Terraria.ModLoader;
+using static LobotomyCorp.NPCs.RedMist.RedMistSkeleton;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
@@ -38,10 +46,10 @@ namespace LobotomyCorp.NPCs.RedMist
         public static int BossHead2 = -1;
         public static int BossHead3 = -1;
         public static int BossHead4 = -1;
-        
+
         public override void BossHeadSlot(ref int index)
         {
-            switch(NPC.ai[0])
+            switch (NPC.ai[0])
             {
                 case 1:
                     index = BossHead2;
@@ -106,17 +114,8 @@ namespace LobotomyCorp.NPCs.RedMist
             if (!Main.dedServ)
             {
                 Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/PMSecondWarning");
-            }
+            }   
         }
-
-        private RedMistSkeletonHelper skelly;
-        private Projectile HeldProjectile => Main.projectile[(int)NPC.ai[3]];
-        private int suppTextCooldown = 0;
-
-        public int GoldRushCount = 0;
-        public int TwilightRushTime = 0;
-        public const float GOLDRUSH4SPEED = 22f;
-        public const int GOLDRUSH4DELAY = 20;
 
         private float Phase
         {
@@ -136,12 +135,30 @@ namespace LobotomyCorp.NPCs.RedMist
             set { NPC.ai[2] = value; }
         }
 
-        private float DaCapoState
+        private float NextState
         {
             get { return NPC.ai[3]; }
             set { NPC.ai[3] = value; }
         }
 
+        private int FrontWeapon
+        {
+            get { return (int)NPC.localAI[1]; }
+            set { NPC.localAI[1] = value; }
+        }
+
+        private int BackWeapon
+        {
+            get { return (int)NPC.localAI[3]; }
+            set { NPC.localAI[3] = value; }
+        }
+
+        private RedMistSkeleton redmistSkeleton;
+        private int suppTextCooldown = 0;
+        public int GoldRushCount = 0;
+        public int TwilightRushTime = 0;
+        public const float GOLDRUSH4SPEED = 22f;
+        public const int GOLDRUSH4DELAY = 20;
         /// <summary>
         /// Counts down by two if target is being actively seen
         /// </summary>
@@ -163,29 +180,58 @@ namespace LobotomyCorp.NPCs.RedMist
 
         public override void AI()
         {
-            // Initialize Skeleton Red Mist, This uses an older skeleton model than the Utils one so bear with it. Its their grandad
-            if (skelly == null)
-            {
-                AiState = -1;
-                skelly = new RedMistSkeletonHelper
-                        (new Vector2(NPC.Center.X, NPC.position.Y + NPC.height),
-                         new Vector2(0, -72),
-                         new Vector2(26, -14),
-                         new Vector2(26, 2),
-                         12,
-                         16,
-                         new Vector2(-4, -10),
-                         new Vector2(-4, 2),
-                         30,
-                         42);
-                return;
-            }
-
             if (!NPC.HasValidTarget)
             {
                 NPC.TargetClosest();
             }
             Player player = Main.player[NPC.target];
+            DespawnCheck(player);
+            Vector2 target = NPC.Center;
+            target = NPC.GetTargetData().Center;
+            float healthPercent = NPC.life / (float)NPC.lifeMax;
+
+            if (Phase == 0)
+            {
+                //Phase1EX();
+                Phase1();
+            }
+            else if (Phase == 1)
+            {
+                Phase2();
+            }
+            else if (Phase == 2)
+            {
+                Phase3();
+            }
+            else if (Phase == 3)
+            {
+                Phase4();
+            }
+            else if (Phase == 4)
+            {
+                DeathPhase();
+            }
+
+            UpdateAggression();
+            ScreenFilterHandler();
+            bubbleShieldDustDisplay((int)Phase);
+
+            // Music Changer
+            if (Phase > 0)
+            {
+                if (Phase < 3)
+                    Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TilaridsDistortedNight");
+                else
+                    Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TilaridsInsigniaDecay");
+            }
+
+            SuppressionTextSpawner();
+
+            SkeletonHandler();
+        }
+
+        private void DespawnCheck(Player player)
+        {
             if (player.dead)
             {
                 // This method makes it so when the boss is in "despawn range" (outside of the screen), it despawns in 10 ticks
@@ -217,714 +263,6 @@ namespace LobotomyCorp.NPCs.RedMist
                     return;
                 }
             }
-            Vector2 target = NPC.Center;
-            /*if (Main.player[NPC.target].dead && NPC.timeLeft > 2)
-            {
-                NPC.timeLeft = 2;
-                NPC.position = Vector2.Zero;
-                return;
-            }*/
-            target = NPC.GetTargetData().Center;
-            float healthPercent = NPC.life / (float)NPC.lifeMax;
-
-            // Uncomment these below to test out different phases
-
-            //NPC.spriteDirection = 1;
-            //ChangeAnimation(AnimationState.TwilightChase);
-            //return;
-            //return;
-            /*
-            if (NPC.ai[0] == 0)
-            {
-                NPC.ai[0] = 2;
-                AiState = 10;
-                NPC.ai[3] = -1;
-                NPC.localAI[1] = 2;
-                ChangeAnimation(AnimationState.Phase4Transition);
-                Talk("Shift3", NPC.spriteDirection);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<RedMistEye>(), 0, 0, 0, NPC.whoAmI);
-            }*/
-            /*
-            if (Phase < 0)
-            {
-                ChangeAnimation(AnimationState.Intro);
-                Timer++;
-                if (Timer > 120)
-                {
-                    Phase = 0;
-                    Timer = 0;
-                    NPC.netUpdate = true;
-                }
-            }*/
-            // First Phase - Lobcorp Phase
-            if (Phase == 0)
-            {
-                if (AiState == -1)
-                {
-                    ChangeAnimation(AnimationState.Intro);
-                    NPC.dontTakeDamage = true;
-                    Timer++;
-                    if (Timer > 120)
-                    {
-                        AiState = 0;
-                        Timer = 0;
-                        NPC.dontTakeDamage = false;
-                        NPC.netUpdate = true;
-                        // Multiplayer sometimes spawns her with lower HP, this is here to circumvent that
-                        NPC.life = NPC.lifeMax;
-                    }
-                }
-                // Follow Mode
-                else if (AiState <= FollowState)
-                {
-                    NPC.dontTakeDamage = false;
-                    FollowMode1();
-                }
-                // EGO Swing
-                else if (AiState <= SwingBoth)
-                {
-                    SwingWeapon();
-                }
-                // Transition to Phase 2
-                else if (AiState == SwitchPhase)
-                {
-                    ChangeAnimation(AnimationState.Phase2Transition);
-                    Timer++;
-                    NPC.velocity.X = 0;
-
-                    if (Timer == 30 && Main.netMode != NetmodeID.MultiplayerClient)
-                    {
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<RedMistEye>(), 0, 0, -1, NPC.whoAmI);
-                    }
-
-                    if (Timer > 60)
-                    {
-                        Phase++;
-                        AiState = 0;
-                        Timer = 0;
-                        NPC.ai[3] = -1;
-                        NPC.netUpdate = true;
-                    }
-                }
-                else
-                    GoldRush1Sequence();
-            }
-            // Second Phase
-            // Changes to Mimicry and DaCapo
-            // Allows Heaven Strikes as anti air
-            // Focused on closing her distance between you and her
-            // Allows DaCapo toss as anti range
-            // Dashes through incoming Projectiles, gaining Projectile invincibility
-            // Teleports to DaCapo and unleashes a 180 degree slash depending on player direction
-            // Range needed to deal full damage shrinks
-            else if (Phase == 1)
-            {
-                if (AiState == FollowState)
-                {
-                    FollowMode2();
-                }
-                else if (AiState == SwingMimicry)
-                {
-                    SwingingMimicry();
-                }
-                else if (AiState == SwingDaCapo)
-                {
-                    SwingingDaCapo();
-                }
-                else if (AiState == SwingDaCapo + 1)//ThrowDaCapo <- Piece of shit why aren't you in a fucking function
-                {
-                    NPC.velocity.X *= 0.9f;
-                    Vector2 delta = NPC.GetTargetData().Center - NPC.Center;
-                    Timer++;
-                    if (Timer == 50)
-                    {
-                        if (Main.netMode != NetmodeID.MultiplayerClient)
-                            NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Normalize(delta) * 24f, ModContent.ProjectileType<DaCapoThrow>(), 20, 2, -1, NPC.whoAmI);
-                        SoundEngine.PlaySound(SoundID.Item19, NPC.Center);
-                        NPC.netUpdate = true;
-                    }
-                    if (Timer > 100)
-                    {
-                        AiState = FollowState;
-                        Timer = 30;
-                        ChangeAnimation(AnimationState.Idle2);
-                        skelly.Weapon1.Visible = true;
-                    }
-                }
-                else if (AiState == ThrowHeaven)
-                {
-                    ThrowingHeaven();
-                }
-                else if (AiState == Dash)
-                {
-                    DashFront(FollowState);
-                }
-                else if (AiState == DashSwingMimicry)
-                {
-                    DashFront(SwingMimicry);
-                }
-
-                else if (AiState == SpecialAttackStart)
-                {
-                    ChangeAnimation(AnimationState.DaCapoThrow);
-                    NPC.velocity.X *= 0.9f;
-                    Vector2 delta = NPC.GetTargetData().Center - NPC.Center;
-                    Timer++;
-                    if (Timer == 50 && Main.netMode != NetmodeID.MultiplayerClient)
-                    {
-                        NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, delta /= 30, ModContent.ProjectileType<DaCapoLegato>(), 20, 2, -1, NPC.whoAmI);
-                        NPC.netUpdate = true;
-                    }
-                    if (Timer > 100)
-                    {
-                        AiState = 8;
-                        Timer = 0;
-                        skelly.Weapon1.Visible = true;
-                        Talk("Teleport2", NPC.spriteDirection);
-                    }
-                }
-                else if (AiState == SpecialAttackStart + 1)
-                {
-                    ChangeAnimation(AnimationState.MimicryPrepare);
-                    if (Timer == 0)
-                    {
-                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase2_Cast") with { Volume = 0.5f }, NPC.position);
-                    }
-                    Timer++;
-                    if (Timer >= 120)
-                    {
-                        AiState = 9;
-                        Timer = 0;
-                        Projectile p = Main.projectile[(int)NPC.ai[3]];
-                        NPC.Center = p.Center;// + new Vector2(200, 0).RotateRandom(6.28f);
-                        p.Kill();
-                        NPC.ai[3] = -1;
-                        Talk("Teleport3", NPC.spriteDirection);
-                        NPC.netUpdate = true;
-                    }
-                }
-                else if (AiState == SpecialAttackStart + 2)
-                {
-                    if (Timer == 0)
-                    {
-                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase2_CastAtk") with { Volume = 0.5f }, NPC.position);
-                        if (Main.netMode != NetmodeID.MultiplayerClient)
-                        {
-                            for (int i = 0; i < 32; i++)
-                            {
-                                float angle = 6.28f / 32;
-
-                                Vector2 vel = new Vector2(8, 0).RotatedBy(angle * i);
-                                if (Main.netMode != NetmodeID.MultiplayerClient)
-                                    Projectile.NewProjectile(NPC.GetSource_FromAI(), skelly.Weapon1.Position(NPC.spriteDirection) + vel * 3, vel, ModContent.ProjectileType<RedMistMimicryHello>(), 30, 2);
-                            }
-                        }
-                    }
-
-                    NPC.velocity *= 0;
-                    NPC.noGravity = true;
-                    ChangeAnimation(AnimationState.MimicryGreaterSplitV);
-
-                    Timer++;
-                    if (Timer >= 60)
-                    {
-                        NPC.noGravity = false;
-                        AiState = 0;
-                        Timer = 0;
-                        NPC.velocity.Y = -8f;
-                        NPC.netUpdate = true;
-                    }
-                }
-                //Uses on Aggresion
-                else if (AiState >= GoldRushMimicryCombo)
-                {
-                    Phases2MiniGoldRush();
-                }
-                //Transition Phase
-                else if (AiState == SwitchPhase)
-                {
-                    ChangeAnimation(AnimationState.Phase3Transition);
-                    Timer++;
-                    if (Timer == 60 && Main.netMode != NetmodeID.MultiplayerClient)
-                    {
-                        SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase2_Change") with { Volume = 0.5f }, NPC.position);
-                        //Shoot Mimicry forwards and Dacapo backwards
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, new Vector2(6 * NPC.spriteDirection, 0), ModContent.ProjectileType<SwitchMimicryThrow>(), 20, 0);
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, new Vector2(-6 * NPC.spriteDirection, 0), ModContent.ProjectileType<SwitchDaCapoThrow>(), 20, 0);
-                    }
-                    if (Timer == 130)
-                    {
-                        Talk("Shift2", NPC.spriteDirection);
-                    }
-                    if (Timer > 160)
-                    {
-                        Phase++;
-                        AiState = FollowState;
-                        GoldRushCount++;
-                        Timer = 0;
-                        NPC.netUpdate = true;
-                    }
-                }
-            }
-            // Third Phase
-            // Throw Mimicry and DaCapo forward and equip Smile and Justitia
-            // Back to normal walking speed
-            // Smile forces all players to plummet down if in midair or go through platforms if above
-            // Smile inflicts "Horrifying Screech", disabling wings and lowers movement speed by 8%     
-            // Smile second hit releases shockwaves with infinite range that is blocked by direct line of sight, signified by black dust hitting tiles
-            // Getting hit by Smile shockwave reduces movement by 92% for 2 seconds
-            // Justitia Releases Energy Slashes, sometimes two or three hit combos, has a higher end lag when doing three hit combos
-            // Gold Rush has random center positions with different angles, ending with a strike from above
-            // Range needed to deal full damage expands
-            else if (Phase == 2)
-            {
-                RedMistPhase3();
-            }
-            // Instead of using Gold Rush a third time before transitioning, begins transition immediently
-            // Smile gets used one last time, Justitia transforms into Twilight
-            // Gold Rush gets summoned, and thrown as a Projectile with half the speed of red mist, creating random barriers all around the player
-            // Red Mist gains semi flight with low gravity, runs as normal, can dash
-            // Red Mist leaves behind numerous slashes when dashing
-            // Red Mist deals NO contact damage at all
-            // Red Mist relies on passing through players
-            // Red Mist sometimes enters a portal to pass through it
-            // Red Mist sometimes stops and redirects her velocity towards the player
-            // After 25 seconds, she stops, falls to the ground, and lays motionless for 10 seconds with increased damage taken, before attacking again
-            else if (Phase == 3)
-            {
-                if (AiState < 0)
-                {
-                    AiState++;
-                }
-                else
-                {
-                    //Idle
-                    if (AiState == IdleState)
-                    {
-                        ChangeAnimation(AnimationState.Idle4);
-                        Timer++;
-                        if (Timer > 60 && NPC.velocity.Y == 0 && Main.netMode != NetmodeID.MultiplayerClient)
-                        {
-                            NPC.TargetClosest();
-                            Timer = 0;
-                            int atkMax = 8;
-                            if (Main.expertMode)
-                                atkMax += 2;
-                            int attack = Main.rand.Next(atkMax);
-                            if (attack < 4)
-                            {
-                                AiState = GoldRushFollowStart;
-                            }
-                            else if (attack < 8)
-                            {
-                                AiState = TwilightRun;
-                            }
-                            else
-                            {
-                                AiState = TwilightLampstrike;
-                            }
-                            NPC.netUpdate = true;
-                        }
-                    }
-
-                    if (((NPC.GetTargetData().Center - NPC.Center).Length() > 2000f && Main.rand.NextBool(360)) || Aggression > 300 && Main.netMode != NetmodeID.MultiplayerClient)
-                    {
-                        AiState = TwilightTeleport;
-                        Aggression = 0;
-                        NPC.netUpdate = true;
-                    }
-
-                    GoldRush4Sequence();
-
-                    //Twilight JumpSlash Finisher
-                    if (AiState == TwilightJumpslash)
-                    {
-                        TwilightJumpslashFinisher();
-                    }
-
-                    //KNEEL
-                    else if (AiState == RedMistExhaust)
-                    {
-                        NPC.noTileCollide = false;
-                        NPC.noGravity = false;
-
-                        if (Timer % 30 == 0)
-                        {
-                            Talk("Tired" + (Main.rand.Next(5) + 1), Timer % 60 == 30 ? 1 : -1);
-                        }
-
-                        ChangeAnimation(AnimationState.TwilightEnd);
-                        Timer++;
-                        if (Timer > 120)
-                        {
-                            Timer = 0;
-                            AiState = 0;
-                        }
-                    }
-
-                    //Twilight DashSlash
-                    else if (AiState == TwilightDashslash)
-                    {
-                        NPC.noTileCollide = true;
-                        NPC.noGravity = true;
-                        NPC.spriteDirection = NPC.velocity.X < 0 ? -1 : 1;
-                        ChangeAnimation(AnimationState.TwilightDashSlash);
-                        Timer++;
-
-                        if (Timer % 3 == 0)
-                        {
-                            Vector2 SlashPosition = NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-100, 101));
-                            if (Main.netMode != NetmodeID.MultiplayerClient)
-                                Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
-                        }
-
-                        if (Timer > 20)
-                        {
-                            AiState = 2;
-                        }
-                    }
-
-                    //Twilight Normal Attack
-                    else if (AiState == TwilightNormal1)
-                    {
-                        if (Timer == 0)
-                        {
-                            NPC.TargetClosest(true);
-                            NPC.spriteDirection = NPC.direction;
-                        }
-
-                        ChangeAnimation(AnimationState.TwilightDashSlash);
-                        Timer++;
-
-                        if (Timer == 10)
-                        {
-                            Vector2 velocity = (NPC.GetTargetData().Center - NPC.Center);
-                            velocity.Normalize();
-                            velocity *= 32;
-
-                            if (Main.netMode != NetmodeID.MultiplayerClient)
-                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
-                        }
-
-                        if (Timer > 45)
-                        {
-                            Timer = 0;
-                            AiState = 0;
-                            if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(3))
-                            {
-                                AiState = 7;
-                                NPC.netUpdate = true;
-                            }
-                        }
-                    }
-
-                    //Twilight Normal Attack 2
-                    else if (AiState == TwilightNormal2)
-                    {
-                        if (Timer == 0)
-                        {
-                            NPC.TargetClosest(true);
-                            NPC.spriteDirection = NPC.direction;
-                        }
-
-                        ChangeAnimation(AnimationState.TwilightDashSlash2);
-                        Timer++;
-
-                        if (Timer == 10)
-                        {
-                            Vector2 velocity = (NPC.GetTargetData().Center - NPC.Center);
-                            velocity.Normalize();
-                            velocity *= 32;
-
-                            if (Main.netMode != NetmodeID.MultiplayerClient)
-                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
-                        }
-
-                        if (Timer > 45)
-                        {
-                            Timer = 0;
-                            AiState = 0;
-                            if (Main.rand.NextBool(3) && Main.netMode != NetmodeID.MultiplayerClient)
-                            {
-                                AiState = 3;
-                                NPC.netUpdate = true;
-                            }
-                        }
-                    }
-
-                    else if (AiState == TwilightRun)
-                    {
-                        ChangeAnimation(AnimationState.TwilightChase);
-                        NPC.spriteDirection = Math.Sign(NPC.velocity.X);
-                        NPC.noGravity = true;                        
-                        
-                        float speed = 0.2f;
-                        float maxSpeed = 14f;
-
-                        Vector2 pos = NPC.GetTargetData().Center - NPC.Center;
-                        Vector2 NormPos = pos;
-                        NormPos.Normalize();
-
-                        if (NPC.velocity.X < NormPos.X * maxSpeed)
-                        {
-                            NPC.velocity.X += speed;
-                            if (NPC.velocity.X < 0)
-                                NPC.velocity.X += speed * 4;
-                            if (NPC.velocity.X > maxSpeed)
-                                NPC.velocity.X = maxSpeed;
-                        }
-                        else if (NPC.velocity.X > NormPos.X * maxSpeed)
-                        {
-                            NPC.velocity.X -= speed;
-                            if (NPC.velocity.X > 0)
-                                NPC.velocity.X -= speed * 4;
-                            if (NPC.velocity.X < -maxSpeed)
-                                NPC.velocity.X = -maxSpeed;
-                        }
-
-                        if (NPC.velocity.Y < NormPos.Y * maxSpeed)
-                        {
-                            NPC.velocity.Y += speed;
-                            if (NPC.velocity.Y < 0)
-                                NPC.velocity.Y += speed * 4;
-                            if (NPC.velocity.Y > maxSpeed)
-                                NPC.velocity.Y = maxSpeed;
-                        }
-                        else if (NPC.velocity.Y > NormPos.Y * maxSpeed)
-                        {
-                            NPC.velocity.Y -= speed;
-                            if (NPC.velocity.Y > 0)
-                                NPC.velocity.Y -= speed * 4;
-                            if (NPC.velocity.Y < -maxSpeed)
-                                NPC.velocity.Y = -maxSpeed;
-                        }
-                        /*
-                        if (NPC.velocity.Length() < maxSpeed * 0.1f)
-                        {
-                            NPC.velocity = pos * maxSpeed * 0.15f;
-                        }
-                        else
-                        {
-                            pos *= speed;
-                            NPC.velocity.X += pos.X;
-                            NPC.velocity.Y += pos.Y;
-                        }
-
-                        if (NPC.velocity.Length() > maxSpeed)
-                        {
-                            NPC.velocity.Normalize();
-                            NPC.velocity *= maxSpeed;
-                        }*/
-
-                        for (int i = 0; i < 3; i++)
-                        {
-                            int d = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood);
-                            Main.dust[d].noGravity = true;
-                            Main.dust[d].velocity = Vector2.Normalize(NPC.velocity) * 1.5f;
-                        }
-
-                        float dist = 16 * 25;
-                        if (Timer > 30 && pos.Length() < dist)
-                        {
-                            NPC.velocity = NormPos * 28;
-
-                            if (TwilightRushTime < 600)
-                            {
-                                Talk("Pass" + (1 + Main.rand.Next(3)), NPC.spriteDirection);
-                                SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase4_Atk1") with { Volume = 0.5f }, NPC.position);
-
-                                AiState = TwilightRunDash;
-                                TwilightRushTime += 60;
-                                Timer = 0;
-                            }
-                            else
-                            {
-                                AiState = TwilightJumpslash;
-                                TwilightRushTime = 0;
-                                Timer = 0;
-                            }
-                        }
-
-                        Timer++;
-                        TwilightRushTime++;
-                    }
-
-                    else if (AiState == TwilightRunDash)
-                    {
-                        NPC.noTileCollide = true;
-                        NPC.noGravity = true;
-                        NPC.spriteDirection = Math.Sign(NPC.velocity.X);
-                        ChangeAnimation(AnimationState.TwilightDashSlash);
-
-                        Timer++;
-                        if (Timer < 20)
-                        {
-                            if (Timer % 3 == 0)
-                            {
-                                Vector2 SlashPosition = NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 11));
-                                if (Main.netMode != NetmodeID.MultiplayerClient)
-                                    Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
-                            }
-                        }
-                        else if (Timer > 30 && Main.expertMode)
-                        {
-                            ChangeAnimation(AnimationState.TwilightDashSlash2);
-                            if (Timer % 2 == 0)
-                            {
-                                spawnTwilightLampProjectiles();
-                            }
-                        }
-
-                        if (Timer > 40)
-                        {
-                            AiState = TwilightRun;
-                            Timer = 0;
-                        }
-                        else if (Timer > 30)
-                        {
-                            NPC.velocity *= 0.95f;
-                        }
-
-                        for (int i = 0; i < 3; i++)
-                        {
-                            int d = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood);
-                            Main.dust[d].noGravity = true;
-                            Main.dust[d].velocity *= 0;
-                        }
-                    }
-                    
-                    else if (AiState == TwilightLampstrike)
-                    {
-                        TwilightLampAttack();
-                    }
-                    
-                    else if (AiState == TwilightTeleport)
-                    {
-                        TwilightApocalypseTeleport(IdleState);
-                    }
-                    /*
-                    if (Timer == 0)
-                    {
-                        NPC.velocity.X = 4f;
-                    }
-                    else
-                        NPC.velocity.X *= 0.9f;
-                    */
-                    /*
-                    if (NPC.velocity.Y == 0)
-                    {
-                        if (NPC.velocity.X == 0)
-                            ChangeAnimation(AnimationState.Idle4);
-                        else
-                            ChangeAnimation(AnimationState.TwilightChase);
-                    }
-                    else
-                        ChangeAnimation(AnimationState.MidAir);
-
-                    fighterAI(NPC.GetTargetData(), 16f, 0.8f, 10f);
-                    */
-                }
-            }
-            //Death Phase
-            else if (Phase == 4)
-            {
-                //Activate death animation
-                animState = AnimationState.TwilightEnd;
-                Timer++;
-                NPC.velocity.X *= 0.8f;
-                if (Timer > 180)
-                {
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        NPC.HitInfo hit = new NPC.HitInfo();
-                        hit.InstantKill = true;
-                        NPC.StrikeNPC(hit, false, true);
-                    }
-                    else if (Main.netMode != NetmodeID.MultiplayerClient)
-                    {
-                        NPC.StrikeInstantKill();
-                        NPC.netUpdate = true;
-                    }
-                }
-            }
-            
-            // Hidden Red Mist Phase??
-            // For the worthy phase!
-            // Hold Apocalypse up high, envelopes the area in darkness as it dissipates, red mist suddenly gets a burst of red mist, as Mimicry is summoned and blazes of red flames replaces her hair and gains a burning red cloak
-            // Can throw mimicry spear form multiple times when player is away
-            // Can Transform mimicry into a scythe to for wide slashes,
-            // Can Transform mimicry spear form to poke
-            // Can Transform mimicry hammer form as heavy hitter
-
-            // Aggression
-            // Increases when direct line of sight between the Terrarian and the Red Mist is broken for a certain amount of time
-            // During phase 1 and phase 3, She does a quick one portal Gold Rush to a random target player
-            // In phase 2, After quick Gold Rush, it will do a mimicry slash
-            // In phase 3, it will do Smile Slam
-            // Increasing Aggression in phase 4 makes her shift dash to the player
-            if (!Collision.CanHit(NPC, NPC.GetTargetData()))
-            {
-                Aggression++;
-            }
-            else if (Aggression > 0)
-            {
-                Aggression -= 2;
-                if (Aggression < 0)
-                    Aggression = 0;
-            }
-
-            ScreenFilterHandler();
-            bubbleShieldDustDisplay((int)Phase);
-
-            // Music Changer
-            if (Phase > 0)
-            {
-                if (Phase < 3)
-                    Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TilaridsDistortedNight");
-                else
-                    Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TilaridsInsigniaDecay");
-            }
-
-            // Suppresion Text Maker
-            if (suppTextCooldown-- <= 0 && Main.rand.NextBool(300))
-            {
-                List<string> possibleText = new List<string>();
-                if (Main.rand.NextBool(2))
-                {
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 0));
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 1));
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 2));
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 3));
-                }
-
-                if (NPC.ai[0] == 0)
-                {
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 4));
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 5));
-                }
-
-                else if (NPC.ai[0] == 1)
-                {
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 6));
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 7));
-                }
-
-                else if (NPC.ai[0] == 2)
-                {
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 8));
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 9));
-                }
-
-                else if (NPC.ai[0] == 3)
-                {
-                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 10));
-                }
-                Vector2 offsetRandom = new Vector2(Main.rand.Next(-1000, 1000), Main.rand.Next(-1000, 1000));
-                Color textColor = Color.Red;
-                textColor *= 0.5f;
-                SuppressionText.AddText(possibleText[Main.rand.Next(possibleText.Count)], NPC.Center + offsetRandom, Main.rand.NextFloat(-0.5000f, 0.5000f), 2f, textColor, 0.2f, 240, Main.rand.Next(-1, 2), Main.rand.NextFloat(1.000f));
-                suppTextCooldown = 300;
-            }
         }
 
         const int TeleportToPlayer = -1;
@@ -936,6 +274,67 @@ namespace LobotomyCorp.NPCs.RedMist
         const int GoldRushBig = 4;
         const int GoldRushSmall = 8;
         const int SwitchPhase = 10;
+
+        private void Phase1()
+        {
+            if (AiState == -1)
+            {
+                ChangeAnimation(AnimationState.Intro);
+                NPC.dontTakeDamage = true;
+                Timer++;
+                if (Timer > 120)
+                {
+                    AiState = 0;
+                    Timer = 0;
+                    NPC.dontTakeDamage = false;
+                    NPC.netUpdate = true;
+                    // Multiplayer sometimes spawns her with lower HP, this is here to circumvent that
+                    NPC.life = NPC.lifeMax;
+                }
+            }
+            // Follow Mode
+            else if (AiState <= FollowState)
+            {
+                NPC.dontTakeDamage = false;
+                FollowMode1();
+            }
+            // EGO Swing
+            else if (AiState <= SwingBoth)
+            {
+                SwingWeapon();
+            }
+            // Transition to Phase 2
+            else if (AiState == SwitchPhase)
+            {
+                NPC.velocity.X = 0;
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<RedMistEye>(), 0, 0, -1, NPC.whoAmI);
+                Phase++;
+                AiState = 0;
+                Timer = 0;
+                NPC.netUpdate = true;
+                return;
+
+                ChangeAnimation(AnimationState.Phase2Transition);
+                Timer++;
+                NPC.velocity.X = 0;
+
+                if (Timer == 30 && Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<RedMistEye>(), 0, 0, -1, NPC.whoAmI);
+                }
+
+                if (Timer > 60)
+                {
+                    Phase++;
+                    AiState = 0;
+                    Timer = 0;
+                    NPC.ai[3] = -1;
+                    NPC.netUpdate = true;
+                }
+            }
+            else
+                GoldRush1Sequence();
+        }
 
         void FollowMode1()
         {
@@ -998,7 +397,7 @@ namespace LobotomyCorp.NPCs.RedMist
         bool CheckGoldRushCounterValid(int Phase)
         {
             float healthPercent = NPC.life / (float)NPC.lifeMax;
-            healthPercent -= 0.75f - ( 0.25f * Phase);
+            healthPercent -= 0.75f - (0.25f * Phase);
 
             healthPercent /= 0.25f;
             int RushCountOffset = 3 * Phase;
@@ -1040,8 +439,8 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     if (AiState != SwingRedEyes)
                     {
-                        Vector2 pos = skelly.Weapon1.EndPoint(NPC.spriteDirection);
-                        
+                        Vector2 pos = redmistSkeleton.BoneName[BoneLabel.FrontWeapon].EndPoint(NPC.spriteDirection);
+
                         Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<RedMistMelee>(), 25, 2);
                         if (Main.expertMode && Timer == 28)
                         {
@@ -1055,16 +454,16 @@ namespace LobotomyCorp.NPCs.RedMist
                                     target.Y += Main.rand.Next(-180, 180);
                                 }
                                 Vector2 speed = (target - pos) / PenitenceStar.TIME;
-                                
+
                                 Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, speed * 4, ModContent.ProjectileType<PenitenceStar>(), 15, 2);
                             }
                         }
                     }
                     if (AiState != SwingPenitence)
                     {
-                        Vector2 pos = skelly.Weapon1.EndPoint(NPC.spriteDirection);
+                        Vector2 pos = redmistSkeleton.BoneName[BoneLabel.FrontWeapon].EndPoint(NPC.spriteDirection);
 
-                        Projectile.NewProjectile(NPC.GetSource_FromAI(), skelly.Weapon2.EndPoint(NPC.spriteDirection), Vector2.Zero, ModContent.ProjectileType<RedMistMelee>(), 25, 2);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), redmistSkeleton.BoneName[BoneLabel.BackWeapon].EndPoint(NPC.spriteDirection), Vector2.Zero, ModContent.ProjectileType<RedMistMelee>(), 25, 2);
 
                         if (Main.expertMode && Timer == 28)
                         {
@@ -1076,7 +475,7 @@ namespace LobotomyCorp.NPCs.RedMist
                                 {
                                     speed = speed.RotatedByRandom(0.08f);
                                 }
-                                
+
                                 Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, speed * 2, ModContent.ProjectileType<RedEyesEgg>(), 15, 2);
                             }
                         }
@@ -1137,9 +536,10 @@ namespace LobotomyCorp.NPCs.RedMist
                     Timer = 0;
                     NPC.noGravity = false;
                     NPC.noTileCollide = false;
+                    redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.direction);
 
                     if (Main.netMode != NetmodeID.MultiplayerClient)
-                        Projectile.NewProjectile(NPC.GetSource_FromThis(), skelly.Weapon1.Position(NPC.direction), NPC.velocity, ModContent.ProjectileType<GoldRushRedMistImpact>(), 30, 10);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.direction), NPC.velocity, ModContent.ProjectileType<GoldRushRedMistImpact>(), 30, 10);
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Finish") with { Volume = 0.25f }, NPC.position);
                     NPC.netUpdate = true;
                 }
@@ -1188,7 +588,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     AiState = 11;
                     NPC.velocity.X = 24f * NPC.spriteDirection;
                     if (Main.netMode != NetmodeID.MultiplayerClient)
-                        Projectile.NewProjectile(NPC.GetSource_FromThis(), skelly.Weapon1.Position(NPC.direction), NPC.velocity, ModContent.ProjectileType<GoldRushRedMistImpact>(), 30, 10);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.direction), NPC.velocity, ModContent.ProjectileType<GoldRushRedMistImpact>(), 30, 10);
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Finish") with { Volume = 0.25f }, NPC.position);
                 }
             }
@@ -1221,6 +621,90 @@ namespace LobotomyCorp.NPCs.RedMist
         const int DashSwingMimicry = 6;
         const int SpecialAttackStart = 7;
         const int GoldRushMimicryCombo = 11;
+
+        private void Phase2()
+        {
+            if (AiState == FollowState)
+            {
+                FollowMode2();
+            }
+            else if (AiState == SwingMimicry)
+            {
+                SwingingMimicry();
+            }
+            else if (AiState <= SwingDaCapo)
+            {
+                SwingingDaCapo();
+            }
+            else if (AiState == SwingDaCapo + 1)//ThrowDaCapo <- Piece of shit why aren't you in a fucking function
+            {
+                NPC.velocity.X *= 0.9f;
+                Vector2 delta = NPC.GetTargetData().Center - NPC.Center;
+                Timer++;
+                if (Timer == 50)
+                {
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Normalize(delta) * 24f, ModContent.ProjectileType<DaCapoThrow>(), 20, 2, -1, NPC.whoAmI);
+                    SoundEngine.PlaySound(SoundID.Item19, NPC.Center);
+                    NPC.netUpdate = true;
+                }
+                if (Timer > 100)
+                {
+                    AiState = FollowState;
+                    Timer = 30;
+                    ChangeAnimation(AnimationState.Idle2);
+                    redmistSkeleton.BoneName[BoneLabel.FrontWeapon].Visible = true;
+                }
+            }
+            else if (AiState == ThrowHeaven)
+            {
+                ThrowingHeaven();
+            }
+            else if (AiState == Dash)
+            {
+                DashFront(FollowState);
+            }
+            else if (AiState == DashSwingMimicry)
+            {
+                DashFront(SwingMimicry);
+            }
+
+            else if (AiState <= SpecialAttackStart + 2)
+            {
+                SpecialAttack2();
+            }
+
+            //Uses on Aggresion
+            else if (AiState >= GoldRushMimicryCombo)
+            {
+                Phases2MiniGoldRush();
+            }
+            //Transition Phase
+            else if (AiState == SwitchPhase)
+            {
+                ChangeAnimation(AnimationState.Phase3Transition);
+                Timer++;
+                if (Timer == 60 && Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase2_Change") with { Volume = 0.5f }, NPC.position);
+                    //Shoot Mimicry forwards and Dacapo backwards
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, new Vector2(6 * NPC.spriteDirection, 0), ModContent.ProjectileType<SwitchMimicryThrow>(), 20, 0);
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, new Vector2(-6 * NPC.spriteDirection, 0), ModContent.ProjectileType<SwitchDaCapoThrow>(), 20, 0);
+                }
+                if (Timer == 130)
+                {
+                    Talk("Shift2", NPC.spriteDirection);
+                }
+                if (Timer > 160)
+                {
+                    Phase++;
+                    AiState = FollowState;
+                    GoldRushCount++;
+                    Timer = 0;
+                    NPC.netUpdate = true;
+                }
+            }
+        }
 
         void FollowMode2()
         {
@@ -1333,7 +817,7 @@ namespace LobotomyCorp.NPCs.RedMist
             Timer++;
             if (60 < Timer && Timer < 67)
             {
-                Vector2 position = skelly.Weapon1.Position(NPC.spriteDirection) + new Vector2(100, 0).RotatedBy(skelly.Weapon1.GetRotation(NPC.spriteDirection));
+                Vector2 position = redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.spriteDirection) + new Vector2(100, 0).RotatedBy(redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetRotation(NPC.spriteDirection));
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), position, Vector2.Zero, ModContent.ProjectileType<RedMistMimicry>(), 50, 2);
@@ -1350,7 +834,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     float angle = MathHelper.ToRadians(-120f + (240f * i / 16f)) + (NPC.spriteDirection > 0 ? 0 : 3.14f);
                     Vector2 vel = new Vector2(100, 0).RotatedBy(angle);
-                    Vector2 pos = skelly.UpperArmR.Position(NPC.spriteDirection);
+                    Vector2 pos = redmistSkeleton.BoneName[BoneLabel.UpperArmR].GetPosition(NPC.spriteDirection);
                     vel.Normalize();
                     vel *= 8;
                     if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -1372,7 +856,7 @@ namespace LobotomyCorp.NPCs.RedMist
             NPC.velocity.X *= 0.9f;
             if (Timer > 20 && Timer < 90 && Timer % 30 < 10)
             {
-                Vector2 position = skelly.Weapon2.Position(NPC.spriteDirection) + new Vector2(40, 0).RotatedBy(skelly.Weapon2.GetRotation(NPC.spriteDirection));
+                Vector2 position = redmistSkeleton.BoneName[BoneLabel.BackWeapon].GetPosition(NPC.spriteDirection) + new Vector2(40, 0).RotatedBy(redmistSkeleton.BoneName[BoneLabel.BackWeapon].GetRotation(NPC.spriteDirection));
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), position, Vector2.Zero, ModContent.ProjectileType<RedMistDaCapo>(), 15, 0);
             }
@@ -1467,7 +951,9 @@ namespace LobotomyCorp.NPCs.RedMist
             }
         }
 
-        bool IsDaCapoHeld { get
+        bool IsDaCapoHeld
+        {
+            get
             {
                 // Edge case if Da Capo despawns, so the fight can move forwards
                 if (NPC.ai[3] >= 0)
@@ -1476,10 +962,84 @@ namespace LobotomyCorp.NPCs.RedMist
                     if (!p.active || p.type != ModContent.ProjectileType<DaCapoThrow>() || (int)p.ai[0] != NPC.whoAmI)
                         NPC.ai[3] = -1;
                 }
-                return NPC.ai[3] < 0; 
-            } }
+                return NPC.ai[3] < 0;
+            }
+        }
 
-        const int SwingSmile = 4;
+        void SpecialAttack2()
+        {
+            if (AiState == SpecialAttackStart)
+            {
+                ChangeAnimation(AnimationState.DaCapoThrow);
+                NPC.velocity.X *= 0.9f;
+                Vector2 delta = NPC.GetTargetData().Center - NPC.Center;
+                Timer++;
+                if (Timer == 50 && Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    NPC.ai[3] = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, delta /= 30, ModContent.ProjectileType<DaCapoLegato>(), 20, 2, -1, NPC.whoAmI);
+                    NPC.netUpdate = true;
+                }
+                if (Timer > 100)
+                {
+                    AiState = 8;
+                    Timer = 0;
+                    redmistSkeleton.BoneName[BoneLabel.FrontWeapon].Visible = true;
+                    Talk("Teleport2", NPC.spriteDirection);
+                }
+            }
+            else if (AiState == SpecialAttackStart + 1)
+            {
+                ChangeAnimation(AnimationState.MimicryPrepare);
+                if (Timer == 0)
+                {
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase2_Cast") with { Volume = 0.5f }, NPC.position);
+                }
+                Timer++;
+                if (Timer >= 120)
+                {
+                    AiState = 9;
+                    Timer = 0;
+                    Projectile p = Main.projectile[(int)NPC.ai[3]];
+                    NPC.Center = p.Center;// + new Vector2(200, 0).RotateRandom(6.28f);
+                    p.Kill();
+                    NPC.ai[3] = -1;
+                    Talk("Teleport3", NPC.spriteDirection);
+                    NPC.netUpdate = true;
+                }
+            }
+            else if (AiState == SpecialAttackStart + 2)
+            {
+                if (Timer == 0)
+                {
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase2_CastAtk") with { Volume = 0.5f }, NPC.position);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        for (int i = 0; i < 32; i++)
+                        {
+                            float angle = 6.28f / 32;
+
+                            Vector2 vel = new Vector2(8, 0).RotatedBy(angle * i);
+                            if (Main.netMode != NetmodeID.MultiplayerClient)
+                                Projectile.NewProjectile(NPC.GetSource_FromAI(), redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.spriteDirection) + vel * 3, vel, ModContent.ProjectileType<RedMistMimicryHello>(), 30, 2);
+                        }
+                    }
+                }
+
+                NPC.velocity *= 0;
+                NPC.noGravity = true;
+                ChangeAnimation(AnimationState.MimicryGreaterSplitV);
+
+                Timer++;
+                if (Timer >= 60)
+                {
+                    NPC.noGravity = false;
+                    AiState = 0;
+                    Timer = 0;
+                    NPC.velocity.Y = -8f;
+                    NPC.netUpdate = true;
+                }
+            }
+        }
 
         void Phases2MiniGoldRush()
         {
@@ -1530,7 +1090,9 @@ namespace LobotomyCorp.NPCs.RedMist
             }
         }
 
-        void RedMistPhase3()
+        const int SwingSmile = 4;
+
+        private void Phase3()
         {
             if (AiState == FollowState)
             {
@@ -1665,7 +1227,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     NPC.noGravity = false;
                     NPC.noTileCollide = false;
                     if (Main.netMode != NetmodeID.MultiplayerClient)
-                        Projectile.NewProjectile(NPC.GetSource_FromThis(), skelly.Weapon1.Position(NPC.direction), NPC.velocity, ModContent.ProjectileType<GoldRushRedMistImpact>(), 30, 10);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.direction), NPC.velocity, ModContent.ProjectileType<GoldRushRedMistImpact>(), 30, 10);
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Teleport_Finish") with { Volume = 0.5f }, NPC.position);
                 }
                 /*
@@ -1797,7 +1359,7 @@ namespace LobotomyCorp.NPCs.RedMist
         {
             SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase3_Atk1") with { Volume = 0.5f }, NPC.position);
 
-            Vector2 hammerPos = skelly.Weapon2.Position(NPC.spriteDirection) + new Vector2(70, 0).RotatedBy(skelly.Weapon2.GetRotation(NPC.spriteDirection));
+            Vector2 hammerPos = redmistSkeleton.BoneName[BoneLabel.BackWeapon].GetPosition(NPC.spriteDirection) + new Vector2(70, 0).RotatedBy(redmistSkeleton.BoneName[BoneLabel.BackWeapon].GetRotation(NPC.spriteDirection));
             foreach (Player p in Main.ActivePlayers)
             {
                 if (!p.dead && Collision.CanHit(hammerPos, 1, 1, p.position, p.width, p.height))
@@ -1839,7 +1401,7 @@ namespace LobotomyCorp.NPCs.RedMist
             if (Timer == 160)
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase3_Atk3") with { Volume = 0.5f }, NPC.position);
 
-            Vector2 hammerPos = skelly.Weapon2.Position(NPC.spriteDirection) + new Vector2(70, 0).RotatedBy(skelly.Weapon2.GetRotation(NPC.spriteDirection));
+            Vector2 hammerPos = redmistSkeleton.BoneName[BoneLabel.BackWeapon].GetPosition(NPC.spriteDirection) + new Vector2(70, 0).RotatedBy(redmistSkeleton.BoneName[BoneLabel.BackWeapon].GetRotation(NPC.spriteDirection));
             /*if (Timer % 10 == 0)
             {
                 foreach (Player p in Main.player)
@@ -1855,7 +1417,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 for (int i = 0; i < 28; i++)
                 {
                     Vector2 vel = new Vector2(16, 0).RotatedBy(random + MathHelper.ToRadians(11.25f * i));
-                    Vector2 dustPos = new Vector2(70, 0).RotatedBy(skelly.Weapon2.GetRotation(NPC.spriteDirection));
+                    Vector2 dustPos = new Vector2(70, 0).RotatedBy(redmistSkeleton.BoneName[BoneLabel.BackWeapon].GetRotation(NPC.spriteDirection));
                     Dust d = Dust.NewDustPerfect(hammerPos, DustID.Wraith, vel);
                     d.noGravity = true;
                 }
@@ -1913,6 +1475,342 @@ namespace LobotomyCorp.NPCs.RedMist
         const int TwilightLampstrike = 12;
         const int TwilightCounter = 13;
 
+        private void Phase4()
+        {
+            if (AiState < 0)
+            {
+                AiState++;
+            }
+            else
+            {
+                //Idle
+                if (AiState == IdleState)
+                {
+                    ChangeAnimation(AnimationState.Idle4);
+                    Timer++;
+                    if (Timer > 60 && NPC.velocity.Y == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        NPC.TargetClosest();
+                        Timer = 0;
+                        int atkMax = 8;
+                        if (Main.expertMode)
+                            atkMax += 2;
+                        int attack = Main.rand.Next(atkMax);
+                        if (attack < 4)
+                        {
+                            AiState = GoldRushFollowStart;
+                        }
+                        else if (attack < 8)
+                        {
+                            AiState = TwilightRun;
+                        }
+                        else
+                        {
+                            AiState = TwilightLampstrike;
+                        }
+                        NPC.netUpdate = true;
+                    }
+                }
+
+                if (((NPC.GetTargetData().Center - NPC.Center).Length() > 2000f && Main.rand.NextBool(360)) || Aggression > 300 && Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    AiState = TwilightTeleport;
+                    Aggression = 0;
+                    NPC.netUpdate = true;
+                }
+
+                GoldRush4Sequence();
+
+                //Twilight JumpSlash Finisher
+                if (AiState == TwilightJumpslash)
+                {
+                    TwilightJumpslashFinisher();
+                }
+
+                //KNEEL
+                else if (AiState == RedMistExhaust)
+                {
+                    NPC.noTileCollide = false;
+                    NPC.noGravity = false;
+
+                    if (Timer % 30 == 0)
+                    {
+                        Talk("Tired" + (Main.rand.Next(5) + 1), Timer % 60 == 30 ? 1 : -1);
+                    }
+
+                    ChangeAnimation(AnimationState.TwilightEnd);
+                    Timer++;
+                    if (Timer > 120)
+                    {
+                        Timer = 0;
+                        AiState = 0;
+                    }
+                }
+
+                //Twilight DashSlash
+                else if (AiState == TwilightDashslash)
+                {
+                    NPC.noTileCollide = true;
+                    NPC.noGravity = true;
+                    NPC.spriteDirection = NPC.velocity.X < 0 ? -1 : 1;
+                    ChangeAnimation(AnimationState.TwilightDashSlash);
+                    Timer++;
+
+                    if (Timer % 3 == 0)
+                    {
+                        Vector2 SlashPosition = NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-100, 101));
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
+                    }
+
+                    if (Timer > 20)
+                    {
+                        AiState = 2;
+                    }
+                }
+
+                //Twilight Normal Attack
+                else if (AiState == TwilightNormal1)
+                {
+                    if (Timer == 0)
+                    {
+                        NPC.TargetClosest(true);
+                        NPC.spriteDirection = NPC.direction;
+                    }
+
+                    ChangeAnimation(AnimationState.TwilightDashSlash);
+                    Timer++;
+
+                    if (Timer == 10)
+                    {
+                        Vector2 velocity = (NPC.GetTargetData().Center - NPC.Center);
+                        velocity.Normalize();
+                        velocity *= 32;
+
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
+                    }
+
+                    if (Timer > 45)
+                    {
+                        Timer = 0;
+                        AiState = 0;
+                        if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(3))
+                        {
+                            AiState = 7;
+                            NPC.netUpdate = true;
+                        }
+                    }
+                }
+
+                //Twilight Normal Attack 2
+                else if (AiState == TwilightNormal2)
+                {
+                    if (Timer == 0)
+                    {
+                        NPC.TargetClosest(true);
+                        NPC.spriteDirection = NPC.direction;
+                    }
+
+                    ChangeAnimation(AnimationState.TwilightDashSlash2);
+                    Timer++;
+
+                    if (Timer == 10)
+                    {
+                        Vector2 velocity = (NPC.GetTargetData().Center - NPC.Center);
+                        velocity.Normalize();
+                        velocity *= 32;
+
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.RedMistSlashSpawner>(), 43, 0);
+                    }
+
+                    if (Timer > 45)
+                    {
+                        Timer = 0;
+                        AiState = 0;
+                        if (Main.rand.NextBool(3) && Main.netMode != NetmodeID.MultiplayerClient)
+                        {
+                            AiState = 3;
+                            NPC.netUpdate = true;
+                        }
+                    }
+                }
+
+                else if (AiState == TwilightRun)
+                {
+                    ChangeAnimation(AnimationState.TwilightChase);
+                    NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+                    NPC.noGravity = true;
+
+                    float speed = 0.2f;
+                    float maxSpeed = 14f;
+
+                    Vector2 pos = NPC.GetTargetData().Center - NPC.Center;
+                    Vector2 NormPos = pos;
+                    NormPos.Normalize();
+
+                    if (NPC.velocity.X < NormPos.X * maxSpeed)
+                    {
+                        NPC.velocity.X += speed;
+                        if (NPC.velocity.X < 0)
+                            NPC.velocity.X += speed * 4;
+                        if (NPC.velocity.X > maxSpeed)
+                            NPC.velocity.X = maxSpeed;
+                    }
+                    else if (NPC.velocity.X > NormPos.X * maxSpeed)
+                    {
+                        NPC.velocity.X -= speed;
+                        if (NPC.velocity.X > 0)
+                            NPC.velocity.X -= speed * 4;
+                        if (NPC.velocity.X < -maxSpeed)
+                            NPC.velocity.X = -maxSpeed;
+                    }
+
+                    if (NPC.velocity.Y < NormPos.Y * maxSpeed)
+                    {
+                        NPC.velocity.Y += speed;
+                        if (NPC.velocity.Y < 0)
+                            NPC.velocity.Y += speed * 4;
+                        if (NPC.velocity.Y > maxSpeed)
+                            NPC.velocity.Y = maxSpeed;
+                    }
+                    else if (NPC.velocity.Y > NormPos.Y * maxSpeed)
+                    {
+                        NPC.velocity.Y -= speed;
+                        if (NPC.velocity.Y > 0)
+                            NPC.velocity.Y -= speed * 4;
+                        if (NPC.velocity.Y < -maxSpeed)
+                            NPC.velocity.Y = -maxSpeed;
+                    }
+                    /*
+                    if (NPC.velocity.Length() < maxSpeed * 0.1f)
+                    {
+                        NPC.velocity = pos * maxSpeed * 0.15f;
+                    }
+                    else
+                    {
+                        pos *= speed;
+                        NPC.velocity.X += pos.X;
+                        NPC.velocity.Y += pos.Y;
+                    }
+
+                    if (NPC.velocity.Length() > maxSpeed)
+                    {
+                        NPC.velocity.Normalize();
+                        NPC.velocity *= maxSpeed;
+                    }*/
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int d = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood);
+                        Main.dust[d].noGravity = true;
+                        Main.dust[d].velocity = Vector2.Normalize(NPC.velocity) * 1.5f;
+                    }
+
+                    float dist = 16 * 25;
+                    if (Timer > 30 && pos.Length() < dist)
+                    {
+                        NPC.velocity = NormPos * 28;
+
+                        if (TwilightRushTime < 600)
+                        {
+                            Talk("Pass" + (1 + Main.rand.Next(3)), NPC.spriteDirection);
+                            SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/Gebura/Gebura_Phase4_Atk1") with { Volume = 0.5f }, NPC.position);
+
+                            AiState = TwilightRunDash;
+                            TwilightRushTime += 60;
+                            Timer = 0;
+                        }
+                        else
+                        {
+                            AiState = TwilightJumpslash;
+                            TwilightRushTime = 0;
+                            Timer = 0;
+                        }
+                    }
+
+                    Timer++;
+                    TwilightRushTime++;
+                }
+
+                else if (AiState == TwilightRunDash)
+                {
+                    NPC.noTileCollide = true;
+                    NPC.noGravity = true;
+                    NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+                    ChangeAnimation(AnimationState.TwilightDashSlash);
+
+                    Timer++;
+                    if (Timer < 20)
+                    {
+                        if (Timer % 3 == 0)
+                        {
+                            Vector2 SlashPosition = NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 11));
+                            if (Main.netMode != NetmodeID.MultiplayerClient)
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), SlashPosition, Vector2.Zero, ModContent.ProjectileType<Projectiles.RedMistSlashes>(), 43, 0);
+                        }
+                    }
+                    else if (Timer > 30 && Main.expertMode)
+                    {
+                        ChangeAnimation(AnimationState.TwilightDashSlash2);
+                        if (Timer % 2 == 0)
+                        {
+                            spawnTwilightLampProjectiles();
+                        }
+                    }
+
+                    if (Timer > 40)
+                    {
+                        AiState = TwilightRun;
+                        Timer = 0;
+                    }
+                    else if (Timer > 30)
+                    {
+                        NPC.velocity *= 0.95f;
+                    }
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int d = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood);
+                        Main.dust[d].noGravity = true;
+                        Main.dust[d].velocity *= 0;
+                    }
+                }
+
+                else if (AiState == TwilightLampstrike)
+                {
+                    TwilightLampAttack();
+                }
+
+                else if (AiState == TwilightTeleport)
+                {
+                    TwilightApocalypseTeleport(IdleState);
+                }
+                /*
+                if (Timer == 0)
+                {
+                    NPC.velocity.X = 4f;
+                }
+                else
+                    NPC.velocity.X *= 0.9f;
+                */
+                /*
+                if (NPC.velocity.Y == 0)
+                {
+                    if (NPC.velocity.X == 0)
+                        ChangeAnimation(AnimationState.Idle4);
+                    else
+                        ChangeAnimation(AnimationState.TwilightChase);
+                }
+                else
+                    ChangeAnimation(AnimationState.MidAir);
+
+                fighterAI(NPC.GetTargetData(), 16f, 0.8f, 10f);
+                */
+            }
+        }
+
         void GoldRush4Sequence()
         {
             //GoldRush Follow Start
@@ -1938,7 +1836,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     Vector2 velocity = new Vector2(GOLDRUSH4SPEED * NPC.spriteDirection, 0);
                     //if (Main.netMode != NetmodeID.MultiplayerClient)
-                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.KingPortal.GoldRushRedMist>(), 45, 1f, -1, 10);
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.KingPortal.GoldRushRedMist>(), 45, 1f, -1, 10);
                 }
 
                 if (Timer > 200)
@@ -2051,7 +1949,7 @@ namespace LobotomyCorp.NPCs.RedMist
             //Spawns Lamp Projectile
             if (Timer >= 60 && Timer <= 70)
             {
-                spawnTwilightLampProjectiles();               
+                spawnTwilightLampProjectiles();
             }
 
             if (Timer == 90)
@@ -2065,7 +1963,7 @@ namespace LobotomyCorp.NPCs.RedMist
         {
             SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Entity/ApocalypseBird/BossBird_laser_Fire") with { Volume = 0.2f }, NPC.position);
 
-            Vector2 pos = skelly.Weapon1.Position(NPC.spriteDirection) + new Vector2(40 + Main.rand.Next(90), 0).RotatedBy(skelly.Weapon1.GetRotation(NPC.spriteDirection));
+            Vector2 pos = redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.spriteDirection) + new Vector2(40 + Main.rand.Next(90), 0).RotatedBy(redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetRotation(NPC.spriteDirection));
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, new Vector2(16, 0).RotatedByRandom(6.28f), ModContent.ProjectileType<RedMistLampProjectile>(), 10, 0, -1, NPC.target);
@@ -2123,13 +2021,13 @@ namespace LobotomyCorp.NPCs.RedMist
                             bool validTile = true;
                             if ((Main.tile[x, y - 1].LiquidType == LiquidID.Lava))
                                 validTile = false;
-                            if (validTile && Main.tileSolid[(int)Main.tile[x,y].TileType] && !Collision.SolidTiles(x-3, x+3, y-5, y-1))
+                            if (validTile && Main.tileSolid[(int)Main.tile[x, y].TileType] && !Collision.SolidTiles(x - 3, x + 3, y - 5, y - 1))
                             {
                                 targetPos.X = (float)(x * 16 - NPC.width / 2);
                                 targetPos.Y = (float)(y * 16 - NPC.height);
                             }
                         }
-                    }    
+                    }
                 }
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -2140,6 +2038,501 @@ namespace LobotomyCorp.NPCs.RedMist
                 AiState = StateAfter;
                 Timer -= 30;
             }
+        }
+
+        private void DeathPhase()
+        {
+            //Activate death animation
+            animState = AnimationState.TwilightEnd;
+            Timer++;
+            NPC.velocity.X *= 0.8f;
+            if (Timer > 180)
+            {
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NPC.HitInfo hit = new NPC.HitInfo();
+                    hit.InstantKill = true;
+                    NPC.StrikeNPC(hit, false, true);
+                }
+                else if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    NPC.StrikeInstantKill();
+                    NPC.netUpdate = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns False if the previous held item is not the same, Dust makes it spawn dust associated with the weapon
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="dust"></param>
+        /// <returns></returns>
+        bool ChangeFrontWeapon(int type, int visibleTimer = 0, bool dust = true)
+        {
+            bool changed = false;
+            if (FrontWeapon != type)
+            {
+                if (dust)
+                {
+                    int oldType = FrontWeapon;
+                    spawnWeaponDust(oldType);
+                }
+                changed = true;
+                Main.NewText("Changed");
+                if (visibleTimer != 0)
+                {
+                    redmistSkeleton.BoneName[BoneLabel.FrontWeapon].Visible = false;
+                }
+            }
+            else if (!redmistSkeleton.BoneName[BoneLabel.FrontWeapon].Visible && Timer == visibleTimer)
+            {
+                if (dust)
+                {
+                    spawnWeaponDust(type);
+                }
+                redmistSkeleton.BoneName[BoneLabel.FrontWeapon].Visible = true;
+            }
+            FrontWeapon = type;
+            return changed;
+        }
+
+        /// <summary>
+        /// if Visible timer is set above 0, auto hides the weapon and reappears whenever Timer (NPC.ai[2]) is equal and spawns weapon dust
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="dustTimer"></param>
+        /// <param name="dust"></param>
+        /// <returns></returns>
+        bool ChangeBackWeapon(int type, int visibleTimer = 0, bool dust = true)
+        {
+            bool changed = false;
+            if (BackWeapon != type)
+            {
+                if (dust)
+                {
+                    int oldType = BackWeapon;
+                    spawnWeaponDust(oldType);
+                }
+                changed = true;
+                Main.NewText("Changed");
+                if (visibleTimer > 0)
+                {
+                    redmistSkeleton.BoneName[BoneLabel.BackWeapon].Visible = false;
+                }
+            }
+            else if (!redmistSkeleton.BoneName[BoneLabel.BackWeapon].Visible && Timer == visibleTimer && dust)
+            {
+                spawnWeaponDust(type);
+                redmistSkeleton.BoneName[BoneLabel.BackWeapon].Visible = true;
+            }
+            BackWeapon = type;
+            return changed;
+        }
+
+        void spawnWeaponDust(int type)
+        {
+            // Front Weapons
+            if (type == ModContent.ItemType<Wingbeat>())
+            {
+                for (int i = 0; i < 12; i++)
+                {
+                    SpawnDustonWeapon(-1, 70f, 10f, DustID.BlueFairy);
+                }
+            }
+            else if (type == ModContent.ItemType<Soda>())
+            {
+                for (int i = 0; i < 12; i++)
+                {
+                    SpawnDustonWeapon(-1, 70f, 10f, DustID.Corruption);
+                }
+            }
+
+            // Back Weapons
+            else if (type == ModContent.ItemType<Penitence>())
+            {
+                for (int i = 0; i < 12; i++)
+                {
+                    SpawnDustonWeapon(1, 70f, 10f, DustID.WoodFurniture);
+                }
+            }
+            else if (type == ModContent.ItemType<Tough>())
+            {
+                for (int i = 0; i < 12; i++)
+                {
+                    SpawnDustonWeapon(1, 70f, 10f, DustID.Wraith);
+                }
+            }
+        }
+
+        /// <summary>
+        /// -1 Front, 1 Back
+        /// </summary>
+        /// <param name="which"></param>
+        /// <param name="length"></param>
+        /// <param name=""></param>
+        void SpawnDustonWeapon(int which, float width, float height, int type, Vector2? velocity = null, float fadeIn = 0f)
+        {
+            BoneLabel whichBone = which < 0 ? BoneLabel.FrontWeapon : BoneLabel.BackWeapon;
+
+            Vector2 pos = redmistSkeleton.BoneName[whichBone].GetPosition(NPC.spriteDirection) + new Vector2(Main.rand.NextFloat(width), Main.rand.NextFloat(-height/2, height/2)).RotatedBy(redmistSkeleton.BoneName[whichBone].GetRotation(NPC.spriteDirection));
+            int d = Dust.NewDust(pos, 4, 4, type);
+            Main.dust[d].noGravity = true;
+            Main.dust[d].fadeIn = fadeIn;
+            if (velocity != null)
+            {
+                Main.dust[d].velocity = (Vector2)velocity;
+            }
+        }
+
+        enum PhaseEXStates{
+            PhaseTransition,
+            Idle,
+            RedEyesPenitenceJumpAttack,
+            WingbeatIntro,
+            WingbeatDashAttack,
+            WingbeatPenitence,
+            Soda,
+            Tough,
+            SodaTough
+            }
+
+        void Phase1EX()
+        {
+            //Initiates Phase by using RE P the same way as Ryoshu
+            //Bends down, teleports, jumps up and slams both down
+            //Afterwards, uses all Zayin EGO in sequence before switching after losing 10% of health
+            
+            if (AiState == (int)PhaseEXStates.Idle)
+            {
+                EXFollowMode1();
+            }
+            else if (AiState == (int)PhaseEXStates.RedEyesPenitenceJumpAttack)
+            {
+                RedEyesPenitenceJumpAttack();
+            }
+            else if (AiState == (int)PhaseEXStates.WingbeatIntro)
+            {
+                WingbeatDualWieldStart();
+            }
+            else if (AiState == (int)PhaseEXStates.WingbeatDashAttack)
+            {
+                WingbeatDashAttack();
+            }
+            else if (AiState == (int)PhaseEXStates.WingbeatPenitence)
+            {
+                WingbeatPenitence();
+            }
+            else if (AiState == (int)PhaseEXStates.Tough)
+            {
+                ToughShoot();
+            }
+            else if (AiState == (int)PhaseEXStates.Soda)
+            {
+                SodaShoot();
+            }
+            else
+            {
+                AiState = (int)PhaseEXStates.RedEyesPenitenceJumpAttack;
+                Timer = 0;
+            }
+        }
+
+        void EXFollowMode1()
+        {
+            float healthPercent = NPC.life / (float)NPC.lifeMax;
+
+            if (NPC.velocity.Y == 0)
+            {
+                if (NPC.velocity.X == 0)
+                    ChangeAnimation(AnimationState.Idle1);
+                else
+                    ChangeAnimation(AnimationState.Run);
+            }
+            else
+                ChangeAnimation(AnimationState.MidAir);
+
+            float maxSpeed = 12f;
+            if (BackWeapon == ModContent.ItemType<Tough>())
+            {
+                maxSpeed = 10f;
+
+                if (Timer % 60 == 50)
+                {
+                    Vector2 position = redmistSkeleton.BoneName[BoneLabel.UpperArmR].GetPosition(NPC.spriteDirection);
+                    Vector2 delta = NPC.GetTargetData().Center - position;
+                    delta.Normalize();
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), position + delta * 60, delta * 16, ProjectileID.BulletDeadeye, 10, 0);
+                }
+            }
+
+            fighterAI(NPC.GetTargetData(), 64f, 0.3f, maxSpeed);
+            Vector2 difference = NPC.GetTargetData().Center - NPC.Center;
+            float distance = difference.Length();
+
+            Timer++;
+
+            if (distance < 400)
+            {
+                int attack = Main.rand.Next(4);
+                if (attack == 0)
+                {
+                    AiState = (int)PhaseEXStates.WingbeatDashAttack;
+                    Timer = 30 * Main.rand.Next(2, 7) - 1;
+                }
+                else if (attack == 1)
+                {
+                    AiState = (int)PhaseEXStates.WingbeatPenitence;
+                    Timer = 0;
+                    NPC.velocity.X = 12 * NPC.spriteDirection;
+                }
+                else if (attack == 2)
+                {
+                    AiState = (int)PhaseEXStates.Soda;
+                    Timer = -30;
+                }
+                else
+                {
+                    AiState = (int)PhaseEXStates.Tough;
+                    Timer = -30;
+                }
+                NPC.direction = NPC.spriteDirection;
+            }
+        }
+
+        void RedEyesPenitenceJumpAttack()
+        {
+            Timer++;
+            FrontWeapon = ModContent.ItemType<RedEyes>();
+            BackWeapon = ModContent.ItemType<Penitence>();
+            ChangeAnimation(AnimationState.RedEyesPenitenceIntro);
+            if (Timer < 60)
+            {
+                //Ready Stance
+                if (Timer == 59)
+                {
+                    NPC.TargetClosest(true);
+                    NPC.spriteDirection = NPC.direction;
+                    NPC.velocity = new Vector2(16 * NPC.direction, -30);
+                    NPC.position = NPC.GetTargetData().Center + new Vector2(-16 * 20 * NPC.direction, 0);
+                    NPC.noGravity = true;
+                    NPC.noTileCollide = true;
+                }
+            }
+            else if (Timer < 90)
+            {
+                if (Timer < 80)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int d = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, -NPC.velocity.X / 4, -NPC.velocity.Y / 4);
+                        Main.dust[d].noGravity = true;
+                        Main.dust[d].fadeIn = 1.5f;
+                    }
+                }
+                NPC.velocity *= 0.9f;
+                if (Timer == 89)
+                {
+                    NPC.noTileCollide = false;
+                    float rot = (float)Math.Atan2(NPC.GetTargetData().Center.Y - NPC.Center.Y, NPC.GetTargetData().Center.X - NPC.Center.X);
+                    NPC.velocity = new Vector2(32, 0).RotatedBy(rot);
+                    if (NPC.velocity.Y < 12)
+                        NPC.velocity.Y = 12;
+                }
+            }
+            else if (Timer < 210)
+            {
+                if (Timer < 120)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int d = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, -NPC.velocity.X / 2, -NPC.velocity.Y / 2);
+                        Main.dust[d].noGravity = true;
+                        Main.dust[d].fadeIn = 1.5f;
+                    }
+                }
+                if (NPC.velocity.Y == 0)
+                {
+                    NPC.noGravity = false;
+                    NPC.velocity.X *= 0.95f;
+                }
+                //Slashes downwards to slow down
+            }
+            else
+            {
+                NPC.velocity.X *= 0;
+                AiState = (int)PhaseEXStates.WingbeatIntro;
+                Timer = 0;
+            }
+        }
+
+        void WingbeatDualWieldStart()
+        {
+            Timer++;
+            ChangeFrontWeapon(ModContent.ItemType<Wingbeat>());
+            ChangeAnimation(AnimationState.WingbeatWield);
+            if (Timer == 1)
+            {
+                for (int i = 0; i < 24; i++)
+                {
+                    SpawnDustonWeapon(-1, 70f, 10f, DustID.Wraith);
+                    /*
+                    Vector2 pos = redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.spriteDirection) + new Vector2(Main.rand.NextFloat(70.000f), Main.rand.Next(-5, 6)).RotatedBy(redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetRotation(NPC.spriteDirection));
+                    int d = Dust.NewDust(pos, 4, 4, DustID.Wraith);
+                    Main.dust[d].noGravity = true;*/
+                }
+            }
+            else if (Timer > 50 && Timer < 90)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    SpawnDustonWeapon(-1, 70f, 10f, DustID.DungeonSpirit);
+                    /*
+                    Vector2 pos = redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetPosition(NPC.spriteDirection) + new Vector2(Main.rand.NextFloat(70.000f), Main.rand.Next(-5, 6)).RotatedBy(redmistSkeleton.BoneName[BoneLabel.FrontWeapon].GetRotation(NPC.spriteDirection));
+                    int d = Dust.NewDust(pos, 4, 4, DustID.DungeonSpirit);
+                    Main.dust[d].noGravity = true;
+                    */
+                }
+            }
+            else if (Timer == 120)
+            {
+                AiState = (int)PhaseEXStates.Idle;
+                Timer = 0;
+            }
+        }
+
+        void WingbeatDashAttack()
+        {
+            ChangeAnimation(AnimationState.DashSlash);
+            ChangeFrontWeapon(ModContent.ItemType<Wingbeat>());
+            Timer--;
+            int attackLoop = (int)(Timer % 30);
+            if (attackLoop > 15 || attackLoop < 0)
+            {
+                NPC.velocity.X *= 0.95f;
+                
+                if (attackLoop == 16)
+                {
+                    NPC.direction = Math.Sign(NPC.GetTargetData().Center.X - NPC.Center.X);
+                    NPC.spriteDirection = NPC.direction;
+                    Vector2 pos = new Vector2(NPC.GetTargetData().Center.X - 400 * NPC.direction, NPC.GetTargetData().Position.Y + NPC.GetTargetData().Height - NPC.height / 2);
+                    NPC.Center = pos;
+                    NPC.velocity.Y = 0;
+                    NPC.velocity.X = 32 * NPC.direction;
+                    NPC.noGravity = true;
+                }
+            }
+            else
+            {
+                NPC.noGravity = false;
+            }
+            if ((int)Timer <= -16)
+            {
+                if (BackWeapon == ModContent.ItemType<Tough>())
+                {
+                    AiState = (int)(PhaseEXStates.Tough);
+                    Timer = 15;
+                }
+                else
+                {
+                    AiState = (int)(PhaseEXStates.Idle);
+                    Timer = 0;
+                }
+                NPC.velocity.X *= .2f;
+            }
+            NPC.localAI[2] = 1f;
+        }
+
+        void WingbeatPenitence()
+        {
+            ChangeBackWeapon(ModContent.ItemType<Penitence>(), 20);
+
+            ChangeAnimation(AnimationState.PenitenceSlamCombo);
+            Timer++;
+            if (Timer < 45)
+            {
+                NPC.velocity.X *= 0.98f;
+            }
+            else if (Timer < 60)
+            {
+                if (Timer == 59)
+                {
+                    NPC.TargetClosest();
+                    NPC.velocity.X = 24 * NPC.direction;
+                    NPC.spriteDirection = NPC.direction;
+                }
+            }
+            else if (Timer < 85)
+            {
+                if (Timer == 84)
+                {
+                    NPC.TargetClosest();
+                    NPC.spriteDirection = NPC.direction;
+                }
+            }
+            else if (Timer < 145)
+            {
+                NPC.velocity.X *= 0.95f;
+            }
+
+            if (Timer > 145)
+            {
+                AiState = 1;
+                Timer = 0;
+            }
+        }
+
+        void ToughShoot()
+        {
+            NPC.velocity *= 0.8f;
+
+            ChangeBackWeapon(ModContent.ItemType<Tough>(), -20);
+
+            Vector2 position = redmistSkeleton.BoneName[BoneLabel.UpperArmR].GetPosition(NPC.spriteDirection);
+            Vector2 delta = NPC.GetTargetData().Center - position;
+            delta.Normalize();
+            ChangeAnimation(AnimationState.Tough);
+
+            NPC.TargetClosest();
+            NPC.spriteDirection = NPC.direction;
+
+            Timer++;
+            if (Timer % 15 == 5 && Timer > 0)
+            {
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), position + delta * 60, delta * 16, ProjectileID.BulletDeadeye, 10, 0);
+            }
+
+            if (Timer > 45) 
+                AiState = 1;
+        }
+
+        void SodaShoot()
+        {
+            NPC.velocity *= 0.8f;
+
+            ChangeFrontWeapon(ModContent.ItemType<Soda>(), -20);
+
+            Vector2 position = redmistSkeleton.BoneName[BoneLabel.UpperArmL].GetPosition(NPC.spriteDirection);
+            Vector2 delta = NPC.GetTargetData().Center - position;
+            delta.Normalize();
+            ChangeAnimation(AnimationState.Soda);
+
+            NPC.TargetClosest();
+            NPC.spriteDirection = NPC.direction;
+
+            Timer++;
+            if (Timer % 15 == 5 && Timer > 0)
+            {
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), position + delta * 60, delta * 16, ProjectileID.BulletDeadeye, 10, 0);
+            }
+
+            if (Timer > 45)
+                AiState = 1;
+        }
+
+        void Phase2EX()
+        {
+
         }
 
         private bool WillHitTarget(Rectangle Target, float Time)
@@ -2287,1601 +2680,100 @@ namespace LobotomyCorp.NPCs.RedMist
             return false;
         }
 
-        public override void FindFrame(int frameHeight)
+        private void UpdateAggression()
         {
-            //The Animation part for pure pain
-            if (skelly != null)
+            // Aggression
+            // Increases when direct line of sight between the Terrarian and the Red Mist is broken for a certain amount of time
+            // During phase 1 and phase 3, She does a quick one portal Gold Rush to a random target player
+            // In phase 2, After quick Gold Rush, it will do a mimicry slash
+            // In phase 3, it will do Smile Slam
+            // Increasing Aggression in phase 4 makes her shift dash to the player
+            if (!Collision.CanHit(NPC, NPC.GetTargetData()))
             {
-                Vector2 origin = new Vector2(NPC.Center.X, NPC.position.Y + NPC.height);
-                skelly.Origin.BoneOffset = origin;
-                //skelly.CalculateHandIK();
-                bool LookAtPlayer = true;
-                NPC.frameCounter++;
-                if (animState == AnimationState.Intro)
-                {
-                    if (NPC.frameCounter < 30)
-                    {
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() - 4, 0).RotatedBy(MathHelper.ToRadians(-200)), 100);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1), 100);
-                        skelly.CalculateHandIK();
-
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - MathHelper.ToRadians(45), 1f);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-skelly.LowerLegL.length, -4), 100);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(skelly.UpperLegR.length + 12, -4), 100);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50), 1f);
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(14, -skelly.UpperLegL.length), 100);
-
-                        skelly.CalculateLegIK();
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(140), 1f);
-
-                        skelly.Head.rotation = NPC.spriteDirection == 1 ? -0.79f : -2.35f;
-                        LookAtPlayer = false;
-                    }
-                    else
-                    {
-                        skelly.Weapon1.Visible = true;
-                        skelly.Weapon2.Visible = true;
-                        skelly.Gauntlet.Visible = false;
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0), 1);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0),1 );
-
-                        skelly.CalculateLegIK();
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1), 1);
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1), 1);
-                        skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-45);// * NPC.spriteDirection);
-
-                        skelly.CalculateHandIK();
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                    }
-                }
-                else if (animState == AnimationState.Idle1)
-                {
-                    skelly.Weapon1.Visible = true;
-                    skelly.Weapon2.Visible = true;
-                    skelly.Gauntlet.Visible = false;
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.CalculateLegIK();
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-45);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.Walk1)
-                {
-                    float x = 16 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4));// * NPC.spriteDirection;
-                    float y = 6 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * 4));
-                    if (y < 0)
-                        y = 0;
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12 + x, y * -1));
-                    y = 6 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * 4));
-                    if (y > 0)
-                        y = 0;
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0 - x, y));
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-45);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -74 + 1f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 8))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                    skelly.CalculateLegIK();
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(100));
-                }
-                else if (animState == AnimationState.MidAir)
-                {
-                    if (NPC.velocity.Y > 0)
-                    {
-                        Vector2 originLeg = skelly.UpperLegL.Position() - skelly.Origin.Position();
-                        skelly.FeetLIK.ChangeBoneOffset(originLeg + new Vector2(skelly.LegLength() - 6, 0).RotatedBy(MathHelper.ToRadians(80)), 0.5f);
-                        skelly.FeetRIK.ChangeBoneOffset(originLeg + new Vector2(skelly.LegLength() * 0.66f, 0).RotatedBy(MathHelper.ToRadians(80)), 0.5f);
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-16, skelly.ArmLength() - 24), 0.5f);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(-12, skelly.ArmLength() - 24), 0.5f);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80));
-                    }
-                    else
-                    {
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-8, 0), 0.5f);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(4, 0), 0.5f);
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-16, skelly.ArmLength() - 12));
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(-12, skelly.ArmLength() - 12));
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                        LookAtPlayer = false;
-                        skelly.Head.ChangeBoneRotation(-1.57f + 0.3f * NPC.spriteDirection);
-                    }
-
-                    skelly.CalculateHandIK();
-                    skelly.CalculateLegIK();
-                }
-                else if (animState == AnimationState.SwingRedEyes)
-                {
-                    if (NPC.frameCounter < 20)
-                    {
-                        float angle = 1.57f - ((float)NPC.frameCounter / 19f) * 3.14f;// * NPC.spriteDirection;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 - 6)); // * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 30)
-                    {
-                        float angle = -1.57f + (((float)NPC.frameCounter - 20) / 10) * 4.71f;// * NPC.spriteDirection;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80));// * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 50)
-                    {
-                        float angle = 3.14f;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                    }
-                    else
-                    {
-                        ChangeAnimation(0);
-                    }
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-
-                    skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation - MathHelper.ToRadians(45));// * NPC.spriteDirection);
-                    skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - 1.309f, 1.57f);// * NPC.spriteDirection, 1.57f);
-
-                    skelly.CalculateLegIK();
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.SwingPenitence)
-                {
-                    if (NPC.frameCounter < 20)
-                    {
-                        float angle = 1.57f - ((float)NPC.frameCounter / 19f) * 3.14f;
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 - 6));// * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 30)
-                    {
-                        float angle = -1.57f + (((float)NPC.frameCounter - 20) / 10) * 4.71f;// * NPC.spriteDirection;
-                        //Main.NewText(MathHelper.ToDegrees(angle));
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80));// * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 50)
-                    {
-                        float angle = 3.14f;
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                    }
-                    else
-                    {
-                        ChangeAnimation(0);
-                    }
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-
-                    skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation - MathHelper.ToRadians(45), 1.57f);
-                    skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - 1.309f, 1.57f);
-
-                    skelly.CalculateLegIK();
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.SwingBoth)
-                {
-                    if (NPC.frameCounter < 20)
-                    {
-                        float angle = 1.57f - ((float)NPC.frameCounter / 19f) * 3.14f;// * NPC.spriteDirection;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 - 6));// * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 30)
-                    {
-                        float angle = -1.57f + (((float)NPC.frameCounter - 20) / 10) * 4.71f;// * NPC.spriteDirection;
-                        //Main.NewText(MathHelper.ToDegrees(angle));
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80));// * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 50)
-                    {
-                        float angle = 3.14f;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                    }
-                    else
-                    {
-                        ChangeAnimation(0);
-                    }
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation - MathHelper.ToRadians(45), 1.57f);
-                    skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - 1.309f, 1.57f);
-
-                    skelly.CalculateLegIK();
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.GoldRushIntro)
-                {
-                    skelly.Weapon1.Visible = false;
-                    skelly.Weapon2.Visible = false;
-                    skelly.Gauntlet.Visible = true;
-                    if (NPC.frameCounter == 1)
-                    {
-                        skelly.Gauntlet.scale = 1f;
-
-                    }
-                    if (skelly.Gauntlet.scale < 2f)
-                        skelly.Gauntlet.scale = 1f + 1f * ((float)NPC.frameCounter / 30f);
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-54, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(40, 0));
-                    skelly.CalculateLegIK();
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-16 + Main.rand.NextFloat(-1, 1), 6 + Main.rand.NextFloat(-1, 1)));
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(-16, 6));
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -50));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-75 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-
-                    skelly.Head.rotation = NPC.spriteDirection == 1 ? -1.57f : -1.57f;
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(110));
-
-                    if (NPC.frameCounter > 30)
-                    {
-                        ChangeAnimation(AnimationState.GoldRushLoop);
-                        skelly.Gauntlet.scale = 2f;
-                    }
-                }
-                else if (animState == AnimationState.GoldRushLoop)
-                {
-                    float x = 102 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 16));// * NPC.spriteDirection;
-                    float y = 20 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * 16));
-                    if (y < 0)
-                        y = 0;
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-18 + x, y * -1), 12);
-                    y = 20 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * 16));
-                    if (y > 0)
-                        y = 0;
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0 - x, y), 12);
-                    skelly.CalculateLegIK();
-
-                    float rotation = (float)Math.Atan2(NPC.velocity.Y, NPC.velocity.X * NPC.spriteDirection);
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(rotation), 16);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(-skelly.UpperArmR.length, skelly.LowerArmL.length));
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -50 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 16))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(140));
-                }
-                else if (animState == AnimationState.GoldRushLoopFall)
-                {
-
-                }
-                else if (animState == AnimationState.GoldRushEnd)
-                {
-                    skelly.Weapon1.Visible = false;
-                    skelly.Weapon2.Visible = false;
-                    skelly.Gauntlet.Visible = true;
-                    skelly.Gauntlet.scale = 1f;
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-14, 26));
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(-16, 6));
-                    skelly.CalculateHandIK();
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(skelly.UpperLegL.length - 6, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(-skelly.LowerArmL.length - 20, 0));
-                    skelly.CalculateLegIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -skelly.UpperLegL.length - 4));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-73 + 3 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 10))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(100));
-                }
-                else if (animState == AnimationState.Phase2Transition)
-                {
-                    skelly.Weapon1.Visible = true;
-                    skelly.Weapon2.Visible = true;
-                    skelly.Gauntlet.Visible = false;
-                    if (NPC.frameCounter < 30)
-                    {
-                        float factor = ((float)NPC.frameCounter / 30f);
-                        float angle = 1.57f - factor * 3.14f;// * NPC.spriteDirection;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-16, 0));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-94));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -80));
-                    }
-                    else if (NPC.frameCounter < 40)
-                    {
-                        NPC.localAI[1] = 1;
-
-                        float factor = (((float)NPC.frameCounter - 30) / 10f);
-                        float angle = -1.57f + factor * 4.17f;// * NPC.spriteDirection;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-26, 0));
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80));
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -80 + factor * 2));
-                    }
-                    else if (NPC.frameCounter < 60)
-                    {
-                        NPC.localAI[1] = 1;
-
-                        float angle = 3.14f;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-26, 0));
-                    }
-                    else
-                    {
-                        NPC.localAI[1] = 1;
-                        ChangeAnimation(AnimationState.Idle2);
-                    }
-
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-45);// * NPC.spriteDirection);
-                    skelly.CalculateHandIK();
-
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.CalculateLegIK();
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.Idle2)
-                {
-                    NPC.localAI[1] = 1;
-                    skelly.Weapon1.Visible = true;
-                    //skelly.Weapon2.Visible = true;
-                    skelly.Gauntlet.Visible = false;
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.CalculateLegIK();
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-50);// * NPC.spriteDirection);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-                    skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation + MathHelper.ToRadians(135), 0.3f);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.Walk2)
-                {
-                    skelly.Weapon1.Visible = true;
-
-                    float speed = 10;// * (Math.Abs(NPC.velocity.X) / 5f);
-                    if (speed > 10)
-                        speed = 10;
-
-                    float x = 30 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * speed));// * NPC.spriteDirection;
-                    float y = 20 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * speed - 20));
-                    if (y < 0)
-                        y = 0;
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12 + x, y * -1));
-                    y = 14 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * speed - 20));
-                    if (y > 0)
-                        y = 0;
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0 - x, y));
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-16, skelly.ArmLength() - 12));
-                    skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation + MathHelper.ToRadians(-50), 0.2f);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(-12, skelly.ArmLength() - 12));
-                    skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation + MathHelper.ToRadians(135), 0.2f);
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(5, -72 + 1f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * speed * 2))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-70 + 3 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.CalculateLegIK();
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(120));
-                }
-                else if (animState == AnimationState.Dash)
-                {
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-skelly.ArmLength(), 0));
-                    skelly.Weapon1.ChangeBoneRotation(MathHelper.ToRadians(105), 0.12f);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(135)));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(180);
-                    skelly.CalculateHandIK();
-
-                    Vector2 point = skelly.Origin.DifferenceBone(skelly.UpperLegL) + new Vector2(skelly.LegLength() - 2f, 0).RotatedBy(MathHelper.ToRadians(165));
-                    skelly.FeetLIK.ChangeBoneOffset(point, 32);
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, point.Y), 16);
-                    skelly.CalculateLegIK();
-
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-30));
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(5, -40));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(160));
-                }
-                else if (animState == AnimationState.SwingMimicry)
-                {
-                    skelly.Weapon1.Visible = true;
-                    if (NPC.frameCounter < 20)
-                    {
-                        float angle = 1.57f - ((float)NPC.frameCounter / 19f) * 3.14f;// * NPC.spriteDirection;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - MathHelper.ToRadians(45), 1.57f);// * NPC.spriteDirection);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 - 6)); // * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 60)
-                    {
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() + Main.rand.NextFloat(-0.5000f, 0.5000f), Main.rand.NextFloat(-0.5000f, 0.5000f)).RotatedBy(-1.57f), 6);
-                        skelly.Weapon1.scale = 1f + 1f * ((float)NPC.frameCounter - 20) / 30f;
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - MathHelper.ToRadians(45), 1.57f);// * NPC.spriteDirection);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    }
-                    else if (NPC.frameCounter < 70)
-                    {
-                        float angle = -1.57f + (((float)NPC.frameCounter - 60) / 10) * 5.06f;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - MathHelper.ToRadians(15), 1.57f);// * NPC.spriteDirection);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-28, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(-10, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80));// * NPC.spriteDirection));
-                    }
-                    else if (NPC.frameCounter < 90)
-                    {
-                        skelly.Weapon1.scale = 2f - 1f * ((float)NPC.frameCounter - 70) / 10f;
-                        if (skelly.Weapon1.scale < 1f)
-                            skelly.Weapon1.scale = 1f;
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - MathHelper.ToRadians(15), 1.57f);
-
-                        float angle = 3.49f;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-28, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(-10, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    }
-                    else
-                    {
-                        ChangeAnimation(AnimationState.Idle2);
-                    }
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-
-                    skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation + MathHelper.ToRadians(135), 1.57f);// * NPC.spriteDirection, 1.57f);
-
-                    skelly.CalculateLegIK();
-                    skelly.CalculateHandIK();
-
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.SwingDaCapo)
-                {
-                    float progress = ((float)NPC.frameCounter % 30) / 10f;
-                    if (progress > 1f)
-                        progress = 1f;
-                    if (NPC.frameCounter < 30)
-                    {
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(1.57f - 3.14f * progress), 16);
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.GetRotation(), 1.2f);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-96));
-                    }
-                    else if (NPC.frameCounter < 40)
-                    {
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(-1.57f + 4.71239f * progress), 16);
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.GetRotation() - MathHelper.ToRadians(60), 1.2f);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-84));
-                    }
-                    else if (NPC.frameCounter < 60)
-                    {
-                        progress = (((float)NPC.frameCounter - 40) / 20f);
-
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(3.14f - 0.6f * progress));
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.GetRotation() - MathHelper.ToRadians(60), 1.2f);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-84));
-                    }
-                    else if (NPC.frameCounter < 90)
-                    {
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(3.14f - 4.71239f * progress), 16);
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.GetRotation(), 1.2f);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-96));
-                    }
-                    else if (NPC.frameCounter < 100)
-                    {
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(-1.57f + 3.14f * progress), 5);
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation + MathHelper.ToRadians(135), 0.2f);
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-                    }
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation + MathHelper.ToRadians(-50), 0.3f);
-
-                    skelly.CalculateHandIK();
-                    skelly.CalculateLegIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.DaCapoThrow)
-                {
-                    if (NPC.frameCounter < 15)
-                    {
-                        float angle = 1.57f - ((float)NPC.frameCounter / 15f) * 3.14f;
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.GetRotation() + MathHelper.ToRadians(60));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 - 6));
-                    }
-                    else if (NPC.frameCounter < 50)
-                    {
-                        float prog = ((float)NPC.frameCounter - 15) / 35f;
-                        float angle = -1.57f - (prog * MathHelper.ToRadians(10));
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.GetRotation() + MathHelper.ToRadians(60));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-96 - 3 * prog));
-                    }
-                    else if (NPC.frameCounter < 60)
-                    {
-                        skelly.Weapon2.Visible = false;
-
-                        float prog = ((float)NPC.frameCounter - 50) / 10f;
-                        float angle = -1.57f - MathHelper.ToRadians(10) + (prog * MathHelper.ToRadians(270));
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(14, 0), 4);
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, 0), 4);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(-10, -65 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-60), 0.32f);
-                    }
-                    else
-                    {
-                        float angle = -1.57f - MathHelper.ToRadians(10) + MathHelper.ToRadians(270);
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 6);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, 0), 4);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(14, 0), 4);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(-10, -65 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-60), 0.32f);
-                    }
-
-                    skelly.CalculateLegIK();
-                    skelly.CalculateHandIK();
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(110));
-                }
-                else if (animState == AnimationState.HeavenThrow)
-                {
-                    skelly.Weapon2.Visible = false;
-                    if (NPC.frameCounter < 50)
-                    {
-                        skelly.Weapon1.Visible = true;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-skelly.UpperArmL.length, -skelly.LowerArmL.length));
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0));
-                        skelly.Weapon1.ChangeBoneRotation(Main.rand.NextFloat(-0.08f, 0.08f), 0.5f);
-                        skelly.Weapon1.scale = 0.2f + 0.8f * ((float)NPC.frameCounter/50f);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12 - 10 - skelly.LowerLegL.length, 0), 5);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(-12 + 2 + skelly.UpperLegL.length, 0), 5);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(-12, -46));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-100));
-
-                        skelly.CalculateHandIK(-1);
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                    }
-                    else
-                    {
-                        skelly.Weapon1.Visible = false;
-                        if (NPC.frameCounter < 60)
-                        {
-                            float progress = ((float)NPC.frameCounter - 50)/9f;
-                            skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(-90 + 270 * progress)), 16);
-                            skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(110)), 8);
-
-                            skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-100 + 40 * progress), 1.2f);
-
-                            skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(180), 0.12f);
-                        }
-                        else
-                        {
-                            skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(130));
-                        }
-                        
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(12 + skelly.LowerLegL.length, 0), 16);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(-6 - skelly.UpperLegL.length, 0), 16);
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(20, -46));
-                        LookAtPlayer = false;
-                        skelly.Head.ChangeBoneRotation(MathHelper.ToRadians(NPC.spriteDirection == 1 ? -45 : -135), 0.8f);
-
-                        skelly.CalculateHandIK();
-                    }
-                    skelly.CalculateLegIK();
-                }
-                else if (animState == AnimationState.MimicryPrepare)
-                {
-                    skelly.Weapon2.Visible = false;
-                    if (NPC.frameCounter < 30)
-                    {
-                        float prog = (float)NPC.frameCounter / 30f;
-
-                        Vector2 handR = new Vector2(skelly.ArmLength() - 6, 0).RotatedBy(MathHelper.ToRadians(-80 + 170 * (1f - prog)));
-                        skelly.HandLIK.ChangeBoneOffset(handR, 8f);
-                        skelly.Weapon1.ChangeBoneRotation(handR.ToRotation() - MathHelper.ToRadians(90 + Main.rand.NextFloat(-1f, 1f)), 1.2f);
-
-                        skelly.HandRIK.ChangeBoneOffset(handR + new Vector2(-10, 0).RotatedBy(skelly.Weapon1.GetRotation()), 8f);
-                    }
-                    else
-                    {
-                        Vector2 handR = new Vector2(skelly.ArmLength() - 6, 0).RotatedBy(MathHelper.ToRadians(-80));
-                        skelly.Weapon1.ChangeBoneRotation(handR.ToRotation() - MathHelper.ToRadians(90 + Main.rand.NextFloat(-1f, 1f)), 1.2f);
-                        skelly.HandRIK.ChangeBoneOffset(handR + new Vector2(-10, 0).RotatedBy(skelly.Weapon1.GetRotation()), 8f);
-                    }
-
-                    if (NPC.frameCounter < 50)
-                    {
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-42, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(16, 0));
-                    }
-
-                    if (NPC.frameCounter < 60)
-                    {
-                        float weaponScale = (float)NPC.frameCounter / 60f;
-
-                        skelly.Weapon1.scale = 1f + 1f * (float)Math.Sin(1.57f * weaponScale);
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -68 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-95));
-                    }
-                    else if (NPC.frameCounter >= 70)
-                    {
-                        float weaponScale = ((float)NPC.frameCounter - 70f)/ 60f;
-                        if (weaponScale > 1f)
-                            weaponScale = 1f;
-
-                        skelly.Weapon1.scale = 2f + 2f * (float)Math.Sin(1.57f * weaponScale);
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -68 + (weaponScale * 12f) + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80));
-                    }
-
-                    skelly.CalculateHandIK();
-                    skelly.CalculateLegIK();
-                }
-                else if (animState == AnimationState.MimicryGreaterSplitV)
-                {
-                    Vector2 originLeg;
-                    if (NPC.frameCounter == 1)
-                    {
-                        Vector2 handR = new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(-80));
-                        skelly.HandLIK.BoneOffset = handR;
-
-                        skelly.Weapon1.rotation = handR.ToRotation() - MathHelper.ToRadians(90);
-                        skelly.HandRIK.BoneOffset = handR + new Vector2(-10, 0).RotatedBy(skelly.Weapon1.GetRotation());
-
-                        originLeg = skelly.UpperLegL.Position() - skelly.Origin.Position();
-                        skelly.FeetLIK.BoneOffset = originLeg + new Vector2(skelly.LegLength() - 6, 0).RotatedBy(MathHelper.ToRadians(60));
-                        skelly.FeetRIK.BoneOffset = originLeg + new Vector2(skelly.LegLength()/2, 0).RotatedBy(MathHelper.ToRadians(60));
-
-                        skelly.Pelvis.rotation = MathHelper.ToRadians(-100);
-                        skelly.Pelvis.BoneOffset = new Vector2(0, -72);
-                    }
-                    if (NPC.frameCounter >= 15)
-                    {
-                        float scale = (((float)NPC.frameCounter - 15) / 20);
-                        if (scale > 1f)
-                            scale = 1f;
-
-                        skelly.Weapon1.scale = 4f - 3f * scale;
-                    }
-
-                    float prog = (float)NPC.frameCounter / 10f;
-                    if (prog > 1f)
-                        prog = 1f;
-
-                    Vector2 hand = new Vector2(skelly.ArmLength() - 6 * prog, 0).RotatedBy(MathHelper.ToRadians(-80 + 320f * (float)Math.Sin(1.57f * prog)));
-                    skelly.HandLIK.BoneOffset = hand;
-
-                    skelly.Weapon1.rotation = hand.ToRotation() - MathHelper.ToRadians(90);
-                    skelly.HandRIK.BoneOffset = hand + new Vector2(-10, 0).RotatedBy(skelly.Weapon1.GetRotation());
-
-                    originLeg = skelly.UpperLegL.Position() - skelly.Origin.Position();
-                    skelly.FeetLIK.BoneOffset = originLeg + new Vector2(skelly.LegLength() - 6, 0).RotatedBy(MathHelper.ToRadians(60 + 15 * prog));
-                    skelly.FeetRIK.BoneOffset = originLeg + new Vector2(skelly.LegLength() / 2, 0).RotatedBy(MathHelper.ToRadians(60 + 15 * prog));
-
-                    skelly.Pelvis.rotation = MathHelper.ToRadians(-100 + 20 * prog);
-
-                    skelly.CalculateHandIK();
-                    skelly.CalculateLegIK();
-                }
-                else if (animState == AnimationState.Phase3Transition)
-                {
-                    if (NPC.frameCounter < 60)
-                    {
-                        float angle;
-                        if (NPC.frameCounter < 20)
-                        {
-                            angle = 1.57f - ((float)NPC.frameCounter / 20f) * 3.14f;
-                            skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                            skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.GetRotation() + MathHelper.ToRadians(60));
-
-                        }
-                        angle = 1.57f - ((float)NPC.frameCounter / 60f) * 2.35619f;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-96));
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-                    }
-                    else if (NPC.frameCounter < 70)
-                    {
-                        skelly.Weapon1.Visible = false;
-                        skelly.Weapon2.Visible = false;
-
-                        float prog = (((float)NPC.frameCounter - 60f) / 10f);
-                        float angle = -1.57f + 4.71239f * prog;
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-                        angle = -0.786f + 3.92699f;
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(angle), 16);
-
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(14, 0), 4);
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, 0), 4);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(-10, -65 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-60), 0.32f);
-                    }
-                    else if (NPC.frameCounter >= 130)
-                    {
-                        NPC.localAI[1] = 2;
-                        skelly.Weapon1.Visible = true;
-                        skelly.Weapon2.Visible = true;
-
-                        /*float prog = (((float)NPC.frameCounter - 130f) / 30f);
-                        if (prog > 1f)
-                            prog = 1f;*/
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(8, 0).RotatedBy(-0.523599f));
-                        skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-60);// * NPC.spriteDirection);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))), 1);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-96));
-                    }
-
-                    skelly.CalculateHandIK();
-                    skelly.CalculateLegIK();
-                }
-                else if (animState == AnimationState.Idle3)
-                {
-                    NPC.localAI[1] = 2;
-
-                    skelly.Weapon1.Visible = true;
-                    skelly.Weapon2.Visible = true;
-                    skelly.Gauntlet.Visible = false;
-
-                    
-
-                    skelly.CalculateLegIK();
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(8, 0).RotatedBy(-0.523599f));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-60);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.Walk3)
-                {
-                    NPC.localAI[1] = 2;
-
-                    float x = 16 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4));// * NPC.spriteDirection;
-                    float y = 6 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * 4));
-                    if (y < 0)
-                        y = 0;
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12 + x, y * -1));
-                    y = 6 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * 4));
-                    if (y > 0)
-                        y = 0;
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0 - x, y));
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(8, 0).RotatedBy(-0.523599f));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-60);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -74 + 1f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 8))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                    skelly.CalculateLegIK();
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(100));
-                }
-                else if (animState == AnimationState.JustitiaSwing)
-                {
-                    if (NPC.frameCounter < 45)
-                    {
-                        float prog = (float)NPC.frameCounter / 20;
-                        if (prog > 1)
-                            prog = 1;
-
-                        Vector2 position = new Vector2( 0, skelly.ArmLength() - 1 - 6 * prog).RotatedBy(-1.57f * prog);
-                        float rotation = (position).ToRotation() - 1.57f;
-                        skelly.Weapon1.ChangeBoneRotation(rotation, 0.8f);
-
-                        if (prog == 1)
-                            position += new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(-1, 1));
-                        skelly.HandLIK.ChangeBoneOffset(position);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    }
-                    else
-                    {
-                        float prog = ((float)NPC.frameCounter - 45)/ 6;
-                        if (prog > 1)
-                            prog = 1;
-
-                        Vector2 position = new Vector2(-4, skelly.ArmLength() - 1).RotatedBy(-1.57f + 3.3f * (float)Math.Sin(1.57f * prog));
-                        skelly.HandLIK.BoneOffset = position;
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation + MathHelper.ToRadians(-75 - 15 * prog), 1.2f);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-24, 0));
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(-4, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    }
-
-                    skelly.Weapon1.Visible = true;
-                    skelly.Weapon2.Visible = true;
-                    skelly.Gauntlet.Visible = false;
-
-                    
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                    skelly.CalculateLegIK();
-
-                    //skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    //skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(8, 0).RotatedBy(-0.523599f));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-60);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    //skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                }
-                else if (animState == AnimationState.SmileSwing)
-                {
-                    //skelly.Weapon1.Visible = false;
-                    Vector2 justitaPlacement = skelly.Origin.Position() + new Vector2(-36, -90);
-                    if (NPC.frameCounter < 60)
-                    {
-                        float prog = (float)NPC.frameCounter / 60;
-                        skelly.Weapon2.scale = 1f + (1f * prog);
-
-                        skelly.HandLIK.ChangeBoneOffset(justitaPlacement - skelly.UpperArmL.Position());
-                        skelly.Weapon1.ChangeBoneRotation(MathHelper.ToRadians(90));
-
-                        Vector2 position = new Vector2(8 + 20 * prog, 0).RotatedBy(MathHelper.ToRadians(-30 - 30 * prog));
-                        skelly.HandRIK.ChangeBoneOffset(position, 8f);
-
-                        Vector2 offset = new Vector2(36 * prog, 0).RotatedBy(skelly.Weapon2.GetRotation() - skelly.LowerArmR.GetRotation());
-                        skelly.Weapon2.BoneOffset = offset;
-                        //float rotation = (position).ToRotation() + MathHelper.ToRadians(60);
-                        //skelly.Weapon2.ChangeBoneRotation(rotation, 0.8f);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(100));
-                    }
-                    else if (NPC.frameCounter < 90)
-                    {
-                        float prog = ((float)NPC.frameCounter - 60) / 10;
-                        if (prog > 1)
-                            prog = 1;
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-12, skelly.ArmLength() - 4));
-
-                        Vector2 position = new Vector2(28 - 16 * prog, 0).RotatedBy(MathHelper.ToRadians(-60 + 180 * prog));
-                        skelly.HandRIK.ChangeBoneOffset(position, 8f);
-
-                        float rotation = (position).ToRotation() - MathHelper.ToRadians(80);
-                        skelly.Weapon2.ChangeBoneRotation(rotation,0.8f);
-
-                        Vector2 offset = new Vector2(36, 0).RotatedBy(skelly.Weapon2.GetRotation() - skelly.LowerArmR.GetRotation());
-                        skelly.Weapon2.BoneOffset = offset;
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-48, 0), 8);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(2, 0), 8);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -62), 8);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-45), 0.8f);
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(140));
-                    }
-                    else if (NPC.frameCounter < 150)
-                    {
-                        float prog = ((float)NPC.frameCounter - 90) / 60;
-                        if (prog > 1)
-                            prog = 1;
-
-                        Vector2 position = new Vector2(12 + 16 * prog, 0).RotatedBy(MathHelper.ToRadians(120 - 210 * prog));
-                        skelly.HandRIK.ChangeBoneOffset(position, 8f);
-
-                        float rotation = (position).ToRotation() - MathHelper.ToRadians(80);
-                        skelly.Weapon2.ChangeBoneRotation(rotation, 0.8f);
-
-                        position += (skelly.UpperArmR.Position() - skelly.UpperArmL.Position()) + new Vector2(-16, 0).RotatedBy(skelly.Weapon2.GetRotation());
-                        skelly.HandLIK.ChangeBoneOffset(position, 8f);
-
-                        Vector2 offset = new Vector2(36, 0).RotatedBy(skelly.Weapon2.GetRotation() - skelly.LowerArmR.GetRotation());
-                        skelly.Weapon2.BoneOffset = offset;
-
-                            
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-45 - 10f * prog), 0.8f);
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(110));
-                    }
-                    else if (NPC.frameCounter < 240)
-                    {
-                        float prog = ((float)NPC.frameCounter - 150) / 10;
-                        if (prog > 1)
-                            prog = 1;
-
-                        LookAtPlayer = false;
-                        skelly.Head.ChangeBoneRotation(-1.57f + 0.875f * NPC.spriteDirection);
-
-                        Vector2 position = new Vector2(28 - 8 * prog, 0).RotatedBy(MathHelper.ToRadians(-90 + 145 * prog));
-                        skelly.HandRIK.ChangeBoneOffset(position, 8f);
-
-                        float rotation = (position).ToRotation() - MathHelper.ToRadians(50);
-                        skelly.Weapon2.ChangeBoneRotation(rotation, 0.8f);
-
-                        position += (skelly.UpperArmR.Position() - skelly.UpperArmL.Position()) + new Vector2(-16, 0).RotatedBy(skelly.Weapon2.GetRotation());
-                        skelly.HandLIK.ChangeBoneOffset(position, 8f);
-
-                        Vector2 offset = new Vector2(36, 0).RotatedBy(skelly.Weapon2.GetRotation() - skelly.LowerArmR.GetRotation());
-                        skelly.Weapon2.BoneOffset = offset;
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -42));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-10 + Main.rand.NextFloat(-5, 5)));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(210));
-                    }
-                    else// if (NPC.frameCounter < 210)
-                    {
-                        float prog = ((float)NPC.frameCounter - 240) / 30;
-                        if (prog > 1)
-                            prog = 1;
-
-                        skelly.Weapon2.scale = 2f - (1f * prog);
-
-                        Vector2 position = new Vector2(20 - 12 * prog, 0).RotatedBy(MathHelper.ToRadians(55 - 85 * prog));
-                        skelly.HandRIK.ChangeBoneOffset(position);
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmR.rotation + MathHelper.ToRadians(-60), 0.4f);
-
-                        Vector2 offset = new Vector2(36 - 36 * prog, 0).RotatedBy(skelly.Weapon2.GetRotation() - skelly.LowerArmR.GetRotation());
-                        skelly.Weapon2.BoneOffset = offset;
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-
-                        skelly.HandLIK.ChangeBoneOffset(justitaPlacement - skelly.UpperArmL.Position());
-                    }
-
-                    skelly.CalculateLegIK();
-                    skelly.CalculateHandIK();
-
-                    if (NPC.frameCounter >= 60 && NPC.frameCounter < 260)
-                    {
-                        skelly.Weapon1.BoneOffset = (justitaPlacement - skelly.LowerArmL.EndPoint()).RotatedBy(-skelly.LowerArmL.GetRotation());
-                    }
-                    else
-                    {
-                        skelly.Weapon1.BoneOffset = Vector2.Zero;
-                    }
-
-                    //LookingAt(skelly.Weapon1.Position(), 64);
-                    //LookingAt(justitaPlacement, 64);
-                }
-                else if (animState == AnimationState.Phase4Transition)
-                {
-                    if (NPC.frameCounter < 30)
-                    {
-                        float prog = ((float)NPC.frameCounter) / 30f;
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(-90 * prog)));
-                        skelly.Weapon2.ChangeBoneRotation(skelly.LowerArmL.GetRotation() - MathHelper.ToRadians(90), 0.3f);
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(0, skelly.ArmLength() - 1));
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-                    }
-                    else if (NPC.frameCounter < 75)
-                    {
-                        LookAtPlayer = false;
-                        skelly.Head.ChangeBoneRotation(-1.57f + MathHelper.ToRadians(45 * NPC.spriteDirection));
-                        float prog = ((float)NPC.frameCounter - 30f) / 10f;
-                        if (prog > 1f)
-                            prog = 1f;
-
-                        Vector2 offset = new Vector2(38 * prog, 0).RotatedBy(skelly.Weapon2.GetRotation() - skelly.LowerArmR.GetRotation());
-                        skelly.Weapon2.BoneOffset = offset;
-                        skelly.Weapon2.scale = 1f + 0.5f * prog;
-
-                        Vector2 position = new Vector2(skelly.ArmLength() - 8, 0).RotatedBy(MathHelper.ToRadians(-90 + 90 * prog));
-                        Vector2 position2 = position + new Vector2(0, 100);
-                        if (prog >= 1f)
-                        {
-                            position.X += Main.rand.NextFloat(-1, 1);
-                            position.Y += Main.rand.NextFloat(-1, 1);
-                        }
-                        skelly.HandRIK.ChangeBoneOffset(position);
-                        skelly.Weapon2.ChangeBoneRotation((position2 - position).ToRotation(), 0.3f);
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-48, skelly.ArmLength() - 8));
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-14, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(2, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -62), 8);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90), 0.8f);
-                    }
-                    else if (NPC.frameCounter < 90)
-                    {
-                        skelly.Weapon2.Visible = false;
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);
-
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                    }
-                    else if (NPC.frameCounter < 120)
-                    {
-                        float prog = ((float)NPC.frameCounter - 90f) / 30f;
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(1.57f - prog * 3.14f), 6);
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - 1.309f, 1.57f);
-
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90 - 6));
-                    }
-                    else if (NPC.frameCounter < 130)
-                    {
-                        NPC.localAI[1] = 3;
-                        float prog = ((float)NPC.frameCounter - 120f) / 10f;
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(-1.57f + prog * MathHelper.ToRadians(280)), 16);
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - 1.309f, 1.57f);
-
-                        skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-12, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(0, 0));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * 4))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-                    }
-                    skelly.CalculateHandIK();
-                    skelly.CalculateLegIK();
-                }
-                else if (animState == AnimationState.Idle4)
-                {
-                    float animSpeedMult = 8;
-                    skelly.Weapon1.Visible = true;
-                    skelly.Weapon2.Visible = true;
-                    skelly.Gauntlet.Visible = false;
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, -5));
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(18, -5));
-
-                    skelly.CalculateLegIK();
-
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(-4, skelly.ArmLength() - 1));
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-60);// * NPC.spriteDirection);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-45);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -52 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80 + 6 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(100));
-
-                    skelly.Weapon1.ChangeBoneScale(1.3f);
-                }
-                else if (animState == AnimationState.TwilightDashSlash)
-                {
-                    float prog = (float)NPC.frameCounter / 15f;
-                    if (prog > 1f)
-                        prog = 1f;
-                    prog = (float)Math.Sin(prog * 1.57f);
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(150 - 270 * prog)), 16);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation;
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, 0), 12f);
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(36, 0), 12f);
-
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50));
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(14, -40));
-
-                    skelly.CalculateLegIK();
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(140));
-                }
-                else if (animState == AnimationState.TwilightDashSlash2)
-                {
-                    float prog = (float)NPC.frameCounter / 15f;
-                    if (prog > 1f)
-                        prog = 1f;
-                    prog = (float)Math.Sin(prog * 1.57f);
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(-120 + 270 * prog)), 16);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation;
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, 0), 12f);
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(36, 0), 12f);
-
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50));
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(14, -40));
-
-                    skelly.CalculateLegIK();
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(140));
-                }
-                else if (animState == AnimationState.TwilightFinisher)
-                {
-                    if (NPC.frameCounter < 20)
-                    {
-                        float prog = (float)NPC.frameCounter / 15f;
-                        if (prog > 1f)
-                            prog = 1f;
-                        prog = (float)Math.Sin(prog * 1.57f);
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() - 8f, 0).RotatedBy(MathHelper.ToRadians(150 - 270 * prog)), 16);
-                        skelly.CalculateHandIK();
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-48, -48 * prog), 12f);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(8, -56 * prog), 12f);
-                        skelly.CalculateLegIK();
-
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation - MathHelper.ToRadians(45);
-
-                        prog = (float)NPC.frameCounter / 20f;
-                        if (prog > 1f)
-                            prog = 1f;
-                        prog = (float)Math.Sin(prog * 1.57f);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -40 - 80 * prog), 16f);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50 - 65 * prog));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(100));
-                    }
-                    else
-                    {
-                        float prog = (float)(NPC.frameCounter - 15f) / 5f;
-                        if (prog > 1f)
-                            prog = 1f;
-                        //prog = 1f + (float)Math.Sin(prog * 1.57f - 1.57f);
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(-120 + 165 * prog)), 16);
-                        skelly.CalculateHandIK();
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-48, -4), 12f);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(16, -4), 12f);
-                        skelly.CalculateLegIK();
-
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation - MathHelper.ToRadians(20);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -40), 16f);
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50), 0.18f);
-
-                        skelly.Weapon1.ChangeBoneScale(1.5f);
-
-                        skelly.Head.rotation = NPC.spriteDirection == 1 ? -0.79f : -2.35f;
-                        LookAtPlayer = false;
-
-                        if (NPC.frameCounter < 25f)
-                            skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(250), 0.12f);
-                        else
-                            skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(140));
-                    }
-                }
-                else if (animState == AnimationState.TwilightEnd) //I KNEEL
-                {
-                    float prog = MathHelper.ToRadians((float)NPC.frameCounter);
-                    prog = (float)Math.Sin(prog * 4);
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() - 4, 0).RotatedBy(MathHelper.ToRadians(-200)), 16);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation - MathHelper.ToRadians(45), 0.14f);
-
-                    skelly.FeetLIK.ChangeBoneOffset(new Vector2(-skelly.LowerLegL.length, -4), 12f);
-                    skelly.FeetRIK.ChangeBoneOffset(new Vector2(skelly.UpperLegR.length + 12, -4), 12f);
-
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50 + 8 * prog));
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(14, -skelly.UpperLegL.length));
-
-                    skelly.CalculateLegIK();
-
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(140));
-
-                    skelly.Head.rotation = NPC.spriteDirection == 1 ? -0.79f : -2.35f;
-                    LookAtPlayer = false;
-
-                    skelly.Weapon1.ChangeBoneScale(1.3f);
-                }
-                else if (animState == AnimationState.TwilightChase)
-                {
-                    float animSpeedMult = (int)(NPC.velocity.Length() * 2);
-                    if (animSpeedMult > 20)
-                        animSpeedMult = 20;
-                    //Main.NewText(animSpeedMult);
-                    float x = 16 * 3 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult));// * NPC.spriteDirection;
-                    float y = 16 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult));
-                    if (y < 0)
-                        y = 0;
-                    skelly.FeetLIK.BoneOffset = new Vector2(-12 + x, y * -1); //.ChangeBoneOffset(new Vector2(-12 + x, y * -1), 30);
-                    y = 16 * (float)Math.Cos(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult));
-                    if (y > 0)
-                        y = 0;
-                    skelly.FeetRIK.BoneOffset = new Vector2(0 - x, y);//.ChangeBoneOffset(, 30);
-
-                    float velocityRotation = 0;//(float)Math.Atan2(NPC.velocity.Y * NPC.spriteDirection, NPC.velocity.X * NPC.spriteDirection);
-                    skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() - 2, 0).RotatedBy(MathHelper.ToRadians(150) + velocityRotation));
-                    skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(10);// * NPC.spriteDirection);
-                    skelly.HandRIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() , 0).RotatedBy(MathHelper.ToRadians(150) + velocityRotation));
-                    skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-45);// * NPC.spriteDirection);
-
-                    skelly.CalculateHandIK();
-
-                    skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50));
-                    skelly.Pelvis.ChangeBoneOffset(new Vector2(14, -40 + 0.6f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-
-                    skelly.CalculateLegIK();
-                    skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(160));
-
-                    skelly.Weapon1.ChangeBoneScale(1.3f);
-                }
-                else if (animState == AnimationState.TwilightLamp)
-                {
-                    if (NPC.frameCounter < 60)
-                    {
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-26, 0));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(10, 0));
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(-90), 16);
-                        skelly.Weapon1.ChangeBoneRotation(skelly.LowerArmL.rotation);
-                        //skelly.Weapon1.rotation = skelly.LowerArmL.rotation + MathHelper.ToRadians(-75);// * NPC.spriteDirection);
-                        //skelly.HandRIK.ChangeBoneOffset(new Vector2(4, skelly.ArmLength() - 1));
-                        //skelly.Weapon2.rotation = skelly.LowerArmR.rotation + MathHelper.ToRadians(-45);// * NPC.spriteDirection);
-
-                        skelly.CalculateHandIK();
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -62));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                        LookAtPlayer = false;
-                        skelly.Head.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                    }
-                    else
-                    {
-                        float prog = 1f;
-                        if (NPC.frameCounter < 70)
-                            prog = (float)(NPC.frameCounter - 60f) / 10f;
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, -5));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(18, -5));
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength(), 0).RotatedBy(MathHelper.ToRadians(-90 + 270 * prog)), 64);
-                        skelly.Weapon1.rotation = skelly.LowerArmL.rotation;
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -52 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-50 + 6 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter))), 0.1f);
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(150), 0.1f);
-                    }
-                    skelly.CalculateLegIK();
-                    skelly.CalculateHandIK();
-                }
-
-                else if (animState == AnimationState.GoldRushThrow)
-                {
-                    float animSpeedMult = 8;
-                    Vector2 twilightPlacement = skelly.Origin.Position() + new Vector2(-36, -90);
-
-                    if (NPC.frameCounter < 10)
-                    {
-                        skelly.HandLIK.ChangeBoneOffset(twilightPlacement - skelly.UpperArmL.Position(), 12f);
-                        skelly.Weapon1.ChangeBoneRotation(MathHelper.ToRadians(120), 1.4f);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, -5));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(24, -5));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-                    }
-                    else if (NPC.frameCounter < 45)
-                    {
-                        float prog = (float)(NPC.frameCounter - 10) / 35;
-                        skelly.Gauntlet.Visible = true;
-                        skelly.Gauntlet.scale = 1f;
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() - 4, 0).RotatedBy(MathHelper.ToRadians(120 - 210 * prog)), 16);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, -5));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(24, -5));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -62 + 0.5f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-                    }
-                    else if (NPC.frameCounter < 105)
-                    {
-                        skelly.Gauntlet.ChangeBoneScale(2f, .01f);
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() - 4 + Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(-1, 1)).RotatedBy(MathHelper.ToRadians(-90)));
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, -5));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(24, -5));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -62 + 0.5f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-                    }
-                    else if (NPC.frameCounter < 155)
-                    {
-                        float prog = (float)(NPC.frameCounter - 105) / 50f;
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2(skelly.ArmLength() - 4, 0).RotatedBy(MathHelper.ToRadians(-90 + 270 * prog)), 16);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -52 + 0.5f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-75));
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, -5));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(24, -5));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(110));
-
-                    }
-                    else if (NPC.frameCounter < 165)
-                    {
-                        float prog = (float)(NPC.frameCounter - 155) / 10f;
-
-                        skelly.HandLIK.ChangeBoneOffset(new Vector2((skelly.ArmLength() - 4) + skelly.ArmLength() * prog, 4), 16);
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -52 + 0.5f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(24, -5), 16);
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(-36, -5), 16);
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(10, -57 + 0.5f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-90));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(130));
-
-                        if (prog > 0.5f)
-                        {
-                            skelly.Gauntlet.Visible = false;
-                            skelly.Gauntlet.scale = 1f;
-                        }
-                    }
-                    else if (NPC.frameCounter < 195)
-                    {
-                        skelly.Gauntlet.Visible = false;
-                        skelly.Gauntlet.scale = 1f;
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(110));
-                    }
-                    else
-                    {
-                        skelly.HandLIK.ChangeBoneOffset(twilightPlacement - skelly.UpperArmL.Position(), 12f);
-
-                        skelly.FeetLIK.ChangeBoneOffset(new Vector2(-36, -5));
-                        skelly.FeetRIK.ChangeBoneOffset(new Vector2(18, -5));
-
-                        skelly.Pelvis.ChangeBoneOffset(new Vector2(0, -52 + 0.5f * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-                        skelly.Pelvis.ChangeBoneRotation(MathHelper.ToRadians(-80 + 6 * (float)Math.Sin(MathHelper.ToRadians((float)NPC.frameCounter * animSpeedMult))));
-
-                        skelly.Hair.ChangeBoneRotation(MathHelper.ToRadians(90));
-
-                    }
-
-                    skelly.CalculateHandIK();
-                    skelly.CalculateLegIK();
-
-                    if (NPC.frameCounter >= 10)
-                        skelly.Weapon1.BoneOffset = (twilightPlacement - skelly.LowerArmL.EndPoint()).RotatedBy(-skelly.LowerArmL.GetRotation());
-                    else if (NPC.frameCounter > 135)
-                        skelly.Weapon1.BoneOffset = Vector2.Zero;
-                }
-
-                //Draw Afterimages
-                if (animState == AnimationState.GoldRushLoop ||
-                    animState == AnimationState.Dash ||
-                    animState == AnimationState.MimicryGreaterSplitV ||
-                    (animState == AnimationState.TwilightChase && AiState == 2) ||
-                    (animState == AnimationState.TwilightDashSlash && AiState == 5) ||
-                    (animState == AnimationState.TwilightChase && AiState == TwilightRun) ||
-                    (animState == AnimationState.TwilightDashSlash && AiState == TwilightRunDash))
-                    NPC.localAI[2] = 1f;
-                else if (NPC.localAI[2] > 0f)
-                    NPC.localAI[2] -= 0.1f;
-
-
-                if (NPC.ai[0] == 1 && NPC.ai[3] < 0 && 
-                  !(animState == AnimationState.HeavenThrow || 
-                    animState == AnimationState.MimicryPrepare || 
-                    animState == AnimationState.MimicryGreaterSplitV || 
-                    animState == AnimationState.Phase3Transition))
-                {
-                    skelly.Weapon2.Visible = true;
-                }
-
-                if (LookAtPlayer)
-                {
-                    Vector2 delta = (NPC.GetTargetData().Center - skelly.Head.Position());
-                    float headRot = (float)(Math.Atan2(delta.Y * NPC.spriteDirection, delta.X * NPC.spriteDirection));
-
-                    if (headRot > MathHelper.ToRadians(25))
-                        headRot = MathHelper.ToRadians(25);
-                    else if (headRot < -MathHelper.ToRadians(30))
-                        headRot = -MathHelper.ToRadians(30);
-
-                    int FacingDirection = delta.X < 0 ? -1 : 1;
-
-                    if (FacingDirection == NPC.spriteDirection)
-                        skelly.Head.ChangeBoneRotation(headRot - 1.57f);
-                    else
-                        skelly.Head.ChangeBoneRotation(-1.57f);
-                }
-
-                /*if (NPC.ai[0] > 0 && (skelly.Head.Position() - skelly.Head.OldPosition(1)).Length() > 0.05f)
-                {
-                    Vector2 EyePosition = skelly.Head.Position(NPC.spriteDirection) + new Vector2(-2,8 * NPC.spriteDirection).RotatedBy(skelly.Head.GetRotation());
-                    Dust d = Dust.NewDustPerfect(EyePosition, Mod.DustType("RedMistEye"));
-                    d.velocity *= 0;
-                    d.fadeIn = 0.1f;
-                    d.noGravity = true;
-                }*/
-
-                skelly.UpdateOldBones();
-                //LookingAt(skelly.HandLIK.Position(), 15);
-                //LookingAt(skelly.HandRIK.Position(), 6);
-
-                //LookingAt(skelly.Weapon2.Position(), 6);
-
-                //LookingAt(skelly.FeetLIK.Position(), 6);
-                //LookingAt(skelly.FeetRIK.Position(), 15);
+                Aggression++;
+            }
+            else if (Aggression > 0)
+            {
+                Aggression -= 2;
+                if (Aggression < 0)
+                    Aggression = 0;
             }
         }
 
+        private void ChangeAnimation(AnimationState i)
+        {
+            if (NPC.localAI[0] != (float)i)
+                NPC.frameCounter = 0;
+            NPC.localAI[0] = (float)i;
+        }
+
+        private void SuppressionTextSpawner()
+        {
+            // Suppresion Text Maker
+            if (suppTextCooldown-- <= 0 && Main.rand.NextBool(300))
+            {
+                List<string> possibleText = new List<string>();
+                if (Main.rand.NextBool(2))
+                {
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 0));
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 1));
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 2));
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 3));
+                }
+
+                if (NPC.ai[0] == 0)
+                {
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 4));
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 5));
+                }
+
+                else if (NPC.ai[0] == 1)
+                {
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 6));
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 7));
+                }
+
+                else if (NPC.ai[0] == 2)
+                {
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 8));
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 9));
+                }
+
+                else if (NPC.ai[0] == 3)
+                {
+                    possibleText.Add(SuppressionText.GetSephirahText("Gebura", 10));
+                }
+                Vector2 offsetRandom = new Vector2(Main.rand.Next(-1000, 1000), Main.rand.Next(-1000, 1000));
+                Color textColor = Color.Red;
+                textColor *= 0.5f;
+                SuppressionText.AddText(possibleText[Main.rand.Next(possibleText.Count)], NPC.Center + offsetRandom, Main.rand.NextFloat(-0.5000f, 0.5000f), 2f, textColor, 0.2f, 240, Main.rand.Next(-1, 2), Main.rand.NextFloat(1.000f));
+                suppTextCooldown = 300;
+            }
+        }
+
+        private void SkeletonHandler()
+        {
+            if (redmistSkeleton == null)
+            {
+                AiState = -1;
+                redmistSkeleton = new RedMistSkeleton(NPC);
+                //redmistSkeleton.BoneName = [];
+                //redmistSkeleton.Init(NPC);
+            }
+            //LobotomyCorp.LookingAt(redmistSkeleton.BoneName[BoneLabel.HandRIK].GetPosition());
+            //LobotomyCorp.LookingAt(redmistSkeleton.BoneName[BoneLabel.HandLIK].GetPosition(), DustID.GemRuby);
+            //LobotomyCorp.LookingAt(redmistSkeleton.BoneName[BoneLabel.FeetRIK].GetPosition(), DustID.GemSapphire);
+            //LobotomyCorp.LookingAt(redmistSkeleton.BoneName[BoneLabel.FeetLIK].GetPosition(), DustID.GemEmerald);
+        }
+
+        public override void FindFrame(int frameHeight)
+        {
+            if (redmistSkeleton == null)
+            {
+                return;
+            }
+            redmistSkeleton.Update(NPC);
+        }
         public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
         {
             if (isUsingGoldRush())
@@ -3907,7 +2799,7 @@ namespace LobotomyCorp.NPCs.RedMist
             }
 
             if ((NPC.Center - Main.player[projectile.owner].Center).Length() > max)
-                    modifiers.FinalDamage *= damageReduction;
+                modifiers.FinalDamage *= damageReduction;
         }
 
         public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
@@ -4086,7 +2978,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
                     if (jump)
                     {
-                        Vector2 velocity = LobHelper.ProjectileMotion(new Vector2(0, NPC.position.Y + NPC.height), targetPos, time, NPC.gravity);
+                        Vector2 velocity = AIHelper.ProjectileMotion(new Vector2(0, NPC.position.Y + NPC.height), targetPos, time, NPC.gravity);
                         NPC.velocity.Y = velocity.Y;
                     }
 
@@ -4098,7 +2990,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
             }
         }
-        
+
         public override bool? CanFallThroughPlatforms()
         {
             bool isFighterAI = AiState <= FollowState;
@@ -4117,124 +3009,39 @@ namespace LobotomyCorp.NPCs.RedMist
 
         public override void OnKill()
         {
-            NPC.SetEventFlagCleared(ref LobEventFlags.downedRedMist, -1);     
-				
-			if (Main.netMode == NetmodeID.Server) {
-				NetMessage.SendData(MessageID.WorldData);
-			}
-			else if (Main.netMode == NetmodeID.SinglePlayer)
-			{
-				Vector2 pos = skelly.Pelvis.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore1").Type);
-				pos = skelly.Pelvis.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore2").Type);
-				pos = skelly.UpperArmR.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore3").Type);
-				pos = skelly.UpperArmL.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore4").Type);
-				pos = skelly.UpperLegR.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore5").Type);
-				pos = skelly.LowerLegR.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore6").Type);
-				pos = skelly.UpperLegL.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore7").Type);
-				pos = skelly.LowerLegL.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore8").Type);
-				pos = skelly.Head.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore9").Type);
-				pos = skelly.Head.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore10").Type);
-				pos = skelly.Head.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore11").Type);
-				pos = skelly.Head.Position(NPC.direction);
-				Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore12").Type);
-			}
-        }
+            NPC.SetEventFlagCleared(ref LobEventFlags.downedRedMist, -1);
 
-        public override bool CheckDead()
-        {
-            if (Phase < 4 && Main.netMode == NetmodeID.SinglePlayer)
+            if (Main.netMode == NetmodeID.Server)
             {
-                Phase = 4;
-                Timer = 0;
-                NPC.life = 1;
-                NPC.dontTakeDamage = true;
-                NPC.noGravity = false;
-                NPC.noTileCollide = false;
-                List<string> possibleText = new List<string>
-                {
-                    SuppressionText.GetSephirahText("Gebura", 11),
-                    SuppressionText.GetSephirahText("Gebura", 12)
-                };
-                Color textColor = Color.Red;
-                textColor *= 0.5f;
-                SuppressionText.AddText(possibleText[Main.rand.Next(possibleText.Count)], NPC.Center, Main.rand.NextFloat(-0.5000f, 0.5000f), 2f, textColor, 0.2f, 240, 0, 0);
-                suppTextCooldown = 1000;
-
-                NPC.netUpdate = true;
-                return false;
+                NetMessage.SendData(MessageID.WorldData);
             }
-            return base.CheckDead();
-        }
-
-        public override void BossLoot(ref string name, ref int potionType)
-        {
-            potionType = ItemID.GreaterHealingPotion;
-        }
-
-        private AnimationState animState
-        {
-            get { return (AnimationState)NPC.localAI[0]; } 
-            set { NPC.localAI[0] = (int) value; }
-        }
-
-        private enum AnimationState
-        {
-            Idle1,//Phase1
-            Walk1,
-            SwingRedEyes,
-            SwingPenitence,
-            SwingBoth,
-            GoldRushIntro,//GoldRushAnimations
-            GoldRushLoop,
-            GoldRushLoopFall,
-            GoldRushEnd,
-            Phase2Transition,//Phase2
-            Idle2,
-            Walk2,
-            Dash,
-            Run,
-            SwingDaCapo,
-            SwingMimicry,
-            DaCapoThrow,
-            MimicryPrepare,
-            MimicryGreaterSplitV,
-            MidAir,
-            HeavenThrow,
-            Phase3Transition,//Phase3
-            Walk3,
-            Idle3,
-            JustitiaSwing,
-            SmileSwing,
-            Phase4Transition,//Phase4
-            Idle4,
-            GoldRushThrow,
-            TwilightChase,
-            TwilightDashSlash,
-            TwilightDashSlash2,
-            TwilightFinisher,
-            TwilightDrift,
-            TwilightEnd, //KNEEL
-            TwilightCounter,
-            TwilightLamp,
-            Intro
-        }
-
-        private void ChangeAnimation(AnimationState i)
-        {
-            if (animState != i)
-                NPC.frameCounter = 0;
-            animState = i;
+            else if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                Vector2 pos = redmistSkeleton.BoneName[BoneLabel.Pelvis].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore1").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.Pelvis].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore2").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.UpperArmR].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore3").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.UpperArmL].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore4").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.UpperLegR].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore5").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.LowerLegR].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore6").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.UpperLegL].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore7").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.LowerLegL].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore8").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.Head].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore9").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.Head].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore10").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.Head].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore11").Type);
+                pos = redmistSkeleton.BoneName[BoneLabel.Head].GetPosition(NPC.direction);
+                Gore.NewGore(NPC.GetSource_Death(), pos, Vector2.Zero, ModContent.Find<ModGore>("LobotomyCorp/RedMistGore12").Type);
+            }
         }
 
         public bool IncomingProjectile()
@@ -4254,7 +3061,7 @@ namespace LobotomyCorp.NPCs.RedMist
             }
             return false;
         }
-        
+
         public override bool? CanBeHitByProjectile(Projectile Projectile)
         {
             if (Phase == 1 && (AiState == Dash || AiState == DashSwingMimicry))
@@ -4304,12 +3111,50 @@ namespace LobotomyCorp.NPCs.RedMist
             }
         }
 
+        public override bool CheckDead()
+        {
+            if (Phase < 4 && Main.netMode == NetmodeID.SinglePlayer)
+            {
+                Phase = 4;
+                Timer = 0;
+                NPC.life = 1;
+                NPC.dontTakeDamage = true;
+                NPC.noGravity = false;
+                NPC.noTileCollide = false;
+                List<string> possibleText = new List<string>
+                {
+                    SuppressionText.GetSephirahText("Gebura", 11),
+                    SuppressionText.GetSephirahText("Gebura", 12)
+                };
+                Color textColor = Color.Red;
+                textColor *= 0.5f;
+                SuppressionText.AddText(possibleText[Main.rand.Next(possibleText.Count)], NPC.Center, Main.rand.NextFloat(-0.5000f, 0.5000f), 2f, textColor, 0.2f, 240, 0, 0);
+                suppTextCooldown = 1000;
+
+                NPC.netUpdate = true;
+                return false;
+            }
+            return base.CheckDead();
+        }
+
+        public override void BossLoot(ref string name, ref int potionType)
+        {
+            potionType = ItemID.GreaterHealingPotion;
+        }
+
+        private AnimationState animState
+        {
+            get { return (AnimationState)NPC.localAI[0]; }
+            set { NPC.localAI[0] = (int)value; }
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            if (skelly == null)
+            if (redmistSkeleton == null)
             {
                 return false;
             }
+
             //Should probably add Keter Suppresion Red filter when player is outside effective range
             if (NPC.localAI[2] > 0)
             {
@@ -4319,7 +3164,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     Color trailColor = Color.Red;
                     trailColor.A = 178;
                     trailColor *= (0.3f * (1f - (float)i / (float)Factor));
-                    DrawRedMist(spriteBatch, trailColor, i);
+                    redmistSkeleton.DrawSkeleton(spriteBatch, NPC, trailColor, i);
                 }
             }
 
@@ -4338,655 +3183,14 @@ namespace LobotomyCorp.NPCs.RedMist
                 Main.EntitySpriteDraw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1f, 0, 0);
             }
 
-            DrawRedMist(spriteBatch, drawColor, -1, true);
+            redmistSkeleton.DrawSkeleton(spriteBatch, NPC, drawColor, 0, true);
             return false;
         }
 
         public void GetEye(ref Vector2 position, ref float rotation)
         {
-            position = skelly.Head.Position(NPC.spriteDirection) + new Vector2(-2, 8 * NPC.spriteDirection).RotatedBy(skelly.Head.GetRotation());
-            rotation = skelly.Head.GetRotation();
-        }
-
-        private void DrawRedMist(SpriteBatch spriteBatch, Color lightColor, int i = -1, bool glowMask = false)
-        {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("NPCs/RedMist/RedMistAssembled").Value;
-            Texture2D texGlow = Mod.Assets.Request<Texture2D>("NPCs/RedMist/RedMistAssembled_Glow").Value;
-            Vector2 origin;
-            Vector2 position;
-            float rot;
-            Color color = lightColor;
-            Color glowmaskColor = Color.White;
-            if (Main.player[NPC.target].dead && AiState == IdleState)
-            {
-                if (Timer > -120)
-                    color = Color.Lerp(color, Color.Black, -Timer / 120f);
-                else
-                {
-                    color = Color.Lerp(Color.Black, Color.Transparent, (-Timer - 120) / 60);
-                    glowmaskColor = Color.Lerp(Color.White, Color.Transparent, (-Timer - 120) / 60);
-                }
-            }
-            Rectangle frame = new Rectangle(0, 0, 48, 66);
-
-            //Hair
-            origin = new Vector2(27, 5);
-            position = skelly.Head.Position(NPC.spriteDirection, i);
-            rot = skelly.Hair.GetRotation(NPC.spriteDirection, i) - 1.57f;//MathHelper.ToRadians(90);//skelly.Head.rotation + 1.57f;
-            frame.Y = frame.Height * 11;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-
-            //Lower Layer Arm
-            position = skelly.UpperArmR.Position(NPC.spriteDirection, i);
-            rot = skelly.UpperArmR.GetRotation(NPC.spriteDirection, i) - (NPC.spriteDirection == 1 ? 0.785f : 2.355f);
-            origin = new Vector2(3, 3);
-            frame.Y = frame.Height * 4;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-
-            position = skelly.LowerArmR.Position(NPC.spriteDirection, i);
-            rot = skelly.LowerArmR.GetRotation(NPC.spriteDirection, i) - (NPC.spriteDirection == 1 ? 0.785f : 2.355f);
-            origin = new Vector2(3, 3);
-            frame.Y = frame.Height * 5;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-
-            position = skelly.HandR.Position(NPC.spriteDirection, i);
-            frame.Y = frame.Height * 6;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-
-            //Weapon 2
-            if (skelly.Weapon2.Visible && NPC.localAI[1] < 3)
-            {
-                int dir = NPC.spriteDirection;
-                Texture2D weapon = Mod.Assets.Request<Texture2D>("Items/Zayin/Penitence").Value;
-                Vector2 weaponOrigin = new Vector2(4, 49);
-                if (NPC.localAI[1] == 1)
-                {
-                    dir *= -1;
-                    weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/DaCapo").Value;
-                    weaponOrigin = new Vector2(45, 63);
-                }
-                if (NPC.localAI[1] == 2)
-                {
-                    weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Smile").Value;
-                    weaponOrigin = new Vector2(39, weapon.Height - 39);
-                }
-                position = skelly.Weapon2.Position(NPC.spriteDirection, i);
-                rot = skelly.Weapon2.GetRotation(NPC.spriteDirection, i) + 0.785f;
-
-                if (animState == AnimationState.SwingDaCapo && 30 <= NPC.frameCounter && NPC.frameCounter < 60)
-                {
-                    dir *= -1;
-                }
-
-                Draw(spriteBatch, weapon, position, weapon.Frame(), color, rot, weaponOrigin, skelly.Weapon2.scale, dir, true);
-            }
-
-            //Lower Layer Leg
-            origin = new Vector2(5, 9);
-            position = skelly.UpperLegR.Position(NPC.spriteDirection, i);
-            rot = skelly.UpperLegR.GetRotation(NPC.spriteDirection, i) - 1.57f;
-            frame.Y = frame.Height * 9;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-
-            origin = new Vector2(7, 5);
-            position = skelly.LowerLegR.Position(NPC.spriteDirection, i);
-            rot = skelly.LowerLegR.GetRotation(NPC.spriteDirection, i) - 1.57f;
-            frame.Y = frame.Height * 10;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-
-            //Body
-            origin = new Vector2(17, 41);
-            position = skelly.Pelvis.Position(NPC.spriteDirection, i);
-            rot = skelly.Pelvis.GetRotation(NPC.spriteDirection, i) + 1.57f;
-            frame.Y = frame.Height * 0;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-            if (glowMask)
-                Draw(spriteBatch, texGlow, position, frame, glowmaskColor, rot, origin, 1f, NPC.spriteDirection);
-
-            int x = Math.Max(0, (int)NPC.ai[0]);
-            if (x > 3)
-                x = 3;
-            origin = new Vector2(13, 21);
-            position = skelly.Head.Position(NPC.spriteDirection, i);
-            rot = skelly.Head.GetRotation(1, i) + 1.57f;
-            frame.Y = frame.Height * (12 + x);
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-            if (glowMask)
-                Draw(spriteBatch, texGlow, position, frame, glowmaskColor, rot, origin, 1f, NPC.spriteDirection);
-
-            //Top Layer Leg
-            origin = new Vector2(11, 9);
-            position = skelly.UpperLegL.Position(NPC.spriteDirection, i);
-            rot = skelly.UpperLegL.GetRotation(NPC.spriteDirection, i) - 1.57f;
-            frame.Y = frame.Height * 7;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-            if (glowMask)
-                Draw(spriteBatch, texGlow, position, frame, glowmaskColor, rot, origin, 1f, NPC.spriteDirection);
-
-            origin = new Vector2(11, 5);
-            position = skelly.LowerLegL.Position(NPC.spriteDirection, i);
-            rot = skelly.LowerLegL.GetRotation(NPC.spriteDirection, i) - 1.57f;
-            frame.Y = frame.Height * 8;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-            if (glowMask)
-                Draw(spriteBatch, texGlow, position, frame, glowmaskColor, rot, origin, 1f, NPC.spriteDirection);
-
-            //Weapon 1
-            if (skelly.Weapon1.Visible)
-            {
-                Texture2D weapon = Mod.Assets.Request<Texture2D>("Items/Teth/RedEyes").Value;
-                Vector2 weaponOrigin = new Vector2(5, weapon.Height - 5);
-                if (NPC.localAI[1] == 1)
-                {
-                    weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Mimicry").Value;
-                    weaponOrigin = new Vector2(9, weapon.Height - 9);
-                }
-                if (NPC.localAI[1] == 2)
-                {
-                    weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Justitia").Value;
-                    weaponOrigin = new Vector2(12, weapon.Height - 12);
-                }
-                if (NPC.localAI[1] == 3)
-                {
-                    weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Twilight").Value;
-                    weaponOrigin = new Vector2(12, weapon.Height - 12);
-                }
-                if (animState == AnimationState.HeavenThrow)
-                {
-                    weapon = Mod.Assets.Request<Texture2D>("NPCs/RedMist/HeavenBoss").Value;
-                    weaponOrigin = new Vector2(44, 44);
-                }
-                position = skelly.Weapon1.Position(NPC.spriteDirection, i);
-                rot = skelly.Weapon1.GetRotation(NPC.spriteDirection, i) + 0.785f;
-                Draw(spriteBatch, weapon, position, weapon.Frame(), color, rot, weaponOrigin, skelly.Weapon1.scale, NPC.spriteDirection, true);
-            }
-
-            //Top Layer Arm
-            position = skelly.UpperArmL.Position(NPC.spriteDirection, i);
-            rot = skelly.UpperArmL.GetRotation(NPC.spriteDirection, i) - (NPC.spriteDirection == 1 ? 0.785f : 2.355f);
-            origin = new Vector2(3, 3);
-            frame.Y = frame.Height * 1;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-            if (glowMask)
-                Draw(spriteBatch, texGlow, position, frame, glowmaskColor, rot, origin, 1f, NPC.spriteDirection);
-
-            position = skelly.LowerArmL.Position(NPC.spriteDirection, i);
-            rot = skelly.LowerArmL.GetRotation(NPC.spriteDirection, i) - (NPC.spriteDirection == 1 ? 0.785f : 2.355f);
-            origin = new Vector2(3, 3);
-            frame.Y = frame.Height * 2;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-            if (glowMask)
-                Draw(spriteBatch, texGlow, position, frame, glowmaskColor, rot, origin, 1f, NPC.spriteDirection);
-
-            position = skelly.HandL.Position(NPC.spriteDirection, i);
-            frame.Y = frame.Height * 3;
-            Draw(spriteBatch, tex, position, frame, color, rot, origin, 1f, NPC.spriteDirection);
-            if (glowMask)
-                Draw(spriteBatch, texGlow, position, frame, glowmaskColor, rot, origin, 1f, NPC.spriteDirection);
-
-            //---Gauntlet
-            if (skelly.Gauntlet.Visible)
-            {
-                Texture2D weapon = Mod.Assets.Request<Texture2D>("Projectiles/GoldRushPunches").Value;
-                position = skelly.Gauntlet.Position(NPC.spriteDirection, i);
-                rot = skelly.LowerArmL.GetRotation(NPC.spriteDirection, i) + (NPC.spriteDirection == -1 ? 2.355f : 2.355f - 1.57f);
-                Vector2 weaponOrigin = new Vector2(3, 28);
-                Draw(spriteBatch, weapon, position, weapon.Frame(), color, rot, weaponOrigin, skelly.Gauntlet.scale, NPC.spriteDirection);
-            }
-        }
-
-        private void Draw(SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Rectangle frame, Color color, float rot, Vector2 origin, float scale, int dir, bool Weapon = false)
-        {
-            SpriteEffects speffect = SpriteEffects.None;
-            if (dir == -1)
-            {
-                origin.X = frame.Width - origin.X;
-                speffect = SpriteEffects.FlipHorizontally;
-                if (Weapon)
-                    rot += 1.57f;
-            }
-            spriteBatch.Draw(tex, position - Main.screenPosition, frame, color, rot, origin, scale, speffect, 0f);
-        }
-    }    
-
-    /// <summary>
-    /// This class is old and specialized for red mist, for the actual skeleton helper check SkeletonBase/Skeletonii
-    /// </summary>
-    class RedMistSkeletonHelper
-    {
-        //I hate myself
-        //Specialied for Red Mist since I think its the only thing that will use this boy sure I hope so :D
-        //Rotation Based because math hurts my brain so I just let the computer do it :V
-        //Remember its original rotation is 0 which is ->
-        //Origin makes everything move, its all parented on Origin
-        //Origin doesnt make stuff rotate tho so fuck me I guess
-        public Bone Origin;
-
-        public Bone Pelvis;
-        public Bone Head;
-        public Bone Hair;
-
-        public Bone UpperArmL;
-        public Bone UpperArmR;
-
-        public Bone LowerArmL;
-        public Bone LowerArmR;
-
-        public Bone HandR;
-        public Bone HandL;
-
-        public Bone Weapon1;
-        public Bone Weapon2;
-
-        public Bone Gauntlet;
-
-        public Bone HandRIK;
-        public Bone HandLIK;
-
-        public Bone UpperLegL;
-        public Bone UpperLegR;
-
-        public Bone LowerLegL;
-        public Bone LowerLegR;
-
-        public Bone FeetRIK;
-        public Bone FeetLIK;
-
-        public RedMistSkeletonHelper(Vector2 origin, Vector2 pelvis, Vector2 shoulderOffsetL, Vector2 shoulderOffsetR, float upperArmLength, float lowerArmLength, Vector2 legOffsetL, Vector2 legOffsetR, float upperLegLength, float lowerLegLength,float StartRot = 1.57f)
-        {
-            Origin = new Bone(origin, 0, 1, null, false, true);
-            Pelvis = new Bone(pelvis, StartRot - 3.14f, 0, Origin, false, true, 10, true);
-            Head = new Bone(new Vector2(44, -6), StartRot - 3.14f, 0, Pelvis);
-            Hair = new Bone(Vector2.Zero, StartRot, 0, Head);
-
-            UpperArmL = new Bone(shoulderOffsetL, StartRot + MathHelper.ToRadians(90), upperArmLength, Pelvis);
-            UpperArmR = new Bone(shoulderOffsetR, StartRot - MathHelper.ToRadians(90), upperArmLength, Pelvis);
-
-            LowerArmL = new Bone(Vector2.Zero, StartRot + MathHelper.ToRadians(90), lowerArmLength, UpperArmL);
-            LowerArmR = new Bone(Vector2.Zero, StartRot - MathHelper.ToRadians(90), lowerArmLength, UpperArmR);
-
-            HandL = new Bone(Vector2.Zero, StartRot, 2, LowerArmL);
-            HandR = new Bone(Vector2.Zero, StartRot, 2, LowerArmR);
-
-            Weapon1 = new Bone(Vector2.Zero, StartRot, 52, LowerArmL);
-            Weapon1.scale = 1.3f;
-            Weapon2 = new Bone(Vector2.Zero, StartRot, 52, LowerArmR);
-
-            Gauntlet = new Bone(Vector2.Zero, StartRot, 8, UpperArmL);
-            Gauntlet.scale = 0.1f;
-            //Gauntlet.Visible = false;
-
-            HandLIK = new Bone(Vector2.Zero, 0, 1, UpperArmL, true);
-            HandRIK = new Bone(Vector2.Zero, 0, 1, UpperArmR, true);
-
-            UpperLegL = new Bone(legOffsetL, StartRot, upperLegLength, Pelvis);
-            UpperLegR = new Bone(legOffsetR, StartRot, upperLegLength, Pelvis);
-
-            LowerLegL = new Bone(Vector2.Zero, StartRot, lowerLegLength, UpperLegL);
-            LowerLegR = new Bone(Vector2.Zero, StartRot, lowerLegLength, UpperLegR);
-
-            FeetLIK = new Bone(Vector2.Zero, 0, 1, Origin, true);
-            FeetRIK = new Bone(Vector2.Zero, 0, 1, Origin, true);
-        }
-
-        public void UpdateOldBones()
-        {
-            Origin.Record();
-
-            Pelvis.Record();
-            Head.Record();
-            Hair.Record();
-
-            UpperArmL.Record();
-            UpperArmR.Record();
-
-            LowerArmL.Record();
-            LowerArmR.Record();
-
-            HandR.Record();
-            HandL.Record();
-
-            Weapon1.Record();
-            Weapon2.Record();
-            Gauntlet.Record();
-
-            HandRIK.Record();
-            HandLIK.Record();
-
-            UpperLegL.Record();
-            UpperLegR.Record();
-
-            LowerLegL.Record();
-            LowerLegR.Record();
-
-            FeetRIK.Record();
-            FeetLIK.Record();
-        }
-
-        public enum Part
-        {
-            O,
-            P,
-            H,
-            UAL,
-            UAR,
-            FAL,
-            FAR,
-            HL,
-            HLIK,
-            HR,
-            HRIK,
-            ULL,
-            ULR,
-            UFL,
-            UFR,
-            LLIK,
-            LRIK
-        }
-
-        /// <summary>
-        /// Direction 1 = Clockwise, Direction -1 = CounterClockwise
-        /// </summary>
-        /// <param name="dir"></param>
-        public void CalculateHandIK(int dir = 1)
-        {
-            //Left Side
-            Vector2 startPoint = UpperArmL.Position();
-            Vector2 endPoint = HandLIK.Position();
-            Vector2 elbow = ElbowIK(startPoint, endPoint, UpperArmL.length, LowerArmL.length, dir);
-            //Main.NewText(elbow);
-            UpperArmL.rotation = (elbow - startPoint).ToRotation();
-            LowerArmL.rotation = (endPoint - elbow).ToRotation();
-
-            //Right Side
-            startPoint = UpperArmR.Position();
-            endPoint = HandRIK.Position();
-            elbow = ElbowIK(startPoint, endPoint, UpperArmR.length, LowerArmR.length, dir);
-            //Main.NewText(elbow);
-            UpperArmR.rotation = (elbow - startPoint).ToRotation();
-            LowerArmR.rotation = (endPoint - elbow).ToRotation();
-        }
-
-        /// <summary>
-        /// Direction 1 = Clockwise, Direction -1 = CounterClockwise
-        /// </summary>
-        /// <param name="dir"></param>
-        public void CalculateLegIK(int dir = 1)
-        {
-            //Left Side
-            Vector2 startPoint = UpperLegL.Position();
-            Vector2 endPoint = FeetLIK.Position();
-            Vector2 elbow = ElbowIK(startPoint, endPoint, UpperLegL.length, LowerLegL.length, -1 * dir);
-            //Main.NewText(elbow);
-            UpperLegL.rotation = (elbow - startPoint).ToRotation();
-            LowerLegL.rotation = (endPoint - elbow).ToRotation();
-
-            //Right Side
-            startPoint = UpperLegR.Position();
-            endPoint = FeetRIK.Position();
-            elbow = ElbowIK(startPoint, endPoint, UpperLegR.length, LowerLegR.length, -1 * dir);
-            //Main.NewText(elbow);
-            UpperLegR.rotation = (elbow - startPoint).ToRotation();
-            LowerLegR.rotation = (endPoint - elbow).ToRotation();
-        }
-
-        public Vector2 ElbowIK(Vector2 startPoint, Vector2 endPoint, float length1, float length2, int dir = 1)
-        {
-            Vector2 elbow = startPoint;
-            float Dist = Vector2.Distance(endPoint, startPoint);
-            if (Dist > length1 + length2)
-                Dist = length1 + length2;
-            float Angle = (float)Math.Acos(Dist * Dist / ((length1 + length2) * Dist));
-            float Rotation = (endPoint - elbow).ToRotation() + Angle * dir;
-            elbow += new Vector2(length1, 0).RotatedBy(Rotation);
-            return elbow;
-        }
-    
-        public float ArmLength()
-        {
-            return UpperArmL.length + LowerArmL.length;
-        }
-
-        public float LegLength()
-        {
-            return UpperLegL.length + LowerLegL.length;
-        }
-    }
-
-    class Bone
-    {
-        public Vector2 BoneOffset;
-        public Vector2[] oldOffset;
-
-        public float rotation;
-        public float[] oldRot;
-
-        Bone Parent;
-        public float length;
-        public float scale;
-        public bool Origin;
-        public bool Visible;
-        public bool Pelvis;
-
-        bool IKBone;
-
-        public Bone(Vector2 pos, float rot = 0, float Length = 1, Bone parent = null, bool iKBone = false, bool origin = false, int record = 10, bool pelvis = false)
-        {
-            BoneOffset = pos;
-            rotation = rot;
-            length = Length;
-            Parent = parent;
-            IKBone = iKBone;
-            Origin = origin;
-            Visible = true;
-            scale = 1f;
-            Pelvis = pelvis;
-
-            oldOffset = new Vector2[record];
-            oldRot = new float[record];
-        }
-
-        public void Record()
-        {
-            for (int i = oldOffset.Length - 1; i >= 0; i--)
-            {
-                if (i > 0)
-                {
-                    if (oldOffset[i - 1] != null)
-                        oldOffset[i] = oldOffset[i - 1];
-
-                    oldRot[i] = oldRot[i - 1];
-                }
-                else
-                {
-                    oldOffset[i] = BoneOffset;
-                    oldRot[i] = rotation;
-                }
-            }
-        }
-
-        public float GetRotation(int dir = 1, int old = -1)
-        {
-            if (old >= 0)
-                return GetOldRotation(old, dir);
-            Vector2 vec1 = new Vector2(1, 0).RotatedBy(rotation);
-            vec1.X *= dir;
-            return vec1.ToRotation();
-        }
-
-        public float GetOldRotation(int i,int dir = 1)
-        {
-            Vector2 vec1 = new Vector2(1, 0).RotatedBy(oldRot[i]);
-            vec1.X *= dir;
-            return vec1.ToRotation();
-        }
-
-        public Vector2 Position(int dir = 1, int old = -1)
-        {
-            if (old >= 0)
-                return OldPosition(old, dir);
-            if (IKBone)
-                return BoneOffset + Parent.Position();
-            if (Parent != null)
-            {
-                if (Pelvis)
-                    return new Vector2(BoneOffset.X * dir, BoneOffset.Y).RotatedBy(Parent.GetRotation()) + Parent.EndPoint();
-                return new Vector2(BoneOffset.X, BoneOffset.Y * dir).RotatedBy(Parent.GetRotation(dir)) + Parent.EndPoint(dir);
-            }
-            else
-                return new Vector2(BoneOffset.X, BoneOffset.Y * dir);
-        }
-
-        public Vector2 OldPosition(int i, int dir = 1)
-        {
-            if (IKBone)
-                return oldOffset[i] + Parent.OldPosition(i);
-            if (Parent != null)
-            {
-                if (Pelvis)
-                    return new Vector2(oldOffset[i].X * dir, oldOffset[i].Y).RotatedBy(Parent.GetOldRotation(i)) + Parent.OldEndPoint(i);
-                return new Vector2(oldOffset[i].X, oldOffset[i].Y * dir).RotatedBy(Parent.GetOldRotation(i, dir)) + Parent.OldEndPoint(i, dir);
-            }
-            else
-                return new Vector2(oldOffset[i].X, oldOffset[i].Y * dir);
-        }
-
-        public void AssignParent(Bone bone)
-        {
-            Parent = bone;
-        }
-
-        public float InheritRotation()
-        {
-            if (Parent != null)
-                return rotation + Parent.InheritRotation();
-            else
-                return rotation;
-        }
-
-        public Vector2 EndPoint(int dir = 1)
-        {
-            if (Pelvis)
-                return Position(dir) + new Vector2(length, 0).RotatedBy(GetRotation(dir));
-            if (Origin)
-                return Position() + new Vector2(length, 0).RotatedBy(rotation);
-            return Position(dir) + new Vector2(length, 0).RotatedBy(GetRotation(dir));
-        }
-
-        public Vector2 OldEndPoint(int i, int dir = 1)
-        {
-            if (Pelvis)
-                return OldPosition(i, dir) + new Vector2(length, 0).RotatedBy(GetRotation(dir));
-            if (Origin)
-                return OldPosition(i) + new Vector2(length, 0).RotatedBy(oldRot[i]);
-            return OldPosition( i, dir) + new Vector2(length, 0).RotatedBy(GetOldRotation(i, dir));
-        }
-
-        public void ChangeBone(Vector2 newPos, float speed, float rot, float rotSpeed)
-        {
-            if (speed > 0)
-            {
-                Vector2 bonePos = BoneOffset;
-                Vector2 delta = newPos - bonePos;
-
-                if (delta.Length() > speed)
-                {
-                    delta.Normalize();
-                    delta *= speed;
-                }
-                BoneOffset += delta;
-            }
-
-            if (rotSpeed > 0)
-                rotation = Terraria.Utils.AngleLerp(rotation, rot, rotSpeed);
-        }
-
-        public void ChangeBoneOffset(Vector2 newPos, float speed = 3)
-        {
-            ChangeBone(newPos, speed, 0, 0);
-        }
-
-        public void ChangeBoneRotation(float rot, float rotSpeed = 0.0872f)
-        {
-            ChangeBone(Vector2.Zero, 0, rot, rotSpeed);
-        }
-    
-        public Vector2 DifferenceBone(Bone bone)
-        {
-            return bone.Position() - Position();
-        }
-
-        public void ChangeBoneScale(float Scale, float speed = 0.15f)
-        {
-            if (scale < Scale)
-            {
-                scale += speed;
-                if (scale > Scale)
-                    scale = Scale;
-            }
-            else if (scale > Scale)
-            {
-                scale -= speed;
-                if (scale < Scale)
-                    scale = Scale;
-            }
-        }
-    }
-
-    class RedMistEye : ModProjectile
-    {
-        public override string Texture => "LobotomyCorp/Misc/Dusts/RedMistEye";
-
-        public override void SetStaticDefaults()
-        {
-            // DisplayName.SetDefault("Eye");
-        }
-
-        public override void SetDefaults()
-        {
-            Projectile.width = 6;
-            Projectile.height = 6;
-            Projectile.tileCollide = false;
-            Projectile.timeLeft = 10;
-
-            Projectile.hostile = true;
-            Projectile.friendly = false;
-        }
-
-        private Trailhelper trail;
-
-        public override void AI()
-        {
-            NPC n = Main.npc[(int)Projectile.ai[0]];
-            if (!n.active || n.life <= 0 || n.type != ModContent.NPCType<RedMist>())
-            {
-                Projectile.Kill();
-                return;
-            }
-            Projectile.timeLeft = 10;
-
-            if (trail == null)
-                trail = new Trailhelper(30);
-            RedMist redmist = (RedMist)n.ModNPC;
-            Vector2 pos = Projectile.Center; float rot = 0;
-            redmist.GetEye(ref pos, ref rot);
-            trail.TrailUpdate(pos, rot + 1.57f);
-            Projectile.Center = pos;
-            Projectile.rotation = rot;
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-            lightColor = Color.White;
-
-            CustomShaderData shader = LobotomyCorp.LobcorpShaders["GenericTrail"].UseImage1(Mod, "Misc/GenTrail");
-            TaperingTrail Trail = new TaperingTrail();
-            Trail.ColorStart = Color.Red;
-            Trail.ColorEnd = Color.Red;
-            Trail.width = 3;
-
-            Trail.Draw(trail.TrailPos, trail.TrailRotation, Vector2.Zero, shader);
-            return true;
+            position = redmistSkeleton.BoneName[BoneLabel.Head].GetPosition(NPC.spriteDirection) + new Vector2(-2, 8 * NPC.spriteDirection).RotatedBy(redmistSkeleton.BoneName[BoneLabel.Head].GetRotation());
+            rotation = redmistSkeleton.BoneName[BoneLabel.Head].GetRotation();
         }
     }
 }

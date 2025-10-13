@@ -48,7 +48,7 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Firing speed increased
-					Inaccurate while firing speed is increased
+					Less accurate while firing speed is increased
 					After getting hit, Alternate attack to fire an empowered single shot
 					Empowered shot has increased damage and reduced firing speed
 					''' */
@@ -63,7 +63,7 @@ Mods: {
 					'''
 				/* Tooltip2:
 					'''
-					Right click to grab non boss or miniboss enemies
+					Right click to grab enemies with no knockback resistance
 					Grabbed enemies are damaged over time and cannot damage you
 					Switching weapons cancels the grab
 					''' */
@@ -149,22 +149,23 @@ Mods: {
 			}
 
 			CrimsonScar: {
-				/* Tooltip:
+				/* TTooltip:
 					'''
 					'With steel in one hand and gunpowder in the other, there's nothing to fear in this place.
 					It's more important to deliver a decisive strike in blind hatred without hesitation than to hold on to insecure courage.'
 					Benefits from Ranged damage increases
 					Empowers next Range attack after hitting with a Normal Melee attack and vice versa
-					50% increased damage and attacks are always Empowered under 25% health
+					50% increased damage under 50% health
 					''' */
 				/* Tooltip2:
 					'''
 					All attacks are empowered
 					If attacks are empowered normally, they are further empowered
-					Scythes creates a rain of Scythes
-					Bullet Shots aims semi randomly consecutively
+					Empowered Scythes creates a rain of Scythes
+					Empowered Shots aims semi randomly consecutively
 					''' */
 				DisplayName: 郁蓝创痕
+				// Tooltip: ""
 			}
 
 			Diffraction: {
@@ -379,9 +380,10 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
-					Collides with tiles
-					Moves the player forward when colliding
-					Tiles creates sparks
+					A sawblade is released when returning
+					Sawblades travel along tiles until it hits an enemy
+					Sawblades ticks to an enemy, damages it rapidly before piercing
+					Sawblades explode after a certain amount of time
 					''' */
 				DisplayName: 粉碎机MK4
 			}
@@ -461,7 +463,7 @@ Mods: {
 					Grows additional Branches
 					Right click to throw
 					Creates Branches when hitting a tile
-					Branches grow on enemies with no direct line of sight
+					Branches grow on nearby enemies with no direct line of sight
 					''' */
 				DisplayName: 穿刺极乐
 			}
@@ -479,7 +481,7 @@ Mods: {
 					Arrows are converted to Great Tree Arrows
 					Great Tree Arrows creates a fruit on hit for 3 seconds that restores health
 					If a fruit is not consumed it turns into a poisonous fruit instead that damages you
-					After 1 more seconds, the fruit explodes
+					After 1 more second, the fruit explodes
 					''' */
 				DisplayName: 伪善
 			}
@@ -600,7 +602,6 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
-					Redirects to an enemy if it misses
 					Inflicts dark flame
 					First hit of each bullets increases next bullet damage by 7%
 					Resets on the 7th bullet
@@ -642,6 +643,7 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Star projectiles orbit around you
+					Right click sends stars towards the cursor
 					Getting hit homes all Star projectiles to an enemy
 					''' */
 				DisplayName: 小小银河
@@ -717,7 +719,7 @@ Mods: {
 				/* Tooltip2:
 					'''
 					Grants Hunter buff while held
-					Right click to teleport to an enemy
+					Right click to teleport to an enemy and attack
 					Teleports back after 2 seconds
 					''' */
 				DisplayName: 赤瞳
@@ -756,7 +758,7 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
-					Arrows are converted to Screaming Arrows
+					Wooden Arrows are converted to Screaming Arrows
 					Screaming Arrows are unaffected by gravity
 					Screaming Arrows create a piercing scream on hit
 					''' */
@@ -830,7 +832,13 @@ Mods: {
 					即便是这个异想体的核心已经变成了E.G.O的形式，那种强烈的孤独感也仍旧存在于这把武器上。
 					它射出来的子弹并不会穿透敌人的骨头，反而会留下永久的，孤独的空白。
 					'''
-				// Tooltip2: Hit enemies produce damaging smoke
+				/* Tooltip2:
+					'''
+					Bullets leave a trail of damaging smoke
+					Smoke attaches itself to enemies hit
+					Bullets dispel nearby smoke when hitting enemies
+					Dispelled smoke explodes
+					''' */
 				DisplayName: 孤独
 			}
 
@@ -843,7 +851,7 @@ Mods: {
 					''' */
 				/* Tooltip2:
 					'''
-					Summons Orbs equal to 3 plus unused minion slots
+					Summons Orbs equal to unused minion slots + 3
 					Orbs automatically attack nearby enemies
 					Can be fired all at once
 					Impact radius increased
@@ -873,8 +881,8 @@ Mods: {
 					'''
 					Ignores defense
 					Always performs a flurry of stabs
-					Alternate attack to send flurry of thrown rapiers
-					Cannot be used until all rapiers return or picked up
+					Chance to gain a floating sword on hit
+					Right click to stab an enemy to be hit by all floating swords
 					''' */
 				DisplayName: 盈泪之剑
 			}
@@ -912,8 +920,8 @@ Mods: {
 					'''
 				/* Tooltip2:
 					'''
-					Hit enemies explodes after a few seconds
-					Explosion damage and radius increased while looking away
+					Increased damage based on speed
+					Increased damage while on a mount
 					''' */
 				DisplayName: 谢顶之灾
 			}
@@ -925,8 +933,8 @@ Mods: {
 					The scale that could measure any and all sin...
 					The beak that could swallow everything, protected the peace of the Black Forest...
 					The wielder of this armament may also bring peace as they did'
-					Alternate attack to perform to leap forward and back and slash the target with invincibility frames
-					Alternate attack be used again after 8 seconds while holding this weapon
+					Alternate attack to leap back and forth, slashing with invincibility frames
+					Alternate attack has 8 seconds of cooldown while holding this weapon
 					''' */
 				/* Tooltip2:
 					'''
@@ -1085,7 +1093,7 @@ Mods: {
 					Metallic Ringing - Reduces defense and creates shockwaves when hit with this E.G.O
 					Violence - Minimum and maximum damage variance is decreased and increased respectively by 20% and 50%
 					Chained Wrath - Alternate attack to convert increased movement speed to increased damage (50% conversion), Removed while on a mount or minecart
-					|Binding Jacket - 'Chained Wrath' buff is removed while having any form of debuff
+					|Binding Jacket - While under 'Chained Wrath', acquiring a debuff removes it and gain minor stat debuffs
 					''' */
 			}
 
@@ -1101,12 +1109,12 @@ Mods: {
 					'''
 				/* PassiveListRework:
 					'''
-					Charge - A battery displays current Charge, Activates effects below with Charge
-					Disable Limiter - Gain 40% increased movement speed while active, up to 20% increased damage with 'Charge'
-					Clean - Allows the player to dash through enemies if the player does not have a dash, Costs 'Charge'
-					Protocol - Automatically attacks nearby enemies while not held, Increased swing rate while using 'Clean'
-					Repetitive Pattern Recognition - Hitting an enemy generates 'Charge', killing an enemy refills 'Charge'
-					|Recharge - Right click buff to remove and refill 'Charge' at the cost of being immobilized
+					Charge - A battery displays current Charge (Max 4 Charge)
+					Disable Limiter - Alternate attack to consume 1 Charge to gain 40% movement speed for 30 seconds
+					Clean - During 'Disable Limiter', Allows the player to dash if they have no dash. Removes 'Disable Limiter'
+					Protocol - Automatically attacks nearby enemies when not held during 'Disable Limiter'
+					Repetitive Pattern Recognition - Killing an enemy during 'Disable Limiter' gives 1 Charge
+					|Recharge - Right click 'Disable Limiter' buff to refill 'Charge' to max at the cost of being immobilized
 					''' */
 			}
 
@@ -1151,13 +1159,6 @@ Mods: {
 					黑焰-在第七次射击后，获得黑焰buff，提升此ego70%的伤害。
 					|第七颗子弹-第七颗子弹只会瞄准城镇npc。如果没npc就瞄队友，没队友就瞄自己。
 					'''
-				/* PassiveListRework:
-					'''
-					Magic Bullet - Each shot has a special damage, target and property. The bullets always hits its mark
-					Request - Right click to Mark a target, The bullets only targets the marked target. Removed when switching items
-					Dark Flame - After 'The Seventh Bullet', Gain Dark Flame buff, boosting Magic Bullet's damage by 70%
-					|The Seventh Bullet - The 7th Bullet always targets Town NPCs. If there is none, targets allies. Pierces the user's heart if there are none left
-					''' */
 			}
 
 			#Literature
@@ -1362,6 +1363,31 @@ Mods: {
 
 			#Language
 			
+			CrimsonScarR: {
+				// DisplayName: Crimson Scar
+				// Tooltip: FromI'll hang his head over my bed. Only then can I get up in the morning without having a nightmare.
+				/* PassiveList:
+					'''
+					Hollow Point Shell - Alternate attack to shoot then throw a sickle, enemies hit by the bullet is marked as 'Prey'
+					Bullet Shower - Under 50% health, Alternate attack to shoot a barrage of bullets, enemies hit is marked as 'Prey'
+					No Hesitation - Under 50% health, Throw multiple sickles. Sickles and bullets has a chance to deal extra damage
+					Prey - This EGO deals 20% increased damage to marked Prey, 50% if hit with a true melee
+					Rudded Welts - Gain increased damage and decreased damage taken proportional to health lost. Effects halved when using other weapons
+					Vengeance - 10% increased damage for 10 seconds when hit and mark them as 'Prey', 20% increased damage when hit by 'Prey'
+					|Fury with no Outlet - Negate all life regeneration with 'Rudded Welts' above 50% health
+					''' */
+				/* Simplified:
+					'''
+					Gain damage and damage reduction while low health
+					Attacks change while in low health
+					Getting hit increases damage and marks enemies
+					Hitting with a bullet also marks enemies
+					Marked enemies take increased damage from this E.G.O
+					Cannot regenerate health above 50% while held for 10 seconds
+					''' */
+				// Extra: Howling Nightmare - If an ally has Cobalt Scar buff, Attacks do friendly fire and lose Passive conditionals. Disables 'Fury with no Outlet'
+			}
+
 			MimicryR: {
 				// Tooltip: And the many shells cried out one word, "Manager".
 				// DisplayName: Mimicry
@@ -1373,6 +1399,14 @@ Mods: {
 					heLLo? - Alternate attack shoots a piercing Projectile, reducing enemy defense
 					|Cocoon - Shell reduces quickly when not holding this weapon, When 'Shell' runs out, gain 'Hollow Husk'
 					Hollow Husk - Enables 'GoDdByE', -8 Defense. Timer set to 5 seconds while holding this weapon
+					''' */
+				/* Simplified:
+					'''
+					Killing an enemy grants a stat boost buff
+					Buff also improves this weapon
+					Hitting an enemy with a charged hit's sweetspot does more damage
+					Buff decays quicker while not using this weapon
+					Gain a debuff after Buff timer runs out, also improves this weapon 
 					''' */
 			}
 
@@ -1388,22 +1422,39 @@ Mods: {
 					|Division - Damage reduced by 'Mountain of Corpses' stack reduces it, Lose all stacks when healed by the nurse
 					Melted Corpses - If 'Mountain of Corpses' reaches 0, Temporarily Disable 'Absorption' and take 10% increased damage
 					''' */
+				/* Simplified:
+					'''
+					Killing or Hitting enemies drops corpses that can be hit
+					Corpses collected provides damage reduction
+					Corpses also decrease movement speed and swing speed
+					Right click has additional functions the higher your corpses, also consumes it
+					Lose Corpses when hit, take increased damage when losing all of it
+					''' */
 			}
 
 			#Natural Science
 			
 			SwordSharpenedWithTearsR: {
+				// DisplayName: Sword Sharpened With Tears
 				// Tooltip: All that remains is the hollow pride of a weathered knight.
 				/* PassiveList:
 					'''
-					Heart-piercing sword - Summon three swords that floats around you
-					Whetted with Teardrops - Critical hits ignores defense
-					Blessing - When a teammate stands near you while using with this weapon, they gain Blessed buff. Only one Blessed at a time
-					Blessed - 50% decreased damage taken, 10% chance to recieve double damage with no reduction instead, Only active while this weapon is held
-					|Despair - If no Blessed teammate is present, Attacks deals a flat amount of damage, -10 defense and if a sword misses, it impales the user
-					This Item is incomplete and unobtainable
+					Sword of a Forgotten Knight - Summon 2 swords, Summons additional swords that occupies minion slots. Auto attacks with 3 or more
+					Whetted by Tears - Alternate attack to gain 'Justice' and bless an ally near the cursor with 'Blessed' if there isn't one. Lose 'Despair'
+					Blessed - 10% decreased projectile damage taken, 20% increased contact damage taken
+					Justice - Swords are aimed and can be charged, Critical hits ignores defense. Lost when switching weapons
+					|Hollow Pride - If a 'Justice' Sword miss, it attempts to pierce the user. If 'Blessed' dies, 3 Swords pierces the user	
+					Despair - When 3 Swords pierce the user, lose 'Justice', gain 20% increased summon damage and lose 25% maximum health
 					''' */
-				// DisplayName: Sword Sharpened With Tears
+				/* Simplified:
+					'''
+					Summons 2 extra swords when used without swords
+					Right click takes manual control of three swords
+					Also grants a buff to one nearby ally
+					If a manually controlled sword misses, it attempts to pierce you
+					If the buffed ally dies, 3 swords will pierce you
+					After 3 swords impale you, lose manual control and gain a buff
+					''' */
 			}
 
 			NihilR: {
@@ -1453,21 +1504,19 @@ Mods: {
 				// DisplayName: Gold Rush
 			}
 
-			#Social
-			
 			TheHomingInstinctS: {
 				// Tooltip: ""
 				// DisplayName: The Homing Instinct
 			}
 
-			#Philosophy
+			#Social
 			
 			BeakR: {
 				// Tooltip: ""
 				// DisplayName: Beak
 			}
 
-			#Originals
+			#Philosophy
 			
 			LifeForADaredevilR: {
 				// DisplayName: Life For A Daredevil
@@ -1482,7 +1531,7 @@ Mods: {
 					''' */
 			}
 
-			#Crafting Stations // Furnitures
+			#Originals
 			
 			BlackBox3: {
 				/* Tooltip:
@@ -1498,6 +1547,8 @@ Mods: {
 				// DisplayName: Black Box - Extraction
 			}
 
+			#Crafting Stations // Furnitures
+			
 			BlackBox2: {
 				/* Tooltip:
 					'''
@@ -1541,13 +1592,13 @@ Mods: {
 				// DisplayName: Disciplinary Shell
 			}
 
-			#Accessories
-			
 			BehaviorAdjustment: {
 				// DisplayName: Behavior Adjustment
 				// Tooltip: ""
 			}
 
+			#Accessories
+			
 			HeartOfAspiration: {
 				// DisplayName: Heart Of Aspiration
 				// Tooltip: ""
@@ -1644,89 +1695,6 @@ Mods: {
 
 			#Natural
 			
-			InTheNameOfLoveAndHate: {
-				ItemTooltip: “以爱和正义的名义~魔法少女来了！”
-				PassiveList:
-					'''
-					Arcana Slave -召唤爱与正义的激光，消耗［？］法力值，使用时重置为最大值。
-					正义-击中敌人或被击中减少Arcana Slave 的魔力值消耗，使用时重置。
-					坏蛋!-命中敌人标记他们，增加正义和仇恨获得。
-					爱-增加防御，降低命中敌人时的伤害。
-					|仇恨-获得命中减少防御，增加伤害。在被击中足够多次后，将此武器的所有攻击转化为激光。
-					'''
-				/* PassiveList2:
-					'''
-					Arcana Slave - Summon a laser of Love and Justice that costs {0} mana, Resets to maximum when used
-					Arcana Beats - Realeasing channeling uses Arcana Beats, marking enemies as 'Villain'
-					Justice - When 'Love' or 'Hate' activates, reduces 'Arcana Slave' cost
-					Villain - 25% increased damage taken from this EGO, 
-					Love - Chance to heal allies on hit
-					|Hate - Taking damage or killing enemies increases this weapon's damage
-					Hysteria - When 'Hate' reaches maximum, temporarily transform this EGO changing its effects
-					This Item is incomplete and unobtainable
-					''' */
-				/* PassiveList3:
-					'''
-					Love! - Killing enemies increases this weapon's damage
-					A Real Magical Girl - When 'Love' reaches maximum, transform this EGO to normal
-					|Arcana Slave - Channel a laser of Hate that drains {0} mana
-					Hate... - 50% increased mana cost, reduced over time
-					Villain - 15% increased damage taken when held, Getting hit increases 'Love' and 'Hate'
-					''' */
-				/* PassiveList4:
-					'''
-					Arcana Slave = Alternate attack summons a laser of Love and Justice, costs {0} mana (unaffected by mana cost)
-					Arcana Beats - Releasing attack marks enemies hit as 'Villain'
-					Villain - Takes 25% increased damage from this EGO, only 1 Villain can exist at a time
-					Justice - Attacking 'Villain' reduces Arcana Slave cost. Arcana Slave cost resets when used
-					Love - Above 50% Health, attacks give nearby allies life regeneration
-					|Hate - Under 50% health, attacks are changed to lasers. Recieve 25% more damage while held
-					Hysteria - Arcana Slave lasts longer and can be aimed under 'Hate', Temporarily unable to use items afterwards
-					''' */
-			}
-
-			TheSwordSharpenedWithTears: {
-				ItemTooltip: “剩下的只是饱经风霜的骑士空洞的骄傲。“
-				PassiveList:
-					'''
-					穿心剑-召唤三把漂浮在你周围的剑。
-					用泪打磨-致命一击忽略防御力。
-					庇护-当你使用此武器时站在你队友附近，他们将获得祝福buff。一次只有一个被祝福。
-					绝望的加护-减少50%的伤害，10%的几率受到双倍伤害，只有在持有此武器时有效。
-					|绝望-如果没有祝福的队友在场，攻击造成一个单位数额的伤害并减少10防御，如果剑没打到人，它将会刺穿使用者。
-					This Item is incomplete and unobtainable
-					'''
-				/* PassiveList4:
-					'''
-					Heart-piercing Sword - Summon four swords, swords return after a few seconds or can be picked up
-					Whetted with Teardrops - Critical hits ignores defense
-					Blessing - Right click a team mate to bless them, granting them 'Blessed'. Blessing another players transfers 'Blessed'
-					Blessed - 50% decreased damage taken, 10% chance to recieve double damage instead.
-					|A Broken Heart - If an ally with 'Blessed' dies, gain 'Despair' for 30 seconds and be unable to use 'Blessing'
-					Despair - 'Whetted with Teardrops' is always active. If a sword misses it impales the user
-					''' */
-				/* PassiveList2:
-					'''
-					Heart-piercing sword - Summon three swords that floats around you, 
-					Blessing - Alternate attack to give a nearby ally 'Blessed'
-					Blessed - 50% decreased damage taken, 10% chance to recieve additional double damage with no reduction instead
-					Whetted with Teardrops - Critical hits ignores defense, Active if there is no ally with 'Blessed'
-					|Despair - If no ally has 'Blessed'. If a sword misses it attempts to impale the user dealing 20% of its damage
-					A Broken Heart - If an ally with 'Blessed' dies, transform this EGO changing its effects
-					This Item is incomplete and unobtainable
-					''' */
-				/* PassiveList3:
-					'''
-					Justice! - Alternate attack to give a nearby ally 'Blessed'
-					Blessed - 50% decreased damage taken, 10% chance to recieve additional double damage with no reduction instead
-					A Real Magical Girl - If an ally with 'Blessed' is alive, unimpale all swords and transform this EGO to normal
-					|Heart-breaking sword - Summon four swords that floats around you, swords are not summoned back while impaled
-					Laced with Grief - Attacks deal additional 20% of the enemy's maximum health and ignores defense (2% of health if a boss)
-					Despair... - If a sword misses, it impales the user dealing 20% of your maximum health and remains impaled
-					Sword that Pierces Despair - If all four swords impale the user, die
-					''' */
-			}
-
 			BlindRage: {
 				ItemTooltip: “我们…………我们是真正的朋友…………对吗？”
 				PassiveList:
@@ -1755,19 +1723,6 @@ Mods: {
 
 			#Language
 			
-			CrimsonScar: {
-				ItemTooltip: “我要把那杂种的脑袋挂在床头，只有这样我才能睡个好觉。”
-				PassiveList:
-					'''
-					子弹雨-右键攻击射击弹幕。
-					无差别攻击-50%生命值以下，攻击变为投掷镰刀和子弹淋浴增加强度和不准确性，可以击中队友
-					猎物-先被子弹击中的敌人被标记为猎物并显示其大致方向。
-					猩红疤痕-增加伤害取决于生命值的损失，在25%生命值时最多增加20%。
-					复仇-被猎物击中暂时增加20%的伤害。
-					|狂暴-当猎物未被你亲手杀死或被他人掠夺时，不能使用任何其他武器或物品并无法控制的攻击他人，持续1分钟。
-					'''
-			}
-
 			CobaltScar: {
 				ItemTooltip: “说实话我并不在乎，因为我必须是一只又大又坏的狼……”
 				PassiveList:
@@ -1992,6 +1947,14 @@ Mods: {
 					脉动-完美计时时伤害增加
 					|激烈搏动-使用搏动后，1分钟后死亡
 					'''
+				/* PassiveList2:
+					'''
+					Beats of Aspiration - Range increases when used slow, Damage increase when used fast
+					Pulsation - Increases range and damage when used rhythmically consistently. Decreases overtime
+					Urging - Gain maximum health based on 'Pulsation', Apply 'Fervent Beats' to self and nearby allies for 1 minute
+					|Fervent Beats - 12% increased attack speed, 8% increased damage, 15 defense and 20% increased movement speed
+					Excessive Aspiration - When 'Fervent Beats' run out, the user dies
+					''' */
 			}
 
 			Marionette: {
@@ -2025,6 +1988,15 @@ Mods: {
 					利耳-击中你的敌人永久受到两倍于钉子的伤害
 					|内疚-此武器不会从任何形式的伤害增加中获得加值
 					'''
+				/* PassiveListAleph:
+					'''
+					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit
+					Hammer - Deal 10 bonus damage equal to the amount of 'Nail' on an enemy
+					Broken to Pieces - Increased damage for each 'Nail' activated by 'Hammer' and inflict 'Guilt'
+					Guilt - Take increased bonus damage from 'Hammer'. At certain total of Guilt, gain 'A Crack in the Mind'
+					|Leer - If the enemy has no 'Guilt', Normal attacks deal no damage and inflict twice the amount of nails
+					A Crack in the Mind - Summons two giant hands that wields a Nail and Hammer, Removed when theres not enough 'Guilt'
+					''' */
 			}
 
 			#Limbus Inspired
@@ -2325,7 +2297,7 @@ Mods: {
 				// MeltdownWaves1: The waves will rock the shore again.
 				// MeltdownWaves2: You cannot stop the torrent of this world alone.
 				// MeltdownFlight1: Grant the freedom you desire.
-				// MeltdownFlight2: Your Wing is still immature.
+				// MeltdownFlight2: Your Wing is still frail and immature.
 				// PauseAttempt1: You cannot stop the grand current with just those hands of yours.
 				// PauseAttempt2: I want you to finish me with your own power.
 				// Wave4: I'll open the door if I must.
@@ -2855,38 +2827,48 @@ Mods: {
 			// MimicryREffectSlash.DisplayName: Mimicry
 			// RedMistStrikes.DisplayName: Twilight
 			// MimicryRHello.DisplayName: Hello?
-			// RedMistLampProjectile.DisplayName: Red Mist Lamp Projectile
-			// TwilightTeleport.DisplayName: Twilight Teleport
-			// GoldRushRedMistImpact.DisplayName: Gold Rush Red Mist Impact
-			// SmileBitsFriendly.DisplayName: Smile Bits Friendly
-			// PenitencePlayerSwing.DisplayName: Penitence Player Swing
-			// PenitencePlayerLight.DisplayName: Penitence Player Light
-			// WingbeatFairy2.DisplayName: Wingbeat Fairy2
-			// WingbeatSlash.DisplayName: Wingbeat Slash
-			// SmileRSword.DisplayName: Smile R Sword
+			// RedMistLampProjectile.DisplayName: Twilight
+			// TwilightTeleport.DisplayName: Twilight
+			// GoldRushRedMistImpact.DisplayName: Gold Rush
+			// SmileBitsFriendly.DisplayName: Smile
+			// PenitencePlayerSwing.DisplayName: Penitence
+			// PenitencePlayerLight.DisplayName: Penitence
+			// WingbeatFairy2.DisplayName: Wingbeat
+			// WingbeatSlash.DisplayName: Wingbeat
+			// SmileRSword.DisplayName: Smile
 			// SmileCorpse.DisplayName: Smile Corpse
-			// SmileRSwordAlt.DisplayName: Smile R Sword Alt
-			// SmileREffectSlash.DisplayName: Smile R Effect Slash
-			// SmileRVomit.DisplayName: Smile R Vomit
-			// SmileRBite.DisplayName: Smile R Bite
-			// SmileCorpseSmall.DisplayName: Smile Corpse Small
-			// SmileRScream.DisplayName: Smile R Scream
-			// ArcanaBeatsv2.DisplayName: Arcana Beatsv2
-			// CherryBlossomsPetal2.DisplayName: Cherry Blossoms Petal2
-			// EngulfingDreamStar.DisplayName: Engulfing Dream Star
-			// HornThrown.DisplayName: Horn Thrown
-			// FragmentsFromSomewhereCut.DisplayName: Fragments From Somewhere Cut
-			// StarShot2.DisplayName: Star Shot2
-			// ItnolahVisual.DisplayName: Itnolah Visual
-			// GoldRushFlurryR.DisplayName: Gold Rush Flurry R
-			// GoldRushRoadOfGold.DisplayName: Gold Rush Road Of Gold
-			// RoadOfGoldPlayer.DisplayName: Road Of Gold Player
-			// GoldRushEffect.DisplayName: Gold Rush Effect
-			// GoldRushFlurryRAlt.DisplayName: Gold Rush Flurry R Alt
-			// RoadOfKingPlayer.DisplayName: Road Of King Player
-			// GoldRushRoadOfGoldAlt.DisplayName: Gold Rush Road Of Gold Alt
-			// GoldRushUpperR.DisplayName: Gold Rush Upper R
+			// SmileRSwordAlt.DisplayName: Smile
+			// SmileREffectSlash.DisplayName: Smile
+			// SmileRVomit.DisplayName: Smile Vomit
+			// SmileRBite.DisplayName: Smile Bite
+			// SmileCorpseSmall.DisplayName: Smile Corpse
+			// SmileRScream.DisplayName: Smiling Scream
+			// ArcanaBeatsv2.DisplayName: Arcana Beats
+			// CherryBlossomsPetal2.DisplayName: Cherry Blossoms Petal
+			// EngulfingDreamStar.DisplayName: Engulfing Dream
+			// HornThrown.DisplayName: Horn
+			// FragmentsFromSomewhereCut.DisplayName: Fragments From Somewhere
+			// StarShot2.DisplayName: In the Name of Love and Hate
+			// ItnolahVisual.DisplayName: In the Name of Love and Hate
+			// GoldRushFlurryR.DisplayName: Gold Rush Flurry
+			// GoldRushRoadOfGold.DisplayName: Road of Gold
+			// RoadOfGoldPlayer.DisplayName: Road Of Gold
+			// GoldRushEffect.DisplayName: Gold Rush
+			// GoldRushFlurryRAlt.DisplayName: Gold Rush Flurry
+			// RoadOfKingPlayer.DisplayName: Road Of King
+			// GoldRushRoadOfGoldAlt.DisplayName: Road of Gold
+			// GoldRushUpperR.DisplayName: Gold Rush Uppercut
 			// MiniLaser.DisplayName: Mini Laser
+			// SodaGeyser.DisplayName: Soda Geyser
+			// SolitudeSmoke.DisplayName: Solitude Smoke
+			// CrimsonScarRSickle.DisplayName: Crimson Scar
+			// SwordSharpenedWithTearsRDespair.DisplayName: Sword Sharpened With Tears
+			// SwordSharpenedWithTearsRSword.DisplayName: Sword Sharpened With Tears
+			// CrimsonScarRSickle2.DisplayName: Crimson Scar
+			// WristCutterThrown.DisplayName: Wrist Cutter Thrown
+			// WristCutterSlash.DisplayName: Wrist Cutter Slash
+			// OurGalaxySparkleOrbit.DisplayName: Our Galaxy Sparkle Orbit
+			// SwordSharpenedWithTearsRSwordExtra.DisplayName: Sword Sharpened With Tears R Sword Extra
 		}
 
 		Buffs: {
@@ -3196,6 +3178,44 @@ Mods: {
 			LoveTeam: {
 				// DisplayName: Love
 				// Description: Increased life regeneration
+			}
+
+			Despair: {
+				// DisplayName: Despair
+				// Description: I swore to protect, yet I lost them again...
+			}
+
+			Justice: {
+				// DisplayName: Justice
+				// Description: If I could have another chance to protect...
+			}
+
+			Blessing: {
+				// DisplayName: Blessing
+				// Description: All that remains is the hollow pride of a weathered knight
+				// Description2: 10% decreased projectile damage taken, 20% increased contact damage
+			}
+
+			Prey: {
+				// DisplayName: Prey
+				// Description: 20% increased damage taken from Crimson Scar
+			}
+
+			RuddedWelts: {
+				// DisplayName: Rudded Welts
+				// Description: The more scars you get, the stronger your will to survive becomes
+				// Description2: "{0}% increased damage and decreased damage taken"
+			}
+
+			Vengeance: {
+				// DisplayName: Vengeance
+				// Description: I’ll hang his head over my bed
+				// Description2: "{0}% increased damage"
+			}
+
+			SwordSharpened: {
+				// DisplayName: Sword Sharpened with Tears
+				// Description: The swords will eventually point at those she could not protect.
 			}
 		}
 

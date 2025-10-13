@@ -53,6 +53,8 @@ namespace LobotomyCorp.Items.Zayin
             {
                 //Soder Shoot
                 int n = Projectile.NewProjectile(player.GetSource_FromThis(), position, velocity, type, damage, knockback, player.whoAmI);
+                Main.projectile[n].GetGlobalProjectile<LobotomyGlobalProjectile>().SodaSpecial = true;
+                Main.projectile[n].netUpdate = true;
                 return false;
             }
             return base.Shoot(player, source, position, velocity, type, damage, knockback);

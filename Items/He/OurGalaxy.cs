@@ -1,3 +1,4 @@
+using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using System.Globalization;
 using Terraria;
@@ -36,8 +37,22 @@ namespace LobotomyCorp.Items.He
             EGORiskLevel = RiskLevel.He;
         }
 
+        public override bool AltFunctionUse(Player player)
+        {
+            return RedMistMaskUpgrade(player);
+        }
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (RedMistMaskUpgrade(player))
+                type = ModContent.ProjectileType<OurGalaxySparkleOrbit>();
+        }
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            if (player.altFunctionUse == 2)
+                return false;
+
             int num = 3 + Main.rand.Next(2);
             for (int i = 0; i < num; i++)
             {

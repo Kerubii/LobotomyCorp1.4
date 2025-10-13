@@ -18,16 +18,22 @@ namespace LobotomyCorp.Buffs
         {
             // DisplayName.SetDefault("Festival");
             // Description.SetDefault("Everything will be peaceful");
-            //BuffID.Sets.TimeLeftDoesNotDecrease[Type] = true;
+            BuffID.Sets.TimeLeftDoesNotDecrease[Type] = true;
+            Main.pvpBuff[Type] = true;
             Main.buffNoTimeDisplay[Type] = true;
+        }
+
+        public override bool RightClick(int buffIndex)
+        {
+            return false;
         }
 
         public override void Update(Player player, ref int buffIndex)
         {
             LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
             player.statLifeMax2 = (int)(player.statLifeMax2 * 0.75f);
+            player.GetDamage(DamageClass.Summon) += 0.2f;
             modPlayer.SwordSharpenedDespair = true;
-            player.buffTime[buffIndex]++;
         }
     }
 }

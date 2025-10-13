@@ -1,15 +1,17 @@
-﻿using System;
+﻿using LobotomyCorp;
+using LobotomyCorp.NPCs.RedMist;
+using LobotomyCorp.UI;
+using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Steamworks;
+using System;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.Chat;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Chat;
-using LobotomyCorp;
-using LobotomyCorp.Utils;
-using LobotomyCorp.UI;
-using System.Collections.Generic;
-using Terraria.DataStructures;
 
 namespace LobotomyCorp.Utils
 {
@@ -17,7 +19,12 @@ namespace LobotomyCorp.Utils
     {
         //For General Use
         //Unsure How good this is? compared to something that exists out there, probly more fun to make up my own though
-        public Dictionary<Enum, BonePart> BoneName;
+        public Dictionary<Enum, BonePart> BoneName = new Dictionary<Enum, BonePart>();
+        public Mod Mod => ModContent.GetInstance<LobotomyCorp>();
+        public SkeletonBase()
+        {
+            
+        }
 
         public SkeletonBase(Dictionary<Enum, BonePart> BoneList)
         {
@@ -99,7 +106,7 @@ namespace LobotomyCorp.Utils
 
         public void RotationIK(Enum Bone1, Enum Bone2, Enum BoneIK,int dir = 1)
         {
-            float[] rotations = RotationIK(BoneName[Bone1].GetPosition(), BoneName[BoneIK].EndPoint(), BoneName[Bone1].Length, BoneName[Bone2].Length, dir);
+            float[] rotations = RotationIK(BoneName[Bone1].GetPosition(), BoneName[BoneIK].GetPosition(), BoneName[Bone1].Length, BoneName[Bone2].Length, dir);
             BoneName[Bone1].ChangeRotation(rotations[0]);
             BoneName[Bone2].ChangeRotation(rotations[1]);
         }
@@ -123,7 +130,9 @@ namespace LobotomyCorp.Utils
     public class BonePart
     {
         Vector2[] offset;
+        bool ParentOrigin;
         bool InheritOffset;
+        bool InheritOffsetRotation;
         float[] Rotation;
         bool InheritRotation;
         float[] Scale;
@@ -134,7 +143,7 @@ namespace LobotomyCorp.Utils
         BonePart Parent;
 
         private Texture2D Texture;
-        private Rectangle Frame;
+        public Rectangle Frame;
         private Vector2 Origin;
         private float RotationOffset;
         public bool Visible;
@@ -153,13 +162,17 @@ namespace LobotomyCorp.Utils
             if (BoneParent != null)
             {
                 Parent = BoneParent;
+                ParentOrigin = false;
                 InheritOffset = true;
+                InheritOffsetRotation = true;
                 InheritRotation = true;
                 InheritScale = true;
             }
             else
             {
+                ParentOrigin = false;
                 InheritOffset = false;
+                InheritOffsetRotation = true;
                 InheritRotation = false;
                 InheritScale = false;
             }
@@ -182,6 +195,11 @@ namespace LobotomyCorp.Utils
             }
         }
 
+        /// <summary>
+        /// Changes if the bone currently inherits the parent's offset, can be used to detach bone and adjust offset accordingly automatically
+        /// </summary>
+        /// <param name="To"></param>
+        /// <returns></returns>
         public BonePart ChangeIOffset(bool To)
         {
             if (To != InheritOffset)
@@ -194,6 +212,28 @@ namespace LobotomyCorp.Utils
                 offset[0] = newPos;
                 InheritOffset = To;
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Changes if the bone's position is also rotated by the parent, Used for IK since the IK's position can be changed by the parent otherwise
+        /// </summary>
+        /// <param name="To"></param>
+        /// <returns></returns>
+        public BonePart ChangeIOffestRotation(bool To)
+        {
+            InheritOffsetRotation = To;
+            return this;
+        }
+
+        /// <summary>
+        /// Whether this bone is located in relation to it's parents startpoint(true) or endpoint(false by default)
+        /// </summary>
+        /// <param name="To"></param>
+        /// <returns></returns>
+        public BonePart ChangeParentOrigin(bool To)
+        {
+            ParentOrigin = To;
             return this;
         }
 
@@ -217,7 +257,7 @@ namespace LobotomyCorp.Utils
             }
             return this;
         }
-        
+
         /// <summary>
         /// Set speed to 0 if not changed, Set speed to -1 to instant change
         /// </summary>
@@ -265,11 +305,39 @@ namespace LobotomyCorp.Utils
             ChangeBone(Vector2.Zero, 0, Rotation, speed);
         }
 
+        public void ChangeScale(float scale, float speed = -1f)
+        {
+            if (speed < 0)
+                Scale[0] = scale;
+            else
+            {
+                if (Scale[0] < scale)
+                {
+                    Scale[0] += speed;
+                    if (Scale[0] > scale)
+                        Scale[0] = scale;
+                }
+                else if (Scale[0] > scale)
+                {
+                    Scale[0] -= speed;
+                    if (Scale[0] < scale)
+                        Scale[0] = scale;
+                }
+            }
+        }
+
         public Vector2 GetPosition(int dir = 1, int i = 0)
         {
-            Vector2 positionOffset = new Vector2(offset[i].X, offset[i].Y * dir) * GetScale(i);
+            Vector2 positionOffset = new Vector2(offset[i].X, offset[i].Y);// * GetScale(i);
             if (InheritOffset)
-                return positionOffset.RotatedBy(Parent.GetRotation(dir, i)) + Parent.EndPoint(dir, i);
+            {
+                positionOffset.Y *= dir;
+                if (InheritOffsetRotation)
+                    positionOffset = positionOffset.RotatedBy(Parent.GetRotation(dir, i));
+                if (ParentOrigin)
+                    return positionOffset + Parent.GetPosition(dir, i);
+                return positionOffset + Parent.EndPoint(dir, i);
+            }
             return positionOffset;
         }
 
@@ -294,6 +362,11 @@ namespace LobotomyCorp.Utils
             return Scale[i];
         }
 
+        public Vector2 DifferenceBone(BonePart bone)
+        {
+            return bone.GetPosition() - GetPosition();
+        }
+
         public BonePart SetDraw(Texture2D boneTexture, Rectangle texFrame, Vector2 texOrigin, float Rotation = 0)
         {
             Texture = boneTexture;
@@ -304,17 +377,166 @@ namespace LobotomyCorp.Utils
             return this;
         }
 
-        public DrawData DrawBone(int dir = 1, int Trail = 0)
+        /// <summary>
+        /// Standard bone drawing, Manual draw if needed
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="Trail"></param>
+        /// <returns></returns>
+        public DrawData DrawBone(Color color, int dir = 1, int Trail = 0)
         {
-            return new DrawData(Texture,
+            return DrawBone(Texture, color, dir, Trail);
+        }
+        /// <summary>
+        /// Variant usually used for Glowmasks, needs to have the same frame as original Texture
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="dir"></param>
+        /// <param name="Trail"></param>
+        /// <returns></returns>
+        public DrawData DrawBone(Texture2D texture2, Color color, int dir = 1, int Trail = 0)
+        {
+            Vector2 origin = Origin;
+            if (dir == -1)
+            {
+                origin.X = Frame.Width - origin.X;
+            }
+
+            return new DrawData(texture2,
                     GetPosition(dir, Trail) - Main.screenPosition,
                     Frame,
-                    Color.White,
+                    color,
                     GetRotation(dir, Trail) + RotationOffset,
                     Origin,
                     Scale[Trail],
                     dir < 0 ? SpriteEffects.FlipHorizontally : 0f,
                     0);
+        }
+
+        public void DrawBone(SpriteBatch sp, Color color, int dir = 1, int Trail = 0)
+        {
+            DrawBone(sp, Texture, color, dir, Trail);
+        }
+
+        public void DrawBone(SpriteBatch sp, Texture2D texture2, Color color, int dir = 1, int Trail = 0)
+        {
+            Vector2 origin = Origin;
+            if (dir == -1)
+            {
+                origin.X = Frame.Width - origin.X;
+            }
+
+            DrawBoneManual(sp,
+                texture2,
+                GetPosition(dir, Trail) - Main.screenPosition,
+                Frame,
+                color,
+                GetRotation(dir, Trail) + RotationOffset,
+                origin,
+                Scale[Trail],
+                dir < 0 ? SpriteEffects.FlipHorizontally : 0f);
+        }
+
+        /// <summary>
+        /// Used for non vertial sprites
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="Trail"></param>
+        /// <param name="rot1"></param>
+        /// <param name="rot2"></param>
+        /// <returns></returns>
+        public DrawData DrawBoneAltRot(Color color, int dir = 1, int Trail = 0, float rot1 = 0.785f, float rot2 = 2.355f)
+        {
+            return DrawBoneAltRot(Texture, color, dir, Trail, rot1, rot2);
+        }
+
+        /// <summary>
+        /// Variant usually used for Glowmasks, needs to have the same frame as original Texture
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="dir"></param>
+        /// <param name="Trail"></param>
+        /// <returns></returns>
+        public DrawData DrawBoneAltRot(Texture2D texture2, Color color, int dir = 1, int Trail = 0, float rot1 = 0.785f, float rot2 = 2.355f)
+        {
+            if (dir == -1)
+            {
+                Origin.X = Frame.Width - Origin.X;
+            }
+
+            return new DrawData(texture2,
+                    GetPosition(dir, Trail) - Main.screenPosition,
+                    Frame,
+                    color,
+                    GetRotation(dir, Trail) + RotationOffset - (dir == 1 ? 0.785f : 2.355f),
+                    Origin,
+                    Scale[Trail],
+                    dir < 0 ? SpriteEffects.FlipHorizontally : 0f,
+                    0);
+        }
+
+        /// <summary>
+        /// Used for non vertial sprites
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="Trail"></param>
+        /// <param name="rot1"></param>
+        /// <param name="rot2"></param>
+        /// <returns></returns>
+        public void DrawBoneAltRot(SpriteBatch sp, Color color, int dir = 1, int Trail = 0, float rot1 = 0.785f, float rot2 = 2.355f)
+        {
+            DrawBoneAltRot(sp, Texture, color, dir, Trail, rot1, rot2);
+        }
+
+        /// <summary>
+        /// Variant usually used for Glowmasks, needs to have the same frame as original Texture
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="dir"></param>
+        /// <param name="Trail"></param>
+        /// <returns></returns>
+        public void DrawBoneAltRot(SpriteBatch sp, Texture2D texture2, Color color, int dir = 1, int Trail = 0, float rot1 = 0.785f, float rot2 = 2.355f)
+        {
+            Vector2 origin = Origin;
+            if (dir == -1)
+            {
+                origin.X = Frame.Width - origin.X;
+            }
+
+            DrawBoneManual(sp,
+                texture2,
+                GetPosition(dir, Trail) - Main.screenPosition,
+                Frame,
+                color,
+                GetRotation(dir, Trail) + RotationOffset - (dir == 1 ? 0.785f : 2.355f),
+                origin,
+                Scale[Trail],
+                dir < 0 ? SpriteEffects.FlipHorizontally : 0f);
+        }
+
+        /// <summary>
+        /// Manually draw Bone, ignoring parameters set by SetDraw()
+        /// </summary>
+        /// <param name="sp"></param>
+        /// <param name="tex"></param>
+        /// <param name="Pos"></param>
+        /// <param name="Frame"></param>
+        /// <param name="color"></param>
+        /// <param name="rot"></param>
+        /// <param name="origin"></param>
+        /// <param name="scale"></param>
+        /// <param name="speffects"></param>
+        public void DrawBoneManual(SpriteBatch sp, Texture2D tex, Vector2 Pos, Rectangle Frame, Color color, float rot, Vector2 origin, float scale, SpriteEffects speffects)
+        {
+            sp.Draw(tex,
+                    Pos,
+                    Frame,
+                    color,
+                    rot,
+                    origin,
+                    scale,
+                    speffects,
+                    0f);
         }
     }
 }

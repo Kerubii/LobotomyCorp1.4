@@ -1,14 +1,20 @@
+using LobotomyCorp.Buffs;
+using LobotomyCorp.Items.Waw;
+using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
+using LobotomyCorp.Projectiles;
+using LobotomyCorp.Projectiles.Realized;
+using LobotomyCorp.Projectiles.RedMist;
+using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp.Utils;
-using LobotomyCorp.ModSystems;
-using LobotomyCorp.Projectiles;
-using LobotomyCorp.Items.Waw;
-using LobotomyCorp.Players;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LobotomyCorp
 {
@@ -20,8 +26,12 @@ namespace LobotomyCorp
         public byte Lament = 0;
 
         public bool BlackSwanReflected = false;
+        public bool CrimsonScarRBullet = false;
         public bool CrimsonScarBullet = false;
         public bool HypocrisyArrow = false;
+        public bool SodaSpecial = false;
+        public int SolitudeTimer = 0;
+        public bool SolitudeSpecial = false;
 
         public override bool PreAI(Projectile projectile)
         {
@@ -38,6 +48,19 @@ namespace LobotomyCorp
                 return false;
             }
             return base.PreAI(projectile);
+        }
+
+        public override void PostAI(Projectile projectile)
+        {
+            if (SolitudeSpecial)
+            {
+                SolitudeTimer++;
+                if (Main.myPlayer == projectile.owner && SolitudeTimer % (5 + 5 * projectile.extraUpdates) == 0)
+                {
+                    Vector2 vel = new Vector2(1, 0).RotatedBy(Main.rand.NextFloat(6.28f));
+                    Projectile.NewProjectile(projectile.GetSource_FromThis(), projectile.Center, vel, ModContent.ProjectileType<SolitudeSmoke>(), projectile.damage / 3, 0, projectile.owner);
+                }
+            }
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
@@ -108,6 +131,28 @@ namespace LobotomyCorp
                 Main.player[projectile.owner].GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower = 1;
             }
 
+            if (CrimsonScarRBullet)
+            {
+                target.AddBuff(ModContent.BuffType<Prey>(), 60 * 15);
+
+                Player player = Main.player[projectile.owner];
+                LobotomyWawPlayer wawPlayer = player.GetModPlayer<LobotomyWawPlayer>();
+                if (wawPlayer.CrimsonScarLowHealthActive && Main.rand.NextBool(3))
+                {
+                    Vector2 velocity = new Vector2(8 * player.direction, 8).RotatedByRandom(MathHelper.ToRadians(10));
+                    Vector2 position = target.Center - velocity * 15 * 4;
+                    int amount = 12;
+                    for (int i = 0; i < amount; i++)
+                    {
+                        float rot = 6.28f * (i / amount);
+                        Vector2 dustVel = new Vector2(3, 0).RotatedBy(rot);
+                        Dust d = Dust.NewDustPerfect(position, DustID.Blood, dustVel);
+                        d.noGravity = true;
+                    }
+                    Projectile.NewProjectile(projectile.GetSource_FromThis(), position, velocity, ModContent.ProjectileType<CrimsonScarRSickle2>(), projectile.damage / 2, 0, projectile.owner, target.whoAmI, 30 * 4);
+                }
+            }
+
             if (projectile.owner == Main.myPlayer)
             {
                 if (HypocrisyArrow)
@@ -116,6 +161,7 @@ namespace LobotomyCorp
                     Projectile.NewProjectile(projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<HypocrisyHeal>(), 0, 0, projectile.owner, projectile.owner, heal);
                 }
             }
+
         }
 
         public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
@@ -130,6 +176,19 @@ namespace LobotomyCorp
             {
                 modifiers.FinalDamage *= 1.15f;
             }
+            if (CrimsonScarRBullet && target.GetGlobalNPC<LobotomyGlobalNPC>().CrimsonScarPrey)
+            {
+                modifiers.SourceDamage += LobotomyWawPlayer.CrimsonScarPreyBoost;
+            }
+        }
+
+        public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
+        {
+            if (SodaSpecial)
+            {
+                Projectile.NewProjectile(Main.player[projectile.owner].GetSource_FromThis(), projectile.Center, -oldVelocity, ModContent.ProjectileType<SodaGeyser>(), projectile.damage, projectile.knockBack, projectile.owner);
+            }
+            return base.OnTileCollide(projectile, oldVelocity);
         }
 
         public override void ModifyDamageHitbox(Projectile projectile, ref Rectangle hitbox)

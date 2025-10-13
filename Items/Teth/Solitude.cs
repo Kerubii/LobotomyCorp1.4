@@ -1,4 +1,7 @@
+using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -47,6 +50,23 @@ namespace LobotomyCorp.Items.Teth
             .AddRecipeGroup("LobotomyCorp:EvilPowder", 5)
             .AddTile(Mod, "BlackBox")
             .Register();
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (RedMistMaskUpgrade(player))
+            {
+                int p = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().SolitudeSpecial = true;
+                return false;
+            }
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
+        {
+            if (RedMistMaskUpgrade(player))
+                damage += 3.5f;
         }
     }
 }

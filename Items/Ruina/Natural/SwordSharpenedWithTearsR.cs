@@ -1,5 +1,11 @@
+using LobotomyCorp.Buffs;
+using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players;
+using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -7,30 +13,17 @@ namespace LobotomyCorp.Items.Ruina.Natural
 {
     public class SwordSharpenedWithTearsR : SEgoItem
 	{
-        public override bool IsLoadingEnabled(Mod mod)
-        {
-            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
-        }
-
         public override void SetStaticDefaults() 
 		{
-			// DisplayName.SetDefault("Penitence"); // By default, capitalization in classnames will damage spaces to the display name. You can customize the display name here by uncommenting this line.
-			/* Tooltip.SetDefault("A complete E.G.O.\n" +
-                               "\"All that remains is the hollow pride of a weathered knight.\"\n"); */
-            
-            EgoColor = LobotomyCorp.WawRarity;
+            ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
+            ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
+            ItemID.Sets.StaffMinionSlotsRequired[Item.type] = 0f;
 		}
 
 		public override void SetDefaults() 
 		{
-            PassiveText = "Heart-piercing sword - Summon three swords that floats around you\n" +
-                          "Sharpened with Tears - Always deals a flat amount of damage and ignores all defense\n" +
-                          "Blessing - When a teammate stands near you while synchronized with this weapon, they gain Blessed buff\n" +
-                          "|Despair - The swords pierce back after missing a target\n" +
-                          "This Item is incomplete and unobtainable";
-
-            Item.damage = 63;
-			Item.DamageType = DamageClass.Melee;
+            Item.damage = 88;
+			Item.DamageType = DamageClass.Summon;
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 26;
@@ -43,17 +36,13 @@ namespace LobotomyCorp.Items.Ruina.Natural
             Item.noMelee = true;
             Item.noUseGraphic = true;
 			Item.autoReuse = true;
-		}
+            Item.channel = true;
+            Item.buffType = ModContent.BuffType<SwordSharpened>();
+            Item.shoot = ModContent.ProjectileType<SwordSharpenedWithTearsRSword>();
+        }
 
         public override bool SafeCanUseItem(Player player)
         {
-            if (Main.myPlayer == player.whoAmI && player.ownedProjectileCounts[ModContent.ProjectileType<Projectiles.RealizedSwordSharpenedWithTearsProj>()] == 0)
-            {
-                for (int i = -1; i < 2; i++)
-                {
-                    Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<Projectiles.RealizedSwordSharpenedWithTearsProj>(), Item.damage, Item.knockBack, player.whoAmI, i);
-                }
-            }
             if (player.altFunctionUse == 2)
             {
                 Item.useAnimation = 40;
@@ -68,6 +57,66 @@ namespace LobotomyCorp.Items.Ruina.Natural
             return base.SafeCanUseItem(player);
         }
 
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            position = Main.MouseWorld;
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            player.AddBuff(Item.buffType, 2);
+
+            if (player.altFunctionUse != 2 && !player.GetModPlayer<LobotomyWawPlayer>().SwordSharpenedJustice)
+            {
+                int extraType = ModContent.ProjectileType<SwordSharpenedWithTearsRSwordExtra>();
+                if (player.ownedProjectileCounts[extraType] == 0)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        int p = Projectile.NewProjectile(source, player.Center, velocity, extraType, damage, knockback, player.whoAmI);
+                        Main.projectile[p].originalDamage = damage;
+                    }
+                }
+                int projectile = Projectile.NewProjectile(source, player.Center, velocity, type, damage, knockback, player.whoAmI);
+                Main.projectile[projectile].originalDamage = damage;
+            }
+            return false;
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
+            if (player.altFunctionUse == 2 && !modPlayer.SwordSharpenedJustice)
+            {
+                if (modPlayer.SwordSharpenedDespair)
+                {
+                    player.ClearBuff(ModContent.BuffType<Despair>());
+                    modPlayer.SwordSharpenedDespair = false;
+                    modPlayer.SwordSharpenedImpaledReset();
+                }
+                if (LobotomyWawPlayer.SwordSharpenedTotalOwned(player) >= 2)
+                {
+                    player.AddBuff(ModContent.BuffType<Justice>(), 5);
+                    player.GetModPlayer<LobotomyWawPlayer>().SwordSharpenedResetCurrentSwords();
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/KnightOfDespair_Change") with { Volume = 0.2f }, player.Center);
+                }
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                    modPlayer.SwordSharpenedApplyBlessing();
+                return true;
+            }
+            else
+            {
+                // Check if current sword has invalid id, find next sword if it is
+                if (modPlayer.SwordSharpenedCurrentSword[0] >= LobotomyWawPlayer.SwordSharpenedTotalOwned(player))
+                {
+                    modPlayer.SwordSharpenedFindNextValidSword();
+                    return true;
+                }
+            }
+
+            return base.UseItem(player);
+        }
+
         public override bool AltFunctionUse(Player player)
         {
             return true;
@@ -75,6 +124,22 @@ namespace LobotomyCorp.Items.Ruina.Natural
 
         public override void AddRecipes() 
 		{
-		}
-	}
+            CreateRecipe()
+            .AddIngredient(ModContent.ItemType<SwordSharpenedWithTears>())
+            .AddIngredient(ItemID.FallenStar, 10)
+            .AddIngredient(ItemID.CobaltShield)
+            .AddIngredient(ItemID.Ectoplasm, 6)
+            .AddTile<Tiles.BlackBox3>()
+            .AddCondition(RedMistCond)
+            .Register();
+        }
+
+        public override void HoldItem(Player player)
+        {
+            //LobotomyWawPlayer modPlayer = player.GetModPlayer<LobotomyWawPlayer>();
+            //Main.NewText(modPlayer.SwordSharpenedCurrentSword[0] + " " + modPlayer.SwordSharpenedCurrentSword[1] + " " + modPlayer.SwordSharpenedCurrentSword[2]);
+        }
+    }
+
+
 }

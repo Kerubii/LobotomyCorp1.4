@@ -1,34 +1,11 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {
-      "tModLoader.CodeAssist/0.1.5": {
-        "type": "package"
-      }
-    }
+    "net8.0": {}
   },
-  "libraries": {
-    "tModLoader.CodeAssist/0.1.5": {
-      "sha512": "Sg/jKEg/z5eN+Cdi3/9CU4JfJwvXHVH+UDJf4Lipo26uTa+guLLJXH1XDJNPShTFwKK8jMUYbthINP4QhsgHSA==",
-      "type": "package",
-      "path": "tmodloader.codeassist/0.1.5",
-      "hasTools": true,
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "NugetIcon.png",
-        "analyzers/dotnet/cs/tModLoader.CodeAssist.dll",
-        "tmodloader.codeassist.0.1.5.nupkg.sha512",
-        "tmodloader.codeassist.nuspec",
-        "tools/install.ps1",
-        "tools/uninstall.ps1"
-      ]
-    }
-  },
+  "libraries": {},
   "projectFileDependencyGroups": {
-    "net8.0": [
-      "tModLoader.CodeAssist >= 0.1.*"
-    ]
+    "net8.0": []
   },
   "packageFolders": {
     "C:\\Users\\My PC\\.nuget\\packages\\": {},
@@ -74,17 +51,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
-        "dependencies": {
-          "tModLoader.CodeAssist": {
-            "target": "Package",
-            "version": "[0.1.*, )"
-          }
-        },
         "imports": [
           "net461",
           "net462",
@@ -101,7 +72,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

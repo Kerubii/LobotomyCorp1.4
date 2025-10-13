@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Items;
+using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Serialization;
 using Terraria;
 using Terraria.ModLoader;
@@ -10,7 +11,7 @@ namespace LobotomyCorp.Projectiles
         public override void ProjectileSpawn(int duration)
         {
             Player owner = Main.player[Projectile.owner];
-            if (owner.GetModPlayer<LobotomyModPlayer>().RedMistMask)
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Teth))
             {
                 if (Projectile.timeLeft > duration / 2)
                 {
@@ -26,7 +27,7 @@ namespace LobotomyCorp.Projectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Player owner = Main.player[Projectile.owner];
-            if (owner.GetModPlayer<LobotomyModPlayer>().RedMistMask)
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Teth))
             {
                 owner.immune = true;
                 owner.immuneTime = Projectile.timeLeft + 5;

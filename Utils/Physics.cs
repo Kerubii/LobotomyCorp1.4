@@ -95,7 +95,7 @@ namespace LobotomyCorp.Utils
         }
     }
     
-    class LobHelper
+    class AIHelper
     {
         /// <summary>
         /// Time is the time it reaches END from START
@@ -126,6 +126,125 @@ namespace LobotomyCorp.Utils
             float pi = (float)Math.PI;
             float diff = (angle2 - angle1 + pi) % (pi * 2) - pi;
             return Math.Abs(diff < -pi ? diff + pi * 2 : diff);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="vel"></param>
+        /// <param name="speed"></param>
+        /// <param name="target"></param>
+        public static bool ChaseTargetDirect(Vector2 pos, Vector2 target, ref Vector2 vel, float speed, float spacing = 0)
+        {
+            float dist = pos.Distance(target);
+            if (speed > dist)
+            {
+                speed = dist;
+            }
+            Vector2 dir = pos.DirectionTo(target);
+            if (!dir.HasNaNs() && dist >= spacing)
+            {
+                vel = dir * speed;
+                return true;
+            }
+            return false;
+        }
+
+
+        /// <summary>
+        /// Adds accel to normalized Velocity
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="vel"></param>
+        /// <param name="speed"></param>
+        /// <param name="accel"></param>
+        /// <param name="target"></param>
+        public static bool ChaseTargetDirectAccel(Vector2 pos, Vector2 target, ref Vector2 vel, float speed, float accel, float spacing = 0)
+        {
+            float dist = pos.Distance(target);
+            Vector2 dir = pos.DirectionTo(target);
+            if (!dir.HasNaNs() && dist >= spacing)
+            {
+                vel += dir * accel;
+                if (vel.Length() > speed)
+                {
+                    vel.Normalize();
+                    vel = vel * speed;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public static bool ChaseTargetLerp(Vector2 pos, Vector2 target, ref Vector2 vel, float speed, float lerp, float spacing = 0)
+        {
+            float dist = pos.Distance(target);
+            if (speed > dist)
+            {
+                speed = dist;
+            }
+            Vector2 dir = pos.DirectionTo(target);
+            if (!dir.HasNaNs() && dist >= spacing)
+            {
+                vel = Vector2.Lerp(vel, dir * speed, lerp);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Adds accel to both Velocity Seperately
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="vel"></param>
+        /// <param name="speed"></param>
+        /// <param name="accel"></param>
+        /// <param name="target"></param>
+        /// <param name="targetSize"></param>
+        public static void ChaseTargetAccel(Vector2 pos, Vector2 target, ref Vector2 vel, float speed, float accel, float spacing = 0)
+        { 
+            Vector2 delt = target - pos;
+            float dist = delt.Length();
+            delt.Normalize();
+            delt *= speed;
+
+            if (dist >= spacing)
+            {
+                if (pos.X < target.X)
+                {
+                    vel.X += accel;
+                    if (vel.X < 0)
+                        vel.X += accel;
+                    if (vel.X > delt.X)
+                        vel.X = delt.X;
+                }
+                else if (pos.X > target.X)
+                {
+                    vel.X -= accel;
+                    if (vel.X > 0)
+                        vel.X -= accel;
+                    if (vel.X < delt.X)
+                        vel.X = delt.X;
+                }
+
+                if (pos.Y < target.Y)
+                {
+                    vel.Y += accel;
+                    if (vel.Y < 0)
+                        vel.Y += accel;
+                    if (vel.Y > delt.Y)
+                        vel.Y = delt.Y;
+                }
+                else if (pos.Y > target.Y)
+                {
+                    vel.Y -= accel;
+                    if (vel.Y > 0)
+                        vel.Y -= accel;
+                    if (vel.Y < delt.Y)
+                        vel.Y = delt.Y;
+                }
+            }
         }
     }
     /*

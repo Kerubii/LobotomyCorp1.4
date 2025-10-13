@@ -1,4 +1,5 @@
 ﻿using System;
+using LobotomyCorp.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -48,7 +49,7 @@ namespace LobotomyCorp.Projectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             Player owner = Main.player[Projectile.owner];
-            if (!owner.GetModPlayer<LobotomyModPlayer>().RedMistMask)
+            if (!LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Teth))
                 return;
 
             // Insert Oricalcum Petal Attack here

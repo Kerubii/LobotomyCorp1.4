@@ -10,9 +10,10 @@ namespace LobotomyCorp.Buffs
 	{
         public override void SetStaticDefaults()
         {
-        // DisplayName.SetDefault("Pleasure");
-			// Description.SetDefault("Pleasant feelings fills your head");
+            // DisplayName.SetDefault("Pleasure");
+            // Description.SetDefault("Pleasant feelings fills your head");
             //Main.debuff[Type] = true;
+            Main.buffNoSave[Type] = true;
             Main.buffNoTimeDisplay[Type] = true;
             BuffID.Sets.TimeLeftDoesNotDecrease[Type] = true;
             BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;

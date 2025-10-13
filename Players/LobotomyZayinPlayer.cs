@@ -54,6 +54,7 @@ namespace LobotomyCorp.Players
         {
             if (WingbeatRegenPool > 0)
             {
+                WingbeatRegenTimeMax = Math.Clamp((int)(120 * (1f - WingbeatRegenPool / 200f)), 20, 60);
                 if (WingbeatRegenTime > 0)
                     WingbeatRegenTime--;
                 else
@@ -86,7 +87,7 @@ namespace LobotomyCorp.Players
         {
             if (WingbeatRegenPool > 0)
             {
-                WingbeatRegenPool = 0;
+                WingbeatRegenPool = Math.Min((int)(WingbeatRegenPool * 0.1f), 30);
                 WingbeatRegenTime = 0;
             }
         }

@@ -249,22 +249,19 @@ namespace LobotomyCorp.Projectiles.Realized
             if (FSkel == null)
                 return false;
 
-            List<DrawData> list = new List<DrawData>();
-            list.Add(FSkel.BoneName[Bone.BACKLEFTLEG].DrawBone());
-            list.Add(FSkel.BoneName[Bone.BACKRIGHTLEG].DrawBone());
-
-            list.Add(FSkel.BoneName[Bone.BACKLEFTLEG2].DrawBone());
-            list.Add(FSkel.BoneName[Bone.BACKRIGHTLEG2].DrawBone());
-
-            list.Add(FSkel.BoneName[Bone.FRONTLEFTLEG].DrawBone());
-            list.Add(FSkel.BoneName[Bone.FRONTRIGHTLEG].DrawBone());
-
-            list.Add(FSkel.BoneName[Bone.FRONTLEFTLEG2].DrawBone());
-            list.Add(FSkel.BoneName[Bone.FRONTRIGHTLEG2].DrawBone());
-
-            list.Add(FSkel.BoneName[Bone.FRONTMISCLEG].DrawBone());
-
-            list.Add(FSkel.BoneName[Bone.HEAD].DrawBone());
+            List<DrawData> list =
+            [
+                FSkel.BoneName[Bone.BACKLEFTLEG].DrawBone(lightColor),
+                FSkel.BoneName[Bone.BACKRIGHTLEG].DrawBone(lightColor),
+                FSkel.BoneName[Bone.BACKLEFTLEG2].DrawBone(lightColor),
+                FSkel.BoneName[Bone.BACKRIGHTLEG2].DrawBone(lightColor),
+                FSkel.BoneName[Bone.FRONTLEFTLEG].DrawBone(lightColor),
+                FSkel.BoneName[Bone.FRONTRIGHTLEG].DrawBone(lightColor),
+                FSkel.BoneName[Bone.FRONTLEFTLEG2].DrawBone(lightColor),
+                FSkel.BoneName[Bone.FRONTRIGHTLEG2].DrawBone(lightColor),
+                FSkel.BoneName[Bone.FRONTMISCLEG].DrawBone(lightColor),
+                FSkel.BoneName[Bone.HEAD].DrawBone(lightColor),
+            ];
             foreach (DrawData data in list)
             {
                 Main.EntitySpriteDraw(data);
