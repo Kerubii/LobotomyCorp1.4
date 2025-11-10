@@ -1,21 +1,23 @@
 ﻿using LobotomyCorp.ModSystems;
+using LobotomyCorp.UI;
+using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoMod.Cil;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.Creative;
+using Terraria.GameContent.NetModules;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using LobotomyCorp.Utils;
-using LobotomyCorp.UI;
 using static System.Net.Mime.MediaTypeNames;
-using MonoMod.Cil;
-using System.IO;
-using Terraria.GameContent.Creative;
-using Terraria.GameContent.NetModules;
-using Terraria.Chat;
+using static System.Net.WebRequestMethods;
 
 namespace LobotomyCorp.Tiles
 {
@@ -36,8 +38,7 @@ namespace LobotomyCorp.Tiles
 			AddMapEntry(new Color(0, 0, 0), name);
 			DustType = DustID.Wraith;
 			TileID.Sets.DisableSmartCursor[Type] = true;
-
-			AdjTiles = new int[] { ModContent.TileType<BlackBox>() , ModContent.TileType<BlackBox2>() };
+            AdjTiles = new int[] { ModContent.TileType<BlackBox>() , ModContent.TileType<BlackBox2>() };
 		}
 
 		public override bool RightClick(int i, int j)
@@ -185,6 +186,11 @@ namespace LobotomyCorp.Tiles
 				new Rectangle(tile.TileFrameX + 36, tile.TileFrameY, 16, 16),
 				Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 		}
+
+        public override IEnumerable<Item> GetItemDrops(int i, int j)
+        {
+            yield return new Item(Mod.Find<ModItem>("BlackBox3").Type);
+        }
     }
 
 	public class BlackBox3TileEntity : ModTileEntity

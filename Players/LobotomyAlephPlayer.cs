@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Aleph;
+using LobotomyCorp.Items.Ruina.Language;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
@@ -78,8 +79,16 @@ namespace LobotomyCorp.Players
         public override void UpdateDead()
         {
             NihilActive = false;
+        }
 
-            SmileMountain = 0;
+        public override void OnRespawn()
+        {
+            if (SmileMountain > 0)
+            {
+                if (SmileMountain < Player.statLifeMax2 * 0.3f)
+                    SmileMountain = (int)(Player.statLifeMax2 * 0.3f);
+                Player.AddBuff(ModContent.BuffType<Absorption>(), 60);
+            }
         }
 
         public override void UpdateBadLifeRegen()
@@ -97,8 +106,6 @@ namespace LobotomyCorp.Players
 
         public override void OnEnterWorld()
         {
-            SmileMountain = 0;
-
             if (Player.HasBuff<SilentMusic>())
                 Player.ClearBuff(ModContent.BuffType<SilentMusic>());
 
@@ -327,9 +334,9 @@ namespace LobotomyCorp.Players
                 return;
             Vector2 randVel = new Vector2(Main.rand.NextFloat(8, 12), 0).RotatedBy(Main.rand.NextFloat(6.28f));
             if (isSmall)
-                Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, randVel, ModContent.ProjectileType<SmileCorpseSmall>(), 0, 0, Player.whoAmI, Player.statLifeMax2 * 0.01f);
+                Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, randVel, ModContent.ProjectileType<SmileCorpseSmall>(), 0, 0, Player.whoAmI, Player.statLifeMax2 * 0.01f, ai2: target.noGravity.ToInt());
             else
-                Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, randVel, ModContent.ProjectileType<SmileCorpse>(), 0, 0, Player.whoAmI, Player.statLifeMax2 * 0.1f);
+                Projectile.NewProjectile(target.GetSource_FromThis(), target.Center, randVel, ModContent.ProjectileType<SmileCorpse>(), 0, 0, Player.whoAmI, Player.statLifeMax2 * 0.1f, ai2: target.noGravity.ToInt());
         }
 
         public void SmileCreateCorpseBoss(NPC target)
@@ -383,6 +390,8 @@ namespace LobotomyCorp.Players
         /// <param name="announce"></param>
         public void SmileReduceCorpse(int amount, bool announce = false)
         {
+            if (Player.HeldItem.type != ModContent.ItemType<SmileR>())
+                amount += amount / 2;
             SmileMountain -= amount;
             if (announce)
                 CombatText.NewText(Player.getRect(), new Color(0.4f, 0.4f, 0.4f), amount);
@@ -390,7 +399,7 @@ namespace LobotomyCorp.Players
             {
                 SmileMountain = 0;
                 Player.ClearBuff(ModContent.BuffType<Absorption>());
-                Player.AddBuff(ModContent.BuffType<SmileMelting>(), 600);
+                Player.AddBuff(ModContent.BuffType<SmileMelting>(), 1800);
             }
         }
     }

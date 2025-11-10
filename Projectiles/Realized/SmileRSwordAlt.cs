@@ -46,7 +46,7 @@ namespace LobotomyCorp.Projectiles.Realized
             if (Projectile.ai[0] == 0)
             {
                 Projectile.ai[0]++;
-                owner.GetModPlayer<LobotomyAlephPlayer>().SmileReduceCorpse((int)(owner.statLifeMax2 * 0.01f));
+                owner.GetModPlayer<LobotomyAlephPlayer>().SmileReduceCorpse(1);
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Language/Danggo_Lv3_Special") with { Volume = 0.25f, MaxInstances = 1, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Projectile.Center);
             }
 

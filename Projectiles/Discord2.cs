@@ -48,6 +48,7 @@ namespace LobotomyCorp.Projectiles
                     if (Main.LocalPlayer.whoAmI == Projectile.owner)
                     {
                         Projectile.velocity = new Vector2(Projectile.velocity.Length(), 0).RotatedBy((Main.MouseWorld - player.Center).ToRotation());
+						Projectile.netUpdate = true;
                     }
                     SoundEngine.PlaySound(LobotomyCorp.WeaponSound("YinYang2"), Projectile.Center);
 				}

@@ -44,8 +44,13 @@ namespace LobotomyCorp.Projectiles.Realized
                 Projectile.rotation = -Main.rand.NextFloat(3.14f);
                 Projectile.localAI[0]++;
             }
-            Projectile.velocity.X *= 0.98f;
-            Projectile.velocity.Y += defaultGravity / 2;
+            if ((int)Projectile.ai[2] == 0)
+            {
+                Projectile.velocity.Y += defaultGravity / 2;
+                Projectile.velocity.X *= 0.98f;
+            }
+            else
+                Projectile.velocity *= 0.95f;
             Projectile.rotation += MathHelper.ToRadians(Projectile.velocity.X);
             Projectile.ai[1]++;
             /*

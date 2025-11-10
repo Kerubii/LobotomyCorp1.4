@@ -117,7 +117,8 @@ namespace LobotomyCorp.Projectiles.Realized
 							}
 						}
 					}
-				}
+                    Projectile.netUpdate = true;
+                }
 
 				// If Target is present
 				if (Target >= 0)

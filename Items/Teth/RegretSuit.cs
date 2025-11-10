@@ -58,6 +58,11 @@ namespace LobotomyCorp.Items.Teth
     [AutoloadEquip(EquipType.Legs)]
     public class RegretPants : LobItemBase
     {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
         public override void SetDefaults()
         {
             Item.vanity = true;

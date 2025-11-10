@@ -392,7 +392,7 @@ namespace LobotomyCorp
                 if (Main.netMode == NetmodeID.Server)
                 {
                     NetworkSharpenedVisual(pos, owner);
-                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Blessing data recieved"), Color.White);
+                    //ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Blessing data recieved"), Color.White);
                 }
                 else
                 {
@@ -400,7 +400,7 @@ namespace LobotomyCorp
                     wawPlayer.SwordSharpenedImpalePosition[wawPlayer.SwordSharpenedImpaledCount] = pos;
                     wawPlayer.SwordSharpenedImpaledCount++;
                     Main.player[owner].AddBuff(ModContent.BuffType<Despair>(), 60);
-                    Main.NewText("Recieved");
+                    //Main.NewText("Recieved");
                 }
             }
         }

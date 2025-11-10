@@ -104,7 +104,12 @@ namespace LobotomyCorp.Projectiles.QueenLaser
                     if (player.GetModPlayer<LobotomyWawPlayer>().LoveAndHateHatred)
                     {
                         if (Main.myPlayer == Projectile.owner)
-                            Projectile.ai[2] = (Main.MouseWorld - player.MountedCenter).ToRotation();
+                        {
+                            float rot = (Main.MouseWorld - player.MountedCenter).ToRotation();
+                            if (Projectile.ai[2] != rot)
+                                Projectile.netUpdate = true;
+                            Projectile.ai[2] = rot;
+                        }
                         Projectile.ai[0] = 4;
                     }
                     if (player.altFunctionUse == 2)
@@ -214,6 +219,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
                     {
                         Projectile.rotation = targetRot;
                     }
+                    Projectile.netUpdate = true;
                 }
 
                 if (player.itemAnimation == 1)
@@ -242,6 +248,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
                     snapRotation = 30;
                     targetRot = norm.ToRotation() - MathHelper.ToRadians(90) * Projectile.direction;
                     targetPos = mountedCenter + norm * 60;
+                    Projectile.netUpdate = true;
                 }
             }
             // Hatred Laser
@@ -314,6 +321,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
                     {
                         Projectile.rotation = targetRot;
                     }
+                    Projectile.netUpdate = true;
                 }
 
                 if (player.itemAnimation == 1)

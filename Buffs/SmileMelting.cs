@@ -21,7 +21,8 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            player.endurance -= 0.1f;
+            player.endurance -= 0.20f;
+            player.moveSpeed += 0.08f;
             player.GetModPlayer<LobotomyAlephPlayer>().SmileMelting = true;
         }
     }

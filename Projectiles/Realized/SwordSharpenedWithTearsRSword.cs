@@ -159,7 +159,6 @@ namespace LobotomyCorp.Projectiles.Realized
                                 if (state == 0)
                                 {
                                     state = -2;
-                                    Main.NewText("true");
                                     timer = 30;
                                 }
                             }

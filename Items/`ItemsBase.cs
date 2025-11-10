@@ -52,12 +52,15 @@ namespace LobotomyCorp.Items
 
                 bool ExtraShow = ModContent.GetInstance<LobotomyConfig>().ExtraPassivesShow;
                 //int tooltipIndex = tooltips.IndexOf()
-                var Passive = new TooltipLine(Mod, "PositivePassive", $"{PassiveInitialize(GetPassiveList(arg) ,ExtraShow)}"
-                    )
+                var Passive = new TooltipLine(Mod, "PositivePassive", $"{PassiveInitialize(GetPassiveList(arg) ,ExtraShow)}")
                 { OverrideColor = LobotomyCorp.PositivePE };
+                if (Passive != null)
+                    Passive.Text = Lang.SupportGlyphs(Passive.Text);
                 tooltips.Add(Passive);
 
                 Passive = new TooltipLine(Mod, "NegativePassive", $"{PassiveInitialize(GetPassiveList(arg), ExtraShow, true)}") { OverrideColor = LobotomyCorp.NegativePE };
+                if (Passive != null)
+                    Passive.Text = Lang.SupportGlyphs(Passive.Text);
                 tooltips.Add(Passive);
 
                 /*foreach (TooltipLine line in tooltips)

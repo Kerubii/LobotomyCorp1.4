@@ -1510,13 +1510,13 @@ namespace LobotomyCorp.NPCs.RedMist
                         }
                         NPC.netUpdate = true;
                     }
-                }
 
-                if (((NPC.GetTargetData().Center - NPC.Center).Length() > 2000f && Main.rand.NextBool(360)) || Aggression > 300 && Main.netMode != NetmodeID.MultiplayerClient)
-                {
-                    AiState = TwilightTeleport;
-                    Aggression = 0;
-                    NPC.netUpdate = true;
+                    if (((NPC.GetTargetData().Center - NPC.Center).Length() > 2000f && Main.rand.NextBool(360)) || Aggression > 300 && Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        AiState = TwilightTeleport;
+                        Aggression = 0;
+                        NPC.netUpdate = true;
+                    }
                 }
 
                 GoldRush4Sequence();
@@ -1641,6 +1641,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 {
                     ChangeAnimation(AnimationState.TwilightChase);
                     NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+                    NPC.noTileCollide = true;
                     NPC.noGravity = true;
 
                     float speed = 0.2f;
@@ -1837,12 +1838,17 @@ namespace LobotomyCorp.NPCs.RedMist
                     Vector2 velocity = new Vector2(GOLDRUSH4SPEED * NPC.spriteDirection, 0);
                     //if (Main.netMode != NetmodeID.MultiplayerClient)
                     Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<Projectiles.KingPortal.GoldRushRedMist>(), 45, 1f, -1, 10);
+
+                    NPC.noTileCollide = true;
+                    NPC.noGravity = true;
                 }
 
                 if (Timer > 200)
                 {
                     Timer = 0;
                     AiState++;
+                    NPC.noTileCollide = true;
+                    NPC.noGravity = true;
                     NPC.velocity = new Vector2(GOLDRUSH4SPEED * NPC.spriteDirection, 0);
                 }
             }
@@ -1854,6 +1860,12 @@ namespace LobotomyCorp.NPCs.RedMist
                 NPC.noGravity = true;
                 NPC.spriteDirection = NPC.velocity.X < 0 ? -1 : 1;
                 Timer++;
+
+                if (NPC.velocity.LengthSquared() < GOLDRUSH4SPEED * GOLDRUSH4SPEED - 1)
+                {
+                    NPC.velocity.Normalize();
+                    NPC.velocity *= GOLDRUSH4SPEED;
+                }
 
                 ChangeAnimation(AnimationState.TwilightChase);
 
@@ -2036,7 +2048,7 @@ namespace LobotomyCorp.NPCs.RedMist
                 }
                 NPC.position = targetPos;
                 AiState = StateAfter;
-                Timer -= 30;
+                Timer = 0;
             }
         }
 
@@ -2079,7 +2091,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     spawnWeaponDust(oldType);
                 }
                 changed = true;
-                Main.NewText("Changed");
+                //Main.NewText("Changed");
                 if (visibleTimer != 0)
                 {
                     redmistSkeleton.BoneName[BoneLabel.FrontWeapon].Visible = false;
@@ -2115,7 +2127,7 @@ namespace LobotomyCorp.NPCs.RedMist
                     spawnWeaponDust(oldType);
                 }
                 changed = true;
-                Main.NewText("Changed");
+                //Main.NewText("Changed");
                 if (visibleTimer > 0)
                 {
                     redmistSkeleton.BoneName[BoneLabel.BackWeapon].Visible = false;

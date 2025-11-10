@@ -99,12 +99,15 @@ namespace LobotomyCorp.Projectiles.QueenLaser
                 if (Projectile.ai[1] > 380)
                     drag = 0.95f;
                 vec = Vector2.Normalize(Vector2.Lerp(vec, Vector2.Normalize(Projectile.velocity), drag));
+                if (vec.X != Projectile.velocity.X || vec.Y != Projectile.velocity.Y)
+                {
+                    Projectile.netUpdate = true;
+                }
                 Projectile.velocity = vec;
                 Projectile.Center = owner.MountedCenter + new Vector2(160, 0).RotatedBy(vec.ToRotation());
                 owner.direction = vec.X > 0 ? 1 : -1;
                 owner.itemTime = owner.itemAnimation = owner.itemAnimationMax;
                 owner.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCooldown = 3 * 60;
-                Main.NewText(owner.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCooldown);
             }
         }
 

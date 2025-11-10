@@ -56,6 +56,7 @@ namespace LobotomyCorp.Projectiles.Realized
 							Projectile.scale = Main.rand.NextFloat(0.6000f, 1f);
 						}
 						Projectile.velocity = (vel * speed).RotatedBy(Projectile.ai[2]);
+						Projectile.netUpdate = true;
 					}
 					Projectile.rotation = Main.rand.NextFloat(6.28f);
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Language/RedHood_Throw") with { Volume = 0.2f, PitchVariance = 0.1f }, Main.player[Projectile.owner].Center);

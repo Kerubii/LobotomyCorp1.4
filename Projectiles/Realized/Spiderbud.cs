@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Terraria.Audio;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
+using LobotomyCorp.Buffs;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -42,21 +43,39 @@ namespace LobotomyCorp.Projectiles.Realized
         {
 			Player owner = Main.player[Projectile.owner];
 
-			if (Projectile.ai[0] == 0)
+            if (Projectile.ai[0] == 0)
             {
+                SoundEngine.PlaySound(LobotomyCorp.ItemLobSound("Literature/Spidermom_Down"), Projectile.Center);
+                if (Main.myPlayer == Projectile.owner)
+				{
+                    int target = Items.Ruina.Literature.RedEyesR.NearestCryOutTarget(Main.MouseWorld);
+                    Projectile.ai[1] = target + 1;
+                    Projectile.netUpdate = true;
+                    if (target <= -1 || owner.GetModPlayer<LobotomyTethPlayer>().RedEyesPredator)
+                    {
+                        Projectile.Kill();
+                        owner.itemTime = owner.itemAnimationMax;
+                        owner.itemAnimation = 0;
+                        owner.AddBuff(ModContent.BuffType<Alertness>(), 300);
+                        for (int i = 0; i < 16; i++)
+                        {
+                            int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Wraith, Projectile.velocity.X, Projectile.velocity.Y);
+                            Main.dust[d].velocity *= 0.2f;
+                            Main.dust[d].noGravity = true;
+                        }
+                        return;
+                    }
+                }
+
 				Camera = owner.Center;
 				initialPosition = Camera;
-				SoundEngine.PlaySound(LobotomyCorp.ItemLobSound("Literature/Spidermom_Down"), Projectile.Center);
 			}
 			Projectile.ai[0]++;
 
-			if (Projectile.ai[0] == 30 && Main.myPlayer == Projectile.owner)
+			if (Projectile.ai[0] == 30)
             {
-				int target = Items.Ruina.Literature.RedEyesR.NearestMarkedMeal(initialPosition);
-
-				Projectile.position.X = Main.npc[target].Center.X - Projectile.width / 2 - 75f * owner.direction;
-				Projectile.position.Y = Main.npc[target].Center.Y - (1057f / 2 + Projectile.height);
-				Projectile.ai[1] = target + 1;
+                Projectile.position.X = Main.npc[(int)(Projectile.ai[1] - 1)].Center.X - Projectile.width / 2 - 75f * owner.direction;
+				Projectile.position.Y = Main.npc[(int)(Projectile.ai[1] - 1)].Center.Y - (1057f / 2 + Projectile.height);
 				Projectile.spriteDirection = owner.direction;
 				Projectile.netUpdate = true;
 			}

@@ -121,6 +121,7 @@ namespace LobotomyCorp.Projectiles.Realized
                             break;
                         }
                     }
+                    Projectile.netUpdate = true;
                 }
 
                 if (Projectile.ai[0] > 0)

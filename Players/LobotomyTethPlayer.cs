@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Aleph;
 using LobotomyCorp.Items.Waw;
@@ -40,8 +41,11 @@ namespace LobotomyCorp.Players
         public bool RegretBinded = false;
 
         public bool RedEyesAlerted = false;
+        public bool RedEyesPredator = false;
         public float RedEyesOpacity = 0f;
         public int RedEyesMealMax = 60 * 8;
+
+        public bool RemorseHammerTime = false;
 
         public int TodaysExpressionFace = 0;
         public int TodaysExpressionTimer = 0;
@@ -58,7 +62,10 @@ namespace LobotomyCorp.Players
             RegretBinded = false;
 
             RedEyesAlerted = false;
+            RedEyesPredator = false;
             RedEyesOpacity = 0f;
+
+            RemorseHammerTime = false;
 
             TodaysExpressionTimerMax = 300;
             TodaysExpressionActive = false;
@@ -218,5 +225,7 @@ namespace LobotomyCorp.Players
                     return Buffs.TodaysLook.TODAYDAMAGEANGRY;
             }
         }
+
+        public bool RedEyesEitherHeld => Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>() || Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Teth.RedEyes>();
     }
 }

@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Buffs
 {
-	public class Alertness : ModBuff
+	public class Predator : ModBuff
 	{
 		public override void SetStaticDefaults()
 		{
@@ -15,9 +15,7 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            player.detectCreature = true;
-            player.endurance -= 0.1f;
-            player.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted = true;
+            player.GetModPlayer<LobotomyTethPlayer>().RedEyesPredator = true;
         }
 
         public override bool RightClick(int buffIndex)

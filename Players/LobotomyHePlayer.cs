@@ -364,10 +364,9 @@ namespace LobotomyCorp.Players
             //Additional Damage
             int diff = Player.statLifeMax2 - Player.statLife;
             damage += (int)Player.GetDamage(DamageClass.Melee).ApplyTo(diff);
-
-            foreach (Projectile p in Main.projectile)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
-                if (p.active && p.hostile && !p.netImportant && p.damage > 0)
+                if (p.active && p.hostile && !p.netImportant && p.damage > 0 && p.type != ProjectileID.DrManFlyFlask)
                 {
                     if (p.Center.Distance(Player.Center) < Distance)
                     {
@@ -439,6 +438,8 @@ namespace LobotomyCorp.Players
             //Player.immuneNoBlink = true;
             LifeForADareDevilCounterStance = false;
         }
+
+        static public List<int> LifeForADareDevilProjectileBlacklist = new List<int>();
 
         public void LifeForADareDevilPierceEffect(Vector2 pos, int width, int height)
         {

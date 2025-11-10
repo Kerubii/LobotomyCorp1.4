@@ -108,6 +108,7 @@ namespace LobotomyCorp.Projectiles
                 {
                     // Release
                     Projectile.ai[1]++;
+                    Projectile.netUpdate = true;
 
                     SoundEngine.PlaySound(LobotomyCorp.WeaponSound("greed2"), Projectile.Center);
                     if (Projectile.ai[0] < 60 && Main.myPlayer == Projectile.owner)

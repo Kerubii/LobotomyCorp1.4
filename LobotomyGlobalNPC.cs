@@ -109,6 +109,11 @@ namespace LobotomyCorp
 
         public bool RegretMetallicRinging = false;
 
+        public int RemorseNailTotal = 0;
+        public int RemorseGuilt = 0;
+        public int RemorseNailActive = 0;
+        public int RemorseNailTimer = 0;
+
         public bool SanguineDesireGlitter = false;
         public int SanguineDesireGlitterTarget = -1;
         public bool SanguineDesireExtensiveBleeding = false;
@@ -240,6 +245,20 @@ namespace LobotomyCorp
             }
             else if (WingbeatIndicator > 0)
                 WingbeatIndicator--;
+        }
+
+        public override void PostAI(NPC npc)
+        {
+            if (RemorseNailActive > 0)
+            {
+                RemorseNailTimer--;
+                if (RemorseNailTimer <= 0)
+                {
+                    npc.SimpleStrikeNPC(25, 1);
+                    RemorseNailActive--;
+                    RemorseNailTimer = 8;
+                }
+            }
         }
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -489,7 +508,7 @@ namespace LobotomyCorp
 
             if (Main.netMode != NetmodeID.Server)
             {
-                if (RedEyesMealAmount > 0 && Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted)// Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>())
+                if (RedEyesMealAmount > 0 && Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().RedEyesEitherHeld)// Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>())
                 {
                     int RedEyesMax = Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax;
                     if (RedEyesMealAmount > RedEyesMax)
@@ -657,7 +676,7 @@ namespace LobotomyCorp
                     spriteBatch.Draw(texture, position, null, Color.White * 0.7f, rotation, texture.Size() / 2, scale, 0, 0);
                 }
 
-                if (RedEyesMealAmount >= modTethPlayer.RedEyesMealMax && modTethPlayer.RedEyesAlerted)
+                if (RedEyesMealAmount >= modTethPlayer.RedEyesMealMax && modTethPlayer.RedEyesEitherHeld)
                 {
                     Texture2D texture = Mod.Assets.Request<Texture2D>("Misc/MarkedMeal").Value;
                     Vector2 position = npc.Center + new Vector2(0, npc.gfxOffY) - Main.screenPosition;
@@ -818,8 +837,8 @@ namespace LobotomyCorp
                 LNPC(npc).QueenBeeLarva = false;
             }
         }
-    
-        public void RedEyesApplyMeal(int amount, int decayTimer = 600)
+
+        public void RedEyesApplyMeal(int amount, int decayTimer = 600, bool predatorBoosted = false)
         {
             if (RedEyesCocoon)
             {
@@ -828,6 +847,8 @@ namespace LobotomyCorp
                 return;
             }
             RedEyesMeal += amount;
+            if (predatorBoosted)
+                RedEyesMeal += amount / 2;
             RedEyesMealDecay = decayTimer;
         }
         public int RedEyesMealAmount { get { return RedEyesMeal; } }
@@ -945,6 +966,22 @@ namespace LobotomyCorp
                 player.ApplyDamageToNPC(npc, pleasureDamage, 0f, 1, false, DamageClass.Summon, true);
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Art/Porccu_Special") with { Volume = 0.25f }, npc.Center);
             }
+        }
+
+        public void RemorseApplyNail(int amount)
+        {
+            RemorseNailTotal += amount;
+            if (RemorseNailTotal > 100)
+                RemorseNailTotal = 100;
+        }
+
+        public static void RemorseActivateNail(NPC npc, Player player)
+        {
+            LobotomyGlobalNPC Lnpc = LNPC(npc);
+            Lnpc.RemorseNailActive = Lnpc.RemorseNailTotal;
+            int remove = Math.Min(10, Lnpc.RemorseNailTotal/2);
+            Lnpc.RemorseNailTotal -= remove;
+            Lnpc.RemorseGuilt += remove;
         }
     }
 }

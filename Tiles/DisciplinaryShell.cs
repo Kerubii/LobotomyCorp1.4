@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -98,5 +99,10 @@ namespace LobotomyCorp.Tiles
 				new Rectangle(tile.TileFrameX + 36, tile.TileFrameY, 16, 16),
 				Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 		}
-	}
+
+        public override IEnumerable<Item> GetItemDrops(int i, int j)
+        {
+            yield return new Item(Mod.Find<ModItem>("DisciplinaryShell").Type);
+        }
+    }
 }

@@ -49,7 +49,7 @@ Mods: {
 					'''
 					Firing speed increased
 					Less accurate while firing speed is increased
-					After getting hit, Alternate attack to fire an empowered single shot
+					After getting hit, <right> to fire an empowered single shot
 					Empowered shot has increased damage and reduced firing speed
 					''' */
 				DisplayName: 尖喙
@@ -770,13 +770,13 @@ Mods: {
 					'''
 					'It has the pale faces of nameless employees and a giant mouth on it.
 					Upon striking with the weapon, the monstrous mouth opens wide to devour the target, its hunger insatiable.'
-					Alternate attack to slam down an enemy or the ground, decreasing target defense
+					<right> to slam down an enemy or the ground, decreasing target defense
 					''' */
 				/* Tooltip2:
 					'''
 					Vomits in all directions
 					Killing an enemy vomits projectiles everywhere
-					Alternate attack produces screaming centered on first enemy hit
+					<right> produces screaming centered on first enemy hit
 					''' */
 				DisplayName: 笑靥
 			}
@@ -933,14 +933,14 @@ Mods: {
 					The scale that could measure any and all sin...
 					The beak that could swallow everything, protected the peace of the Black Forest...
 					The wielder of this armament may also bring peace as they did'
-					Alternate attack to leap back and forth, slashing with invincibility frames
-					Alternate attack has 8 seconds of cooldown while holding this weapon
+					<right> to leap back and forth, slashing with invincibility frames
+					<right> has 8 seconds of cooldown while holding this weapon
 					''' */
 				/* Tooltip2:
 					'''
 					Getting hit increases fire rate
 					Creates projectiles when swung
-					Hitting enemies with the alternate attack creates projectiles
+					Hitting enemies with the <right> creates projectiles
 					''' */
 				DisplayName: Twilight
 			}
@@ -968,7 +968,7 @@ Mods: {
 					'''
 				/* Tooltip2:
 					'''
-					Alternate attack to throw
+					<right> to throw
 					Can only be thrown one at a time
 					Sticks to enemies
 					Enemies are periodically hit while stuck
@@ -988,7 +988,7 @@ Mods: {
 					Warmth of a Flame - 400% damage on fourth use, Inflict Scorching Embers
 					Matchlight - Inflicts 'On Fire'. 16% increased damage while user is 'On Fire'
 					Scorching Embers - Increases damage taken from on fire debuffs. Counts as 'On Fire'
-					|Footfalls - Alternate attack to inflict Scorching Embers to self and explode, taking 20% of your health
+					|Footfalls - <right> to inflict Scorching Embers to self and explode, taking 20% of your health
 					''' */
 			}
 
@@ -1048,7 +1048,7 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					Strike of Retribution - Charge up a forward strike, the distance travelled depends on how long you've charged. Inflicts 'Spores'
-					Loyalty - Alternate attack to summon a 'Worker Bee', If minion slot is full, release 'Pheromones' instead
+					Loyalty - <right> to summon a 'Worker Bee', If minion slot is full, release 'Pheromones' instead
 					Worker Bee - Takes up 1 minion slot. Strengthens damage and speed under the effects of 'Spores' and prioritizes enemies with 'Spores'
 					Pheromones - Inflict 'Spores' to 'Worker Bees' and nearby enemies. -5 Defense and a cooldown of 30 seconds when used
 					Spores - Decreases life regeneration, Reduces defense and creates a temporary 'Worker Bee' on death for 30 seconds (Up to half of Maximum minion slot). 
@@ -1092,7 +1092,7 @@ Mods: {
 					Ends, Begins, Ends - The third succesful attack inflicts 'Metallic Ringing' on the first enemy hit
 					Metallic Ringing - Reduces defense and creates shockwaves when hit with this E.G.O
 					Violence - Minimum and maximum damage variance is decreased and increased respectively by 20% and 50%
-					Chained Wrath - Alternate attack to convert increased movement speed to increased damage (50% conversion), Removed while on a mount or minecart
+					Chained Wrath - <right> to convert increased movement speed to increased damage (50% conversion), Removed while on a mount or minecart
 					|Binding Jacket - While under 'Chained Wrath', acquiring a debuff removes it and gain minor stat debuffs
 					''' */
 			}
@@ -1110,7 +1110,7 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					Charge - A battery displays current Charge (Max 4 Charge)
-					Disable Limiter - Alternate attack to consume 1 Charge to gain 40% movement speed for 30 seconds
+					Disable Limiter - <right> to consume 1 Charge to gain 40% movement speed for 30 seconds
 					Clean - During 'Disable Limiter', Allows the player to dash if they have no dash. Removes 'Disable Limiter'
 					Protocol - Automatically attacks nearby enemies when not held during 'Disable Limiter'
 					Repetitive Pattern Recognition - Killing an enemy during 'Disable Limiter' gives 1 Charge
@@ -1131,7 +1131,7 @@ Mods: {
 				/* PassiveListRework:
 					'''
 					Harmony of Despair - Continously hitting enemies increases the weapon's damage, splash damage and hit rate
-					Performance - Alternate attack shoots a soundwave that decreases defense. Shoots three while having 'Musical Addiction'
+					Performance - <right> shoots a soundwave that decreases defense. Shoots three while having 'Musical Addiction'
 					Let's Make Music! - Hit enemies gain 'Musical Addiction' and produces Harmony Notes that gives 'Musical Addiction' when picked up
 					|Musical Addiction - 12% increased damage, 8% increased melee speed. Decreased life regeneration on NPCs
 					''' */
@@ -1178,7 +1178,7 @@ Mods: {
 					Look of the Day - While holding the Today's Expression, gain a random Face that provides a buff for 5 seconds if you have none
 					Wavering Feelings - Attacks vary in power and effect depending on 'Look of the Day'
 					Social Distancing - When getting hit by contact damage, release a wall of expression depending on 'Look of the Day'
-					|Shyness - Alternate attack to lock in 'Look of the Day' for 15 seconds, increasing its buffs and debuffs
+					|Shyness - <right> to lock in 'Look of the Day' for 15 seconds, increasing its buffs and debuffs
 					''' */
 			}
 
@@ -1206,14 +1206,6 @@ Mods: {
 					蜘蛛-当这个武器被拿着的时候，蜘蛛会你附近生成，结茧的敌人会周期性的受到蜘蛛的攻击。
 					|警觉性-这个武器目前没有自己的特殊效果。
 					'''
-				/* PassiveListRework:
-					'''
-					Cry Out - Alternate attack to teleport and attack enemies marked by 'Meal' or 'Alertness'
-					Meal - After hitting enemies enough times, Marks them as Meal which inflicts 'Cocoon' if attacked with 'Cry Out'
-					Cocoon - -8 Defense. While Red Eyes is held, periodically attacked by Spiderlings
-					Alertness - Alternate attack to mark nearby enemies if no enemies can be hit by 'Cry Out'
-					|Predator - If 'Cry Out' is used on enemies without 'Meal', 'Cry Out' gains a 10 second cooldown
-					''' */
 			}
 
 			LaetitiaR: {
@@ -1254,7 +1246,7 @@ Mods: {
 					'''
 					Clothing of Nettle - Regenerate Nettles after 5 seconds while holding Black Swan
 					Nettle - Up to 6, Upgrades Black Swan. Reduces incoming damage by 75% with Thorns effect, Decreases by 1 when hit
-					Shriek of Broken Dreams - At 4+ Nettles, Alternate Attack Shrieks, damaging enemies around you and consumes a nettle
+					Shriek of Broken Dreams - At 4+ Nettles, <right> Shrieks, damaging enemies around you and consumes a nettle
 					Gooey Waste - Leave a trail of debuffing waste. Spreads sporatically while attacking or Shrieking
 					Well-worn Parasol - Poking or Swinging Black Swan deflects Projectiles when timed correctly, can be held to deflect for a longer time
 					|Broken Dream - After taking a hit with less than 1 Nettle, Take 20% increased damage and 'Nettle' cannot be obtained
@@ -1268,14 +1260,14 @@ Mods: {
 				// Tooltip: You see a song in front of you. It's approaching, becoming more colorful by the second.
 				/* PassiveList:
 					'''
-					Echoes from the Beyond - Alternate attack to Echo. after 5 seconds, remove Tentacles and inflict Enlightenment on those hit for 20 seconds
+					Echoes from the Beyond - <right> to Echo. after 5 seconds, remove Tentacles and inflict Enlightenment on those hit for 20 seconds
 					Enlightenment - True melee, Spears and other allies deal 20% increased damage, Immune to Echoes from the Beyond and Tentacles
 					Tentacles - Hitting enemies decreases their damage resistance to Echoes from the Beyond (from 10% to 400% damage)
 					|Understand - The user deals decreased damage with any projectiles against enemies with Enlightenment
 					''' */
 				/* PassiveListReworked:
 					'''
-					Echoes from the Beyond - Alternate attack to Echo. After 5 seconds, Hit enemies lose 'Tentacles' and inflict 'Enlightenment' for 20 seconds
+					Echoes from the Beyond - <right> to Echo. After 5 seconds, Hit enemies lose 'Tentacles' and inflict 'Enlightenment' for 20 seconds
 					Enlightenment - True melee, Spears and other allies deal 20% increased damage
 					Tentacles - Hitting enemies decreases their damage resistance to 'Echoes from the Beyond' (10% to 400% damage)
 					|Understand - Enemies with 'Enlightenment' takes no damage from 'Echoes from the Beyond', Immunity from 'Tentacles'
@@ -1299,8 +1291,8 @@ Mods: {
 				// Tooltip: Bearing the hope to return to dust, it shall go back to the grave with all that desires to live.
 				/* PassiveList:
 					'''
-					Spring's Genesis - Alternate attack lunges forwards, hit enemies gain a Laurel Wreath
-					Magnificent End - Holding Alternate attack while having 3 petals consumes all of it and applies 300% damage to all enemies nearby and removes Laurel Wreath
+					Spring's Genesis - <right> lunges forwards, hit enemies gain a Laurel Wreath
+					Magnificent End - Holding <right> while having 3 petals consumes all of it and applies 300% damage to all enemies nearby and removes Laurel Wreath
 					Flower Petals - Hitting enemies charges up to 3 petal that dissapears after a short time, enhancing this weapon's attacks and damage
 					Doll Fashioned from the Earth - Negate any negative life regen while a petal is active
 					|Laurel Wreath - 15% increased contact damage per full petals on the user
@@ -1308,8 +1300,8 @@ Mods: {
 					''' */
 				/* PassiveListRework:
 					'''
-					Spring's Genesis - Alternate attack lunges forwards, hit enemies gain a 'Laurel Wreath'
-					Magnificent End - Channel alternate attacks and consume 3 petals to apply damage to all enemies, removing 'Laurel Wreath'
+					Spring's Genesis - <right> lunges forwards, hit enemies gain a 'Laurel Wreath'
+					Magnificent End - Channel <right> and consume 3 petals to apply damage to all enemies, removing 'Laurel Wreath'
 					Flower Petals - Hitting enemies charges up to 3 petal that dissapears after a short time. Enhances Faint Aroma's attacks and damage
 					Doll Fashioned from the Earth - Negate any negative life regeneration while a petal is active
 					|Laurel Wreath - 10% increased damage for each full 'Flower Petals' on the targett
@@ -1345,7 +1337,7 @@ Mods: {
 				// Tooltip: From break and ruin, the most beautiful performance begins.
 				/* PassiveList:
 					'''
-					Ever-repeating Performance - Alternate attack to start a Performance with each movement inflicting buffs to allies and debuffs against enemies
+					Ever-repeating Performance - <right> to start a Performance with each movement inflicting buffs to allies and debuffs against enemies
 					Accelerando - True melee hits enhances this EGO's combo, During Movement 1 and above, further enhances this EGO
 					Finale - During Finale, Fully heal and 5% of the damange done by this weapon during the peformance is distributed to all enemies being affecte by the Performance. Maximum of 10000% of this weapon's damage
 					|Al Fine - The Performance never ends, Requires to be in a town to disable
@@ -1353,7 +1345,7 @@ Mods: {
 					''' */
 				/* PassiveListRework:
 					'''
-					Ever-repeating Performance - Alternate attack to start a Performance with each movement inflicting buffs to allies and debuffs against enemies
+					Ever-repeating Performance - <right> to start a Performance with each movement inflicting buffs to allies and debuffs against enemies
 					Accelerando - True melee hits enhances this EGO's combo, During Movement 1 and above, further enhances this EGO
 					Finale - During Finale, Fully heal and 5% of the damange done by Da Capo during the peformance is distributed to all enemies being affecte by the Performance. Maximum of 10000% of this weapon's damage
 					|Al Fine - 'Ever-repeating Performance' can only be cancelled during the applause or in a town with no nearby enemies
@@ -1365,11 +1357,11 @@ Mods: {
 			
 			CrimsonScarR: {
 				// DisplayName: Crimson Scar
-				// Tooltip: FromI'll hang his head over my bed. Only then can I get up in the morning without having a nightmare.
+				// Tooltip: I'll hang his head over my bed. Only then can I get up in the morning without having a nightmare.
 				/* PassiveList:
 					'''
-					Hollow Point Shell - Alternate attack to shoot then throw a sickle, enemies hit by the bullet is marked as 'Prey'
-					Bullet Shower - Under 50% health, Alternate attack to shoot a barrage of bullets, enemies hit is marked as 'Prey'
+					Hollow Point Shell - <right> to shoot then throw a sickle, enemies hit by the bullet is marked as 'Prey'
+					Bullet Shower - Under 50% health, <right> to shoot a barrage of bullets, enemies hit is marked as 'Prey'
 					No Hesitation - Under 50% health, Throw multiple sickles. Sickles and bullets has a chance to deal extra damage
 					Prey - This EGO deals 20% increased damage to marked Prey, 50% if hit with a true melee
 					Rudded Welts - Gain increased damage and decreased damage taken proportional to health lost. Effects halved when using other weapons
@@ -1396,7 +1388,7 @@ Mods: {
 					Mimic - After killing an enemy while having no 'Shell', Restore 20% of your maximum health and gain Shell based on the enemy's health
 					Shell - Enables 'GoDdByE' and increases 'heLLo?' range with 15% increased damage, +10 defense and increased maximum health based on enemy killed
 					GoDdByE - Charge and deal up to 1000% increased damage and gain 'Shell' when hitting its sweetspot, Recovers 1% damage dealt on the first enemy hit (Maximum 5% of health)
-					heLLo? - Alternate attack shoots a piercing Projectile, reducing enemy defense
+					heLLo? - <right> shoots a piercing Projectile, reducing enemy defense
 					|Cocoon - Shell reduces quickly when not holding this weapon, When 'Shell' runs out, gain 'Hollow Husk'
 					Hollow Husk - Enables 'GoDdByE', -8 Defense. Timer set to 5 seconds while holding this weapon
 					''' */
@@ -1417,9 +1409,9 @@ Mods: {
 					'''
 					Absorption - Killing enemies or damaging a boss drops corpses. Bite corpses to absorb them, increasing 'Mountain of Corpses'
 					Mountain of Corpses - Increases damage dealt and damage reduction but lowers swing speed and movement speed
-					Putrid Vomit - Above 60% 'Mountain of Corpses', Alternate attack vomits out projectiles decreasing 'Mountain of Corpses' by 1%
-					Horrid Screech - Above 30% 'Mountain of Corpses', Channel this EGO to scream decreasing 'Mountain of Corpses' by 5%
-					|Division - Damage reduced by 'Mountain of Corpses' stack reduces it, Lose all stacks when healed by the nurse
+					Putrid Vomit - Above 60% 'Mountain of Corpses', <right> vomits out projectiles decreasing 'Mountain of Corpses' by 1
+					Horrid Screech - Above 30% 'Mountain of Corpses', Channel this EGO for 1.5 seconds to Scream
+					|Division - Damage reduced by 'Mountain of Corpses' reduces it, increased by 50% when not held. Lose all stacks when healed by the nurse
 					Melted Corpses - If 'Mountain of Corpses' reaches 0, Temporarily Disable 'Absorption' and take 10% increased damage
 					''' */
 				/* Simplified:
@@ -1440,7 +1432,7 @@ Mods: {
 				/* PassiveList:
 					'''
 					Sword of a Forgotten Knight - Summon 2 swords, Summons additional swords that occupies minion slots. Auto attacks with 3 or more
-					Whetted by Tears - Alternate attack to gain 'Justice' and bless an ally near the cursor with 'Blessed' if there isn't one. Lose 'Despair'
+					Whetted by Tears - <right> to gain 'Justice' and bless an ally near the cursor with 'Blessed' if there isn't one. Lose 'Despair'
 					Blessed - 10% decreased projectile damage taken, 20% increased contact damage taken
 					Justice - Swords are aimed and can be charged, Critical hits ignores defense. Lost when switching weapons
 					|Hollow Pride - If a 'Justice' Sword miss, it attempts to pierce the user. If 'Blessed' dies, 3 Swords pierces the user	
@@ -1471,6 +1463,32 @@ Mods: {
 					|Void - Only usable and active when inventory, armor and accessories slots are empty except for this item or Encumbering Stone
 					This Item is incomplete and unobtainable
 					''' */
+				/* PassiveList1:
+					'''
+					Will of Nihil - Alternate attack to temporarily change active mode and apply a debuff to all nearby enemies
+					All Returns to Nihil - Major increases to stats and Flight while active. Changes depending on current mode
+					{0}
+					|Void - 'All Returns to Nihil' effects is massively reduced while wearing armor and accessories
+					''' */
+				/* PassiveListNihil:
+					'''
+					Nix - Summon 4 cards with its own attack and targeting. Switching mode removes the card associated with it
+					Worthless Greed - Punches nearby enemies.
+					Pointless Hate - Attacks the furthest enemy.
+					Meaningless Despair - Targets multiple enemies.
+					Senseless Wrath - Damages multiple enemies.
+					The Fool - Changes the weapon's description based on the current active mode
+					''' */
+				/* PassiveListGreed:
+					'''
+					King of Greed - Dash to punch through enemies
+					The Fool - Alternate attack to create portals, dashing through it teleports you to another portal
+					''' */
+				/* PassiveListHatred:
+					'''
+					Queen of Hatred - 
+					The Fool - Alternate attack to
+					''' */
 				// DisplayName: Nihil
 			}
 
@@ -1478,8 +1496,8 @@ Mods: {
 				// Tooltip: In the name of Love and Justice~ Here comes Magical Girl!
 				/* PassiveList:
 					'''
-					Arcana Slave - Alternate attack summons a laser of Love and Justice, costs {0} mana (Unaffected by mana cost reduction)
-					Arcana Beats - If unable to use 'Arcana Slave', Charge up Alternate attack to mark the first enemy hit as a 'Villain'
+					Arcana Slave - <right> summons a laser of Love and Justice, costs {0} mana (Unaffected by mana cost reduction)
+					Arcana Beats - If unable to use 'Arcana Slave', Charge up <right> to mark the first enemy hit as a 'Villain'
 					Villain - Takes 10% more damage from this EGO, only 1 Villain can exist at a time
 					Justice - Attacking 'Villain' reduces 'Arcana Slave' cost by 5. 'Arcana Slave' cost resets when used
 					Love - Attacks give nearby allies life regeneration, disabled while 'Hate' is active
@@ -1493,7 +1511,7 @@ Mods: {
 				// ItemTooltip: ...Sadness says: 'Begone, pass away!' But greed seeks eternity... seeks deep, deep eternity.
 				/* PassiveList:
 					'''
-					Road of the King - Alternate attack to target all 'Fragment of Bliss' and additional nearest enemies (Up to 5). 30 second cooldown
+					Road of the King - <right> to target all 'Fragment of Bliss' and additional nearest enemies (Up to 5). 30 second cooldown
 					Intemperance - Critical hits apply a 'Fragment of Bliss', Only 5 enemies can have 'Fragment of Bliss'
 					Fragment of Bliss - +5 defense. Reduces 'Road of King' cooldown, heals 10 health and -10 defense when broken
 					Happiness - 5% increased damage for each 'Fragment of Bliss' broken with 'Road of the King'
@@ -1528,6 +1546,31 @@ Mods: {
 					Courage - While having Inspired Bravery, gain an alternate attack with a longer range and damage. Becomes weaker with Reckless Foolishness
 					Mortal Life - No Fear for Death deal additional true damage equal to missing health and increased radius
 					|Reckless Foolishness - Failing to counter any attack for a period of time increases damage taken up to 15% and makes No Fear for Death stronger
+					''' */
+			}
+
+			#GeneralWorks
+			
+			RemorseR: {
+				// DisplayName: Remorse
+				// Tooltip: You’re trembling so much. What makes you so afraid?
+				/* PassiveList:
+					'''
+					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit (Max 100)
+					Hammer - Deal 25 indirect damage equal to the amount of 'Nail' on an enemy and inflict 'Guilt'
+					Broken to Pieces - Gain 'Leer' equal to 'Nail' consumed by 'Hammer'. Next attack deals bonus damage
+					Leer - Adds flat damage to all indirect damage.
+					|Guilt - Damage taken from this weapon is set to 1. Gain twice as many nails
+					A Crack in the Mind - Removes 'Guilt'
+					''' */
+				/* PassiveListAleph:
+					'''
+					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit
+					Hammer - Deal 25 bonus damage equal to the amount of 'Nail' on an enemy
+					Broken to Pieces - Increased damage for each 'Nail' activated by 'Hammer' and inflict 'Guilt'
+					Guilt - Take increased bonus damage from 'Hammer'. At certain total of Guilt inflicted, gain 'A Crack in the Mind'
+					|Leer - If the enemy has no 'Guilt', Normal attacks deal no damage and inflict twice the amount of nails
+					A Crack in the Mind - Weapon swings a giant nail and hammer instead, 
 					''' */
 			}
 
@@ -1977,26 +2020,6 @@ Mods: {
 					一个吻-与霜为敌
 					|玫瑰的芳香-当暴风雪结束
 					'''
-			}
-
-			Remorse: {
-				ItemTooltip: a
-				PassiveList:
-					'''
-					碎成碎片-交替攻击投掷一个钉子，它不造成伤害但同时也适用于附近的敌人。用钉子
-					锤子和钉子-当用锤子打击敌人时，造成相当于钉子数量的额外伤害
-					利耳-击中你的敌人永久受到两倍于钉子的伤害
-					|内疚-此武器不会从任何形式的伤害增加中获得加值
-					'''
-				/* PassiveListAleph:
-					'''
-					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit
-					Hammer - Deal 10 bonus damage equal to the amount of 'Nail' on an enemy
-					Broken to Pieces - Increased damage for each 'Nail' activated by 'Hammer' and inflict 'Guilt'
-					Guilt - Take increased bonus damage from 'Hammer'. At certain total of Guilt, gain 'A Crack in the Mind'
-					|Leer - If the enemy has no 'Guilt', Normal attacks deal no damage and inflict twice the amount of nails
-					A Crack in the Mind - Summons two giant hands that wields a Nail and Hammer, Removed when theres not enough 'Guilt'
-					''' */
 			}
 
 			#Limbus Inspired
@@ -2869,6 +2892,7 @@ Mods: {
 			// WristCutterSlash.DisplayName: Wrist Cutter Slash
 			// OurGalaxySparkleOrbit.DisplayName: Our Galaxy Sparkle Orbit
 			// SwordSharpenedWithTearsRSwordExtra.DisplayName: Sword Sharpened With Tears R Sword Extra
+			// RemorseNail.DisplayName: Remorse Nail
 		}
 
 		Buffs: {
@@ -3076,7 +3100,8 @@ Mods: {
 			}
 
 			Alertness: {
-				// Description: What careless fool stepped on my baby?
+				// Description: 10% increased damage taken
+				// FlavorDesc: What careless fool stepped on my baby?
 				// DisplayName: Alerted
 			}
 
@@ -3128,7 +3153,7 @@ Mods: {
 
 			SmileMelting: {
 				// DisplayName: Melted Corpses
-				// Description: 10% increased damage taken
+				// Description: 20% increased damage taken and 8% increased movement speed
 			}
 
 			Hatred: {
@@ -3216,6 +3241,11 @@ Mods: {
 			SwordSharpened: {
 				// DisplayName: Sword Sharpened with Tears
 				// Description: The swords will eventually point at those she could not protect.
+			}
+
+			Predator: {
+				// DisplayName: Predator
+				// Description: Mods.LobotomyCorp.Buffs.Predator.Description
 			}
 		}
 

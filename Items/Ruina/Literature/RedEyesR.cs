@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using System;
 using LobotomyCorp.Items.Teth;
 using LobotomyCorp.Players;
+using LobotomyCorp.Buffs;
 
 namespace LobotomyCorp.Items.Ruina.Literature
 {
@@ -46,22 +47,31 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
         public override bool AltFunctionUse(Player player)
         {
-			return NearestMarkedMeal(player.Center, 1000) >= 0;
+			return true;
         }
 
-		public static int NearestMarkedMeal(Vector2 position, float distance = 10000)
+		public static int NearestCryOutTarget(Vector2 position, float distance = 10000)
         {
-			int target = -1;
+			LobotomyTethPlayer tethPlayer = Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>();
+            int target = -1;
+			bool isMeal = false;
 			foreach(NPC n in Main.ActiveNPCs)
             {
 				if (!n.dontTakeDamage)
                 {
 					LobotomyGlobalNPC modNPC = n.GetGlobalNPC<LobotomyGlobalNPC>();
 					float dist = Vector2.Distance(n.Center, position);
-					if (modNPC.RedEyesMealAmount > Main.LocalPlayer.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax && dist < distance)
-                    {
+					bool isMealTarget = modNPC.RedEyesMealAmount > tethPlayer.RedEyesMealMax;
+					if (!isMeal && isMealTarget)
+					{
+						isMeal = true;
 						distance = dist;
 						target = n.whoAmI;
+					}
+					else if ((isMealTarget || (!isMeal && tethPlayer.RedEyesAlerted)) && dist < distance)
+					{
+                        distance = dist;
+                        target = n.whoAmI;
                     }
                 }
             }
@@ -111,7 +121,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
         public override bool? UseItem(Player player)
         {
-			return true;
+			return player.ItemTimeIsZero;
         }
 
         public override void UseStyle(Player player, Rectangle heldItemFrame)
@@ -256,16 +266,16 @@ namespace LobotomyCorp.Items.Ruina.Literature
 						hitbox.X -= (int)(hitbox.Width * 1f);
 					}
 					hitbox.Width *= 2;
-					hitbox.Y -= (int)((hitbox.Height * 1.4 - hitbox.Height) * player.gravDir);
-					hitbox.Height = (int)(hitbox.Height * 1.4);
+					hitbox.Y -= (int)((hitbox.Height * 1.7 - hitbox.Height) * player.gravDir);
+					hitbox.Height = (int)(hitbox.Height * 1.7);
 				}
 				else if (prog < .4f)
 				{
 					if (player.direction == -1)
 					{
-						hitbox.X -= (int)((double)hitbox.Width * 1.4 - (double)hitbox.Width);
+						hitbox.X -= (int)((double)hitbox.Width * 1.95 - (double)hitbox.Width);
 					}
-					hitbox.Width = (int)((double)hitbox.Width * 1.4);
+					hitbox.Width = (int)((double)hitbox.Width * 1.95);
 					hitbox.Y += (int)((double)hitbox.Height * 0.5 * (double)player.gravDir);
 					hitbox.Height = (int)((double)hitbox.Height * 1.4);
 				}
@@ -280,8 +290,6 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
         public override void HoldItem(Player player)
         {
-			player.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted = true;
-
 			if (Main.myPlayer == player.whoAmI)
 			{
 				foreach (NPC n in Main.ActiveNPCs)
@@ -299,17 +307,27 @@ namespace LobotomyCorp.Items.Ruina.Literature
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			bool predator = player.GetModPlayer<LobotomyTethPlayer>().RedEyesPredator;
 			LobotomyGlobalNPC modNPC = target.GetGlobalNPC<LobotomyGlobalNPC>();
 			if (player.altFunctionUse == 2)
 			{
-				target.AddBuff(ModContent.BuffType<Buffs.Cocoon>(), 600);
-				modNPC.RedEyesCocoon = true;
-				modNPC.RedEyesCocoonPlayer = player.whoAmI;
+                bool alert = player.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted;
+                if (modNPC.RedEyesMealAmount > player.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax)
+				{
+                    target.AddBuff(ModContent.BuffType<Buffs.Cocoon>(), 600);
+                    modNPC.RedEyesCocoon = true;
+                    modNPC.RedEyesCocoonPlayer = player.whoAmI;
+                }
+				if (alert)
+				{
+					// Give Predator Buff if Alertness is active
+					player.AddBuff(ModContent.BuffType<Predator>(), 60 * 30);
+				}
 			}
 			if (target.realLife >= 0)
-				Main.npc[target.realLife].GetGlobalNPC<LobotomyGlobalNPC>().RedEyesApplyMeal(60);
+				Main.npc[target.realLife].GetGlobalNPC<LobotomyGlobalNPC>().RedEyesApplyMeal(60, predatorBoosted: predator);
 			else
-				modNPC.RedEyesApplyMeal(60);
+				modNPC.RedEyesApplyMeal(60, predatorBoosted: predator);
 
 			int dustAmount = Main.rand.Next(4, 8);
 			for (int i = 0; i < dustAmount; i++)
@@ -327,7 +345,8 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			if (player.altFunctionUse == 2)
             {
 				LobotomyGlobalNPC modNPC = target.GetGlobalNPC<LobotomyGlobalNPC>();
-				if (modNPC.RedEyesMealAmount > player.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax && target.immune[player.whoAmI] <= 0)
+				bool alert = player.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted;
+                if ((modNPC.RedEyesMealAmount > player.GetModPlayer<LobotomyTethPlayer>().RedEyesMealMax || alert) && target.immune[player.whoAmI] <= 0)
 					return true;
 				else
 					return false;

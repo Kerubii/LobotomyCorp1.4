@@ -113,12 +113,12 @@ namespace LobotomyCorp.Projectiles.Realized
                 }                
                 Projectile.ai[1]++;
                 // Scream when fully charged
-                if (Projectile.ai[1] > 120 || (Projectile.ai[1] > 60 && !owner.channel))
+                if (Projectile.ai[1] > 180 || (Projectile.ai[1] > 90 && !owner.channel))
                 {
                     owner.channel = false;
                     Projectile.ai[0] = 3;
                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/LWeapons/Danggo_Lv2") with { Volume = 0.25f }, Projectile.Center);
-                    owner.GetModPlayer<LobotomyAlephPlayer>().SmileReduceCorpse((int)(owner.statLifeMax2 * 0.05f));
+                    //owner.GetModPlayer<LobotomyAlephPlayer>().SmileReduceCorpse((int)(owner.statLifeMax2 * 0.05f));
                 }
                 else // Cancel Scream
                 if (!owner.channel)

@@ -31,16 +31,26 @@ namespace LobotomyCorp.Items.Ruina.Language
 			Item.rare = ModContent.RarityType<AlephR>();
 			//Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/NothingThere_Goodbye");
             Item.autoReuse = true;
-            Item.noMelee = true;
+            //Item.noMelee = true;
             Item.noUseGraphic = true;
-            Item.shoot = ModContent.ProjectileType<Projectiles.MimicryS>();
+            Item.shoot = ModContent.ProjectileType<Projectiles.Realized.MimicryR>();
             Item.shootSpeed = 1;
-		}
+            Item.channel = true;
+        }
+
+        public override bool MeleePrefix()
+        {
+            return true;
+        }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             if (player.altFunctionUse == 2)
+            {
                 damage = (int)(damage * 0.7f);
+                type = ModContent.ProjectileType<Projectiles.Realized.MimicryRHello>();
+                velocity *= 16;
+            }
         }
 
         public override bool SafeCanUseItem(Player player)
@@ -48,16 +58,10 @@ namespace LobotomyCorp.Items.Ruina.Language
             if (player.altFunctionUse != 2)
             {
                 Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Attack1") with {Volume = 0.25f};
-                Item.shoot = ModContent.ProjectileType<Projectiles.Realized.MimicryR>();
-                Item.shootSpeed = 1;
-                Item.channel = true;
             }
             else
             {
                 Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill1_Ching") with {Volume = 0.18f};
-                Item.shoot = ModContent.ProjectileType<Projectiles.Realized.MimicryRHello>();
-                Item.shootSpeed = 16;
-                Item.channel = false;
             }
             return player.ownedProjectileCounts[Item.shoot] == 0;
         }
@@ -79,6 +83,11 @@ namespace LobotomyCorp.Items.Ruina.Language
         public override bool AltFunctionUse(Player player)
         {
             return true;
+        }
+
+        public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
+        {
+            noHitbox = true;
         }
 
         public override void AddRecipes() 

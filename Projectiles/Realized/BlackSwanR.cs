@@ -91,7 +91,7 @@ namespace LobotomyCorp.Projectiles.Realized
 				if (Main.myPlayer == Projectile.owner)
                 {
 					Projectile.velocity = new Vector2(Projectile.velocity.Length(), 0).RotatedBy((Main.MouseWorld - projOwner.Center).ToRotation());
-				}
+                }
 				if (projOwner.itemAnimation == 3)
 				{
 					projOwner.itemAnimation = 4;
@@ -148,7 +148,7 @@ namespace LobotomyCorp.Projectiles.Realized
 						else if (proj.damage < Projectile.damage / 2)
 							proj.damage = Projectile.damage / 2;
 						proj.GetGlobalProjectile<LobotomyGlobalProjectile>().BlackSwanReflected = true;
-
+						proj.netUpdate = true;
 						for (int i = 0; i < 16; i++)
                         {
 							int dustType = Main.rand.Next(2, 4);

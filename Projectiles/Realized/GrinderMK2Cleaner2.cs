@@ -124,6 +124,8 @@ namespace LobotomyCorp.Projectiles.Realized
                         dashPlayer.DashTimer = 0;
                     }
                 }
+
+                Projectile.netUpdate = true;
             }
 
             bool IsDashing = dashPlayer.DashTimer > 0;

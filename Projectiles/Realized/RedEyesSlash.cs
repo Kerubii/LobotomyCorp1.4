@@ -8,6 +8,7 @@ using LobotomyCorp.Utils;
 using Terraria.GameContent;
 using System.Collections.Generic;
 using Terraria.Audio;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -20,8 +21,8 @@ namespace LobotomyCorp.Projectiles.Realized
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 60;
-			Projectile.height = 60; 
+			Projectile.width = 140;
+			Projectile.height = 140; 
 			Projectile.aiStyle = -1;
 			Projectile.scale = 1f;
 
@@ -65,8 +66,8 @@ namespace LobotomyCorp.Projectiles.Realized
 				{
 					prog = (prog - 0.5f) / 0.5f;
 					prog = (float)Math.Sin(3.14f * prog);
-					hitbox.X += (int)(Projectile.velocity.X * 200 * prog);
-					hitbox.Y += (int)(Projectile.velocity.Y * 200 * prog);
+					hitbox.X += (int)(Projectile.velocity.X * 220 * prog);
+					hitbox.Y += (int)(Projectile.velocity.Y * 220 * prog);
 				}
 				base.ModifyDamageHitbox(ref hitbox);
 			}
@@ -98,8 +99,9 @@ namespace LobotomyCorp.Projectiles.Realized
         {
 			target.immune[Projectile.owner] = Main.player[Projectile.owner].itemAnimation;
 			Main.player[Projectile.owner].attackCD = (int)(Main.player[Projectile.owner].itemAnimationMax * 0.2f);
+			bool predator = Main.player[Projectile.owner].GetModPlayer<LobotomyTethPlayer>().RedEyesPredator;
 
-			LobotomyGlobalNPC modNPC = target.GetGlobalNPC<LobotomyGlobalNPC>();
+            LobotomyGlobalNPC modNPC = target.GetGlobalNPC<LobotomyGlobalNPC>();
 			if (Main.player[Projectile.owner].altFunctionUse == 2)
 			{
 				target.AddBuff(ModContent.BuffType<Buffs.Cocoon>(), 600);
@@ -107,9 +109,9 @@ namespace LobotomyCorp.Projectiles.Realized
 				modNPC.RedEyesCocoonPlayer = Main.player[Projectile.owner].whoAmI;
 			}
 			if (target.realLife >= 0)
-				Main.npc[target.realLife].GetGlobalNPC<LobotomyGlobalNPC>().RedEyesApplyMeal(60);
+				Main.npc[target.realLife].GetGlobalNPC<LobotomyGlobalNPC>().RedEyesApplyMeal(60, predatorBoosted: predator);
 			else
-				modNPC.RedEyesApplyMeal(60);
+				modNPC.RedEyesApplyMeal(60, predatorBoosted: predator);
 
 			int dustAmount = Main.rand.Next(4, 8);
 			for (int i = 0; i < dustAmount; i++)

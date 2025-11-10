@@ -1,25 +1,28 @@
-0.10.0 Changelog (Not Live Yet)
-R Wingbeat - Healing is massively reduced instead of dissapearing when hit (Predation)
-       - Gives more invincibility and momentum when the fairy mark dissapears
-R Goldrush - 50% more damage when fists hit at point blank range (Before it becomes an afterimage)
+0.10.1 Changelog
+Fixes:
+Black Box - Extaction now drops itself when turned on
+Red Mist is now less prone to be stuck in Phase 4
+Removed Sword Sharpened with Tears multiplayer test messages
 
-New R Weapons
-CrimsonScarR
-Hollow Point Shell - Alternate attack to shoot then throw a sickle, enemies hit by the bullet is marked as 'Prey'
-Bullet Shower - Under 50% health, Alternate attack to shoot a barrage of bullets, enemies hit is marked as 'Prey'
-No Hesitation - Under 50% health, Throw multiple sickles. Sickles and bullets has a chance to deal extra damage
-Prey - This EGO deals 20% increased damage to marked Prey, 50% if hit with a true melee
-Rudded Welts - Gain increased damage and decreased damage taken proportional to health lost. Effects halved when using other weapons
-Vengeance - 10% increased damage for 10 seconds when hit and mark them as 'Prey', 20% increased damage when hit by 'Prey'
-!Fury with no Outlet - Negate all life regeneration with 'Rudded Welts' above 50% health
+"Alternate Attack" now says Right Click
 
-Sword Sharpened With Tears
-Sword of a Forgotten Knight - Summon 2 swords, Summons additional swords that occupies minion slots. Auto attacks with 3 or more
-Whetted by Tears - Alternate attack to gain 'Justice' and bless an ally near the cursor with 'Blessed' if there isn't one. Lose 'Despair'
-Blessed - 10% decreased projectile damage taken, 20% increased contact damage taken
-Justice - Swords are aimed and can be charged, Critical hits ignores defense. Lost when switching weapons
-!Hollow Pride - If a 'Justice' Sword miss, it attempts to pierce the user. If 'Blessed' dies, 3 Swords pierces the user
-!Despair - When 3 Swords pierce the user, lose 'Justice', gain 20% increased summon damage and lose 25% maximum health
+Life For a Daredevil R
+- Dr Man Fly's Flask cannot be killed by the counter to prevent crashes
 
-Visuals
-Some EGOs now have an player particles associated with their buffs (Fourth Match, GrinderMk4, In The Name of Love and Hate), more soon
+Red Eyes R
+- Hitbox sizes increased to be more accurate with the sword trail (+ some extra reach cuz why not)
+- New Awakening: Altertness - Right click to mark nearby enemies if a Meal(Mark Effect) is not present, take 10% increased damage taken while active
+- New Breakdown: Predator - Using Cry Out (Right Click Attack) during Alertness gives it a 30 seconds cooldown
+- Meal builds up faster while having Predator
+
+Mimicry R
+- Gets melee prefixes like Legendary
+- Size changes is now multiplicative instead of additive
+- Fixed some bugs related to using other weapons while mimicry is in use
+
+Smile R
+- Corpses now float if their source npc's noGravity is set to true
+- Scream now costs 0 corpses and takes longer to charge (1 second -> 1.5 seconds)
+- Vomit now costs 1 corpse instead of 1% total corpse with a larger end lag and reduced damage
+- Division's Corpse consumption is increased by 50% when SmileR is not held
+- Melted Corpses gives 20% increased damage taken and 8% movement speed increase

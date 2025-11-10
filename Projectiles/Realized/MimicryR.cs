@@ -29,7 +29,7 @@ namespace LobotomyCorp.Projectiles.Realized
         {
             Projectile.width = 90;
             Projectile.height = 90;
-            Projectile.aiStyle = -1;
+            //Projectile.aiStyle = -;
             Projectile.penetrate = -1;
             Projectile.scale = 1f;
             Projectile.timeLeft = 300;
@@ -97,7 +97,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     {
                         float lerp = Projectile.ai[1] - MimicryChargeMax;
                         if (lerp < 5)
-                            scale += 0.2f * (1f - lerp / 5f);
+                            scale *= 1f + 0.2f * (1f - lerp / 5f);
 
                         if (Projectile.ai[1] > MimicryChargeLimit - 60)
                         {
@@ -121,6 +121,7 @@ namespace LobotomyCorp.Projectiles.Realized
                         Projectile.velocity = new Vector2(1, 0).RotatedBy(rotation);
                         owner.direction = Math.Sign(target.X);
                         Projectile.spriteDirection = -1 * owner.direction;
+                        Projectile.netUpdate = true;
                     }
                 }
                 else
@@ -132,7 +133,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     {
                         SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill2_Hook") with { Volume = 0.25f }, Projectile.Center);
 
-                        scale = 1f;
+                        scale *= 1f;
                         Projectile.ai[0] = 2;
                         Projectile.spriteDirection = 1 * dir;
                     }
@@ -142,7 +143,7 @@ namespace LobotomyCorp.Projectiles.Realized
                         SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/NothingThere_Goodbye") with { Volume = 0.25f }, Projectile.Center);
                         SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill3_Finish") with { Volume = 0.25f }, Projectile.Center);
 
-                        scale = 1.4f;
+                        scale *= 1.4f;
                         Projectile.ai[0] = 3;
                         Projectile.spriteDirection = -1 * dir;
                     }
@@ -160,7 +161,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 }
 
                 float progress = 1f - (float)owner.itemAnimation / owner.itemAnimationMax;
-                scale += (float)Math.Sin(3.14f * progress);
+                scale *= 1f + (float)Math.Sin(3.14f * progress);
                 rotation += MathHelper.ToRadians(-135 + 270 * (float)Math.Sin(1.57f * progress)) * dir;
             }
 
@@ -182,9 +183,9 @@ namespace LobotomyCorp.Projectiles.Realized
                     progress = progress / time;
                     rotation += MathHelper.ToRadians(-135 + 270 * progress * dir);
                     if (progress <= 0.5f)
-                        scale += 0.2f + (float)Math.Sin(1.57f * progress);
+                        scale *= 1f + 0.2f + (float)Math.Sin(1.57f * progress);
                     else
-                        scale += 0.8f + 0.4f * (float)Math.Sin(1.57f + 1.57f * progress);
+                        scale *= 1f + 0.8f + 0.4f * (float)Math.Sin(1.57f + 1.57f * progress);
                 }
                 else
                 {
@@ -192,14 +193,14 @@ namespace LobotomyCorp.Projectiles.Realized
                     if (power < 0)
                         power = 0;
                     rotation += MathHelper.ToRadians(164 - 30 * (float)Math.Pow(0.8f, power)) * dir;
-                    scale += 0.8f;
+                    scale *= 1f + 0.8f;
                 }
                 //rotation += MathHelper.ToRadians(-135 + 300 * (float)Math.Sin(1.57f * progress)) * dir;
             }
 
             Projectile.scale = scale;
             Projectile.rotation = rotation;
-            if (owner.itemAnimation == 0)
+            if (owner.itemAnimation == 1)
             {
                 if (Projectile.ai[0] == 3)
                 {
