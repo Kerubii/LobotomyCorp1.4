@@ -46,6 +46,8 @@ namespace LobotomyCorp.ModSystems
         {
             orig(self);
 
+            if (!DrawEffectsIsActive()) return;
+
             bool enable = ModContent.GetInstance<LobotomyConfig>().BloomEnable;
             // Store all custom draws on Layer
             if (enable)
@@ -53,6 +55,7 @@ namespace LobotomyCorp.ModSystems
                 Main.instance.GraphicsDevice.SetRenderTarget(layer);
                 Main.instance.GraphicsDevice.Clear(Color.Transparent);
             }
+
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
             bool applyBloom = false;
             Rectangle gameScreen = new Rectangle((int)Main.screenPosition.X - 1000, (int)Main.screenPosition.Y - 1050, Main.screenWidth + 2000, Main.screenHeight + 2100);
@@ -70,30 +73,44 @@ namespace LobotomyCorp.ModSystems
             }
             Main.spriteBatch.End();
 
-            if (enable && applyBloom)
+            if (enable)
             {
-                // Save current screen + custom draws on Swap
-                Main.instance.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
-                Main.instance.GraphicsDevice.Clear(Color.Transparent);
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-                Main.spriteBatch.Draw(layer, Vector2.Zero, Color.White);
-                Main.spriteBatch.End();
+                Main.instance.GraphicsDevice.SetRenderTarget(null);
+                if (applyBloom)
+                {
+                    // Save current screen + custom draws on Swap
+                    Main.instance.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+                    Main.instance.GraphicsDevice.Clear(Color.Transparent);
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                    Main.spriteBatch.Draw(layer, Vector2.Zero, Color.White);
+                    Main.spriteBatch.End();
 
-                // Get Bloom texture through layer
-                ApplyBloom(Main.instance.GraphicsDevice, layer, Main.screenTarget);
+                    // Get Bloom texture through layer
+                    ApplyBloom(Main.instance.GraphicsDevice, layer, Main.screenTarget);
 
-                // Add Bloom to Swap and render it
-                Main.instance.GraphicsDevice.SetRenderTarget(Main.screenTarget);
-                Main.instance.GraphicsDevice.Clear(Color.Transparent);
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-                Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-                Main.spriteBatch.Draw(layer, Vector2.Zero, Color.White);
-                Main.spriteBatch.End();
+                    // Add Bloom to Swap and render it
+                    Main.instance.GraphicsDevice.SetRenderTarget(Main.screenTarget);
+                    Main.instance.GraphicsDevice.Clear(Color.Transparent);
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                    Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                    Main.spriteBatch.Draw(layer, Vector2.Zero, Color.White);
+                    Main.spriteBatch.End();
+                }
             }
         }
 
         RenderTarget2D layer;
+
+        private bool DrawEffectsIsActive()
+        {
+            foreach (LobDrawEffects we in drawEffects)
+            {
+                if (we.active)
+                    return true;
+            }
+            return false;
+        }
 
         private void ApplyBloom(GraphicsDevice graphicsDevice, RenderTarget2D target1, RenderTarget2D target2)
         {
