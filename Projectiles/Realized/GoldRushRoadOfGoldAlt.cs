@@ -1,21 +1,22 @@
-﻿using System;
+﻿using LobotomyCorp.Buffs;
+using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
+using LobotomyCorp.Projectiles.KingPortal;
+using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using LobotomyCorp.Utils;
-using Terraria.Audio;
-using Terraria.GameContent;
-using System.IO;
-using LobotomyCorp.Players;
-using System.Collections.Generic;
-using LobotomyCorp.Projectiles.KingPortal;
-using LobotomyCorp.ModSystems;
-using LobotomyCorp.Buffs;
 using Steamworks;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -152,7 +153,9 @@ namespace LobotomyCorp.Projectiles.Realized
                     owner.statLife -= dmg;
                     if (owner.statLife <= 0)
                     {
-                        owner.KillMe(PlayerDeathReason.ByCustomReason(owner.name + " was consumed by greed"), Projectile.damage, 1);
+                        NetworkText text = NetworkText.FromKey("Mods.LobotomyCorp.DeathMessages.Greed" + Main.rand.Next(1,3), owner.name);
+                        PlayerDeathReason playerDeath = PlayerDeathReason.ByCustomReason(text);
+                        owner.KillMe(playerDeath, Projectile.damage, 1);
                     }
                     CombatText.NewText(owner.getRect(), CombatText.DamagedFriendly, 50);
                     //owner.AddBuff(ModContent.BuffType<Buffs.RoadOfGold>(), 60 * 30);

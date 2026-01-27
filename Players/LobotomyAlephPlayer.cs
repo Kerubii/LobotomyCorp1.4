@@ -41,6 +41,8 @@ namespace LobotomyCorp.Players
         public bool GoldRushGreed = false;
         public bool GoldRushRoadCooldown = false;
 
+        public int SoundOfAStarPosRotation = 0;
+
         public int TwilightSpecial = 10;
 
         public bool MimicryShell = false;
@@ -51,8 +53,17 @@ namespace LobotomyCorp.Players
         public bool MimicryHusk = false;
         public int MimicryHuskDeficit = 0;
 
+        public NihilType NihilMode = 0;
         public bool NihilActive = false;
-        public int NihilMode = 0;
+        public enum NihilType
+        {
+            None,
+            Nihil,
+            Hatred,
+            Greed,
+            Despair,
+            Wrath
+        }
 
         public bool SmileDebuff = false;
         public int SmileMountain = 0;
@@ -70,7 +81,7 @@ namespace LobotomyCorp.Players
             MimicryHusk = false;
             MimicryHuskDeficit = 0;
 
-            NihilActive = false;
+            NihilMode = NihilType.None;
 
             SmileDebuff = false;
             SmileMelting = false;
@@ -78,7 +89,7 @@ namespace LobotomyCorp.Players
 
         public override void UpdateDead()
         {
-            NihilActive = false;
+            NihilMode = NihilType.None;
         }
 
         public override void OnRespawn()
@@ -124,6 +135,14 @@ namespace LobotomyCorp.Players
             {
                 Player.ClearBuff(ModContent.BuffType<Absorption>());
                 SmileMountain = 0;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (NihilMode == NihilType.Nihil)
+            {
+                target.AddBuff(ModContent.BuffType<NihilDebuff>(), 60);
             }
         }
 
@@ -323,9 +342,8 @@ namespace LobotomyCorp.Players
                     checkActive = true;
                 }
             }
-
             NihilActive = checkActive;
-            return NihilActive;
+            return checkActive;
         }
 
         public void SmileCreateCorpse(NPC target, bool isSmall = false)

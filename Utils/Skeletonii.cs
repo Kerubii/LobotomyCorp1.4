@@ -78,7 +78,9 @@ namespace LobotomyCorp.Utils
             float Dist = Vector2.Distance(endPoint, startPoint);
             if (Dist > length1 + length2)
                 Dist = length1 + length2;
-            float Angle = (float)Math.Acos(Dist * Dist / ((length1 + length2) * Dist));
+            // THIS FORMULA WAS WRONG THE ENTIRE TIME!?!?!?!?!?!
+            //float Angle = (float)Math.Acos(Dist * Dist / ((length1 + length2) * Dist));
+            float Angle = (float)Math.Acos((Dist * Dist + length1 * length1 - length2 * length2) / (2 * Dist * length1));
             float Rotation = (endPoint - elbow).ToRotation() + Angle * dir;
             elbow += new Vector2(length1, 0).RotatedBy(Rotation);
             return elbow;
@@ -144,7 +146,7 @@ namespace LobotomyCorp.Utils
 
         private Texture2D Texture;
         public Rectangle Frame;
-        private Vector2 Origin;
+        public Vector2 Origin;
         private float RotationOffset;
         public bool Visible;
 
@@ -290,6 +292,8 @@ namespace LobotomyCorp.Utils
                 Rotation[0] = rot;
         }
 
+        public Vector2 GetOffset => offset[0];
+
         public void ChangeOffset(Vector2 newPos, float speed = -1)
         {
             ChangeBone(newPos, speed, 0, 0);
@@ -360,6 +364,11 @@ namespace LobotomyCorp.Utils
             if (InheritScale)
                 return Scale[i] * Parent.GetScale(i);
             return Scale[i];
+        }
+
+        public BonePart GetParent
+        {
+            get { return Parent; }
         }
 
         public Vector2 DifferenceBone(BonePart bone)

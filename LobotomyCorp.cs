@@ -1,6 +1,7 @@
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Configs;
 using LobotomyCorp.Items.Ruina.Literature;
+using LobotomyCorp.Misc.LobSky;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
 using LobotomyCorp.Projectiles;
@@ -26,6 +27,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -42,6 +44,8 @@ namespace LobotomyCorp
     }
     public class LobotomyCorp : Mod
     {
+        internal static LobotomyCorp Instance;
+
         public static Asset<Texture2D> ArcanaSlaveLaser = null;
         public static Asset<Texture2D> ArcanaSlaveLaser2 = null;
         public static Asset<Texture2D> ArcanaSlaveBackground = null;
@@ -112,6 +116,8 @@ namespace LobotomyCorp
 
         public override void Load()
         {
+            Instance = this;
+
             if (!Main.dedServ)
             {
                 if (Main.netMode != NetmodeID.Server)
@@ -166,6 +172,7 @@ namespace LobotomyCorp
                     Asset<Effect> Fragment = Assets.Request<Effect>("Effects/FragmentUniverse", AssetRequestMode.ImmediateLoad);
                     Asset<Effect> Fragment2 = Assets.Request<Effect>("Effects/FragmentEnlightened", AssetRequestMode.ImmediateLoad);
                     Asset<Effect> Fragment3 = Assets.Request<Effect>("Effects/FragmentScreen", AssetRequestMode.ImmediateLoad);
+                    Asset<Effect> SwirleyDist = Assets.Request<Effect>("Effects/SwirlDistortion", AssetRequestMode.ImmediateLoad);
                     //GameShaders.Misc["Punish"] = new MiscShaderData(punishingRef, "PunishingBird");
 
                     GameShaders.Misc["LobotomyCorp:Rotate"] = new MiscShaderData(ArcanaSlaveRef, "ArcanaResize").UseSaturation(0f);
@@ -173,8 +180,15 @@ namespace LobotomyCorp
                     ScreenShaderData shaderData = new ScreenShaderData(BrokenScreen, "BrokenScreenShader");
                     shaderData.UseImage(Assets.Request<Texture2D>("Misc/CameraFilterPack_TV_BrokenGlass5", AssetRequestMode.ImmediateLoad).Value, 0, SamplerState.LinearWrap);
                     Filters.Scene["LobotomyCorp:BrokenScreen"] = new Filter(shaderData, EffectPriority.Medium);
+
+                    shaderData = new ScreenShaderData(SwirleyDist, "SwirlDistortion");
+                    Filters.Scene["LobotomyCorp:Swirley"] = new Filter(shaderData, EffectPriority.Medium);
+                    Filters.Scene["LobotomyCorp:Swirley"].GetShader().UseColor(0.8f, 0, 0);
+                    Filters.Scene["LobotomyCorp:Swirley"].GetShader().UseTargetPosition(Vector2.Zero);
+                    Filters.Scene["LobotomyCorp:Swirley"].GetShader().UseProgress(0);
+
                     shaderData = new ScreenShaderData(Fragment3, "FragmentScreen");
-                    shaderData.UseImage(Assets.Request<Texture2D>("Misc/PurpleNebula5", AssetRequestMode.ImmediateLoad).Value, 0, SamplerState.LinearWrap);
+                    shaderData.UseImage(Assets.Request<Texture2D>("Misc/Fragment", AssetRequestMode.ImmediateLoad).Value, 0, SamplerState.LinearWrap);
                     shaderData.UseColor(1f, 128f / 255f, 1f);
                     Filters.Scene["LobotomyCorp:FragmentScreen"] = new Filter(shaderData, EffectPriority.VeryHigh);
 
@@ -185,6 +199,16 @@ namespace LobotomyCorp
                     shaderData.UseColor(Color.Red);
                     shaderData.UseSecondaryColor(new Color(1, 0.8f, 0.8f));
                     Filters.Scene["LobotomyCorp:RedMistOverlay"] = new Filter(shaderData, EffectPriority.Medium);
+
+                    Asset<Effect> screenRef = Assets.Request<Effect>("Effects/ShockwaveEffect"); // The path to the compiled shader file.
+                    shaderData = new ScreenShaderData(screenRef, "Shockwave");
+                    Filters.Scene["LobotomyCorp:Shockwave"] = new Filter(shaderData, EffectPriority.VeryHigh);
+                    Filters.Scene["LobotomyCorp:Shockwave"].Load();
+
+                    shaderData = new ScreenShaderData(Assets.Request<Effect>("Effects/GrayScaleInvertShader"), "GrayScale");
+                    Filters.Scene["LobotomyCorp:GrayscaleShader"] = new Filter(shaderData, EffectPriority.Low);
+                    shaderData = new ScreenShaderData(Assets.Request<Effect>("Effects/GrayScaleInvertShader"), "Invert");
+                    Filters.Scene["LobotomyCorp:InvertShader"] = new Filter(shaderData, EffectPriority.VeryLow);
 
                     //Texture2D blankTexture = TextureManager.BlankTexture;
 
@@ -235,13 +259,17 @@ namespace LobotomyCorp
                     LobcorpShaders["RedEyesTrail"] = shader;
 
                     shader = new CustomShaderData(Fragment, "Fragment");
-                    shader.UseImage1(this, "Misc/PurpleNebula5");
+                    shader.UseImage1(this, "Misc/Fragment");
                     LobcorpShaders["Fragment"] = shader;
 
                     shader = new CustomShaderData(Fragment2, "FragmentEn");
-                    shader.UseImage1(this, "Misc/PurpleNebula5");
+                    shader.UseImage1(this, "Misc/Fragment");
                     LobcorpShaders["FragmentEnlightened"] = shader;
                     // Use CustomShaderDate to define the length of the border :3
+
+                    // Custom Skies
+                    Filters.Scene["LobotomyCorp:BlueStar"] = Filters.Scene["LobotomyCorp:Swirley"];
+                    SkyManager.Instance["LobotomyCorp:BlueStar"] = new BlueStarSky();
 
                     WeaponSounds.Axe = WeaponSound("axe", true, 2);
                     WeaponSounds.BowGun = WeaponSound("bowGun");
@@ -285,6 +313,8 @@ namespace LobotomyCorp
             HeRarity = new Color();
             WawRarity = new Color();
             AlephRarity = new Color();*/
+
+            Instance = null;
         }
         /*
         public override void Close()
@@ -313,7 +343,8 @@ namespace LobotomyCorp
             RedMistGoldTeleport,
             TalkSuppressionTextSync = 6,
             BlessingSync,
-            SwordSharpenedVisualImpale
+            SwordSharpenedVisualImpale,
+            DeathAnimSync
         }
 
         //Mod Packets        
@@ -381,6 +412,7 @@ namespace LobotomyCorp
                 Main.player[reciever].GetModPlayer<LobotomyWawPlayer>().SwordSharpenedBlessingBestower = owner;
                 if (Main.netMode == NetmodeID.Server)
                 {
+                    
                     NetworkBlessingSync(owner, reciever);
                     //ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Blessing data recieved"), Color.White);
                 }
@@ -401,6 +433,20 @@ namespace LobotomyCorp
                     wawPlayer.SwordSharpenedImpaledCount++;
                     Main.player[owner].AddBuff(ModContent.BuffType<Despair>(), 60);
                     //Main.NewText("Recieved");
+                }
+            }
+            else if (id == (int)modPackets.DeathAnimSync)
+            {
+                int who = reader.ReadInt32();
+                int anim = reader.ReadInt32();
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    SendDeathAnimationSync(who, anim);
+                }
+                else
+                {
+                    Player player = Main.player[who];
+                    player.GetModPlayer<LobotomyDeathPlayer>().SetPlayerDeathAnimation(player, anim);
                 }
             }
         }
@@ -469,6 +515,15 @@ namespace LobotomyCorp
             //Main.NewText("Impale Sent");
         }
 
+        public static void SendDeathAnimationSync(int whoAmI, int type)
+        {
+            ModPacket packet = ModContent.GetInstance<LobotomyCorp>().GetPacket();
+            packet.Write((byte)modPackets.DeathAnimSync);
+            packet.Write(whoAmI);
+            packet.Write(type);
+            packet.Send(ignoreClient: whoAmI);
+        }
+
         //General Static stuffs
 
         public static bool LamentValid(NPC t, Projectile p)
@@ -496,6 +551,18 @@ namespace LobotomyCorp
                 buffer[i] = Color.FromNonPremultiplied(buffer[i].R, buffer[i].G, buffer[i].B, buffer[i].A);
             }
             texture.SetData(buffer);
+        }
+
+        public static void PremultiplyTexture(Asset<Texture2D> asset)
+        {
+            Texture2D texture = asset.Value;
+            Color[] buffer = new Color[texture.Width * texture.Height];
+            asset.Value.GetData(buffer);
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                buffer[i] = Color.FromNonPremultiplied(buffer[i].R, buffer[i].G, buffer[i].B, buffer[i].A);
+            }
+            asset.Value.SetData(buffer);
         }
 
         public static float Lerp(float x, float x2, float progress, bool reverse = false)

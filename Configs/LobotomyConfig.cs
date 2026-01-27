@@ -16,9 +16,17 @@ namespace LobotomyCorp.Configs
         [DefaultValue(true)]
         public bool ScreenShakeEnabled;
 
+        [DefaultValue(true)]
+        public bool BloomEnable;
+
         [DefaultValue(1f)]
         [Range(0f, 1f)]
         public float ScreenEffectOpacity;
+
+        /*
+        [DefaultValue(false)]
+        public bool ExtractorClass
+        */
     }
 
     public class LobotomyServerConfig : ModConfig

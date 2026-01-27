@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace LobotomyCorp.Projectiles
 {
 	public class GreenStemArea : ModProjectile
 	{
+        public static Asset<Texture2D> Roots;
+
+        public override void Load()
+        {
+            Roots = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/GreenStemRoot");
+        }
+
 		public override void SetStaticDefaults() {
             // DisplayName.SetDefault("Malice");
         }
@@ -204,7 +212,7 @@ namespace LobotomyCorp.Projectiles
             int texLength = 20;
             int amount = (int)(length / texLength);
 
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/GreenStemRoot").Value;
+            Texture2D tex = Roots.Value;
             Vector2 origin = new Vector2(4, 10);
             for (int i = amount; i >= 0; i--)
             {

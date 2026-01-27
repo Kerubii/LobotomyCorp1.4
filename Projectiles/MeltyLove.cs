@@ -64,9 +64,9 @@ namespace LobotomyCorp.Projectiles
                 }
                 for (int i = 0; i < 10; i++)
                 {
-                    Vector2 dustVel = Projectile.velocity / 2 * Main.rand.NextFloat(-0.5f, 1.5f);
+                    Vector2 dustVel = Projectile.velocity * Main.rand.NextFloat(-0.5f, 1.5f);
                     dustVel = dustVel.RotatedByRandom(MathHelper.ToRadians(20));
-                    Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 251, dustVel.X, dustVel.Y)].noGravity = true;
+                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 251, dustVel.X, dustVel.Y);
                 }
 
                 SoundEngine.PlaySound(LobotomyCorp.WeaponSound("Slime"), Projectile.position);
@@ -75,9 +75,17 @@ namespace LobotomyCorp.Projectiles
                 if (scale > 1f)
                     scale = 1f;
 
+                Projectile.velocity *= 1f + (0.3f * Projectile.ai[0] / 80f);
+
                 Projectile.ai[1] = 1;
                 Projectile.scale = 1f + scale;
                 Projectile.alpha = 0;
+            }
+
+            if (++Projectile.ai[2] % (int)(60 - 50 * (Projectile.ai[0] / 80f)) == 0)
+            {
+                float speed = 7.6f + 8f * (Projectile.ai[0] / 80f);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, speed), ModContent.ProjectileType<MeltyLoveSmall>(), (int)(Projectile.damage * (1f + damageBoost())), Projectile.knockBack, Projectile.owner);
             }
 
             if (Projectile.localAI[1]++ == 2)
@@ -121,15 +129,21 @@ namespace LobotomyCorp.Projectiles
                 if (Main.myPlayer == Projectile.owner)
                 {
                     Vector2 velRand = new Vector2(speed, 0).RotateRandom(6.28f);
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velRand, ModContent.ProjectileType<MeltyLoveSmall>(), Projectile.damage, Projectile.knockBack, Projectile.owner, 0, target.whoAmI);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velRand, ModContent.ProjectileType<MeltyLoveSmall>(), (int)(Projectile.damage * (1f + damageBoost()) / 2), Projectile.knockBack, Projectile.owner, 0, target.whoAmI);
                 }
             }
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            float dmgMult = 1f + 1.5f * (Projectile.ai[0] / 80f);
+            float dmgMult = damageBoost();
+            modifiers.FinalDamage += dmgMult;
             base.ModifyHitNPC(target, ref modifiers);
+        }
+
+        private float damageBoost()
+        {
+            return 4f * (Projectile.ai[0] / 80f);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -163,7 +177,7 @@ namespace LobotomyCorp.Projectiles
             Projectile.width = 12;
             Projectile.height = 12;
             Projectile.aiStyle = -1;
-            Projectile.penetrate = -1;
+            Projectile.penetrate = 3;
             Projectile.scale = 1f;
             Projectile.timeLeft = 30;
 
@@ -174,7 +188,9 @@ namespace LobotomyCorp.Projectiles
 
         public override void AI()
         {
-            Projectile.alpha += (int)(255 / 30);
+            //Projectile.alpha += (int)(255 / 30);
+            if (Projectile.timeLeft < 15)
+                Projectile.scale -= (1f / 15f);
             if (Projectile.localAI[1]++ == 2)
             {
                 Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 251, -Projectile.velocity.X / 2, -Projectile.velocity.Y / 2)].noGravity = true;

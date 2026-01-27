@@ -35,6 +35,9 @@ namespace LobotomyCorp.Projectiles
             Projectile.DamageType = DamageClass.Melee;
             Projectile.tileCollide = false;
             Projectile.friendly = true;
+
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 5;
         }
 
         //private Vector2 PreviousPosition;
@@ -129,11 +132,20 @@ namespace LobotomyCorp.Projectiles
                 {
                     if (Projectile.localAI[0] < 2)
                     {
+                        if (Main.myPlayer == Projectile.owner)
+                        {
+                            float length = Projectile.velocity.Length();
+                            Projectile.velocity = projOwner.Center.DirectionTo(Main.MouseWorld) * length;
+                            Projectile.netUpdate = true;
+                        }
+
                         SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_3"), ownerMountedCenter);
                         if (Main.myPlayer == Projectile.owner) ;
-                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), projOwner.Center, Vector2.Normalize(Projectile.velocity) * 18f, ModContent.ProjectileType<TwilightSlash>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), projOwner.Center, Vector2.Normalize(Projectile.velocity) * 32f, ModContent.ProjectileType<TwilightSlash>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
                         Projectile.localAI[0] = 2;
                     }
+                    if (projOwner.velocity.LengthSquared() < Projectile.velocity.LengthSquared() / 2)
+                        projOwner.velocity = Projectile.velocity * -1;
 
                     rot += MathHelper.ToRadians(-80 + 230 * (float)Math.Sin(1.65f * (progress2 % .5f / .5f))) * Projectile.spriteDirection;
 
@@ -145,7 +157,7 @@ namespace LobotomyCorp.Projectiles
                         SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_4"), ownerMountedCenter);
                         Projectile.localAI[0] = 3;
                         if (Main.myPlayer == Projectile.owner) ;
-                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), projOwner.Center, Vector2.Normalize(Projectile.velocity) * 18f, ModContent.ProjectileType<TwilightSlash>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), projOwner.Center, Vector2.Normalize(Projectile.velocity) * 48f, ModContent.ProjectileType<TwilightSlash>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
                     }
                     rot += MathHelper.ToRadians(180 + 320 * (0.5f * (float)Math.Cos(3.14f * (progress2 % .5f / .5f) + 3.14f) + 0.5f)) * Projectile.spriteDirection;
                 }
@@ -165,11 +177,11 @@ namespace LobotomyCorp.Projectiles
                 Projectile.localAI[0]++;
             }*/
 
-            if (progress < .7f)
+            if (progress < .9f)
             {
                 projOwner.immune = true;
                 projOwner.immuneTime = 15;
-                projOwner.immuneNoBlink = true;
+                //projOwner.immuneNoBlink = true;
                 //projOwner.armorEffectDrawShadow = true;
             }
 
@@ -293,6 +305,10 @@ namespace LobotomyCorp.Projectiles
             //float angle = Main.rand.NextFloat(6.28f);
             //Vector2 velocity = new Vector2(16f, 0f).RotatedBy(angle);
             //Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center - velocity * 15, velocity, ModContent.ProjectileType<Projectiles.TwilightStrikes>(), damage / 2, 0, Projectile.owner, target.whoAmI, 1);
+
+            Vector2 speed = new Vector2(16, 0).RotatedByRandom(6.28f);
+
+            Projectile.NewProjectile(Main.player[Projectile.owner].GetSource_FromThis(), target.Center, speed, ModContent.ProjectileType<Projectiles.LampProjectile>(), hit.Damage * 2 / 3, hit.Knockback, Projectile.owner, target.whoAmI);
         }
 
         public override bool PreDraw(ref Color lightColor)

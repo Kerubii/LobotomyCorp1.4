@@ -421,7 +421,7 @@ namespace LobotomyCorp.Projectiles.KingPortal
 
         private Player getNearest()
         {
-            if (Main.netMode != 0)
+            if (Main.netMode != NetmodeID.SinglePlayer)
             {
                 Player target = null;
                 float distance = 12000;

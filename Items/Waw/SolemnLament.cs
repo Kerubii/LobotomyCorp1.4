@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -13,6 +14,17 @@ namespace LobotomyCorp.Items.Waw
 {
     public class SolemnLament : LobItemBase
     {
+        static Asset<Texture2D> SolemnGun1;
+        static Asset<Texture2D> SolemnGun2;
+        static Asset<Texture2D> SolemnGun;
+
+        public override void Load()
+        {
+            SolemnGun = ModContent.Request<Texture2D>(Texture);
+            SolemnGun1 = ModContent.Request<Texture2D>(Texture + "1");
+            SolemnGun2 = ModContent.Request<Texture2D>(Texture + "2");
+        }
+
         public override void SetStaticDefaults()
         {
             /* Tooltip.SetDefault("The somber design is a reminder that not a sliver of frivolity is allowed for the minds of those who mourn.\n" +
@@ -100,7 +112,7 @@ namespace LobotomyCorp.Items.Waw
         {
             if (player.altFunctionUse == 2)
             {
-                TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament1");
+                TextureAssets.Item[Item.type] = SolemnGun1;
                 player.manaRegenDelay = player.maxRegenDelay;
                 return base.UseItem(player);
             }
@@ -109,12 +121,12 @@ namespace LobotomyCorp.Items.Waw
                 AlternateAttack = Main.rand.NextBool(2);
                 if (AlternateAttack)
                 {
-                    TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament2");
+                    TextureAssets.Item[Item.type] = SolemnGun2;
 
                 }
                 else
                 {
-                    TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament1");
+                    TextureAssets.Item[Item.type] = SolemnGun1;
                 }
                 player.manaRegenDelay = player.maxRegenDelay;
                 return true;
@@ -159,7 +171,7 @@ namespace LobotomyCorp.Items.Waw
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament").Value;
+            Texture2D tex = SolemnGun.Value;
             Rectangle texFrame = tex.Frame();
             scale = 1f;
             float num = 1f;
@@ -185,7 +197,7 @@ namespace LobotomyCorp.Items.Waw
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Waw/SolemnLament").Value;
+            Texture2D tex = SolemnGun.Value;
             spriteBatch.Draw(tex, Item.position - Main.screenPosition + new Vector2(Item.width / 2, Item.height - tex.Height / 2), tex.Frame(), lightColor, rotation, tex.Size() / 2, scale, 0, 0);
             return false;
         }

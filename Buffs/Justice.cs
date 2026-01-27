@@ -27,7 +27,7 @@ namespace LobotomyCorp.Buffs
         {
             LobotomyWawPlayer wawPlayer = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>();
             int count = wawPlayer.SwordSharpenedImpaledCount;
-            Texture2D texture = Mod.Assets.Request<Texture2D>("Buffs/Despair").Value;
+            Texture2D texture = TextureAssets.Buff[ModContent.BuffType<Despair>()].Value;
 
             for (int x = 0; x < 2; x++)
             {

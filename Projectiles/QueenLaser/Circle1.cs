@@ -15,6 +15,32 @@ namespace LobotomyCorp.Projectiles.QueenLaser
 {
 	public class Circle1 : ModProjectile
 	{
+        private string ns => "LobotomyCorp/Projectiles/QueenLaser/";
+
+        public static Asset<Texture2D> Circle1Color;
+        public static Asset<Texture2D> Circle1Outer;
+        public static Asset<Texture2D> Circle2;
+        public static Asset<Texture2D> HeartWingL;
+        public static Asset<Texture2D> HeartWingR;
+        public static Asset<Texture2D> HeartColorL;
+        public static Asset<Texture2D> HeartColorR;
+        public static Asset<Texture2D> HeartOutlineL;
+        public static Asset<Texture2D> HeartOutlineR;
+
+        public override void Load()
+        {
+            Circle1Color = ModContent.Request<Texture2D>(ns + "Circle1Color");
+            Circle1Outer = ModContent.Request<Texture2D>(ns + "Circle1Outer");
+            Circle2 = ModContent.Request<Texture2D>(ns + "Circle2");
+            HeartWingL = ModContent.Request<Texture2D>(ns + "HeartWingL");
+            HeartWingR = ModContent.Request<Texture2D>(ns + "HeartWingR");
+            HeartColorL = ModContent.Request<Texture2D>(ns + "HeartColorL");
+            HeartColorR = ModContent.Request<Texture2D>(ns + "HeartColorR");
+            HeartOutlineL = ModContent.Request<Texture2D>(ns + "HeartOutlineL");
+            HeartOutlineR = ModContent.Request<Texture2D>(ns + "HeartOutlineR");
+
+        }
+
         public override void SetStaticDefaults() {
             // DisplayName.SetDefault("Arcana Slave");
         }
@@ -111,7 +137,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
             }
         }
 
-        public override void Kill(int timeLeft)
+        public override void OnKill(int timeLeft)
         {
             SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/MagicalGirl_CastEnd") with { Volume = 0.2f }, Projectile.Center);
             Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().LoveAndHateCostReset();
@@ -161,7 +187,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1Color").Value;
+            texture = Circle1Color.Value;
             DrawData circle = new DrawData(texture, position, frame, color, rot, origin, (scale + new Vector2(0.03f + 0.02f * (float)Math.Sin(Projectile.rotation))) * mult, SpriteEffects.None, 0);
 
             var rotateShader = GameShaders.Misc["LobotomyCorp:Rotate"];
@@ -178,7 +204,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
             rotateShader.Apply(null);
             Main.EntitySpriteDraw(circle);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1Outer").Value;
+            texture = Circle1Outer.Value;
             MultRange(ref mult, 6, 24);
             circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, SpriteEffects.None, 0);
 
@@ -192,7 +218,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
             frame = new Rectangle(0, 0, texture.Width, texture.Height);
 
             position += new Vector2(buffer, 0).RotatedBy(rot);
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle2").Value;
+            texture = Circle2.Value;
             MultRange(ref mult, 20, 42);
             circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, SpriteEffects.None, 0);
 
@@ -213,13 +239,13 @@ namespace LobotomyCorp.Projectiles.QueenLaser
 
             string Side = "R";
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/HeartWing" + Side).Value;
+            texture = HeartWingR.Value;
             MultRange(ref mult, 38, 50);
             Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, (scale + new Vector2(0.05f + 0.025f * (float)Math.Cos(Projectile.rotation)) * 1.2f) * mult, spriteeffect, 0);
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/HeartColor" + Side).Value;
+            texture = HeartColorR.Value;
             MultRange(ref mult, 40, 60);
             Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale * 1.2f, spriteeffect, 0);
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/HeartOutline" + Side).Value;
+            texture = HeartOutlineR.Value;
             Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale * 1.2f, spriteeffect, 0);
 
             if (Projectile.ai[1] >= 60)
@@ -279,13 +305,13 @@ namespace LobotomyCorp.Projectiles.QueenLaser
             Side = "L";
             origin = new Vector2(61, 61);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/HeartWing" + Side).Value;
+            texture = HeartWingL.Value;
             MultRange(ref mult, 38, 50);
             Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, (scale + new Vector2(0.05f + 0.025f * (float)Math.Cos(Projectile.rotation)) * 1.2f) * mult, spriteeffect, 0);
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/HeartColor" + Side).Value;
+            texture = HeartColorL.Value;
             MultRange(ref mult, 40, 60);
             Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale * 1.2f, spriteeffect, 0);
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/HeartOutline" + Side).Value;
+            texture = HeartOutlineL.Value;
             Main.EntitySpriteDraw(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale * 1.2f, spriteeffect, 0);
 
             return false;

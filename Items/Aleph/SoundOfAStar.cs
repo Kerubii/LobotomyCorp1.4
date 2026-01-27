@@ -1,4 +1,6 @@
+using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
+using rail;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -14,12 +16,13 @@ namespace LobotomyCorp.Items.Aleph
             /* Tooltip.SetDefault("The star shines brighter as our despair gathers.\n" +
                                "The weapon's small, evocative sphere fires a warm ray.\n" +
                                "In the light, everything is equal."); */
-
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+            ItemID.Sets.StaffMinionSlotsRequired[Item.type] = 0f;
         }
 
         public override void SetDefaults()
         {
-            Item.damage = 50;
+            Item.damage = 27;
             Item.DamageType = DamageClass.Summon;
             Item.mana = 6;
             Item.width = 40;
@@ -34,20 +37,45 @@ namespace LobotomyCorp.Items.Aleph
             Item.rare = ModContent.RarityType<AlephB>();
             Item.UseSound = LobotomyCorp.WeaponSound("blueStar");
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<Projectiles.SoundOfAStar>();
+            Item.shoot = ModContent.ProjectileType<Projectiles.SoundOfAStarBall>();
             Item.shootSpeed = 4f;
             Item.noUseGraphic = true;
-            EGORiskLevel = RiskLevel.Aleph;
+            Item.buffType = ModContent.BuffType<Buffs.SoundOfAStarBallBuff>();
+        }
+
+        public override float UseTimeMultiplier(Player player)
+        {
+            if (player.altFunctionUse != 2)
+                return 3;
+            return base.UseTimeMultiplier(player);
+        }
+
+        public override bool AltFunctionUse(Player player)
+        {
+            return true;
+        }
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (player.altFunctionUse != 2)
+            {
+                player.AddBuff(Item.buffType, 2);
+            }
+            else
+            {
+                type = ModContent.ProjectileType<Projectiles.SoundOfAStar>();
+            }
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            damage = (int)(damage * 0.6f);
-
-            Vector2 speed = velocity.RotatedByRandom(MathHelper.ToRadians(30)) * Main.rand.NextFloat(0.8f, 1f);
-            Projectile.NewProjectile(source, position, -speed, type, damage, knockback, player.whoAmI);
-
-            return false;
+            if (player.altFunctionUse == 2)
+            {
+                Vector2 speed = velocity.RotatedByRandom(MathHelper.ToRadians(30)) * Main.rand.NextFloat(0.8f, 1f);
+                Projectile.NewProjectile(source, position, -speed, type, damage, knockback, player.whoAmI);
+                return false;
+            }
+            return true;
         }
 
         public override void AddRecipes()

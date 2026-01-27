@@ -9,11 +9,21 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using System.Collections.Generic;
 using LobotomyCorp.Players;
+using ReLogic.Content;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
 	public class LifeForADaredevilR : ModProjectile
 	{
+		public static Asset<Texture2D> Sparkle;
+        public static Asset<Texture2D> Sheath;
+
+        public override void Load()
+        {
+			Sparkle = ModContent.Request<Texture2D>(Texture+"Sparkle");
+			Sheath = ModContent.Request<Texture2D>(Texture + "Sheath");
+        }
+
         public override void SetDefaults()
 		{
 			Projectile.width = 24;
@@ -112,7 +122,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			Player player = Main.player[Projectile.owner];
 
 			Texture2D sword = TextureAssets.Projectile[Projectile.type].Value;
-			Texture2D sheath = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/Realized/LifeForADaredevilRSheath").Value;
+			Texture2D sheath = Sheath.Value;
 
 			Vector2 pos = player.Center - Main.screenPosition + Projectile.gfxOffY * Vector2.UnitY;
 			Rectangle Frame = sword.Frame();
@@ -193,7 +203,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
 			if (Projectile.localAI[0] > 0)
             {
-				Texture2D shine = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/Realized/sparkle").Value;
+				Texture2D shine = Sparkle.Value;
 
 				pos.X += 10 * player.direction;
 				Frame = shine.Frame();

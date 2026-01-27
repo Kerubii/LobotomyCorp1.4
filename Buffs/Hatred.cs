@@ -32,7 +32,7 @@ namespace LobotomyCorp.Buffs
         {
             LobotomyWawPlayer wawPlayer = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>();
             string cost = "" + wawPlayer.LoveAndHateArcanaCost;
-            Texture2D texture = Mod.Assets.Request<Texture2D>("Buffs/Love").Value;
+            Texture2D texture = TextureAssets.Buff[ModContent.BuffType<Love>()].Value;//Mod.Assets.Request<Texture2D>("Buffs/Love").Value;
             int length = (int)(30 * wawPlayer.LoveAndHateHysteriaPercent());
             Rectangle frame = new Rectangle(0, 0, length, 32);
             spriteBatch.Draw(drawParams.Texture, drawParams.Position, frame, drawParams.DrawColor, 0, new Vector2(0, 0), 1, 0, 0);

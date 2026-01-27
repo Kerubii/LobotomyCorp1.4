@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -15,6 +16,8 @@ namespace LobotomyCorp.Projectiles
     {
         public override void Load()
         {
+            TexFlipped = ModContent.Request<Texture2D>(Texture + "Flip");
+
             if (Main.netMode != NetmodeID.Server)
             {
                 JustitiaProjectile = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/JustitiaExtendedEdge", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
@@ -34,6 +37,8 @@ namespace LobotomyCorp.Projectiles
             JustitiaProjectile = null;
             JustitiaProjectileFlip = null;
         }
+
+        public static Asset<Texture2D> TexFlipped;
 
         private static Texture2D JustitiaProjectile;
         private static Texture2D JustitiaProjectileFlip;
@@ -145,14 +150,14 @@ namespace LobotomyCorp.Projectiles
                 if (Projectile.ai[0] == 0 || Projectile.ai[0] == 1)
                     Main.EntitySpriteDraw(TextureAssets.Projectile[Projectile.type].Value, oldPos, frame, Color.LightGray * opacity, Projectile.rotation, origin, scale, spriteEffect, 0);
                 if (Projectile.ai[0] == 0 || Projectile.ai[0] == 2)
-                    Main.EntitySpriteDraw(ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/JustitiaExtendedFlip").Value, oldPos, frame, Color.LightGray * opacity, Projectile.rotation, origin, scale, spriteEffect, 0);
+                    Main.EntitySpriteDraw(TexFlipped.Value, oldPos, frame, Color.LightGray * opacity, Projectile.rotation, origin, scale, spriteEffect, 0);
             }
 
             Vector2 position = Projectile.Center - Main.screenPosition + Projectile.gfxOffY * Vector2.UnitY;
             if (Projectile.ai[0] == 0 || Projectile.ai[0] == 1)
                 Main.EntitySpriteDraw(TextureAssets.Projectile[Projectile.type].Value, position, frame, Color.White * (Projectile.alpha / 255f), Projectile.rotation, origin, Projectile.scale, spriteEffect, 0);
             if (Projectile.ai[0] == 0 || Projectile.ai[0] == 2)
-                Main.EntitySpriteDraw(ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/JustitiaExtendedFlip").Value, position, frame, Color.White * (Projectile.alpha / 255f), Projectile.rotation, origin, Projectile.scale, spriteEffect, 0);
+                Main.EntitySpriteDraw(TexFlipped.Value, position, frame, Color.White * (Projectile.alpha / 255f), Projectile.rotation, origin, Projectile.scale, spriteEffect, 0);
             if (Projectile.alpha > 85)
             {
                 float opacity = (Projectile.alpha - 85) / 170f;

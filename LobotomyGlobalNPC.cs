@@ -1,28 +1,29 @@
+using FullSerializer;
+using LobotomyCorp;
+using LobotomyCorp.Buffs;
+using LobotomyCorp.Items.NonEgo;
+using LobotomyCorp.Items.Ruina.Art;
+using LobotomyCorp.Items.Ruina.Language;
+using LobotomyCorp.Items.Ruina.Natural;
+using LobotomyCorp.Items.Ruina.Technology;
+using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players;
+using LobotomyCorp.Projectiles;
+using LobotomyCorp.Projectiles.KingPortal;
+using LobotomyCorp.Projectiles.Realized;
+using log4net.Util;
+using Microsoft.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
-using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp;
-using log4net.Util;
-using LobotomyCorp.Buffs;
-using LobotomyCorp.Items.Ruina.Art;
-using Microsoft.CodeAnalysis;
-using System.Transactions;
-using Terraria.Audio;
-using LobotomyCorp.Players;
-using LobotomyCorp.Items.NonEgo;
-using LobotomyCorp.Items.Waw;
-using LobotomyCorp.Items.Ruina.Technology;
-using FullSerializer;
-using LobotomyCorp.Items.Ruina.Natural;
-using LobotomyCorp.Items.Ruina.Language;
 
 namespace LobotomyCorp
 {
@@ -91,9 +92,12 @@ namespace LobotomyCorp
 
         public int LaetitiaGiftDamage = 0;
         public int LaetitiaGiftOwner = -1;
+        public bool LaetitiaGiftRM = false;
 
         public bool MatchstickBurn = false;
         public int MatchstickBurnTime = 0;
+
+        public bool NihilDebuff = false;
 
         public bool PleasureDebuff = false;
         public int PleasureCount = 0;
@@ -333,6 +337,9 @@ namespace LobotomyCorp
             {
                 modifiers.SourceDamage *= DiffractionDamage;
             }
+
+            if (NihilDebuff)
+                modifiers.FinalDamage *= 0.7f;
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
@@ -431,6 +438,11 @@ namespace LobotomyCorp
             else if (GoldRushBrokenBlissBuff)
             {
                 modifiers.Defense.Flat -= 10;
+            }
+
+            if (NihilDebuff)
+            {
+                modifiers.Defense.Base *= 0.7f;
             }
         }
 
@@ -608,7 +620,7 @@ namespace LobotomyCorp
 
             if (WingbeatFairyMeal)
             {
-                Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/WingbeatFairy").Value;
+                Texture2D texture = TextureAssets.Projectile[ModContent.ProjectileType<WingbeatFairy>()].Value;
                 Vector2 position = npc.Center - Main.screenPosition + new Vector2(npc.width, 0).RotatedBy(MathHelper.ToRadians(WingbeatRotation));
 
                 Rectangle? frame = new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, texture.Height / 6 * (int)(WingbeatRotation / 60f), texture.Width, texture.Height / 6));
@@ -625,7 +637,7 @@ namespace LobotomyCorp
 
                 if (WingbeatIndicator > 0)
                 {
-                    Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/WingbeatTarget").Value;
+                    Texture2D texture = WingbeatFairy.Target.Value;
                     Vector2 position = npc.Center - Main.screenPosition;
                     Rectangle? frame = new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height));
                     float rotation = (Main.LocalPlayer.Center - npc.Center).ToRotation();
@@ -687,12 +699,12 @@ namespace LobotomyCorp
 
                 if ((GoldRushBlissBuff && modAlephPlayer.GoldRushHasBliss(npc)) || GoldRushBrokenBlissBuff)
                 {
-                    Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/KingPortal/BrilliantBliss").Value;
+                    Texture2D texture = TextureAssets.Projectile[ModContent.ProjectileType<BrilliantBliss>()].Value;
                     Vector2 position = npc.position - Main.screenPosition + new Vector2(npc.width / 2, -40);
                     Color color = Color.White;
                     if (GoldRushBrokenBlissBuff)
                     {
-                        texture = Mod.Assets.Request<Texture2D>("Projectiles/KingPortal/BrokenBliss").Value;
+                        texture = BrilliantBliss.Broken.Value;
                         if (npc.HasBuff<BrokenBliss>())
                         {
                             int time = npc.buffTime[npc.FindBuffIndex(ModContent.BuffType<BrokenBliss>())];
@@ -737,6 +749,18 @@ namespace LobotomyCorp
                 Rectangle frame = texture.Frame();
 
                 spriteBatch.Draw(texture, position, frame, drawColor, 0f, frame.Size()/2, scale, SpriteEffects.None, 0f);
+            }
+
+            if (LaetitiaGiftRM)
+            {
+                Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/Realized/LaetitiaR").Value;
+                Vector2 position = npc.Center - Main.screenPosition + new Vector2(0, -npc.height / 2 - 30);
+                float scale = 1f + 0.2f * (float)Math.Sin(6.28f * ((Main.timeForVisualEffects * (2)) / 60));
+                if (scale < 1f)
+                    scale = 1f;
+                Rectangle frame = texture.Frame();
+
+                spriteBatch.Draw(texture, position, frame, drawColor, 0f, frame.Size() / 2, scale, SpriteEffects.None, 0f);
             }
         }
 
@@ -783,9 +807,9 @@ namespace LobotomyCorp
             }
             else if (shop.NpcType == NPCID.ArmsDealer)
             {
-                Condition condition = new Condition("Lobotomy:HasMagicBullet", new Func<bool>(() => Main.LocalPlayer.HasItem(ModContent.ItemType<MagicBullet>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<MagicBulletR>())));
+                Condition condition = new Condition("Lobotomy:HasMagicBullet", new Func<bool>(() => Main.LocalPlayer.HasItem(ModContent.ItemType<MagicBullet>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<Items.Ruina.Technology.MagicBulletR>())));
 
-                shop.Add(new Item(ModContent.ItemType<MagicBulletBullet>())
+                shop.Add(new Item(ModContent.ItemType<Items.NonEgo.MagicBulletBullet>())
                 {
                     shopCustomPrice = 50
                 }, condition);
@@ -968,7 +992,30 @@ namespace LobotomyCorp
             }
         }
 
-        public void RemorseApplyNail(int amount)
+        public static int RemorseGetNailAmount(int npc)
+        {
+            int amount = 0;
+            foreach (Projectile p in Main.ActiveProjectiles)
+            {
+                bool isType = p.type == ModContent.ProjectileType<RemorseNail>() || p.type == ModContent.ProjectileType<RemorseNailEX2>();
+                if (isType && (int)p.ai[1] - 1 == npc)
+                {
+                    amount++;
+                }
+            }
+            return amount;
+        }   
+
+        public void RemorseApplyGuilt(int amount = 1)
+        {
+            RemorseGuilt += amount;
+            if (RemorseGuilt > 20)
+            {
+                RemorseGuilt = 20;
+            }
+        }
+
+        public void RemorseApplyNail(int amount = 1)
         {
             RemorseNailTotal += amount;
             if (RemorseNailTotal > 100)

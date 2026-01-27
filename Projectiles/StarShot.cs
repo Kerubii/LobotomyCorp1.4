@@ -25,6 +25,7 @@ namespace LobotomyCorp.Projectiles
             Projectile.hostile = false;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Magic;
 		}
 
         public override void AI()

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LobotomyCorp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82d0d196d62fd463128693326187e2637c65e4b3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+898da99c9c8609502f2b16a3755f9cef8042d45c")]
 [assembly: System.Reflection.AssemblyProductAttribute("LobotomyCorp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LobotomyCorp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

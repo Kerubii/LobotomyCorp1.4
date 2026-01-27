@@ -1,4 +1,4 @@
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 using LobotomyCorp.Players;
 using System;
 using Terraria;

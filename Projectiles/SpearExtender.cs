@@ -20,8 +20,9 @@ namespace LobotomyCorp.Projectiles
 				SpearTrail = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/SpearTrail", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 				GlowSpear = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/SpearExtenderGlow", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 				GlowTip = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/SpearExtenderTipGlow", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+				Tip = ModContent.Request<Texture2D>(Texture + "Tip").Value;
 
-				Main.QueueMainThreadAction(() =>
+                Main.QueueMainThreadAction(() =>
 				{
 					LobotomyCorp.PremultiplyTexture(SpearTrail);
 					LobotomyCorp.PremultiplyTexture(GlowSpear);
@@ -34,6 +35,7 @@ namespace LobotomyCorp.Projectiles
 		public static Texture2D SpearTrail;
 		public static Texture2D GlowSpear;
 		public static Texture2D GlowTip;
+		public static Texture2D Tip;
 
 		public override void SetDefaults() {
 			Projectile.width = 18;
@@ -215,7 +217,7 @@ namespace LobotomyCorp.Projectiles
 			Vector2 scale = new Vector2(1f, Projectile.scale);
 			Main.EntitySpriteDraw(tex, pos, frame, Color.White * Opacity, Projectile.rotation, origin, scale, 0, 0);
 
-			tex = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/SpearExtenderTip").Value;
+			tex = Tip;
 			Vector2 pos2 = Projectile.Center - Main.screenPosition + Projectile.gfxOffY * Vector2.UnitY;
 			Rectangle frame2 = tex.Frame();
 			Vector2 origin2 = frame2.Size() / 2;

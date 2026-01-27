@@ -175,6 +175,7 @@ Mods: {
 					'To see this E.G.O, one must thoroughly concentrate.
 					You can ignore the ridiculous advice that you can see it with your mind.'
 					Randomizes enemy stats on first hit
+					Effective on Ring Maestros
 					'''
 				Tooltip2:
 					'''
@@ -207,7 +208,7 @@ Mods: {
 					Bubbles dont flow upwards
 					Gain increased movement speed when firing
 					Sboots one extra bubble that does not do damage
-					Right click to dash towards the bubble nearest to the cursor
+					<right> to dash towards the bubble nearest to the cursor
 					Dashing leaves a trail of bubbles
 					'''
 				DisplayName: Ecstacy
@@ -283,10 +284,10 @@ Mods: {
 				Tooltip2:
 					'''
 					Feathers appear while being held
-					Inflicts Oiled
 					Amount of feathers increase per empty minion slot
 					All Feathers fire Simultaneously
-					Right click to make individual Feathers seek an enemy
+					<right> to make individual Feathers seek an enemy
+					Inflicts Oiled
 					'''
 				DisplayName: Feather Of Honor
 			}
@@ -344,7 +345,11 @@ Mods: {
 					No one knows what it wanted to peep at so dearly.'
 					Can cause additional damage over time
 					'''
-				Tooltip2: Hits all enemies in direct sight with no knockback
+				Tooltip2:
+					'''
+					Hits all enemies in direct sight with no knockback
+					Deals less damage for each enemy hit
+					'''
 				DisplayName: Gaze
 			}
 
@@ -384,7 +389,7 @@ Mods: {
 					'''
 					A sawblade is released when returning
 					Sawblades travel along tiles until it hits an enemy
-					Sawblades ticks to an enemy, damages it rapidly before piercing
+					Sawblades sticks to an enemy, damages it rapidly before piercing
 					Sawblades explode after a certain amount of time
 					'''
 				DisplayName: Grinder Mk4
@@ -397,7 +402,7 @@ Mods: {
 					But the music it makes captures its audience more than any other instrument could.
 					The wielder must dedicate himself in return.
 					After all, art is a devil's gift, born from despair and suffering.'
-					30% increased damage when consuming 2% hp while having above 2% maximum health
+					Consumes 2% health to increase damage by 30% unless its fatal
 					'''
 				Tooltip2:
 					'''
@@ -448,8 +453,9 @@ Mods: {
 					'''
 					{0} Mana cost
 					Deals additional Magic Damage while having Mana
-					Fires a hook when used while having mana
-					Manasteals 10% of damage dealt
+					<right> fires a hook when used, can also stick to enemies
+					If a hook is attached to an enemy, <right> to pull towards the enemy
+					Hook manasteals 10% of damage dealt
 					Hook detaches when mana reaches full
 					'''
 				DisplayName: Harvest
@@ -464,7 +470,7 @@ Mods: {
 				Tooltip2:
 					'''
 					Grows additional Branches
-					Right click to throw
+					<right> to throw
 					Creates Branches when hitting a tile
 					Branches grow on nearby enemies with no direct line of sight
 					'''
@@ -530,7 +536,8 @@ Mods: {
 				Tooltip2:
 					'''
 					Gives Gifts
-					Gifts explode when hit again
+					Has a chance to explode Gifts
+					Gifts spawns friends when exploding
 					Gifts turn into explosive friends
 					'''
 				DisplayName: Laetitia
@@ -589,7 +596,7 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Extra reach
+					Can be charged and held
 					Deals more damage having more health
 					Increased melee speed on low health
 					Grants Heartreach buff on hit
@@ -619,8 +626,9 @@ Mods: {
 					'The yearning to imitate the human form is sloppily reflected on the E.G.O.
 					As if it were a reminder that it should remain a mere desire.
 					It can deliver a powerful downswing that should be impossible for a human.'
-					Can be charged for 300% increased damage
-					Recovers 25% damage dealt on the first enemy hit on swing (Max 40)
+					Can be charged up to 450% increased damage
+					Full charge deals 600% increased damage
+					Recovers 25% damage dealt on the first enemy hit on swing (Max 30)
 					'''
 				Tooltip2: Don’t you desire a human shell as well?
 				DisplayName: Mimicry
@@ -690,8 +698,8 @@ Mods: {
 					'''
 					'Pink is considered to be the color of warmth and love, but is that true?
 					Can guns really bring peace and love?'
-					Decreased Firing Speed and Accuracy while moving
-					Converts Bullets into High Velocity Bullets
+					Decreased Damage and Increased Fire rate while moving
+					Converts all bullets into High Velocity Bullets while still
 					'''
 				Tooltip2:
 					'''
@@ -816,7 +824,7 @@ Mods: {
 					'The somber design is a reminder that not a sliver of frivolity is allowed for the minds of those who mourn.
 					One handgun symbolizes grief for the dead, while the other symbolizes early lament for the living.'
 					Benefits from Magic damage increases
-					Switches randomly betwwen guns
+					Switches randomly between guns
 					Right click to fire both guns
 					'''
 				Tooltip2:
@@ -997,7 +1005,7 @@ Mods: {
 					Warmth of a Flame - 400% damage on fourth use, Inflict Scorching Embers
 					Matchlight - Inflicts 'On Fire'. 16% increased damage while user is 'On Fire'
 					Scorching Embers - Increases damage taken from on fire debuffs. Counts as 'On Fire'
-					|Footfalls - <right> to inflict Scorching Embers to self and explode, taking 20% of your health
+					|Footfalls - <right> on fourth use to inflict Scorching Embers to self and explode, taking 20% of your health
 					'''
 			}
 
@@ -1297,7 +1305,7 @@ Mods: {
 				PassiveList:
 					'''
 					An Eternal Farewell - Heal the nearest, most injured ally on hit
-					A Token of Friendship - Allies healed by this weapon gain a Pebble, Removing a Pebble costs 25% of your maximum health
+					A Token of Friendship - Allies healed by this weapon gain a 'Pebble', 'Pebble' can be removed at the cost of 25% of their maximum health
 					Pebble - Gain increased life regeneration based on how many other allies have Pebble, Effect is nullified under Potion Sickness
 					|Teardrop - If an ally loses a Pebble, all allies with Pebble take 25% of their maximum health as damage
 					'''
@@ -1356,8 +1364,8 @@ Mods: {
 					'''
 					Ever-repeating Performance - <right> to start a Performance with each movement inflicting buffs to allies and debuffs against enemies
 					Accelerando - True melee hits enhances this EGO's combo, During Movement 1 and above, further enhances this EGO
-					Finale - During Finale, Fully heal and 5% of the damange done by this weapon during the peformance is distributed to all enemies being affecte by the Performance. Maximum of 10000% of this weapon's damage
-					|Al Fine - The Performance never ends, Requires to be in a town to disable
+					Finale - Fully heal health during Finale and deal 5% of this EGO's total damage to all enemies during 'Ever-repeating Performance'. (Maximum of 100000% of the EGO's base damage)
+					|Al Fine - The Performance never ends, Can be stopped by cancelling the buff in towns
 					Fervent Adoration - After repeating the Performance, all allies and enemies are affected by both buffs and non damaging debuffs
 					'''
 				PassiveListRework:
@@ -1477,7 +1485,7 @@ Mods: {
 					Pointless Hate - Shoot stars. After doing enough damage, shoot a laser beam to the nearest high health enemy
 					Meaningless Despair - Create three swords that attacks nearby enemies, Swords deal true damage
 					Senseless Wrath - Rapidly swing an acidic hammer, creating splashes of Acid that inflicts Erosion
-					|Void - Only usable and active when inventory, armor and accessories slots are empty except for this item or Encumbering Stone
+					|Void - 'All Returns to Nihil' effects is massively reduced while wearing armor and accessories
 					This Item is incomplete and unobtainable
 					'''
 				PassiveList1:
@@ -1553,6 +1561,23 @@ Mods: {
 
 			#Philosophy
 			
+			#Religion
+			
+			SoundOfAStarR: {
+				DisplayName: Sound Of A Star
+				Tooltip: Let us meet again as stars.
+				PassiveList:
+					'''
+					Blue Star - <right> to summon Blue Star as a sentry, gains 120% increased damage for each empty sentry slots
+					Into the Star's Embrace - 'Blue Star' periodically creates a sound, damaging you and enemies nearby
+					Penance - Enemies killed by 'Into the Star's Embrace' increases 'Blue Star' damage by 10% (Up to 300%)
+					A Nostalgic Sound - When 'Penance' activates, heal 50 health
+					|Martyr - Non sound of a Star minion can be hit by 'Into the Star's Embrace', Recieve damage when 'Blue Star' is unsummoned
+					I Can Hear The Sound of the Star! - Gains 10% increased damage when hit by 'Into the Star's Embrace'
+					item unobtainable blah blah blah
+					'''
+			}
+
 			LifeForADaredevilR: {
 				DisplayName: Life For A Daredevil
 				Tooltip: Life is only granted to those who hold no fear of death.
@@ -1573,22 +1598,23 @@ Mods: {
 				Tooltip: You’re trembling so much. What makes you so afraid?
 				PassiveList:
 					'''
-					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit (Max 100)
-					Hammer - Deal 25 indirect damage equal to the amount of 'Nail' on an enemy and inflict 'Guilt'
-					Broken to Pieces - Gain 'Leer' equal to 'Nail' consumed by 'Hammer'. Next attack deals bonus damage
-					Leer - Adds flat damage to all indirect damage.
-					|Guilt - Damage taken from this weapon is set to 1. Gain twice as many nails
-					A Crack in the Mind - Removes 'Guilt'
+					Nail - <right> to throw a nail. If the enemy has 'Guilt', inflcits Nail to 2 nearby enemies
+					Hammer - Deal 40 true damage equal to the amount of 'Nail', Consumes 'Nail' when hit 4 times
+					Broken to Pieces - When a 'Nail' is consumed, Gain 1 'Leer' and inflict 1 'Guilt'
+					Guilt - Adds 1 flat damage taken from 'Nail' (Maximum of 20)
+					|Leer - Adds 1 flat damage to damage taken and dealt, Lose 1 every 5 seconds (Maximum of 30)
+					item unobtainable blah blah blah
 					'''
-				PassiveListAleph:
+				CrackInTheMind:
 					'''
-					Nail - Alternate attak to throw a nail, Also applies it to nearby enemies when hit
-					Hammer - Deal 25 bonus damage equal to the amount of 'Nail' on an enemy
-					Broken to Pieces - Increased damage for each 'Nail' activated by 'Hammer' and inflict 'Guilt'
-					Guilt - Take increased bonus damage from 'Hammer'. At certain total of Guilt inflicted, gain 'A Crack in the Mind'
-					|Leer - If the enemy has no 'Guilt', Normal attacks deal no damage and inflict twice the amount of nails
-					A Crack in the Mind - Weapon swings a giant nail and hammer instead, 
+					A Gap in the Mind - Pokes towards wherever you throw a nail, also inflicts 'Nail'
+					A Crack in the Mind - Slams a giant hammer where a hammer is thrown
+					Out of Sight - If an enemy has maximum 'Guilt', Automatically activates 'Please Don't Vanish Like This' against it
+					Please Don't Vanish Like This - Slams the target 5 times with a giant Nail and Hammer and remove all 'Guilt'
+					Silence - Returns to normal when 'Leer' is reduced to 10 or less
 					'''
+				AlephUpgrade: ... - This EGO awakens again when Golem is defeated
+				AlephVersion: ... - When 'Leer' reaches maximum...?
 			}
 
 			#Originals
@@ -1742,7 +1768,12 @@ Mods: {
 			}
 
 			MagicBulletBullet: {
-				Tooltip: ""
+				Tooltip:
+					'''
+					5% increased damage for each allied player (Max 50%)
+					Next hits deal 20% increased damage after passing through an ally
+					ANYONE, YOU SAY?
+					'''
 				DisplayName: Magic Bullet
 			}
 		}
@@ -2757,7 +2788,7 @@ Mods: {
 			MimicryS.DisplayName: Mimicry S
 			MimicryHello.DisplayName: Mimicry Hello
 			MeltyLove.DisplayName: Melty Love
-			MagicBulletBullet.DisplayName: Magic Bullet Bullet
+			MagicBulletBullet.DisplayName: Magic Bullet
 			RoadOfKing.DisplayName: Road Of King
 			RoadOfGold.DisplayName: Road Of Gold
 			KingPortal.DisplayName: King Portal
@@ -2915,6 +2946,22 @@ Mods: {
 			OurGalaxySparkleOrbit.DisplayName: Our Galaxy Sparkle Orbit
 			SwordSharpenedWithTearsRSwordExtra.DisplayName: Sword Sharpened With Tears R Sword Extra
 			RemorseNail.DisplayName: Remorse Nail
+			RemorseHammer.DisplayName: Remorse Hammer
+			RemorseNailEX.DisplayName: Remorse Nail E X
+			RemorseHammerEX.DisplayName: Remorse Hammer E X
+			LaetitiaFriendRocket.DisplayName: Laetitia Friend Rocket
+			LaetitiaExplosion.DisplayName: Laetitia Explosion
+			SoundOfAStarMinion.DisplayName: Sound Of A Star Minion
+			DaredevilJC.DisplayName: Daredevil J C
+			DaredevilJCCut.DisplayName: Daredevil J C Cut
+			SoundOfAStarBlueStar.DisplayName: Blue Star
+			RedMistWristCutter.DisplayName: Wrist Cutter
+			AmritaSarira.DisplayName: Amrita
+			ParadiseLostBaseAir.DisplayName: Paradise Lost
+			RemorseNailEX2.DisplayName: Nail
+			SoundOfAStarBall.DisplayName: Sound Of A Star
+			SmileBobsFriendly.DisplayName: Smile Bobs
+			NihilAttack.DisplayName: Nihil Attack
 		}
 
 		Buffs: {
@@ -3267,7 +3314,85 @@ Mods: {
 
 			Predator: {
 				DisplayName: Predator
-				Description: Mods.LobotomyCorp.Buffs.Predator.Description
+				Description: What careless fool stepped on my baby?
+			}
+
+			Nihil: {
+				DisplayName: Will of Nihil
+				Description:
+					'''
+					+58 defense
+					90% increased summon damage
+					15% increased movement speed
+					6 minion slots
+					Minions inflict Nihil for 5 seconds
+					Allows flight and slowfall
+					'''
+				Description1: +{0} defense
+				Description2: "{0}% increased {1}"
+				Description3: "{0}% increased movement speed"
+				Description4: +{0} minion slots
+				Description5: Allows flight and slowfall
+			}
+
+			NihilDebuff: {
+				DisplayName: Nihil
+				Description: 5% decreased damage and defense
+			}
+
+			SoundOfAStarMinionBuff: {
+				DisplayName: Sound of a Star
+				Description: May we meet again as stars.
+			}
+
+			RemorseLeer: {
+				Description: .......
+				DisplayName: Leer
+			}
+
+			RemorseGuilt: {
+				Description: 9(nine) Cost
+				DisplayName: Guilt
+			}
+
+			RemorseCrack: {
+				Description: When she drives the nail with her hammer, the crack in the mind will grow too wide, and shatter completely.
+				DisplayName: ...
+			}
+
+			NihilWrath: {
+				Description: Mods.LobotomyCorp.Buffs.NihilWrath.Description
+				DisplayName: Nihil Wrath
+			}
+
+			NihilHatred: {
+				Description: Mods.LobotomyCorp.Buffs.NihilHatred.Description
+				DisplayName: Nihil Hatred
+			}
+
+			NihilGreed: {
+				Description: Mods.LobotomyCorp.Buffs.NihilGreed.Description
+				DisplayName: Nihil Greed
+			}
+
+			NihilDespair: {
+				Description: Mods.LobotomyCorp.Buffs.NihilDespair.Description
+				DisplayName: Nihil Despair
+			}
+
+			SoundOfAStarNostalgic: {
+				Description: 10% increased damage
+				DisplayName: That Nostalgic Sound...
+			}
+
+			SoundOfAStarBallBuff: {
+				Description: An envoy of the stars is following you
+				DisplayName: Sound Of A Star
+			}
+
+			SoundOfAStarBlueStarBuff: {
+				DisplayName: Blue Star
+				Description: I can hear the sound of the stars
 			}
 		}
 
@@ -3284,8 +3409,36 @@ Mods: {
 			RedMist.DisplayName: Red Mist
 			WhiteNight.DisplayName: White Night
 			SmileCorpses.DisplayName: Melted Corpses
-			SmileBitsBreakable.DisplayName: Smile Bits Breakable
-			RedMistAlt.DisplayName: Red Mist Alt
+			SmileBitsBreakable.DisplayName: Melted Corpses
+			RedMistAlt.DisplayName: Red Mist
+		}
+
+		DeathMessages: {
+			Matchstick: "{0} was reduced to ashes..."
+			FairyFestival1: "{0} became the fairies' next meal"
+			FairyFestival2: "{0}'s last moments were being devoured by fairies"
+			Hornet1: The worker bees has deemed {0} unfit to rule
+			Hornet2: "{0}'s loyalty was broken"
+			GreenStem1: "{0}'s body crumbled and wilted"
+			GreenStem2: "{0}'s fragile life decomposed"
+			GoldRush1: "{0} was consumed by greed"
+			GoldRush2: "{0} could not find their own happiness"
+			DespairSword1: "{0} fell into despair"
+			DespairSword2: "{0} was stricken with Grief"
+			Pleasure1: "{0}'s head exploded"
+			Pleasure2: "{0}'s brain can't handle the dopamine"
+			Smile1: "{0}'s body was added into the mountain"
+			Smile2: "{0}'s corpse melted into the mass"
+			Smile3: "{0} became one with the others"
+			SoundStar1: "{0} was sucked in by the Blue Star"
+			SoundStar2: "{0} became one with the Blue Star"
+			SoundStar3: "{0} returned to where they came from"
+			SoundStar4: "{0} has reunited with the others"
+			RedMist1: "{0}'s body was reduced into a bloody mist"
+			Redmist3: "{0} was pulverized by the Road of the King"
+			Redmist4: "{0} could not escape her onrush"
+			Stone: "{0}'s friends has died"
+			StoneRemove: "{0}'s pebble was too overbearing"
 		}
 
 		BossChecklistIntegration: {
@@ -3293,6 +3446,18 @@ Mods: {
 				EntryName: Red Mist
 				SpawnInfo: Place [i:LobotomyCorp/DisciplinaryShell] and right click it, can also be obtained by right clicking [i:LobotomyCorp/BlackBox3] while placed during Hardmode if Red Mist has not been defeated (Only in single player)
 			}
+		}
+
+		DamageClasses: {
+			ExtractorSummon.DisplayName: summon E.G.O damage
+			ExtractorRanged.DisplayName: ranged E.G.O damage
+			ExtractorMelee.DisplayName: melee E.G.O damage
+			ExtractorMagic.DisplayName: magic E.G.O damage
+			ExtractorDamage.DisplayName: E.G.O damage
+			ExtractorRed.DisplayName: RED damage
+			ExtractorWhite.DisplayName: WHITE damage
+			ExtractorBlack.DisplayName: BLACK damage
+			ExtractorPale.DisplayName: PALE damage
 		}
 	}
 }

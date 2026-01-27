@@ -1,6 +1,10 @@
 ﻿using LobotomyCorp.Buffs;
+using LobotomyCorp.Items.Aleph;
+using LobotomyCorp.Items.He;
 using LobotomyCorp.Items.Teth;
+using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Items.Zayin;
+using LobotomyCorp.Projectiles;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -237,12 +241,13 @@ namespace LobotomyCorp.NPCs.RedMist
             TwilightLamp,
             Intro,
 
+            EXIdle,
             RedEyesPenitenceIntro,
             WingbeatWield,
             PenitenceSlamCombo,
             DashSlash,
             PenitenceRaise,
-            ShootGeneric,
+            ShootBoth,
             Soda,
             Tough,
 
@@ -457,6 +462,15 @@ namespace LobotomyCorp.NPCs.RedMist
                 case AnimationState.Soda:
                     LookAtPlayer = SodaShoot(npc);
                     break;
+                case AnimationState.ShootBoth:
+                    LookAtPlayer = DoubleShoot(npc);
+                    break;
+                case AnimationState.WristCutterStart:
+                    WristCutterStart(npc);
+                    break;
+                case AnimationState.EXIdle:
+                    EXIdle1(npc);
+                    break;
             }
 
             if (state == AnimationState.GoldRushLoop ||
@@ -576,17 +590,17 @@ namespace LobotomyCorp.NPCs.RedMist
                 else if (npc.localAI[1] < 3)
                 {
                     int dir = npc.spriteDirection;
-                    Texture2D weapon = Mod.Assets.Request<Texture2D>("Items/Zayin/Penitence").Value;
+                    Texture2D weapon = TextureAssets.Item[ModContent.ItemType<Penitence>()].Value;
                     Vector2 weaponOrigin = new Vector2(4, 49);
                     if (npc.localAI[1] == 1)
                     {
                         dir *= -1;
-                        weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/DaCapo").Value;
+                        weapon = TextureAssets.Item[ModContent.ItemType<Items.Aleph.DaCapo>()].Value;
                         weaponOrigin = new Vector2(45, 63);
                     }
                     if (npc.localAI[1] == 2)
                     {
-                        weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Smile").Value;
+                        weapon = TextureAssets.Item[ModContent.ItemType<Smile>()].Value;
                         weaponOrigin = new Vector2(39, weapon.Height - 39);
                     }
                     position = BoneName[BoneLabel.BackWeapon].GetPosition(npc.spriteDirection, i) - Main.screenPosition;
@@ -646,21 +660,21 @@ namespace LobotomyCorp.NPCs.RedMist
                 }
                 else
                 {
-                    Texture2D weapon = Mod.Assets.Request<Texture2D>("Items/Teth/RedEyes").Value;
+                    Texture2D weapon = TextureAssets.Item[ModContent.ItemType<RedEyes>()].Value;
                     Vector2 weaponOrigin = new Vector2(5, weapon.Height - 5);
                     if (npc.localAI[1] == 1)
                     {
-                        weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Mimicry").Value;
+                        weapon = TextureAssets.Item[ModContent.ItemType<Mimicry>()].Value;
                         weaponOrigin = new Vector2(9, weapon.Height - 9);
                     }
                     if (npc.localAI[1] == 2)
                     {
-                        weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Justitia").Value;
+                        weapon = TextureAssets.Item[ModContent.ItemType<Justitia>()].Value;
                         weaponOrigin = new Vector2(12, weapon.Height - 12);
                     }
                     if (npc.localAI[1] == 3)
                     {
-                        weapon = Mod.Assets.Request<Texture2D>("Items/Aleph/Twilight").Value;
+                        weapon = TextureAssets.Item[ModContent.ItemType<Twilight>()].Value;
                         weaponOrigin = new Vector2(12, weapon.Height - 12);
                     }
                     if (npc.ai[0] == (int)AnimationState.HeavenThrow)
@@ -707,7 +721,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
             if (BoneName[BoneLabel.Gauntlet].Visible)
             {
-                Texture2D weapon = Mod.Assets.Request<Texture2D>("Projectiles/GoldRushPunches").Value;
+                Texture2D weapon = TextureAssets.Projectile[ModContent.ProjectileType<GoldRushPunches>()].Value;
                 position = BoneName[BoneLabel.Gauntlet].GetPosition(npc.spriteDirection, i);
                 rot = BoneName[BoneLabel.LowerArmL].GetRotation(npc.spriteDirection, i) + (npc.spriteDirection == -1 ? 2.355f : 2.355f - 1.57f);
                 Rectangle gauntletFrame = weapon.Frame();
@@ -755,6 +769,25 @@ namespace LobotomyCorp.NPCs.RedMist
                 }
             }
             sp.Draw(tex, position, frame, color, rot, weaponOrigin, BoneName[weapon].GetScale(), speffect, 0);
+        }
+
+        /// <summary>
+        /// 0 - Swords, 1 - Hammers, 2 - Fists, 3 - Spears, 4 - Gun, 5 - Rifle, 6 - Cannon
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="egoType"></param>
+        /// <returns></returns>
+        public int GetWeaponType(int egoType)
+        {
+            if (egoType == ModContent.ItemType<Regret>() ||
+                egoType == ModContent.ItemType<Lantern>() ||
+                egoType == ModContent.ItemType<Lumber>() ||
+                egoType == ModContent.ItemType<Lamp>() ||
+                egoType == ModContent.ItemType<Smile>())
+            {
+                return 1;
+            }
+            return 0;
         }
 
         public void UpdateWeaponScale(int type, int which)
@@ -2341,6 +2374,30 @@ namespace LobotomyCorp.NPCs.RedMist
         }
 
         /// <summary>
+        /// -1 Front, +1 Back. Length 0 to 1 of ArmLength. rot uses degrees
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="length"></param>
+        /// <param name="rot"></param>
+        /// <param name="speed"></param>
+        /// <param name="which"></param>
+        /// <param name="updateIK"></param>
+        public void PoseArm(NPC npc, float length, float rot, float speed, int which = 0, bool updateIK = true)
+        {
+            rot = MathHelper.ToRadians(rot);
+            if (which < 1)
+            {
+                BoneName[BoneLabel.HandLIK].ChangeOffset(new Vector2(ArmLength() * length, 4).RotatedBy(rot), speed);
+            }
+            if (which > -1)
+            {
+                BoneName[BoneLabel.HandRIK].ChangeOffset(new Vector2(ArmLength() * length, 4).RotatedBy(rot), speed);
+            }
+            if (updateIK)
+                CalculateHandIK();
+        }
+
+        /// <summary>
         /// Adds (rot) value to LowerArmX's rotation and gives result to XWeapon, -1 Front, +1 Back
         /// </summary>
         /// <param name="npc"></param>
@@ -2538,14 +2595,15 @@ namespace LobotomyCorp.NPCs.RedMist
             if (y < 0)
                 y = 0;
             BoneName[BoneLabel.FeetLIK].ChangeOffset(new Vector2(-12 + x, y * -1));
-            y = 14 * (float)Math.Cos(MathHelper.ToRadians((float)npc.frameCounter * speed - 20));
+            y = 30 * (float)Math.Cos(MathHelper.ToRadians((float)npc.frameCounter * speed - 20));
             if (y > 0)
                 y = 0;
             BoneName[BoneLabel.FeetRIK].ChangeOffset(new Vector2(0 - x, y));
 
-            BoneName[BoneLabel.HandLIK].ChangeOffset(new Vector2(-ArmLength() + 4, 2), 3);
-            BoneName[BoneLabel.FrontWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmL].GetRotation() + MathHelper.ToRadians(-20), 0.2f);
+            int type = GetWeaponType((int)npc.localAI[1]);
+            HandIdleRunPose(npc, type, 1, true);
 
+            type = GetWeaponType((int)npc.localAI[3]);
             if ((int)npc.localAI[3] == ModContent.ItemType<Tough>())
             {
                 Vector2 position = BoneName[BoneLabel.UpperArmR].GetPosition();
@@ -2561,11 +2619,10 @@ namespace LobotomyCorp.NPCs.RedMist
             }
             else
             {
-                BoneName[BoneLabel.HandRIK].ChangeOffset(new Vector2(-ArmLength() + 8, 2), 3);
-                BoneName[BoneLabel.BackWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmR].GetRotation() + MathHelper.ToRadians(-15), 0.2f);
-                CalculateHandIK();
+                HandIdleRunPose(npc, type, 1, true);
             }
-            
+            CalculateHandIK();
+
             BoneName[BoneLabel.Pelvis].ChangeRotation(MathHelper.ToRadians(-30), 0.0872f);
             BoneName[BoneLabel.Pelvis].ChangeOffset(new Vector2(16, -44), 3);
 
@@ -2827,10 +2884,153 @@ namespace LobotomyCorp.NPCs.RedMist
             AimArmAtTarget(npc, ArmLength() - 4 + 4 * blowback, 6f, 0);
 
             BoneName[BoneLabel.FrontWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmR].GetRotation());
+            BoneName[BoneLabel.BackWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmL].GetRotation());
             IdleBody(npc);
 
             return true;
         }
+        
+        void WristCutterStart(NPC npc)
+        {
+            if (npc.frameCounter < 30)
+            {
+                PoseArm(npc, 0.5f, 170, 6f);
+                BoneName[BoneLabel.FrontWeapon].ChangeRotation(MathHelper.ToRadians(90), 1f);
+                BoneName[BoneLabel.BackWeapon].ChangeRotation(MathHelper.ToRadians(90), 1f);
+                
+                IdleBody(npc);
+            }
+            else if (npc.frameCounter < 90)
+            {
+                PoseArm(npc, 1f, 135, 6f, -1, false);
+                PoseArm(npc, 1f, 45, 6f, 1);
+
+                IdleBody(npc);
+            }
+            else if (npc.frameCounter < 120)
+            {
+                PoseArm(npc, 1f, 0, 6f, 1, false);
+                PoseArm(npc, 0.4f, -20, 6f, -1);
+                BoneName[BoneLabel.FrontWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmL].GetRotation());
+
+                IdleBody(npc);
+            }
+            else if (npc.frameCounter < 180)
+            {
+                float time = ((float)npc.frameCounter % 60f)/ 29f;
+                if (time > 1f)
+                    time = 1f;
+                PoseArm(npc, 1f, 45 * time, 16f, 1, false);
+                time = time == 1 ? 1 : 1 - (float)Math.Pow(2, -10 * time);
+                PoseArm(npc, 0.4f, -20 + 210 * time, 16f, -1);
+                BoneName[BoneLabel.FrontWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmL].GetRotation());
+
+                BoneName[BoneLabel.FeetLIK].ChangeOffset(new Vector2(-12, 0), 10);
+                BoneName[BoneLabel.FeetRIK].ChangeOffset(new Vector2(12, 0), 10);
+
+                CalculateLegIK();
+
+                BoneName[BoneLabel.Pelvis].ChangeOffset(new Vector2(0, -45), 10);
+                BoneName[BoneLabel.Pelvis].ChangeRotation(MathHelper.ToRadians(-65), 0.0872f);
+
+                BoneName[BoneLabel.Hair].ChangeRotation(MathHelper.ToRadians(140), 0.0872f);
+            }
+            else if (npc.frameCounter < 210)
+            {
+                PoseArm(npc, .3f, 75f, 6f, 1, false);
+                float time = ((float)npc.frameCounter % 30f) / 14f;
+                time = time >= 1 ? 1 : 1 - (float)Math.Pow(2, -10 * time);
+                PoseArm(npc, 0.4f + 0.6f * time, 190 - 280 * time, 16f, -1);
+
+                BoneName[BoneLabel.FeetLIK].ChangeOffset(new Vector2(-18, 0), 10);
+                BoneName[BoneLabel.FeetRIK].ChangeOffset(new Vector2(0, 0), 10);
+
+                CalculateLegIK();
+
+                BoneName[BoneLabel.Pelvis].ChangeOffset(new Vector2(0, -70), 10);
+                BoneName[BoneLabel.Pelvis].ChangeRotation(MathHelper.ToRadians(-90), 0.0872f);
+
+                BoneName[BoneLabel.Hair].ChangeRotation(MathHelper.ToRadians(90), 0.0872f);
+            }
+            else if (npc.frameCounter >= 240 && npc.frameCounter < 270)
+            {
+                float time = ((float)npc.frameCounter % 30f) / 29f;
+                PoseArm(npc, .3f + .7f * time, 75f + 105f * time, 6f, 1, false);
+                PoseArm(npc, 1f, -90 + 270 * time, 16f, -1);
+                BoneName[BoneLabel.FrontWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmL].GetRotation());
+                BoneName[BoneLabel.BackWeapon].ChangeRotation(BoneName[BoneLabel.LowerArmR].GetRotation());
+
+                BoneName[BoneLabel.FeetLIK].ChangeOffset(new Vector2(-12, 0), 10);
+                BoneName[BoneLabel.FeetRIK].ChangeOffset(new Vector2(12, 0), 10);
+
+                CalculateLegIK();
+
+                BoneName[BoneLabel.Pelvis].ChangeOffset(new Vector2(0, -65), 10);
+                BoneName[BoneLabel.Pelvis].ChangeRotation(MathHelper.ToRadians(-45), 0.0872f);
+
+                BoneName[BoneLabel.Hair].ChangeRotation(MathHelper.ToRadians(140), 0.0872f);
+            }
+        }
+
+        /// <summary>
+        /// -1 Front, 1 Back
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="type"></param>
+        /// <param name="dir"></param>
+        /// <param name="run"></param>
+        void HandIdleRunPose(NPC npc, int type, int dir, bool run = false)
+        {
+            BoneLabel Hand = dir == -1 ? BoneLabel.HandLIK : BoneLabel.HandRIK;
+            BoneLabel Weapon = dir == -1 ? BoneLabel.FrontWeapon : BoneLabel.BackWeapon;
+            if (type == 0)
+            {
+                Vector2 offset = run ? new Vector2(-ArmLength() + 6 + 2 * dir, 2) : new Vector2(4 * dir, ArmLength() - 1);
+                BoneName[Hand].ChangeOffset(offset, 3);
+                float rot = run ? -17.5f + 2.5f * dir : -60 + 15 * dir;
+                BoneName[Weapon].ChangeRotation(BoneName[Weapon].GetParent.GetRotation() + MathHelper.ToRadians(rot));// * npc.spriteDirection);
+            }
+            else if (type == 1)
+            {
+                BoneName[Hand].ChangeOffset(new Vector2(8, 0).RotatedBy(-0.523599f), 3);
+                BoneName[Weapon].ChangeRotation(BoneName[Weapon].GetParent.GetRotation() + MathHelper.ToRadians(-60));
+            }
+            else if (type == 4)
+            {
+                Vector2 position = BoneName[Hand].GetParent.GetParent.GetPosition();
+                Vector2 delta = npc.GetTargetData().Center - position;
+                delta.Normalize();
+                float rot = (float)Math.Atan2(delta.Y, delta.X * npc.spriteDirection);
+
+                float blowback = 1f;
+                ArmSwing(npc, ArmLength() - 4 + 4 * blowback, rot, 6f, 1);
+                BoneName[Weapon].ChangeRotation(BoneName[Weapon].GetParent.GetRotation());
+            }
+        }
+
+        // 1 - Front Weapon, 3 - Back Weapon
+        void EXIdle1(NPC npc)
+        {
+            BoneName[BoneLabel.FeetLIK].ChangeOffset(new Vector2(-12, 0), 3f);
+            BoneName[BoneLabel.FeetRIK].ChangeOffset(new Vector2(0, 0), 3);
+
+            CalculateLegIK();
+
+            int type = GetWeaponType((int)npc.localAI[1]);
+            HandIdleRunPose(npc, type, -1);
+
+            type = GetWeaponType((int)npc.localAI[3]);
+            HandIdleRunPose(npc, type, 1);
+
+            CalculateHandIK();
+
+            BoneName[BoneLabel.Pelvis].ChangeOffset(new Vector2(0, -76 + 0.25f * (float)Math.Sin(MathHelper.ToRadians((float)npc.frameCounter * 4))), 3);
+            BoneName[BoneLabel.Pelvis].ChangeRotation(MathHelper.ToRadians(-90 + 2 * (float)Math.Sin(MathHelper.ToRadians((float)npc.frameCounter * 4))), 0.0872f);
+
+            BoneName[BoneLabel.Hair].ChangeRotation(MathHelper.ToRadians(90), 0.0872f);
+        }
+
+
         #endregion
     }
 }

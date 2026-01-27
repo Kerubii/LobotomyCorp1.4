@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.Localization;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 
 namespace LobotomyCorp.Buffs
 {

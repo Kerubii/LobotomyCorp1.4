@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,6 +10,15 @@ namespace LobotomyCorp.Projectiles
 {
 	public class WingbeatFairy : ModProjectile
 	{
+        public static Asset<Texture2D> Target;
+        public static Asset<Texture2D> Target2;
+
+        public override void Load()
+        {
+            Target = Mod.Assets.Request<Texture2D>("Projectiles/WingbeatTarget");
+            Target2 = Mod.Assets.Request<Texture2D>("Projectiles/WingbeatTarget2");
+        }
+
 		public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 6;
         }

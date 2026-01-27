@@ -1,3 +1,4 @@
+using LobotomyCorp.Visuals.ParticlesAura;
 using LobotomyCorp.Players;
 using Terraria;
 using Terraria.ID;
@@ -18,6 +19,8 @@ namespace LobotomyCorp.Buffs
             player.detectCreature = true;
             player.endurance -= 0.1f;
             player.GetModPlayer<LobotomyTethPlayer>().RedEyesAlerted = true;
+            //LobotomyModPlayer.ModPlayer(player).CurrentAura.Add(new RedEyesEye());
+            //LobotomyModPlayer.ModPlayer(player).CurrentAura.Add(new RedEyesMist());
         }
 
         public override bool RightClick(int buffIndex)

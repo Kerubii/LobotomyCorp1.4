@@ -1,16 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Aleph;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using ReLogic.Content;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -19,6 +21,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LobotomyCorp.Players
 {
@@ -46,6 +49,10 @@ namespace LobotomyCorp.Players
         public int RedEyesMealMax = 60 * 8;
 
         public bool RemorseHammerTime = false;
+        public int RemorseNailInflictMax = 100;
+        public int RemorseLeer = 0;
+        public int RemorseLeerMax = 30;
+        public int RemorseDecay = 0;
 
         public int TodaysExpressionFace = 0;
         public int TodaysExpressionTimer = 0;
@@ -65,7 +72,9 @@ namespace LobotomyCorp.Players
             RedEyesPredator = false;
             RedEyesOpacity = 0f;
 
+            RemorseNailInflictMax = 100;
             RemorseHammerTime = false;
+            RemorseLeerMax = 30;
 
             TodaysExpressionTimerMax = 300;
             TodaysExpressionActive = false;
@@ -103,6 +112,24 @@ namespace LobotomyCorp.Players
             }
         }
 
+        public override void PreUpdate()
+        {
+            if (RemorseLeer > 0)
+            {
+                Player.AddBuff(ModContent.BuffType<RemorseLeer>(), 2);
+                if (RemorseLeer >= RemorseLeerMax)
+                {
+                    Player.AddBuff(ModContent.BuffType<RemorseCrack>(), 2);
+                }
+                RemorseDecay--;
+                if (RemorseDecay <= 0)
+                {
+                    RemorseDecay = 60 * 5;
+                    RemorseLeer--;
+                }
+            }
+        }
+
         public override void PostUpdate()
         {
             if (TodaysExpressionActive)
@@ -113,6 +140,18 @@ namespace LobotomyCorp.Players
                     TodayExpressionChangeFace(Main.rand.Next(5));
                 }
             }
+
+            if (RemorseHammerTime)
+            {
+                if (RemorseLeer >= 10)
+                    Player.AddBuff(ModContent.BuffType<RemorseCrack>(), 2);
+
+                if (Player.ownedProjectileCounts[ModContent.ProjectileType<RemorseNailEX>()] == 0)
+                {
+                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseNailEX>(), 1, 0, Player.whoAmI);
+                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseHammerEX>(), 1, 0, Player.whoAmI);
+                }
+            }
         }
 
         public override void UpdateBadLifeRegen()
@@ -120,6 +159,14 @@ namespace LobotomyCorp.Players
             if (WristCutterScars)
             {
                 Player.lifeRegen = 0;
+            }
+        }
+
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+        {
+            if (RemorseLeer > 0)
+            {
+                modifiers.FinalDamage.Flat += RemorseLeer;
             }
         }
 
@@ -176,6 +223,14 @@ namespace LobotomyCorp.Players
             }
         }
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            if (RemorseLeer > 0)
+            {
+                modifiers.FlatBonusDamage += RemorseLeer;
+            }
+        }
+
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
             if (RedEyesOpacity > 0f)
@@ -224,6 +279,33 @@ namespace LobotomyCorp.Players
                 case 4://Angry
                     return Buffs.TodaysLook.TODAYDAMAGEANGRY;
             }
+        }
+
+        public void RemorseGainLeer(int amount)
+        {
+            RemorseDecay = 60 * 5;
+            RemorseLeer += amount;
+            if (RemorseLeer > RemorseLeerMax)
+            {
+                RemorseLeer = RemorseLeerMax;
+            }
+        }
+
+        public void RemorseApplyNail(int target, bool big = false)
+        {
+
+            int type = ModContent.ProjectileType<RemorseNail>();
+            if (big)
+                type = ModContent.ProjectileType<RemorseNailEX2>();
+
+            if (!big)
+            {
+                if (LobotomyGlobalNPC.RemorseGetNailAmount(target) > RemorseLeerMax)
+                    return;
+            }
+            Vector2 position = Main.npc[target].Center;
+            int real = target + 1;
+            Projectile.NewProjectile(Player.GetSource_FromThis(), position, Vector2.Zero, type, 1, 0, Player.whoAmI, -1, real);
         }
 
         public bool RedEyesEitherHeld => Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>() || Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Teth.RedEyes>();

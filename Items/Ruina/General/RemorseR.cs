@@ -16,13 +16,17 @@ namespace LobotomyCorp.Items.Ruina.General
 	{
         public override bool IsLoadingEnabled(Mod mod)
         {
-			return false;
-            //return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+			return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 
         public override void SetDefaults() 
 		{
-            Item.damage = 1;
+            Item.damage = 30;
 			Item.DamageType = DamageClass.Default;
 			Item.width = 24;
 			Item.height = 24;
@@ -33,9 +37,27 @@ namespace LobotomyCorp.Items.Ruina.General
 			Item.value = 10000;
 			Item.rare = ModContent.RarityType<TethR>();
 			Item.UseSound = SoundID.Item1;
-            Item.shoot = ModContent.ProjectileType<RemorseNail>();
-            Item.shootSpeed = 1f;
+            Item.shoot = ModContent.ProjectileType<RemorseHammer>();
+            Item.shootSpeed = 16f;
 			Item.autoReuse = true;            
 		}
+
+        public override bool AltFunctionUse(Player player)
+        {
+            return true;
+        }
+
+        public override float UseSpeedMultiplier(Player player)
+        {
+            if (player.altFunctionUse == 2)
+                return 1.5f;
+            return 1f;
+        }
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (player.altFunctionUse == 2)
+                type = ModContent.ProjectileType<RemorseNail>();
+        }
 	}
 }

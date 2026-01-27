@@ -55,11 +55,11 @@ namespace LobotomyCorp.Projectiles
 
             if (Projectile.ai[0] == 0) //Ready Swing
             {
-                Projectile.scale = 0.8f;
+                Projectile.scale = 1f;
                 Projectile.ai[1]++;
                 if (Projectile.ai[1] > 8)
                 {
-                    projOwner.velocity.Y -= 6f;
+                    //projOwner.velocity.Y -= 6f;
                     Projectile.ai[0]++;
                     Projectile.ai[1] = 0;
                 }
@@ -68,7 +68,7 @@ namespace LobotomyCorp.Projectiles
             else if (Projectile.ai[0] == 1) //Raise up
             {
                 if (Projectile.scale < 1f)
-                    Projectile.scale += 0.01f;
+                    Projectile.scale += 0.05f;
                 if ((dir ==  1 && Projectile.rotation > MathHelper.ToRadians(-140)) ||
                     (dir == -1 && Projectile.rotation < MathHelper.ToRadians(320)))
                 {
@@ -76,8 +76,8 @@ namespace LobotomyCorp.Projectiles
                 }
                 else
                 {
-                    Projectile.scale = 1f;
-                    projOwner.velocity.Y = 6f;
+                    Projectile.scale = 1.6f;
+                    //projOwner.velocity.Y = 6f;
                     Projectile.ai[0]++;
                 }
             }
@@ -110,8 +110,8 @@ namespace LobotomyCorp.Projectiles
                 if (Projectile.ai[1] == 0 && Main.myPlayer == Projectile.owner)
                 {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + new Vector2(20, 0).RotatedBy(Projectile.rotation + 1.57f * dir), Vector2.Zero, ModContent.ProjectileType<SmileShockwave>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.rotation);
-                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Danggo_Lv3_Atk") with { Volume = 0.5f }, Projectile.Center);
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SmileScream>(), Projectile.damage / 5, 0.1f, Projectile.owner, 0, 5, 1);
+                    SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Danggo_Lv3_Atk") with { Volume = 0.3f }, Projectile.Center);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(100 * projOwner.direction, 0), ModContent.ProjectileType<SmileScream>(), Projectile.damage / 3, 0.1f, Projectile.owner, 0, 5, 1);
 
                 }
                 Projectile.ai[1]++;
@@ -317,7 +317,7 @@ namespace LobotomyCorp.Projectiles
             {
                 if (Projectile.ai[0] == 5 && Main.myPlayer == Projectile.owner && Projectile.ai[1] > 0)
                 {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, Projectile.type, Projectile.damage, Projectile.knockBack, Projectile.owner, 0, Projectile.ai[1] - 1, 1);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Projectile.velocity, Projectile.velocity, Projectile.type, Projectile.damage, Projectile.knockBack, Projectile.owner, 0, Projectile.ai[1] - 1, 1);
 
                     float random = Main.rand.NextFloat(1.00f);
                     for (int i = 0; i < 28; i++)

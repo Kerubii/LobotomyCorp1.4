@@ -73,7 +73,7 @@ namespace LobotomyCorp.Projectiles
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            modifiers.FinalDamage *= Projectile.penetrate / 8f;
+            modifiers.FinalDamage *= Projectile.penetrate / 16f;
         }
 
         public override bool PreDraw(ref Color lightColor)

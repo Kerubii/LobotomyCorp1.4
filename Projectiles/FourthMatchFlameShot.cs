@@ -1,11 +1,12 @@
-﻿using System;
-using LobotomyCorp.ModSystems;
+﻿using LobotomyCorp.ModSystems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Projectiles
@@ -184,7 +185,9 @@ namespace LobotomyCorp.Projectiles
             player.statLife -= Projectile.damage;
             if (player.statLife <= 0)
             {
-                player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was reduced to ashes..."), Projectile.damage, 1);
+                NetworkText text = NetworkText.FromKey("Mods.LobotomyCorp.DeathMessages.Matchstick", player.name);
+                PlayerDeathReason playerDeath = PlayerDeathReason.ByCustomReason(text);
+                player.KillMe(playerDeath, Projectile.damage, 1);
             }
             else
             {

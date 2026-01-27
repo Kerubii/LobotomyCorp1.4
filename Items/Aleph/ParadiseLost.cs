@@ -1,4 +1,6 @@
+using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -20,7 +22,7 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void SetDefaults()
         {
-            Item.damage = 66;
+            Item.damage = 72;
             Item.DamageType = DamageClass.Magic; ;
             Item.mana = 15;
             Item.width = 40;
@@ -36,7 +38,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<Projectiles.ParadiseLostBase>();
             Item.shootSpeed = 14f;
-            Item.noUseGraphic = true;
+            //Item.noUseGraphic = true;
             EGORiskLevel = RiskLevel.Aleph;
         }
 
@@ -52,26 +54,69 @@ namespace LobotomyCorp.Items.Aleph
             int x = (int)(position.X / 16), y = (int)(position.Y / 16);
             int add = Main.rand.Next(3);
             int dir = Main.rand.NextBool(2)? -1 : 1;
+            bool spawn = false;
             for (int i = -1; i < 2; i++)
             {
                 if (Main.tile[x + 2 * i, y].HasTile && Main.tileSolid[Main.tile[x + 2 * i, y].TileType] && Main.tileSolidTop[Main.tile[x + 2 * i, y].TileType])
                 {
                     continue;
                 }
-                for (int j = 0; j < 20; j++)
+                // 8
+
+                int limit = 10;
+                if (spawn)
+                    limit = 20;
+                for (int j = 0; j < limit; j++)
                 {
                     Tile tile = Main.tile[x + 2 * i, y + j];
                     if (tile.HasTile && Main.tileSolid[tile.TileType])
                     {
+                        spawn = true;
                         position = new Vector2(Main.MouseWorld.X + 32 * i + Main.rand.Next(-8, 9), (y + j) * 16 - 8);
                         Vector2 speed = Main.MouseWorld - position;
                         if (Main.myPlayer == player.whoAmI)
-                            Projectile.NewProjectile(source, position, speed, Item.shoot, damage, knockback, player.whoAmI, (1 + i + add) * dir);
+                            Projectile.NewProjectile(source, position, speed, type, damage, knockback, player.whoAmI, (1 + i + add) * dir);
                         break;
                     }
                 }
             }
+            if (!spawn)
+            {
+                float randRot = Main.rand.NextFloat(6.28f);
+                for (int i = 0; i < 3; i++)
+                {
+                    float randRotOff = Main.rand.NextFloat(0.98f);
+                    float rot = randRot + 2.093f * i + randRotOff;
+
+                    position = Main.MouseWorld + new Vector2(96, 0).RotatedBy(rot);
+                    Vector2 speed = Main.MouseWorld - position;
+                    Projectile.NewProjectile(source, position, speed, type, damage, knockback, player.whoAmI, (1 + i + add) * dir, 1);
+                }
+            }
             return false;
+        }
+
+        public override void UseStyle(Player player, Rectangle heldItemFrame)
+        {
+            player.itemLocation = player.MountedCenter + new Vector2(-5 * player.direction, 22);
+            player.itemRotation = MathHelper.ToRadians(-30 * player.direction);
+            float time = player.itemAnimation / (float)player.itemAnimationMax;
+            if (time > 0.7f)
+            {
+                time = (time - .7f) / .3f;
+                time *= time * time;
+                player.itemLocation.Y -= 16 * time;
+                player.itemRotation -= MathHelper.ToRadians(30 * player.direction * time);
+            }
+        }
+
+        public override void UseItemFrame(Player player)
+        {
+            float time = player.itemAnimation / (float)player.itemAnimationMax;
+            if (time < 0.8f)
+            {
+                player.bodyFrame.Y = player.bodyFrame.Height * 3;
+            }
         }
 
         public override void AddRecipes()
@@ -80,7 +125,7 @@ namespace LobotomyCorp.Items.Aleph
             .AddIngredient(ItemID.AngelWings)
             .AddIngredient(ItemID.SoulofNight, 5)
             .AddIngredient(ItemID.SoulofLight, 10)
-            .AddIngredient(ItemID.LightShard)
+            .AddIngredient(ItemID.HallowedBar, 6)
             .AddTile(Mod, "BlackBox3")
             .Register();
         }

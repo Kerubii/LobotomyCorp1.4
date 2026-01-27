@@ -13,10 +13,11 @@ namespace LobotomyCorp.ModSystems
     {
         public override void PostUpdateEverything()
         {
-            if (Main.netMode != NetmodeID.Server && Filters.Scene["LobotomyCorp:RedMistOverlay"].IsActive() && !NPC.AnyNPCs(ModContent.NPCType<NPCs.RedMist.RedMist>()))
+            // Is in RedMistScene
+            /*if (Main.netMode != NetmodeID.Server && Filters.Scene["LobotomyCorp:RedMistOverlay"].IsActive() && !NPC.AnyNPCs(ModContent.NPCType<NPCs.RedMist.RedMist>()))
             {
                 Filters.Scene["LobotomyCorp:RedMistOverlay"].Deactivate();
-            }
+            }*/
             if (Main.netMode != NetmodeID.Server)
             {
                 if (FragmentShader)
@@ -117,6 +118,14 @@ namespace LobotomyCorp.ModSystems
                 ItemID.SoulofNight
             });
             RecipeGroup.RegisterGroup("LobotomyCorp:DualSoul", rec);
+
+            rec = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + "Boss Mech Souls",
+            [
+                ItemID.SoulofSight,
+                ItemID.SoulofMight,
+                ItemID.SoulofFright
+            ]);
+            RecipeGroup.RegisterGroup("LobotomyCorp:MechTrioSoul", rec);
         }
 
         public override void ModifyScreenPosition()

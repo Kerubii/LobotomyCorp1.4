@@ -7,10 +7,14 @@ using Terraria.ModLoader;
 using Terraria.Chat;
 using LobotomyCorp;
 using Terraria.GameContent;
+using LobotomyCorp.Projectiles;
+using Terraria.Localization;
+using Terraria.DataStructures;
+using LobotomyCorp.Visuals.DeathAnimations;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
-    class HeavenBoss : ModProjectile
+    class HeavenBoss : LobProjectile
     {
         public override void SetStaticDefaults()
         {
@@ -29,6 +33,9 @@ namespace LobotomyCorp.NPCs.RedMist
             Projectile.extraUpdates = 5;
             Projectile.hostile = true;
             Projectile.friendly = false;
+
+            LobotomyGlobalProjectile.SetDeathAnimation(Projectile, ModContent.GetInstance<LobDeathBHeaven>().Type);
+            //DeathAnimation = ModContent.GetInstance<LobDeathBHeaven>().Type;
         }
 
         public override void AI()

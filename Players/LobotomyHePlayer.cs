@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Aleph;
 using LobotomyCorp.Items.Waw;
@@ -10,12 +7,16 @@ using LobotomyCorp.PlayerDrawEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
@@ -219,8 +220,10 @@ namespace LobotomyCorp.Players
                         LobotomyHePlayer modPlayer = p.GetModPlayer<LobotomyHePlayer>();
                         if (modPlayer.OurGalaxyStone && modPlayer.OurGalaxyOwner == OurGalaxyOwner)
                         {
-                            damageSource.SourceCustomReason = p.name + "'s friends has died";
-                            p.KillMe(damageSource, p.statLifeMax2 * 4, 1);
+                            NetworkText text = NetworkText.FromKey("Mods.LobotomyCorp.DeathMessages.Stone", p.name);
+                            PlayerDeathReason playerDeath = PlayerDeathReason.ByCustomReason(text);
+                            p.Hurt(playerDeath, p.statLifeMax2 / 4, 0, dodgeable: false, scalingArmorPenetration: 1);
+                            //p.KillMe(damageSource, p.statLifeMax2 * 4, 1);
                         }
                     }
                 }

@@ -9,11 +9,19 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Microsoft.CodeAnalysis;
 using LobotomyCorp.Players;
+using ReLogic.Content;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
 	public class OurGalaxyComet : ModProjectile
 	{
+		public static Asset<Texture2D> Stone;
+
+        public override void Load()
+        {
+			Stone = ModContent.Request<Texture2D>(Texture + "Stone");
+        }
+
         public override void SetStaticDefaults()
         {
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 16;
@@ -67,7 +75,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			int healTarget = -1;
 			foreach (Player p in Main.ActivePlayers)
 			{
-				if (p.whoAmI != Projectile.owner && !p.dead && p.team == Main.player[Projectile.owner].team)
+				if (p.whoAmI != Projectile.owner && !p.dead && p.team != 0 && p.team == Main.player[Projectile.owner].team)
 				{
 					if (hp == -1 || p.statLife < hp)
 					{
@@ -113,7 +121,7 @@ namespace LobotomyCorp.Projectiles.Realized
 				Main.EntitySpriteDraw(tex, pos, frame, Color.White * opacity, Projectile.rotation, new Vector2(53, 15), 1f, 0, 0);
 			}
 
-			tex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/OurGalaxyStone").Value;
+			tex = Stone.Value;
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(53, 15), 1f, 0, 0);
 			return false;
         }

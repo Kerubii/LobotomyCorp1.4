@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
+using System.Xml.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
@@ -9,7 +11,20 @@ namespace LobotomyCorp.Projectiles
 {
     public class ParadiseLostBase : ModProjectile
 	{
-		public override void SetStaticDefaults() {
+        public static Asset<Texture2D> Scythe;
+        public static Asset<Texture2D> Spear;
+        public static Asset<Texture2D> Staff;
+        public static Asset<Texture2D> Air;
+
+        public override void Load()
+        {
+            Scythe = Mod.Assets.Request<Texture2D>("Projectiles/ParadiseScythe");
+            Spear = Mod.Assets.Request<Texture2D>("Projectiles/ParadiseSpear");
+            Staff = Mod.Assets.Request<Texture2D>("Projectiles/ParadiseStaff");
+            Air = Mod.Assets.Request<Texture2D>("Projectiles/ParadiseLostBaseAir");
+        }
+
+        public override void SetStaticDefaults() {
             // DisplayName.SetDefault("Judgement");
         }
 
@@ -102,20 +117,19 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
-            string texname = "Projectiles/Paradise";
-            switch(Math.Abs(Projectile.ai[0] % 3))
+            Texture2D tex;
+            switch (Math.Abs(Projectile.ai[0] % 3))
             {
                 case 1:
-                    texname += "Scythe";
+                    tex = Scythe.Value;
                     break;
                 case 2:
-                    texname += "Spear";
+                    tex = Spear.Value;
                     break;
                 default:
-                    texname += "Staff";
+                    tex = Staff.Value;
                     break;
-            }
-            Texture2D tex = Mod.Assets.Request<Texture2D>(texname).Value;
+            }            
             Vector2 Position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.height / 2);//.RotatedBy(Projectile.rotation);
             Vector2 origin = tex.Size();
             origin.X /= 2;
@@ -131,7 +145,7 @@ namespace LobotomyCorp.Projectiles
                     scale = 0.9f;
                 Main.EntitySpriteDraw(tex, Position + posOffset, tex.Frame(), lightColor, Projectile.rotation + rotOffset, origin, Projectile.scale * scale, effect, 0);
             }
-            tex = Mod.Assets.Request<Texture2D>("Projectiles/ParadiseScythe").Value;
+            tex = Scythe.Value;
             float scalep = 0.3f;
             float extra = 0;
             if (Projectile.ai[0] < 0)
@@ -142,17 +156,22 @@ namespace LobotomyCorp.Projectiles
             Vector2 PosOffset = new Vector2(8 * (float)Math.Sin(Projectile.localAI[1]), 0);
             Main.EntitySpriteDraw(tex, Position + PosOffset, tex.Frame(), lightColor, RotOffset, origin, Projectile.scale * scalep, effect, 0);
 
-            tex = Mod.Assets.Request<Texture2D>("Projectiles/ParadiseSpear").Value;
+            tex = Spear.Value;
             RotOffset = MathHelper.ToRadians(30) * (float)Math.Sin(Projectile.localAI[1] + 2.0944f) + extra;
             PosOffset.X = (8 * (float)Math.Sin(Projectile.localAI[1] + 2.0944f));
             Main.EntitySpriteDraw(tex, Position + PosOffset, tex.Frame(), lightColor, RotOffset, origin, Projectile.scale * scalep, effect, 0);
 
-            tex = Mod.Assets.Request<Texture2D>("Projectiles/ParadiseStaff").Value;
+            tex = Staff.Value;
             RotOffset = MathHelper.ToRadians(30) * (float)Math.Sin(Projectile.localAI[1] + 2.0944f * 2) + extra;
             PosOffset.X = (8 * (float)Math.Sin(Projectile.localAI[1] + 2.0944f * 2));
             Main.EntitySpriteDraw(tex, Position + PosOffset, tex.Frame(), lightColor, RotOffset, origin, Projectile.scale * scalep, effect, 0);
-
+            
             tex = TextureAssets.Projectile[Projectile.type].Value;
+            if (Projectile.ai[1] != 0)
+            {
+                tex = Air.Value;
+                origin = tex.Frame().Size() / 2;
+            }
             Main.EntitySpriteDraw(tex, Position, tex.Frame(), lightColor, 0, origin, Projectile.scale, effect, 0);
             return false;
         }

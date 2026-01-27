@@ -2,6 +2,7 @@
 using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -13,6 +14,13 @@ namespace LobotomyCorp.Projectiles.Realized
 {
     public class ForgottenR : ModProjectile
     {
+        public static Asset<Texture2D> AltTexture;
+
+        public override void Load()
+        {
+            AltTexture = ModContent.Request<Texture2D>(Texture + "2");
+        }
+
         public override void SetStaticDefaults()
         {
             // DisplayName.SetDefault("BigHug");
@@ -148,7 +156,7 @@ namespace LobotomyCorp.Projectiles.Realized
             }
             else if (owner.ForgottenAffectionResistance < 0.03f)
             {
-                owner.ForgottenAffectionResistance = 0f;
+                owner.ForgottenAffectionResistance = 0.01f;
                 owner.ForgottenAffection = target.whoAmI;
 
                 if (target.realLife >= 0)
@@ -185,7 +193,7 @@ namespace LobotomyCorp.Projectiles.Realized
             {
                 position.X -= 4 * owner.direction;
 
-                tex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/ForgottenR2").Value;
+                tex = AltTexture.Value;
             }
             else
                 position.X += 4 * owner.direction;

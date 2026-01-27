@@ -7,7 +7,7 @@ using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.PlayerDrawEffects;
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -47,10 +47,10 @@ namespace LobotomyCorp
         public int statSanity = 100;
         public int statSanityMax = 100;
 
-        public int statFortitude = 0;
-        public int statPrudence = 0;
-        public int statTemperance = 0;
-        public int statJustice = 0;
+        public int statFortitude = 25;
+        public int statPrudence = 25;
+        public int statTemperance = 25;
+        public int statJustice = 25;
 
         public bool RedMistMask = false;
 

@@ -19,12 +19,19 @@ namespace LobotomyCorp.Projectiles.Realized
 	{
         public override string Texture => "LobotomyCorp/Projectiles/Realized/1stMovement";
 
+        public static Asset<Texture2D> firstMovement;
+        public static Asset<Texture2D> secondMovement;
+        public static Asset<Texture2D> thirdMovement;
         public static Asset<Texture2D> fourthMovement = null;
 
         public override void Load()
         {
             if (!Main.dedServ && Main.netMode != NetmodeID.Server)
             {
+                firstMovement = Mod.Assets.Request<Texture2D>("Projectiles/Realized/1stMovement");
+                secondMovement = Mod.Assets.Request<Texture2D>("Projectiles/Realized/2ndMovement");
+                thirdMovement = Mod.Assets.Request<Texture2D>("Projectiles/Realized/3rdMovement");
+
                 fourthMovement = Mod.Assets.Request<Texture2D>("Projectiles/Realized/4thmovement", AssetRequestMode.ImmediateLoad);
                 Main.QueueMainThreadAction(() =>
                 {
@@ -275,7 +282,7 @@ namespace LobotomyCorp.Projectiles.Realized
             if (Time > move2)
             {
                 Color color = baseColor;
-                currentTex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/2ndMovement").Value;
+                currentTex = secondMovement.Value;
                 frame = currentTex.Frame();
                 Vector2 scale = baseScale;
                 if (Time < 2804)
@@ -289,7 +296,7 @@ namespace LobotomyCorp.Projectiles.Realized
             if (Time > move3)
             {
                 Color color = baseColor;
-                currentTex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/3rdMovement").Value;
+                currentTex = thirdMovement.Value;
                 frame = currentTex.Frame();
                 Vector2 scale = baseScale * 1.25f;
                 if (Time < move4)

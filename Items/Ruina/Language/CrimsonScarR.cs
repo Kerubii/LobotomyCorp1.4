@@ -6,6 +6,7 @@ using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -20,6 +21,17 @@ namespace LobotomyCorp.Items.Ruina.Language
 {
     public class CrimsonScarR : SEgoItem
     {
+        public static Asset<Texture2D> Gun;
+        public static Asset<Texture2D> Sickle;
+        public static Asset<Texture2D> SickleOpen;
+
+        public override void Load()
+        {
+            Gun = ModContent.Request<Texture2D>(Texture + "Gun");
+            Sickle = ModContent.Request<Texture2D>(Texture + "Sickle");
+            SickleOpen = ModContent.Request<Texture2D>(Texture + "SickleOpen");
+        }
+
         public override void SetStaticDefaults()
         {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;

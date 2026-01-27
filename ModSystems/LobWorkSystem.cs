@@ -16,6 +16,9 @@ namespace LobotomyCorp.ModSystems
         private UserInterface LobworkInterface;
         internal LobWorking LobworkUI;
 
+        private UserInterface NihilInterface;
+        internal NihilSelection NihilUI;
+
         public static Asset<Texture2D> LobotomyUITexture = null;
         public static Asset<Texture2D> LobPanelBorder1 = null;
         public static Asset<Texture2D> LobPanelBorder2 = null;

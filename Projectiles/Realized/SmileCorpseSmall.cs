@@ -17,6 +17,13 @@ namespace LobotomyCorp.Projectiles.Realized
 {
     public class SmileCorpseSmall : ModProjectile
     {
+        public static Asset<Texture2D> Glow;
+
+        public override void Load()
+        {
+            Glow = ModContent.Request<Texture2D>(Texture + "Glow");
+        }
+
         public override void SetStaticDefaults()
         {
             // DisplayName.SetDefault("Smile");
@@ -79,7 +86,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/SmileCorpseSmallGlow").Value;
+            Texture2D tex = Glow.Value;
             Vector2 pos = Projectile.Center - Main.screenPosition + Projectile.gfxOffY * Vector2.UnitY;
             Rectangle frame = tex.Frame(1, 3, 0, Projectile.frame);
             Vector2 origin = frame.Size() / 2;

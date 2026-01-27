@@ -8,11 +8,19 @@ using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using LobotomyCorp.Players;
+using ReLogic.Content;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
 	public class RegretR : ModProjectile
 	{
+		public static Asset<Texture2D> ChainTexture;
+
+        public override void Load()
+        {
+			ChainTexture = ModContent.Request<Texture2D>(Texture + "Chain");
+        }
+
 
 		public override void SetDefaults()
 		{
@@ -411,7 +419,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
 				float BezierLength = chainBezier.SegmentBezierLength(accuracy);
 
-				Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/RegretRChain").Value;
+				Texture2D tex = ChainTexture.Value;
 				int chainWidth = 8;
 				Rectangle frame = Terraria.Utils.Frame(tex, 1, 2);
 				Vector2 origin = new Vector2(5, 7);

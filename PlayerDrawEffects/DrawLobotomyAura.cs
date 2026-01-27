@@ -1,4 +1,4 @@
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;

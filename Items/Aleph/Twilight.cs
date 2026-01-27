@@ -22,13 +22,13 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void SetDefaults()
         {
-            Item.damage = 42;
+            Item.damage = 68;
             Item.scale = 1.3f;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = DamageClass.MeleeNoSpeed;
             Item.width = 40;
             Item.height = 40;
-            Item.useTime = 90;
-            Item.useAnimation = 90;
+            Item.useTime = 26;
+            Item.useAnimation = 26;
             Item.useStyle = 15;
             Item.knockBack = 6;
             Item.value = 10000;
@@ -37,11 +37,13 @@ namespace LobotomyCorp.Items.Aleph
             Item.autoReuse = true;
 
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.shoot = ModContent.ProjectileType<Projectiles.TwilightSpecial>();
-            Item.shootSpeed = 3f;
+            Item.shoot = ModContent.ProjectileType<Projectiles.TwilightSlash>();
+            Item.shootSpeed = 24f;
             Item.noUseGraphic = true;
             Item.noMelee = true;
             EGORiskLevel = RiskLevel.Aleph;
+
+            SpecialAttackTimer = 0;
         }
 
         private int SpecialAttackTimer = 0;
@@ -75,11 +77,10 @@ namespace LobotomyCorp.Items.Aleph
         {
             if (player.altFunctionUse == 2)
             {
+                type = ModContent.ProjectileType<Projectiles.TwilightSpecial>();
                 damage = (int)(damage * 1.3f);
-            }
-            else
-            {
-                Item.shoot = ModContent.ProjectileType<Projectiles.TwilightSlash>();
+                velocity.Normalize();
+                velocity *= 11f;
             }
         }
 
@@ -87,26 +88,29 @@ namespace LobotomyCorp.Items.Aleph
         {
             if (player.altFunctionUse == 2)
             {
-                SpecialAttackTimer = 480;
                 Item.UseSound = LobotomyCorp.WeaponSound("judgement2_1");
-                Item.useTime = 90;
-                Item.useAnimation = 90;
-                Item.useStyle = ItemUseStyleID.Shoot;
-                Item.shoot = ModContent.ProjectileType<Projectiles.TwilightSpecial>();
-                Item.shootSpeed = 7.6f;
                 Item.noMelee = true;
+                Item.noUseGraphic = true;
+                Item.useStyle = ItemUseStyleID.Shoot;
+                SpecialAttackTimer = 480;
             }
             else
             {
-                Item.UseSound = LobotomyCorp.WeaponSound("judgement1");
-                Item.useTime = 26;
-                Item.useAnimation = 26;
+                Item.noUseGraphic = false;
                 Item.useStyle = 15;
-                Item.shootSpeed = 18f;
-                //Item.noUseGraphic = false;
+                Item.UseSound = LobotomyCorp.WeaponSound("judgement1");
                 Item.noMelee = false;
             }
-            return true;
+            return base.CanUseItem(player);
+        }
+
+        public override float UseSpeedMultiplier(Player player)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                return 0.29f;
+            }
+            return base.UseSpeedMultiplier(player);
         }
 
         public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
@@ -124,21 +128,6 @@ namespace LobotomyCorp.Items.Aleph
 				}
 			}*/
             base.UseStyleAlt(player, heldItemFrame);
-        }
-
-        public override bool? UseItemAlt(Player player)
-        {
-            if (player.altFunctionUse == 2)
-            {
-                Item.noUseGraphic = true;
-                Item.useStyle = ItemUseStyleID.Shoot;
-            }
-            else
-            {
-                Item.noUseGraphic = false;
-                Item.useStyle = 15;
-            }
-            return true;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
@@ -160,7 +149,7 @@ namespace LobotomyCorp.Items.Aleph
 					LobotomyModPlayer.ModPlayer(player).TwilightSpecial++;
 				}
 			}*/
-            target.immune[player.whoAmI] = player.itemAnimation;
+            //target.immune[player.whoAmI] = player.itemAnimation;
 
             float angle = Main.rand.NextFloat(6.28f);
             Vector2 velocity = new Vector2(16f, 0f).RotatedBy(angle);
@@ -181,7 +170,8 @@ namespace LobotomyCorp.Items.Aleph
             .AddIngredient(Mod, "Justitia")
             .AddIngredient(ItemID.SoulofLight, 5)
             .AddIngredient(ItemID.SoulofNight, 10)
-            .AddIngredient(ItemID.DarkShard)
+            //.AddIngredient(ItemID.DarkShard)
+            .AddRecipeGroup("LobotomyCorp:MechTrioSoul", 2)
             .AddTile(Mod, "BlackBox3")
             .Register();
         }

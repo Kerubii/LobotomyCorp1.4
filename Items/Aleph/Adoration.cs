@@ -14,6 +14,7 @@ namespace LobotomyCorp.Items.Aleph
             /* Tooltip.SetDefault("A big mug filled with mysterious slime that never runs out.\n" +
                                "It�'s the byproduct of some horrid experiment in a certain laboratory that eventually failed.\n" +
                                "Inflicts Slow"); */
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 
         public override void SetDefaults()
@@ -37,10 +38,28 @@ namespace LobotomyCorp.Items.Aleph
             EGORiskLevel = RiskLevel.Aleph;
         }
 
+        public override bool AltFunctionUse(Player player)
+        {
+            return true;
+        }
+
         public override void UseStyle(Player player, Rectangle heldItemFrame)
         {
-            heldItemFrame.Y = 1000;
-            heldItemFrame.X -= 1000;
+            float rot = player.itemRotation;
+            float factor = 0f;
+            if (player.channel)
+            {
+                // Find Shot projectile since heldProj isn't updated yet
+                foreach (Projectile proj in Main.ActiveProjectiles)
+                {
+                    if (proj.type == Item.shoot && proj.owner == player.whoAmI && proj.ai[1] == 0)
+                    {
+                        factor = proj.ai[0] / 80f;
+                    }
+                }
+            }
+
+            player.itemLocation -= new Vector2(20 * factor * player.direction, 0).RotatedBy(rot);
             /*int half = player.itemAnimationMax / 2;
             if (player.itemAnimation > half)
             {

@@ -204,7 +204,16 @@ namespace LobotomyCorp.Projectiles.Realized.Nihil
                         Projectile.velocity *= 0;
                 }
 
-
+                if (!target)
+                {
+                    Projectile.localAI[0] += 0.01f;
+                    if (Projectile.localAI[0] > 1f)
+                        Projectile.localAI[0] -= 2f;
+                }
+                else
+                {
+                    Projectile.localAI[0] = 0.6f;
+                }
                 if (Projectile.ai[1] > 0)
                 {
                     if (Projectile.ai[1] > attackDowntime)
@@ -236,10 +245,16 @@ namespace LobotomyCorp.Projectiles.Realized.Nihil
         {
             Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/Realized/Nihil/NihilCard").Value;
             Vector2 position = Projectile.Center - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
-            Rectangle frame = texture.Frame(1, 5, 0, 4);
+            int side = 3;
+            if (Projectile.localAI[0] < 0)
+                side = 4;
+
+            float scaleX = (float)Math.Sin(Math.Abs(Projectile.localAI[0]) * 3.14f);
+
+            Rectangle frame = texture.Frame(1, 5, 0, side);
             Vector2 origin = frame.Size() / 2;
 
-            Main.EntitySpriteDraw(texture, position, frame, lightColor, Projectile.rotation, origin, 0.8f, 0f, 0);
+            Main.EntitySpriteDraw(texture, position, frame, lightColor, Projectile.rotation, origin, new Vector2(scaleX, 1) * 0.8f, 0f, 0);
 
             return false;
         }

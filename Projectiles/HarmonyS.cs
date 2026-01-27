@@ -3,6 +3,7 @@ using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,7 +15,15 @@ namespace LobotomyCorp.Projectiles
 {
 	public class HarmonyS : ModProjectile
 	{
-		public override void SetDefaults() {
+
+        public static Asset<Texture2D> SawHead;
+        public static Asset<Texture2D> String;
+        public override void Load()
+        {
+            SawHead = ModContent.Request<Texture2D>(Texture + "Head");
+            SawHead = ModContent.Request<Texture2D>(Texture + "String");
+        }
+        public override void SetDefaults() {
 			Projectile.width = 46;
 			Projectile.height = 46;
 			Projectile.aiStyle = -1;
@@ -116,9 +125,9 @@ namespace LobotomyCorp.Projectiles
 
             Main.EntitySpriteDraw(tex, position, tex.Frame(), lightColor, rot, origin, Projectile.scale, (SpriteEffects)Projectile.direction, 0);
 
-            tex = Mod.Assets.Request<Texture2D>("Projectiles/HarmonySHead").Value;
+            tex = SawHead.Value;
             Main.EntitySpriteDraw(tex, position, tex.Frame(), lightColor, Projectile.rotation, origin, Projectile.scale, (SpriteEffects)Projectile.direction, 0);
-            tex = Mod.Assets.Request<Texture2D>("Projectiles/HarmonySString").Value;
+            tex = String.Value;
             Main.EntitySpriteDraw(tex, position, tex.Frame(), lightColor, rot, origin, Projectile.scale, (SpriteEffects)Projectile.direction, 0);
 
             return false;

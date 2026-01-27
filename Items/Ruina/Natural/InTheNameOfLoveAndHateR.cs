@@ -44,7 +44,7 @@ namespace LobotomyCorp.Items.Ruina.Natural
 
         public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
         {
-            if (player.altFunctionUse == 2 && player.CheckMana(player.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost))
+            if (player.altFunctionUse == 2 && CheckArcanaMana(player))//player.CheckMana(player.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost, blockQuickMana: true))
             {
                 mult *= 0;
             }
@@ -68,7 +68,7 @@ namespace LobotomyCorp.Items.Ruina.Natural
             }
             if (player.altFunctionUse == 2)
             {
-                if (player.CheckMana(player.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost, true, true))
+                if (CheckArcanaMana(player, true))//player.CheckMana(player.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost, true, true))
                 {
                     type = ModContent.ProjectileType<Circle1>();
                     position -= Vector2.Normalize(velocity) * 130;
@@ -77,12 +77,24 @@ namespace LobotomyCorp.Items.Ruina.Natural
                 }
                 else
                 {
-                    type = ModContent.ProjectileType<ArcanaBeatsv2>();
+                    type = ModContent.ProjectileType<ArcanaBeats>();
                     velocity *= 2;
                     damage *= 3;
                 }
             }
             base.ModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
+        }
+
+        private bool CheckArcanaMana(Player player, bool pay = false)
+        {
+            int num = player.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost;
+            if (player.statMana >= num)
+            {
+                if (pay)
+                    player.statMana -= num;
+                return true;
+            }
+            return false;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

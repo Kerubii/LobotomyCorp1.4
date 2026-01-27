@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -10,6 +11,13 @@ namespace LobotomyCorp.Projectiles
 {
 	public class Kaleidoscope : ModProjectile
 	{
+        public Asset<Texture2D> AltTex;
+
+        public override void Load()
+        {
+            AltTex = ModContent.Request<Texture2D>(Texture + "2");
+        }
+
 		public override void SetStaticDefaults() {
             // DisplayName.SetDefault("Kaleidoscope of Butterflies");
             Main.projFrames[Projectile.type] = 3;
@@ -143,7 +151,7 @@ namespace LobotomyCorp.Projectiles
         {
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             if (Projectile.localAI[0] == 1)
-                tex = Mod.Assets.Request<Texture2D>("Projectiles/Kaleidoscope2").Value;
+                tex = AltTex.Value;
             Vector2 position = Projectile.Center + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition;
             Rectangle frame = tex.Frame(1, Main.projFrames[Projectile.type], 0, Projectile.frame);
 

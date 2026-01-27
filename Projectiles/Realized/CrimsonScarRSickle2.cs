@@ -124,7 +124,7 @@ namespace LobotomyCorp.Projectiles.Realized
             Vector2 pos = Projectile.Center - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
             Vector2 origin = new Vector2(tex.Width / 2 - 10 * Projectile.spriteDirection, 15);
             Rectangle frame = tex.Frame();
-            Texture2D tex2 = Mod.Assets.Request<Texture2D>("Projectiles/Realized/CrimsonScarRSickleBlur").Value;
+            Texture2D tex2 = CrimsonScarRSickle.Blur.Value;
             Rectangle frame2 = tex2.Frame();
             Vector2 origin2 = frame2.Size() / 2;
             lightColor *= Projectile.Opacity;

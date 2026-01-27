@@ -1,19 +1,21 @@
-﻿using System;
+﻿using LobotomyCorp;
+using LobotomyCorp.Projectiles;
+using LobotomyCorp.Utils;
+using LobotomyCorp.Visuals.DeathAnimations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.Chat;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.GameContent;
-using Terraria.Chat;
-using LobotomyCorp;
-using LobotomyCorp.Utils;
-using System.Collections.Generic;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
     //[AutoloadBossHead]
-    class HeavenBranchEye : ModProjectile
+    class HeavenBranchEye : LobProjectile
     {
         public override void SetDefaults()
         {
@@ -23,6 +25,9 @@ namespace LobotomyCorp.NPCs.RedMist
             Projectile.timeLeft = 150;
             Projectile.hostile = true;
             Projectile.scale = 0;
+
+            LobotomyGlobalProjectile.SetDeathAnimation(Projectile, ModContent.GetInstance<LobDeathBHeaven>().Type);
+            //DeathAnimation = ModContent.GetInstance<LobDeathBHeaven>().Type;
         }
 
         public override void AI()

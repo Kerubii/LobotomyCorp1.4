@@ -1,4 +1,6 @@
+using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
+using LobotomyCorp.Projectiles.Realized.Nihil;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -37,6 +39,9 @@ namespace LobotomyCorp.Items.Ruina.Natural
 			Item.UseSound = SoundID.Item11; 
 			Item.autoReuse = true;
             Item.channel = true;
+
+            Item.shoot = ModContent.ProjectileType<NihilAttack>();
+            Item.shootSpeed = 0f;
             Item.rare = ModContent.RarityType<AlephR>();
         }
 
@@ -57,6 +62,26 @@ namespace LobotomyCorp.Items.Ruina.Natural
         public override bool AltFunctionUse(Player player)
         {
             return true;
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                LobUISystem ui = LobUISystem.Instance;
+                if (ui.UINotInUse())
+                    ui.NihilUIActivate();
+                else
+                    ui.ClearUI();
+                return true;
+            }
+
+            return base.UseItem(player);
+        }
+
+        public override bool SafeCanUseItem(Player player)
+        {
+            return player.ownedProjectileCounts[Item.shoot] == 0;
         }
 
         public override Vector2? HoldoutOffset()

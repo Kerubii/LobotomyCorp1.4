@@ -202,7 +202,7 @@ namespace LobotomyCorp.Utils
         /// <param name="accel"></param>
         /// <param name="target"></param>
         /// <param name="targetSize"></param>
-        public static void ChaseTargetAccel(Vector2 pos, Vector2 target, ref Vector2 vel, float speed, float accel, float spacing = 0)
+        public static bool ChaseTargetAccel(Vector2 pos, Vector2 target, ref Vector2 vel, float speed, float accel, float spacing = 0)
         { 
             Vector2 delt = target - pos;
             float dist = delt.Length();
@@ -244,7 +244,9 @@ namespace LobotomyCorp.Utils
                     if (vel.Y < delt.Y)
                         vel.Y = delt.Y;
                 }
+                return true;
             }
+            return false;
         }
     }
     /*

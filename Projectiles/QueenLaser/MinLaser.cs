@@ -126,7 +126,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1Color").Value;
+            texture = Circle1.Circle1Color.Value;
             DrawData circle = new DrawData(texture, position, frame, color, rot, origin, (scale + new Vector2(0.03f + 0.02f * (float)Math.Sin(Projectile.rotation))) * mult, SpriteEffects.None, 0);
 
             var rotateShader = GameShaders.Misc["LobotomyCorp:Rotate"];
@@ -137,18 +137,18 @@ namespace LobotomyCorp.Projectiles.QueenLaser
 
             Main.EntitySpriteDraw(circle);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1").Value;
+            texture = TextureAssets.Projectile[ModContent.ProjectileType<Circle1>()].Value;
             circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, SpriteEffects.None, 0);
             //rotateShader.Apply(null);
             Main.EntitySpriteDraw(circle);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/ArcanaBeatsInner").Value;
+            texture = ArcanaBeats.Inner.Value;
             circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, Projectile.spriteDirection > 0 ? 0 : SpriteEffects.FlipVertically, 0);
             rotateShader.UseShaderSpecificData(LobotomyCorp.ShaderRotation(0));
             rotateShader.Apply();
             Main.EntitySpriteDraw(circle);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/QueenLaser/Circle1Outer").Value;
+            texture = Circle1.Circle1Outer.Value;
             MultRange(ref mult, 3, 10);
             circle = new DrawData(texture, position, (Rectangle?)(frame), color, rot, origin, mult * scale, SpriteEffects.None, 0);
 

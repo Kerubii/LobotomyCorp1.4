@@ -19,4 +19,10 @@ This mod has no wiki, I recommend getting something like [url=https://steamcommu
 Special Thanks to
 晨芸 - Providing Sprites
 
-Visit the discord to report bugs or feedback
+if anyone is genuinely interested on being a dev for the mod (like fr)
+dm me in discord (discord id: kerubii), you should know the basics of c# and some idea of how terraria modding works, I can help explain what the fuck the source code is
+You can choose a Realized Weapon (Ruina, Lobcorp or even Limbus based) to make as a start
+Mechanics has to go to me first though, since I have a specific design basis for R weapons in mind
+
+Visit the discord to report bugs or feedback (you can still put those in the comments or posts)
+https://discord.com/invite/audwDVV5Vj

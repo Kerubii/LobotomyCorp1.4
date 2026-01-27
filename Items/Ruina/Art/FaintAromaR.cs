@@ -1,6 +1,7 @@
 using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -11,9 +12,17 @@ namespace LobotomyCorp.Items.Ruina.Art
 {
     public class FaintAromaS : SEgoItem
 	{
+        private Asset<Texture2D> Display;
+
         public override bool IsLoadingEnabled(Mod mod)
         {
             return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
+        public override void Load()
+        {
+            Display = ModContent.Request<Texture2D>(Texture + "Display");
+            base.Load();
         }
 
         public override void SetStaticDefaults() 
@@ -131,13 +140,13 @@ namespace LobotomyCorp.Items.Ruina.Art
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            spriteBatch.Draw(Mod.Assets.Request<Texture2D>("Items/Ruina/Art/FaintAromaSDisplay").Value, position, frame, drawColor, 0, origin, scale, 0, 0);
+            spriteBatch.Draw(Display.Value, position, frame, drawColor, 0, origin, scale, 0, 0);
             return false;
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Ruina/Art/FaintAromaSDisplay").Value;
+            Texture2D tex = Display.Value;
             spriteBatch.Draw(tex, Item.position - Main.screenPosition + new Vector2(Item.width/2, Item.height - tex.Height/2), tex.Frame(), lightColor, rotation, tex.Size()/2, scale, 0, 0);
             return false;
         }

@@ -3,6 +3,7 @@ using LobotomyCorp.Items.Zayin;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -100,6 +101,13 @@ namespace LobotomyCorp.Projectiles
 
     public class PenitencePlayerLight : ModProjectile
     {
+        public static Asset<Texture2D> Light;
+
+        public override void Load()
+        {
+            Light = Mod.Assets.Request<Texture2D>("Projectiles/PenitenceLight");
+        }
+
         public override string Texture => "Terraria/Images/Projectile_927";
 
         public override void SetStaticDefaults()
@@ -214,7 +222,7 @@ namespace LobotomyCorp.Projectiles
             }
             else
             {
-                tex = Mod.Assets.Request<Texture2D>("Projectiles/PenitenceLight").Value;
+                tex = Light.Value;
                 frame = tex.Frame(1, 2);
                 origin = frame.Size() / 2;
                 origin.X = frame.Width - 40;

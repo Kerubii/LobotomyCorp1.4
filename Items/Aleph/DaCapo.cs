@@ -19,7 +19,7 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void SetDefaults()
         {
-            Item.damage = 52;
+            Item.damage = 60;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
@@ -109,7 +109,7 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
-            damage = (int)(damage * 0.6f);
+            damage = (int)(damage * 0.7f);
             base.ModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
         }
 

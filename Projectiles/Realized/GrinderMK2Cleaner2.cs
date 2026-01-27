@@ -9,11 +9,26 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using System.IO;
 using LobotomyCorp.Players;
+using ReLogic.Content;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
     public class GrinderMk2Cleaner2 : ModProjectile
     {
+        private string TexName => "LobotomyCorp/Projectiles/Realized/GrinderMk2";
+        public static Asset<Texture2D> Arm;
+        public static Asset<Texture2D> Cleaner;
+        public static Asset<Texture2D> Battery;
+        public static Asset<Texture2D> Bar;
+
+        public override void Load()
+        {
+            Arm = ModContent.Request<Texture2D>(TexName + "Arm");
+            Cleaner = ModContent.Request<Texture2D>(TexName + "Cleaner");
+            Battery = ModContent.Request<Texture2D>(TexName + "Battery");
+            Bar = ModContent.Request<Texture2D>(TexName + "Bar");
+        }
+
         public override void SetStaticDefaults()
         {
             // DisplayName.SetDefault("Cleaning Tools");
@@ -371,7 +386,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 dir = player.direction;
 
             //7/3, 41
-            Texture2D texture = Mod.Assets.Request<Texture2D>("Projectiles/Realized/GrinderMk2Arm").Value;
+            Texture2D texture = Arm.Value;
             Vector2 pos = ownerMountedCenter - Main.screenPosition;
             Vector2 origin = new Vector2(texture.Width / 2, 5);
             Rectangle frame = texture.Frame();
@@ -384,7 +399,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
             texture = TextureAssets.Projectile[Projectile.type].Value;
             if (order < 3 && order > 0)
-                texture = Mod.Assets.Request<Texture2D>("Projectiles/Realized/GrinderMk2Cleaner").Value;
+                texture = Cleaner.Value;
 
             pos = Projectile.Center - Main.screenPosition;
             origin = texture.Size() / 2;
@@ -430,7 +445,7 @@ namespace LobotomyCorp.Projectiles.Realized
             if (order > 0)
                 return false;
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/Realized/GrinderMk2Battery").Value;
+            texture = Battery.Value;
             ownerMountedCenter.Y -= 48;
             pos = ownerMountedCenter - Main.screenPosition;
             origin = texture.Size() / 2;
@@ -438,7 +453,7 @@ namespace LobotomyCorp.Projectiles.Realized
             lightColor = Lighting.GetColor((int)ownerMountedCenter.X / 16, (int)ownerMountedCenter.Y / 16);
             Main.EntitySpriteDraw(texture, pos, new Rectangle?(frame), lightColor, 0, origin, Projectile.scale, SpriteEffects.None, 0);
 
-            texture = Mod.Assets.Request<Texture2D>("Projectiles/Realized/GrinderMk2Bar").Value;
+            texture = Bar.Value;
             LobotomyHePlayer ModPlayer = player.GetModPlayer<LobotomyHePlayer>();
             int frameY = (int)((ModPlayer.GrinderMk2BatteryMax - (float)ModPlayer.GrinderMk2Battery) / ((float)ModPlayer.GrinderMk2BatteryMax / 5)) * texture.Height / 6;
             if (ModPlayer.GrinderMk2Battery < ModPlayer.GrinderMk2BatteryMax / 5 && ModPlayer.GrinderMk2Battery % 30 < 15)

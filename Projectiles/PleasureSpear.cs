@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -12,6 +13,13 @@ namespace LobotomyCorp.Projectiles
 {
     public class PleasureSpear : ModProjectile
     {
+        public static Asset<Texture2D> Handle;
+
+        public override void Load()
+        {
+            Handle = ModContent.Request<Texture2D>(Texture + "Handle");
+        }
+
         public override void SetStaticDefaults() {
             //DisplayName.SetDefault("Spear");
         }
@@ -82,7 +90,7 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/PleasureSpearHandle").Value;
+            Texture2D tex = Handle.Value;
             Player projOwner = Main.player[Projectile.owner];
             Vector2 ownerMountedCenter = projOwner.RotatedRelativePoint(projOwner.MountedCenter, true);
             //Dust.NewDustPerfect(ownerMountedCenter, 14, Vector2.Zero);

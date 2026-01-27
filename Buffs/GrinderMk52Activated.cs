@@ -5,7 +5,7 @@ using Terraria.Audio;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Audio;
 using LobotomyCorp.Players;
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 
 namespace LobotomyCorp.Buffs
 {

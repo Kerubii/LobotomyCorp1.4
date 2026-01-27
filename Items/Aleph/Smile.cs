@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.Aleph
             /* Tooltip.SetDefault("It has the pale faces of nameless employees and a giant mouth on it.\n" +
                                "Upon striking with the weapon, the monstrous mouth opens wide to devour the target, its hunger insatiable.\n" +
 							   "Alternate attack to slam down an enemy or the ground"); */
-
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 
         public override void SetDefaults()
@@ -36,10 +36,11 @@ namespace LobotomyCorp.Items.Aleph
 
             SwingSound = LobotomyCorp.WeaponSounds.Hammer;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<Projectiles.SmileBitsFriendly>();
+            Item.shoot = ModContent.ProjectileType<Projectiles.SmileBobsFriendly>();
             Item.shootSpeed = 1f;
             Item.noUseGraphic = false;
             Item.noMelee = false;
+            Item.scale = 1.4f;
 
             hasHitEnemy = false;
             EGORiskLevel = RiskLevel.Aleph;
@@ -124,10 +125,19 @@ namespace LobotomyCorp.Items.Aleph
         {
             if (player.altFunctionUse != 2)
             {
+                /*
                 for (int i = 0; i < 7; i++)
                 {
                     Vector2 vel = velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))) * Main.rand.Next(10, 14);
                     Projectile.NewProjectile(player.GetSource_FromThis(), position, vel, type, damage / 3, 0, player.whoAmI);
+                }*/
+
+                for (int i = 0; i < 3; i++)
+                {
+                    float rotation = MathHelper.ToRadians((Main.rand.Next(20) - 2) * player.direction);
+                    float velSpeed = velocity.Length() * -22f;
+                    Vector2 vel = new Vector2(0, velSpeed).RotatedBy(rotation);
+                    Projectile.NewProjectile(player.GetSource_FromThis(), position, vel, type, (int)(damage * 0.7f), 0, player.whoAmI, (int)(player.itemAnimationMax * 0.6f));
                 }
                 return false;
             }
@@ -169,7 +179,7 @@ namespace LobotomyCorp.Items.Aleph
                 for (int i = 0; i < 7; i++)
                 {
                     Vector2 vel = velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))) * Main.rand.Next(10, 14);
-                    Projectile.NewProjectile(player.GetSource_FromThis(), target.Center, vel, Item.shoot, Item.damage / 3, 0, player.whoAmI, target.whoAmI);
+                    Projectile.NewProjectile(player.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<Projectiles.SmileBitsFriendly>(), Item.damage / 3, 0, player.whoAmI, target.whoAmI);
                 }
             }
         }

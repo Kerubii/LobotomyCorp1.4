@@ -1,10 +1,12 @@
+using LobotomyCorp.Players;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework.Audio;
-using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Buffs
 {
@@ -23,7 +25,6 @@ namespace LobotomyCorp.Buffs
             LobotomyHePlayer modPlayer = player.GetModPlayer<LobotomyHePlayer>();
             modPlayer.OurGalaxyStone = true;
             player.buffTime[buffIndex] = 5;
-
             if (modPlayer.OurGalaxyOwner < 0)
             {
                 player.DelBuff(buffIndex);
@@ -33,7 +34,10 @@ namespace LobotomyCorp.Buffs
 
         public override bool RightClick(int buffIndex)
         {
-            return false;
+            NetworkText text = NetworkText.FromKey("Mods.LobotomyCorp.DeathMessages.StoneRemove", Main.LocalPlayer.name);
+            PlayerDeathReason playerDeath = PlayerDeathReason.ByCustomReason(text);
+            Main.LocalPlayer.Hurt(playerDeath, Main.LocalPlayer.statLifeMax2 / 4, 0, dodgeable: false, scalingArmorPenetration: 1);
+            return true;
         }
     }
 }

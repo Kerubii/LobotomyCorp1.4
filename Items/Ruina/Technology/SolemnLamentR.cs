@@ -19,12 +19,18 @@ namespace LobotomyCorp.Items.Ruina.Technology
         public static Texture2D screenWhiteHit;
         public static Texture2D screenBlackHit;
 
+        public static Asset<Texture2D> SolemnGun1;
+        public static Asset<Texture2D> SolemnGun2;
+
         public override void Load()
         {
             if (Main.netMode != NetmodeID.Server)
             {
                 screenWhiteHit = Mod.Assets.Request<Texture2D>("Misc/Ding", AssetRequestMode.ImmediateLoad).Value;
                 screenBlackHit = Mod.Assets.Request<Texture2D>("Misc/Dong", AssetRequestMode.ImmediateLoad).Value;
+
+                SolemnGun1 = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS1");
+                SolemnGun2 = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS2");
 
                 Main.QueueMainThreadAction(() =>
                 {
@@ -83,7 +89,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             LobotomyGlobalItem lobItem = LobotomyGlobalItem.LobItem(Item);
             if (!modPlayer(player).SolemnSwitch)
             {
-                lobItem.CustomTexture = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS2").Value;
+                lobItem.CustomTexture = SolemnGun2.Value;
                 if (AltAmmo(player))
                 {
                     if (Main.rand.NextBool(3) || player.altFunctionUse == 2)
@@ -97,7 +103,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             }
             else
             {
-                lobItem.CustomTexture = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS2").Value;
+                lobItem.CustomTexture = SolemnGun2.Value;
                 if (Main.rand.NextBool(3) || player.altFunctionUse == 2)
                     Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_White") with { Volume = 0.1f , MaxInstances = -1};
                 else

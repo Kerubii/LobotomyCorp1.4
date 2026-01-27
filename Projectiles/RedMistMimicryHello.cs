@@ -1,6 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -10,6 +11,13 @@ namespace LobotomyCorp.Projectiles
 {
 	public class RedMistMimicryHello : ModProjectile
 	{
+        public static Asset<Texture2D> ToothballTexture;
+
+        public override void Load()
+        {
+            ToothballTexture = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/MimicryToothball");
+        }
+
         public override string Texture => "LobotomyCorp/Projectiles/MimicryHello";
         public override void SetStaticDefaults() {
             // DisplayName.SetDefault("Hello?");
@@ -79,7 +87,7 @@ namespace LobotomyCorp.Projectiles
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             if (Projectile.ai[0] < TeethActivate)
             {
-                tex = Mod.Assets.Request<Texture2D>("Projectiles/MimicryToothball").Value;
+                tex = ToothballTexture.Value;
                 Vector2 endpoint = Projectile.Center + new Vector2(200, 0).RotatedBy(Projectile.velocity.ToRotation());
                 Color color = Color.Red * (float)Math.Sin(3.14f * Projectile.ai[0] / 60f);
 

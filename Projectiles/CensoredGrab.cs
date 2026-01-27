@@ -75,7 +75,7 @@ namespace LobotomyCorp.Projectiles
             {
                 int index = (int)Projectile.ai[1] - 1;
                 NPC n = Main.npc[index];
-                bool canGrab = !(n.knockBackResist > Projectile.knockBack || n.boss || (n.width > 180 || n.height > 180) || GrabBlackList(n.type));
+                bool canGrab = !(n.knockBackResist < (Projectile.knockBack / 40f) || n.boss || (n.width > 180 || n.height > 180) || GrabBlackList(n.type));
                 if (n.active && canGrab)
                 {
                     n.Center = Projectile.Center;
@@ -205,7 +205,9 @@ namespace LobotomyCorp.Projectiles
             float progress = 1f - (float)projOwner.itemAnimation / (float)projOwner.itemAnimationMax;
             if (progress < 0.15f)
             {
-                Projectile.ai[0] = Lerp(0f, 360, progress % 0.15f / 0.15f);
+                float prog = progress % 0.15f / 0.15f;
+                prog *= prog * prog;
+                Projectile.ai[0] = Lerp(0f, 360, prog);
             }
             else if (progress >= 0.5f)
             {
@@ -237,6 +239,14 @@ namespace LobotomyCorp.Projectiles
         public override bool ShouldUpdatePosition()
         {
             return false;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            Player projOwner = Main.player[Projectile.owner];
+            float progress = 1f - (float)projOwner.itemAnimation / (float)projOwner.itemAnimationMax;
+            if (progress > 0.13f && progress < 0.3f)
+                modifiers.SourceDamage *= 2f;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

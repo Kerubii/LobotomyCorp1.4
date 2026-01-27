@@ -1,5 +1,7 @@
 ﻿using System;
+using LobotomyCorp.ModSystems;
 using LobotomyCorp.Utils;
+using LobotomyCorp.Visuals.PrimEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -44,6 +46,13 @@ namespace LobotomyCorp.Projectiles
 
             if (Projectile.localAI[0] < 12)
             {
+                if (Projectile.localAI[0] == 0)
+                {
+                    FourthMatchSmear ell = new FourthMatchSmear();
+                    ell.Setup(Projectile, Vector2.Zero, Projectile.velocity.ToRotation(), player.itemAnimationMax, Math.Sign(player.direction));
+                    LobCustomDraw.Instance().AddVEffects(ell);
+                }
+
                 Projectile.localAI[0]++;
                 for (int i = 0; i < 8; i++)
                 {
@@ -111,6 +120,7 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
+            /*
             Player player = Main.player[Projectile.owner];
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["FourthMatchFlame"].UseOpacity(0.5f * (float)Math.Cos(3.15f * ((float)player.itemAnimation/(float)player.itemAnimationMax)) + 0.5f);
 
@@ -119,7 +129,7 @@ namespace LobotomyCorp.Projectiles
             trail.color = Color.Red;
             float prog = (1 - (player.itemAnimation / (float)player.itemAnimationMax));
             float offset = MathHelper.ToRadians(-85 - 40 * (float)Math.Sin(1.57f * prog)) * dir;
-            trail.DrawEllipse(Projectile.Center, Projectile.velocity.ToRotation(), offset, dir * -1, 400, 75, 128, shader);
+            trail.DrawEllipse(Projectile.Center, Projectile.velocity.ToRotation(), offset, dir * -1, 400, 75, 128, shader);*/            
 
             return false;
         }

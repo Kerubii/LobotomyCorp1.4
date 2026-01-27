@@ -1,6 +1,7 @@
 ﻿using LobotomyCorp.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,6 +10,13 @@ namespace LobotomyCorp.Projectiles
 {
 	public class Gaze : ModProjectile
 	{
+        public static Asset<Texture2D> SawHead;
+
+        public override void Load()
+        {
+            SawHead = ModContent.Request<Texture2D>(Texture + "Head");
+        }
+
         protected virtual float HoldoutRangeMin => 24f;
         protected virtual float HoldoutRangeMax => 112f;
 
@@ -69,21 +77,31 @@ namespace LobotomyCorp.Projectiles
 
         public override void PostDraw(Color lightColor)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/GazeHead").Value;
+            Texture2D tex = SawHead.Value;
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), lightColor, Projectile.localAI[1], tex.Size()/2 , 1f, 0f, 0);
         }
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.He) && Collision.CanHit(projHitbox.TopLeft(), projHitbox.Width, projHitbox.Height, targetHitbox.TopLeft(), targetHitbox.Width, targetHitbox.Height))
+                return true;
+            return base.Colliding(projHitbox, targetHitbox);
+        }
+        /*
         public override bool? CanHitNPC(NPC target)
         {
             if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.He) && Collision.CanHit(Projectile, target))
                 return true;
             return base.CanHitNPC(target);
-        }
+        }*/
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
-			Projectile.ai[1]++;
+            Projectile.ai[1]++;
             target.immune[Projectile.owner] = 5;
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.He) && Projectile.ai[1] > 80)
+                return;
+
             Player player = Main.player[Projectile.owner];
             int duration = player.itemAnimationMax;
             float ThirdDuration = (int)(duration / 3f);
@@ -101,9 +119,12 @@ namespace LobotomyCorp.Projectiles
 			if (mult > 1f)
 				mult = 1f;
 			modifiers.FinalDamage += 1f * mult;
-            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Waw) && !Projectile.getRect().Intersects(target.getRect()))
+            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.He) && !Projectile.getRect().Intersects(target.getRect()))
             {
-                modifiers.FinalDamage -= 0.5f;
+                float distance = target.Distance(Projectile.Center);
+                distance = MathHelper.Clamp(distance, 10, 900);
+                modifiers.FinalDamage -= 0.4f * (distance / 900);
+                modifiers.FinalDamage -= 0.6f;
                 modifiers.DisableKnockback();
             }
         }

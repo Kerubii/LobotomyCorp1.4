@@ -6,7 +6,7 @@ LobotomyServerConfig: {
 	DisplayName: Lobotomy Server Config
 
 	TestItemEnable: {
-		Label: Test Items
+		Label: Test Features
 		Tooltip: Include unfinished items and NPCs. Requires a Reload
 	}
 }
@@ -24,8 +24,13 @@ LobotomyConfig: {
 		Tooltip: ""
 	}
 
-	Header.GeneralConfiguration: General Configuration
-	Headers.GeneralConfiguration: General Configuration Header
+	BloomEnable: {
+		Label: LobEffects Bloom
+		Tooltip: ""
+	}
+
+	Header.GeneralConfiguration: Settings
+	Headers.GeneralConfiguration: Settings
 
 	ScreenEffectOpacity: {
 		Label: Screen Effect Opacity

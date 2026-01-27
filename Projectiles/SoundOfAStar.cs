@@ -111,6 +111,11 @@ namespace LobotomyCorp.Projectiles
             return false;
         }
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            Main.player[Projectile.owner].MinionAttackTargetNPC = target.whoAmI;
+        }
+
         public override bool CanHitPvp(Player target)
         {
             return false;

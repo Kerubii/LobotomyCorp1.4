@@ -23,6 +23,8 @@ namespace LobotomyCorp
         public override bool InstancePerEntity => true;
         //public override bool CloneNewInstances => true;
 
+        public int DeathAnimation = -1;
+
         public byte Lament = 0;
 
         public bool BlackSwanReflected = false;
@@ -32,6 +34,12 @@ namespace LobotomyCorp
         public bool SodaSpecial = false;
         public int SolitudeTimer = 0;
         public bool SolitudeSpecial = false;
+        public bool LaetitiaBullet = false;
+
+        public static void SetDeathAnimation(Projectile p, int deathAnimation)
+        {
+            p.GetGlobalProjectile<LobotomyGlobalProjectile>().DeathAnimation = deathAnimation;
+        }
 
         public override bool PreAI(Projectile projectile)
         {
@@ -153,6 +161,11 @@ namespace LobotomyCorp
                 }
             }
 
+            if (LaetitiaBullet)
+            {
+                LaetitiaExplodeGift(target, projectile.damage, projectile.owner);
+            }
+
             if (projectile.owner == Main.myPlayer)
             {
                 if (HypocrisyArrow)
@@ -203,6 +216,29 @@ namespace LobotomyCorp
                 hitbox.Y -= hitbox.Height / 4;
             }
             base.ModifyDamageHitbox(projectile, ref hitbox);
+        }
+
+        public void LaetitiaExplodeGift(NPC target, int damage, int owner, int chance = 4)
+        {
+            LobotomyGlobalNPC ltarget = target.GetGlobalNPC<LobotomyGlobalNPC>();
+
+            if (ltarget.LaetitiaGiftRM && Main.rand.NextBool(chance))
+            {
+                LaetitiaExplodeOutcome(target, damage, owner);
+            }
+            else
+                ltarget.LaetitiaGiftRM = true;
+        }
+
+        public static void LaetitiaExplodeOutcome(NPC target, int damage, int owner)
+        {
+            LobotomyGlobalNPC ltarget = target.GetGlobalNPC<LobotomyGlobalNPC>();
+
+            ltarget.LaetitiaGiftRM = false;
+            //Spawns Projectile
+            SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Literature/Laetitia_Friend_Born") with { Volume = 0.2f }, target.Center);
+            Projectile.NewProjectile(Main.player[owner].GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<LaetitiaExplosion>(), damage, 0, owner);
+            Projectile.NewProjectile(Main.player[owner].GetSource_FromThis(), target.Center, new Vector2(12, 0).RotatedByRandom(6.28f), ModContent.ProjectileType<LaetitiaFriendRocket>(), damage, 0f, owner, target.whoAmI);
         }
     }
 }

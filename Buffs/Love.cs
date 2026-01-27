@@ -1,5 +1,5 @@
 using LobotomyCorp.Items.Ruina.Natural;
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,7 +33,7 @@ namespace LobotomyCorp.Buffs
         {
             LobotomyWawPlayer wawPlayer = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>();
             string cost = "" + wawPlayer.LoveAndHateArcanaCost;
-            Texture2D texture = Mod.Assets.Request<Texture2D>("Buffs/Hatred").Value;
+            Texture2D texture = TextureAssets.Buff[ModContent.BuffType<Hatred>()].Value;
             int length = (int)(30 * wawPlayer.LoveAndHateHysteriaPercent());
             Rectangle frame = new Rectangle(0, 0, length, 32);
             spriteBatch.Draw(texture, drawParams.Position, frame, drawParams.DrawColor, 0, new Vector2(0, 0), 1, 0, 0);

@@ -138,6 +138,10 @@ namespace LobotomyCorp.Projectiles.RedMist
             return false;
         }
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            Projectile.damage /= 2;
+        }
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             Vector2 unit = Projectile.velocity;

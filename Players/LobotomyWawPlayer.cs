@@ -3,7 +3,7 @@ using LobotomyCorp.Items.Ruina.Language;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Projectiles.Realized;
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

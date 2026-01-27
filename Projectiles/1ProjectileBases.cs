@@ -1,4 +1,5 @@
 ﻿using System;
+using LobotomyCorp.Visuals.DeathAnimations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -7,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace LobotomyCorp.Projectiles
 {
-    abstract class CustomMelee : ModProjectile
+    abstract class CustomMelee : LobProjectile
     {
         public int SwingsAmount = 1;
         public int[] SwingDivisions = new int[1];
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Projectiles
         }
     }
 
-    public abstract class LobcorpSpear : ModProjectile
+    public abstract class LobcorpSpear : LobProjectile
     {
         protected virtual float HoldoutRangeMin => 24f;
         protected virtual float HoldoutRangeMax => 128;
@@ -84,5 +85,10 @@ namespace LobotomyCorp.Projectiles
         public virtual void ProjectileSpawn(int duration)
         {
         }
+    }
+
+    public abstract class LobProjectile : ModProjectile
+    {
+        //public int DeathAnimation = -1;
     }
 }

@@ -1,7 +1,10 @@
-﻿using LobotomyCorp.Players;
+﻿using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
+using LobotomyCorp.Visuals.PrimEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,6 +17,13 @@ namespace LobotomyCorp.Projectiles.Realized
 {
 	public class CrimsonScarRSickle : ModProjectile
 	{
+		public static Asset<Texture2D> Blur;
+
+        public override void Load()
+        {
+			Blur = ModContent.Request<Texture2D>(Texture + "Blur");
+        }
+
         public override void SetStaticDefaults()
         {
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
@@ -201,7 +211,7 @@ namespace LobotomyCorp.Projectiles.Realized
             Vector2 pos = Projectile.Center - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
             Vector2 origin = new Vector2(tex.Width / 2 - 10 * Projectile.spriteDirection, 15);
             Rectangle frame = tex.Frame();
-            Texture2D tex2 = Mod.Assets.Request<Texture2D>("Projectiles/Realized/CrimsonScarRSickleBlur").Value;
+            Texture2D tex2 = Blur.Value;
 			Rectangle frame2 = tex2.Frame();
 			Vector2 origin2 = frame2.Size() / 2;
 			lightColor *= Projectile.Opacity;

@@ -8,11 +8,25 @@ using Terraria.DataStructures;
 using Terraria.Audio;
 using System.Collections.Generic;
 using LobotomyCorp.Players;
+using ReLogic.Content;
 
 namespace LobotomyCorp.Items.Waw
 {
     public class CrimsonScar : LobCorpLight
     {
+        static Asset<Texture2D> TextureMain;
+        static Asset<Texture2D> Gun;
+        static Asset<Texture2D> Scythe;
+        static Asset<Texture2D> ScytheHalf;
+
+        public override void Load()
+        {
+            TextureMain = ModContent.Request<Texture2D>(Texture);
+            Gun = ModContent.Request<Texture2D>(Texture + "Gun");
+            Scythe = ModContent.Request<Texture2D>(Texture + "Scythe");
+            ScytheHalf = ModContent.Request<Texture2D>(Texture + "ScytheHalf");
+        }
+
         public override void SetStaticDefaults()
         {
             /* Tooltip.SetDefault("With steel in one hand and gunpowder in the other, there's nothing to fear in this place.\n" +
@@ -88,7 +102,7 @@ namespace LobotomyCorp.Items.Waw
                 Item.useTime = 50;
                 Item.useAnimation = 50;
                 Item.useStyle = ItemUseStyleID.Shoot;
-                TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarGun");
+                TextureAssets.Item[Item.type] = Gun;
                 Item.noMelee = true;
                 Item.useTurn = false;
                 Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Gun") with { Volume = 0.2f, PitchVariance = 0.1f };
@@ -98,7 +112,7 @@ namespace LobotomyCorp.Items.Waw
                 Item.useTime = 18;
                 Item.useAnimation = 18;
                 Item.useStyle = 15;
-                TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarScythe");
+                TextureAssets.Item[Item.type] = Scythe;
                 Item.noMelee = false;
                 Item.useTurn = true;
                 Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/RedHood_Atk1") with { Volume = 0.2f, PitchVariance = 0.1f };
@@ -122,7 +136,7 @@ namespace LobotomyCorp.Items.Waw
                 float prog = player.itemAnimation / (float)player.itemAnimationMax;
                 if (prog < 0.5f)
                 {
-                    TextureAssets.Item[Item.type] = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScarScytheHalf");
+                    TextureAssets.Item[Item.type] = ScytheHalf;
                 }
             }
             base.UseStyleAlt(player, heldItemFrame);
@@ -139,7 +153,7 @@ namespace LobotomyCorp.Items.Waw
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScar").Value;
+            Texture2D tex = TextureMain.Value;
             Rectangle texFrame = tex.Frame();
             scale = 1f;
             float num = 1f;
@@ -152,7 +166,7 @@ namespace LobotomyCorp.Items.Waw
             return false;
             /*
             position = position - TextureAssets.InventoryBack.Value.Size() * Main.inventoryScale / 2f + frame.Size() * scale / 2f;
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScar").Value;
+            Texture2D tex = TextureMain.Value;
             frame = tex.Frame();
             scale = 1f;
             if (frame.Width > 32 || frame.Height > 32)
@@ -166,7 +180,7 @@ namespace LobotomyCorp.Items.Waw
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Waw/CrimsonScar").Value;
+            Texture2D tex = TextureMain.Value;
             spriteBatch.Draw(tex, Item.position - Main.screenPosition + new Vector2(Item.width / 2, Item.height - tex.Height / 2), tex.Frame(), lightColor, rotation, tex.Size() / 2, scale, 0, 0);
             return false;
         }

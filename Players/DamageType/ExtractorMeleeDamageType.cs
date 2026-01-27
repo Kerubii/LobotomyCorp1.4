@@ -1,0 +1,32 @@
+using Terraria.ModLoader;
+
+namespace LobotomyCorp.Players.DamageType
+{
+    public class ExtractorMelee : DamageClass
+    {
+        public override StatInheritanceData GetModifierInheritance(DamageClass damageClass)
+        {
+            if (damageClass == DamageClass.Generic || 
+                damageClass == Mod.GetContent<ExtractorDamage>())
+                return StatInheritanceData.Full;
+            if (damageClass == DamageClass.Melee)
+                return StatInheritanceData.Full;
+            return StatInheritanceData.None;
+        }
+
+        public override bool GetEffectInheritance(DamageClass damageClass)
+        {
+            if (damageClass == DamageClass.Melee ||
+                damageClass == Mod.GetContent<ExtractorDamage>())
+                return true;
+            return false;
+        }
+
+        public override bool GetPrefixInheritance(DamageClass damageClass)
+        {
+            if (damageClass == DamageClass.Melee)
+                return true;
+            return false;
+        }
+    }
+}

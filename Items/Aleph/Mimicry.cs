@@ -93,7 +93,10 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
         {
-            damage += 3f * LobotomyModPlayer.ModPlayer(player).ChargeWeaponHelper;
+            float add = 4.5f * LobotomyModPlayer.ModPlayer(player).ChargeWeaponHelper;
+            if (LobotomyModPlayer.ModPlayer(player).ChargeWeaponHelper >= 0.95f)
+                add = 6f;
+            damage += add;
         }
 
         public override void UseItemHitboxAlt(Player player, ref Rectangle hitbox, ref bool noHitbox)
@@ -108,9 +111,10 @@ namespace LobotomyCorp.Items.Aleph
 
             MimicryHeal = true;
             int heal = (int)(damageDone * 0.25f);
-            if (heal > 40)
+            int healMax = 30;
+            if (heal > healMax)
             {
-                heal = 40; 
+                heal = healMax; 
             }
             player.HealEffect(heal);
             player.statLife += heal;

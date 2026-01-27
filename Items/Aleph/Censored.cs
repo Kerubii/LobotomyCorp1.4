@@ -15,6 +15,7 @@ namespace LobotomyCorp.Items.Aleph
             /* Tooltip.SetDefault("[CENSORED] has the ability to [CENSORED], but this is a horrendous sight for those watching.\n" +
 							   "Looking at the E.G.O for more than 3 seconds will make you sick.\n" +
 							   "Heal 40% damage taken\n"); */
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 
         public override void SetDefaults()
@@ -71,10 +72,8 @@ namespace LobotomyCorp.Items.Aleph
         {
             if (player.altFunctionUse != 2)
             {
-                damage = (int)(damage * 0.6f);
-            }
-            else
                 damage = (int)(damage * 0.8f);
+            }
             base.ModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
         }
 

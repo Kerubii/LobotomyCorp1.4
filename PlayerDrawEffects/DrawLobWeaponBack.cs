@@ -7,6 +7,9 @@ using Terraria.GameContent;
 using System;
 using LobotomyCorp.Players;
 using rail;
+using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Items.Ruina.Technology;
+using LobotomyCorp.Items.Ruina.Language;
 
 namespace LobotomyCorp.PlayerDrawEffects
 {
@@ -28,7 +31,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                     if (!item.CustomDraw)
                         return;
 
-                    Texture2D texture = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS1").Value;
+                    Texture2D texture = SolemnLamentR.SolemnGun1.Value;
 
                     Vector2 position = drawInfo.ItemLocation - Main.screenPosition;
                     Vector2 origin = new Vector2(Player.direction == 1 ? 0 : texture.Width, texture.Height);
@@ -96,7 +99,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                     {
                         float prog = 1f - Player.itemAnimation / (float)Player.itemAnimationMax;
                         LobotomyWawPlayer wawPlayer = Player.GetModPlayer<LobotomyWawPlayer>();
-                        Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Ruina/Language/CrimsonScarRGun").Value;
+                        Texture2D tex = CrimsonScarR.Gun.Value;
                         Vector2 textureCenter = tex.Size() / 2;
 
                         float rot = Player.itemRotation;

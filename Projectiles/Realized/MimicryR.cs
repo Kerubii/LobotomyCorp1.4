@@ -1,17 +1,13 @@
 ﻿using System;
-using LobotomyCorp.Buffs;
-using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 using static Terraria.Player;
 using static tModPorter.ProgressUpdate;
 
@@ -316,7 +312,7 @@ namespace LobotomyCorp.Projectiles.Realized
             bool Goodbye = false;
 
             if (Projectile.ai[1] >= 60)
-                tex = Mod.Assets.Request<Texture2D>("Items/Ruina/Language/MimicryRAlt").Value;
+                tex = Items.Ruina.Language.MimicryR.AltTex.Value;
             float rotation = Projectile.rotation + 0.785f;
             Vector2 origin = new Vector2(8, tex.Height - 8);
             SpriteEffects sp = 0;

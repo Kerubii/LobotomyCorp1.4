@@ -7,7 +7,7 @@ using Terraria.ID;
 using Terraria.DataStructures;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
-using LobotomyCorp.ParticlesAura;
+using LobotomyCorp.Visuals.ParticlesAura;
 
 namespace LobotomyCorp.Buffs
 {

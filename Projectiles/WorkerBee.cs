@@ -2,6 +2,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -11,6 +12,13 @@ namespace LobotomyCorp.Projectiles
 {
 	class WorkerBee : ModProjectile
 	{
+        public static Asset<Texture2D> IntestineTex;
+
+        public override void Load()
+        {
+            IntestineTex = ModContent.Request<Texture2D>(Texture + "Intestine");
+        }
+
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[Projectile.type] = 13;
@@ -606,7 +614,7 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/WorkerBeeIntestine").Value;
+            Texture2D tex = IntestineTex.Value;
             Vector2 intPos = IntestineAttachPoint();
             Vector2 position = intPos + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition;
             Vector2 origin = new Vector2(Projectile.spriteDirection >= 0 ? 17 : 3, 3);
@@ -977,7 +985,7 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/WorkerBeeIntestine").Value;
+            Texture2D tex = WorkerBee.IntestineTex.Value;
             Vector2 intPos = IntestineAttachPoint();
             Vector2 position = intPos + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition;
             Vector2 origin = new Vector2(Projectile.spriteDirection >= 0 ? 17 : 3, 3);

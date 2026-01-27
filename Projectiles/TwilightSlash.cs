@@ -20,7 +20,7 @@ namespace LobotomyCorp.Projectiles
 			Projectile.usesIDStaticNPCImmunity = true;
 			Projectile.idStaticNPCHitCooldown = 15;
 			Projectile.tileCollide = false;
-			Projectile.timeLeft = 15;
+			Projectile.timeLeft = 24;
 			Projectile.friendly = true;
 		}
 

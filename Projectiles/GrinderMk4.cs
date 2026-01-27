@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -12,6 +13,13 @@ namespace LobotomyCorp.Projectiles
 {
 	public class GrinderMk4 : ModProjectile
 	{
+        public static Asset<Texture2D> SawHead;
+
+        public override void Load()
+        {
+            SawHead = ModContent.Request<Texture2D>(Texture + "Head");
+        }
+
         protected virtual float HoldoutRangeMin => 24f;
         protected virtual float HoldoutRangeMax => 96f;
 
@@ -72,7 +80,7 @@ namespace LobotomyCorp.Projectiles
 
         public override void PostDraw(Color lightColor)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/GrinderMk4Head").Value;
+            Texture2D tex = SawHead.Value;
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), lightColor, Projectile.localAI[1], tex.Size()/2 , 1f, 0f, 0);
         }
 

@@ -7,6 +7,8 @@ using Terraria.GameContent;
 using System;
 using LobotomyCorp.Players;
 using Terraria.GameContent.UI.BigProgressBar;
+using LobotomyCorp.Items.Ruina.Technology;
+using LobotomyCorp.Items.Ruina.Language;
 
 namespace LobotomyCorp.PlayerDrawEffects
 {
@@ -34,7 +36,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                     if (!item.CustomDraw)
                         return;
 
-                    Texture2D texture = Mod.Assets.Request<Texture2D>("Items/Ruina/Technology/SolemnLamentS2").Value;
+                    Texture2D texture = SolemnLamentR.SolemnGun2.Value;
 
                     Vector2 position = drawInfo.ItemLocation - Main.screenPosition;
                     Vector2 origin = new Vector2(Player.direction == 1 ? 0 : texture.Width, texture.Height);
@@ -90,7 +92,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                             0 //we dont need to worry about the layer depth here
                         ));
                 }
-            
+                /*
                 else if (Player.HeldItem.type == ModContent.ItemType<Items.Aleph.ParadiseLost>())
                 {
                     Texture2D tex = TextureAssets.Item[Player.HeldItem.type].Value;
@@ -113,7 +115,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                             drawInfo.playerEffect,
                             0
                         ));
-                }
+                }*/
 
                 else if (drawInfo.heldItem.type == ModContent.ItemType<Items.Ruina.Language.CrimsonScarR>())
                 {
@@ -121,7 +123,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                     float prog = 1f - Player.itemAnimation / (float)Player.itemAnimationMax;
                     if (wawPlayer.CrimsonScarLowHealthActive && Player.altFunctionUse == 2)
                     {
-                        Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Ruina/Language/CrimsonScarRGun").Value;
+                        Texture2D tex = CrimsonScarR.Gun.Value;
                         Vector2 textureCenter = tex.Size() / 2;
 
                         float rot = Player.itemRotation;
@@ -176,11 +178,11 @@ namespace LobotomyCorp.PlayerDrawEffects
                             rot = MathHelper.ToRadians(90) * Player.direction;
                         }
 
-                        Texture2D tex = Mod.Assets.Request<Texture2D>("Items/Ruina/Language/CrimsonScarRSickleOpen").Value;
+                        Texture2D tex = CrimsonScarR.SickleOpen.Value;
                         if (prog > 0.45f)
                             return;
                         else if (prog > 0.2f)
-                            tex = Mod.Assets.Request<Texture2D>("Items/Ruina/Language/CrimsonScarRSickle").Value;
+                            tex = CrimsonScarR.Sickle.Value;
 
                         Vector2 position = drawInfo.ItemLocation - Main.screenPosition;
                         Vector2 origin = new Vector2(Player.direction == 1 ? 0 : tex.Width, tex.Height);

@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -37,6 +38,18 @@ namespace LobotomyCorp.Items.He
         public override Vector2? HoldoutOffset()
         {
             return new Vector2(-16, 0);
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (RedMistMaskUpgrade(player, RiskLevel.He))
+            {
+                int p = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+                Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().LaetitiaBullet = true;
+                return false;
+            }
+
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
 
         public override void AddRecipes()

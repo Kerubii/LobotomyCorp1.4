@@ -24,6 +24,13 @@ namespace LobotomyCorp.Projectiles.Realized
 {
 	public class SwordSharpenedWithTearsRSword : ModProjectile
 	{
+        public static Asset<Texture2D> Glow;
+
+        public override void Load()
+        {
+            Glow = ModContent.Request<Texture2D>(Texture + "Glow");
+        }
+
         public override void SetStaticDefaults() {
             //DisplayName.SetDefault("Spear");
             Main.projPet[Projectile.type] = true;
@@ -527,7 +534,7 @@ namespace LobotomyCorp.Projectiles.Realized
             float rotation = Projectile.rotation + 2.35619f;
             position.Y += Projectile.gfxOffY;
 
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/SwordSharpenedWithTearsRSwordGlow").Value;
+            Texture2D tex = Glow.Value;
             Color color = Color.White;
             color.A = 180;
             color *= 0.2f;
@@ -781,7 +788,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 color = Color.Lerp(Color.White, color, lerp);
             }
 
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/Realized/SwordSharpenedWithTearsRSwordGlow").Value;
+            Texture2D tex = SwordSharpenedWithTearsRSword.Glow.Value;
             
             color.A = 180;
             color *= 0.2f;

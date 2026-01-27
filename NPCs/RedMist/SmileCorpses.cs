@@ -1,13 +1,15 @@
-﻿using System;
+﻿using LobotomyCorp;
+using LobotomyCorp.Items.Teth;
+using LobotomyCorp.Projectiles;
+using LobotomyCorp.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.Chat;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.GameContent;
-using Terraria.Chat;
-using LobotomyCorp;
-using LobotomyCorp.Utils;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
@@ -155,7 +157,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Texture2D tex = Mod.Assets.Request<Texture2D>("Projectiles/SmileBobs").Value;
+            Texture2D tex = TextureAssets.Projectile[ModContent.ProjectileType<SmileBobs>()].Value;
             Vector2 pos = NPC.Center - screenPos;
             Rectangle frame = tex.Frame(1, 3, 0, (int)NPC.localAI[1]);
             Vector2 origin = frame.Size() / 2;

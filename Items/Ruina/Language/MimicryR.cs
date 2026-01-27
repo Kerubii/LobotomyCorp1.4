@@ -1,5 +1,7 @@
 using LobotomyCorp.Players;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,6 +11,13 @@ namespace LobotomyCorp.Items.Ruina.Language
 {
     public class MimicryR : SEgoItem
 	{
+        public static Asset<Texture2D> AltTex;
+
+        public override void Load()
+        {
+            AltTex = ModContent.Request<Texture2D>(Texture + "Alt");
+        }
+
         public override void SetStaticDefaults() 
 		{
             // DisplayName.SetDefault("Penitence"); // By default, capitalization in classnames will damage spaces to the display name. You can customize the display name here by uncommenting this line.

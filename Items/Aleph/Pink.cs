@@ -18,12 +18,12 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void SetDefaults()
         {
-            Item.damage = 80; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
+            Item.damage = 184; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
             Item.DamageType = DamageClass.Ranged; // sets the damage type to ranged
             Item.width = 40; // hitbox width of the Item
             Item.height = 42; // hitbox height of the Item
-            Item.useTime = 30; // The Item's use time in ticks (60 ticks == 1 second.)
-            Item.useAnimation = 30; // The length of the Item's use animation in ticks (60 ticks == 1 second.)
+            Item.useTime = 36; // The Item's use time in ticks (60 ticks == 1 second.)
+            Item.useAnimation = 36; // The length of the Item's use animation in ticks (60 ticks == 1 second.)
             Item.useStyle = ItemUseStyleID.Shoot; // how you use the Item (swinging, holding out, etc)
             Item.noMelee = true; //so the Item's animation doesn't do damage
             Item.knockBack = 4; // Sets the Item's knockback. Note that projectiles shot by this weapon will use its and the used ammunition's knockback damageed together.
@@ -54,15 +54,18 @@ namespace LobotomyCorp.Items.Aleph
         {
             float velVar = velocityVariance(player);
             //Main.NewText(velVar);
-            velocity = velocity.RotatedBy(velVar * MathHelper.ToRadians(Main.rand.Next(-30, 31)));
+            //velocity = velocity.RotatedBy(velVar * MathHelper.ToRadians(Main.rand.Next(-30, 31)));
+            if (velVar > 0.1f)
+                damage = (int)(damage * 0.8f);
+            damage = (int)(damage * (1f - 0.9f * velVar));
 
-            if (type == ProjectileID.Bullet)
+            if (velVar < 0.1f)
                 type = ProjectileID.BulletHighVelocity;
         }
 
         public override float UseSpeedMultiplier(Player player)
         {
-            float baseMult = 1f - 0.66f * velocityVariance(player);
+            float baseMult = 1f + 1f * velocityVariance(player);
             return baseMult;
         }
 
