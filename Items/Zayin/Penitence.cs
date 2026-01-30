@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using LobotomyCorp.Projectiles;
 using static LobotomyCorp.Items.LobItemBase;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using LobotomyCorp.ModSystems;
 
 namespace LobotomyCorp.Items.Zayin

@@ -7,7 +7,7 @@ using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.KingPortal;
 using LobotomyCorp.UI;
 using LobotomyCorp.Utils;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

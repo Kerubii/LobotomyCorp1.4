@@ -1,6 +1,6 @@
 ﻿using LobotomyCorp.Configs;
 using LobotomyCorp.Utils;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;

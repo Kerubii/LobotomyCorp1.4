@@ -8,7 +8,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using LobotomyCorp.Utils;
 
-namespace LobotomyCorp.Visuals.PrimEffects
+namespace LobotomyCorp.Visuals.LobEffects
 {
     class WeaponSmearCircle : WeaponSmear
     {

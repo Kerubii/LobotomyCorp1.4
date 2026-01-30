@@ -192,7 +192,7 @@ namespace LobotomyCorp.Projectiles.Realized
             modifiers.ScalingArmorPenetration += 1f;
             if (Projectile.ai[2] == 1)
             {
-                modifiers.FlatBonusDamage += 39;// + Main.player[Projectile.owner].GetModPlayer<LobotomyTethPlayer>().RemorseLeer;
+                modifiers.FlatBonusDamage += 25;// + Main.player[Projectile.owner].GetModPlayer<LobotomyTethPlayer>().RemorseLeer;
                 modifiers.DisableKnockback();
             }
             modifiers.FlatBonusDamage += target.GetGlobalNPC<LobotomyGlobalNPC>().RemorseGuilt;

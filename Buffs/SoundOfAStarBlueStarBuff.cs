@@ -2,6 +2,7 @@ using LobotomyCorp.Players;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.Realized;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Buffs
@@ -27,6 +28,11 @@ namespace LobotomyCorp.Buffs
                 player.DelBuff(buffIndex);
                 buffIndex--;
             }
+        }
+
+        public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
+        {
+            tip += $"\n{Language.GetTextValue("Mods.LobotomyCorp.Buffs.SoundOfAStarBlueStarBuff.Description2", Main.LocalPlayer.GetModPlayer<LobotomyAlephPlayer>().SoundOfAStarBlueStarPower)}";
         }
     }
 }

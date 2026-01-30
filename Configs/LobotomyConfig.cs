@@ -12,6 +12,8 @@ namespace LobotomyCorp.Configs
         [DefaultValue(true)]
         public bool ExtraPassivesShow;
 
+        [Header("VisualEffects")]
+
         //[Label("Screenshake Enabled")]
         [DefaultValue(true)]
         public bool ScreenShakeEnabled;
@@ -22,6 +24,12 @@ namespace LobotomyCorp.Configs
         [DefaultValue(1f)]
         [Range(0f, 1f)]
         public float ScreenEffectOpacity;
+
+        [Header("Sound")]
+
+        [DefaultValue(0f)]
+        [Range(0f, 1f)]
+        public float SolemnDingDongChance;
 
         /*
         [DefaultValue(false)]

@@ -1,5 +1,5 @@
 using LobotomyCorp.ModSystems;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;

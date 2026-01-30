@@ -1,6 +1,6 @@
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Projectiles.Realized;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Steamworks;

@@ -24,6 +24,8 @@ namespace LobotomyCorp.Items
                                     "Test - These are test messages, if these showed up then I fucked up\n" +
                                     "This Item is incomplete and unobtainable";
 
+        public virtual LocalizedText PassiveList => this.GetLocalization(nameof(PassiveList));
+
         /// <summary>
 		/// Use the thing you setup on the Mod cs pls. 
 		/// </summary>
@@ -32,6 +34,7 @@ namespace LobotomyCorp.Items
         public override void SetStaticDefaults()
         {
             // Tooltip.SetDefault(GetTooltip());
+            _ = PassiveList;
         }
 
         public sealed override bool CanUseItem(Player player)
@@ -56,12 +59,13 @@ namespace LobotomyCorp.Items
                 { OverrideColor = LobotomyCorp.PositivePE };
                 if (Passive != null)
                     Passive.Text = Lang.SupportGlyphs(Passive.Text);
-                tooltips.Add(Passive);
+                index = tooltips.FindIndex(x => x.Mod == "Terraria" && x.Name == "Tooltip0") + 1;
+                tooltips.Insert(index++, Passive);
 
                 Passive = new TooltipLine(Mod, "NegativePassive", $"{PassiveInitialize(GetPassiveList(arg), ExtraShow, true)}") { OverrideColor = LobotomyCorp.NegativePE };
                 if (Passive != null)
                     Passive.Text = Lang.SupportGlyphs(Passive.Text);
-                tooltips.Add(Passive);
+                tooltips.Insert(index, Passive);
 
                 /*foreach (TooltipLine line in tooltips)
                 {
@@ -135,7 +139,8 @@ namespace LobotomyCorp.Items
 
         public virtual string GetPassiveList(int arg)
         {
-            string key = "Mods.LobotomyCorp.Items." + ItemName() + ".PassiveList";
+            //string key = "Mods.LobotomyCorp.Items." + ItemName() + ".PassiveList";
+            string key = PassiveList.Key;
             string list = Language.GetTextValue(key, arg);
             if (list == key)
                 list = PassiveText;

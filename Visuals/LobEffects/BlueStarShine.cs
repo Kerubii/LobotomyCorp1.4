@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 using LobotomyCorp.Utils;
 using LobotomyCorp.Misc;
 
-namespace LobotomyCorp.Visuals.PrimEffects
+namespace LobotomyCorp.Visuals.LobEffects
 {
     class BlueStarShine : LobDrawEffects
     {

@@ -45,13 +45,13 @@ namespace LobotomyCorp.ModSystems
         {
             NihilUI.ResetTime();
             LobUIInterface?.SetState(NihilUI);
-            Main.NewText("Activated");
+            //Main.NewText("Activated");
         }
 
         public void ClearUI()
         {
             LobUIInterface?.SetState(null);
-            Main.NewText("Deactivated");
+            //Main.NewText("Deactivated");
         }
 
         public override void UpdateUI(GameTime gameTime)

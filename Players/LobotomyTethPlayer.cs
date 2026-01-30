@@ -116,8 +116,13 @@ namespace LobotomyCorp.Players
         {
             if (RemorseLeer > 0)
             {
+                if (!RemorseHeld && RemorseLeer > RemorseLeerMax / 2)
+                {
+                    RemorseLeer = RemorseLeerMax / 2;
+                }
+
                 Player.AddBuff(ModContent.BuffType<RemorseLeer>(), 2);
-                if (RemorseLeer >= RemorseLeerMax)
+                if (RemorseLeer >= RemorseLeerMax && NPC.downedGolemBoss)
                 {
                     Player.AddBuff(ModContent.BuffType<RemorseCrack>(), 2);
                 }
@@ -148,8 +153,8 @@ namespace LobotomyCorp.Players
 
                 if (Player.ownedProjectileCounts[ModContent.ProjectileType<RemorseNailEX>()] == 0)
                 {
-                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseNailEX>(), 1, 0, Player.whoAmI);
-                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseHammerEX>(), 1, 0, Player.whoAmI);
+                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseNailEX>(), 70, 0, Player.whoAmI);
+                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseHammerEX>(), 70, 0, Player.whoAmI);
                 }
             }
         }
@@ -309,5 +314,7 @@ namespace LobotomyCorp.Players
         }
 
         public bool RedEyesEitherHeld => Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>() || Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Teth.RedEyes>();
+
+        public bool RemorseHeld => Player.HeldItem.type == ModContent.ItemType<Items.Ruina.General.RemorseR>();
     }
 }

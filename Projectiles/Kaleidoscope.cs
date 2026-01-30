@@ -11,7 +11,7 @@ namespace LobotomyCorp.Projectiles
 {
 	public class Kaleidoscope : ModProjectile
 	{
-        public Asset<Texture2D> AltTex;
+        public static Asset<Texture2D> AltTex;
 
         public override void Load()
         {

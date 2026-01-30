@@ -1,7 +1,7 @@
 ﻿using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

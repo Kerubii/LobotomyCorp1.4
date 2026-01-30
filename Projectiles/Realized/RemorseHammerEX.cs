@@ -2,7 +2,7 @@
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
 using LobotomyCorp.Utils;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using log4net.Filter;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Xna.Framework;
@@ -305,7 +305,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 }
             }
 
-            if (!player.GetModPlayer<LobotomyTethPlayer>().RemorseHammerTime)
+            if (!player.GetModPlayer<LobotomyTethPlayer>().RemorseHammerTime || player.dead)
             {
                 if (Projectile.timeLeft > 10)
                     Projectile.timeLeft = 10;

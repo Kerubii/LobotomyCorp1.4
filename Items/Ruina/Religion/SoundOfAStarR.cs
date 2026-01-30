@@ -18,6 +18,7 @@ namespace LobotomyCorp.Items.Ruina.Religion
             ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
             ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
             ItemID.Sets.StaffMinionSlotsRequired[Item.type] = 0f;
+            _ = PassiveList;
 		}
 
 		public override void SetDefaults() 
@@ -50,14 +51,23 @@ namespace LobotomyCorp.Items.Ruina.Religion
             {
                 player.AddBuff(ModContent.BuffType<SoundOfAStarBlueStarBuff>(), 2);
                 type = ModContent.ProjectileType<SoundOfAStarBlueStar>();
-                damage *= 100;
+                damage = 530;
             }
         }
 
         public override bool AltFunctionUse(Player player)
         {
-            return true;
+            return player.ownedProjectileCounts[ModContent.ProjectileType<SoundOfAStarBlueStar>()] == 0;
         }
 
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+            .AddIngredient(ModContent.ItemType<Aleph.SoundOfAStar>())
+            .AddIngredient(ItemID.FragmentStardust, 6)
+            .AddTile<Tiles.BlackBox3>()
+            .AddCondition(RedMistCond)
+            .Register();
+        }
     }
 }

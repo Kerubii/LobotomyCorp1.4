@@ -92,7 +92,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
                 lobItem.CustomTexture = SolemnGun2.Value;
                 if (AltAmmo(player))
                 {
-                    if (Main.rand.NextBool(3) || player.altFunctionUse == 2)
+                    if (Main.rand.NextBool(3 - (int)(2 * ModContent.GetInstance<Configs.LobotomyConfig>().SolemnDingDongChance)) || player.altFunctionUse == 2)
                         Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_Black") with { Volume = 0.1f, MaxInstances = -1 };
                     else
                         Item.UseSound = SoundID.Item11;
@@ -104,7 +104,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             else
             {
                 lobItem.CustomTexture = SolemnGun2.Value;
-                if (Main.rand.NextBool(3) || player.altFunctionUse == 2)
+                if (Main.rand.NextBool(3 - (int)(2 * ModContent.GetInstance<Configs.LobotomyConfig>().SolemnDingDongChance)) || player.altFunctionUse == 2)
                     Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_White") with { Volume = 0.1f , MaxInstances = -1};
                 else
                     Item.UseSound = SoundID.Item11;

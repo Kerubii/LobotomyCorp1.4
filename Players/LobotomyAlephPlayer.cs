@@ -42,6 +42,7 @@ namespace LobotomyCorp.Players
         public bool GoldRushRoadCooldown = false;
 
         public int SoundOfAStarPosRotation = 0;
+        public int SoundOfAStarBlueStarPower = 0;
 
         public int TwilightSpecial = 10;
 

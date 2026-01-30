@@ -12,7 +12,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 {
     public class FaintAromaS : SEgoItem
 	{
-        private Asset<Texture2D> Display;
+        private static Asset<Texture2D> Display;
 
         public override bool IsLoadingEnabled(Mod mod)
         {

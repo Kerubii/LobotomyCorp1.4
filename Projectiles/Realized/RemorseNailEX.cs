@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Terraria.DataStructures;
 using LobotomyCorp.Items.Ruina.General;
 using LobotomyCorp.Players;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 using LobotomyCorp.ModSystems;
 
 namespace LobotomyCorp.Projectiles.Realized
@@ -305,7 +305,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 }
             }
 
-            if (!player.GetModPlayer<LobotomyTethPlayer>().RemorseHammerTime)
+            if (!player.GetModPlayer<LobotomyTethPlayer>().RemorseHammerTime || player.dead)
             {
                 if (Projectile.timeLeft > 10)
                     Projectile.timeLeft = 10;
@@ -351,7 +351,6 @@ namespace LobotomyCorp.Projectiles.Realized
             line.SetupLine(30, 60, 230);
             line.SetShaderImage("Misc/ShaderTextures/RemorseBrown", "Misc/GenericWindTrail", "Misc/FX_Tex_Noise_Plasma1");
             LobCustomDraw.Instance().AddVEffects(line);
-            Main.NewText("A");
         }
 
         private float GetLength => FSkel.BoneName[Bone.LowerArm].Length + FSkel.BoneName[Bone.UpperArm].Length;

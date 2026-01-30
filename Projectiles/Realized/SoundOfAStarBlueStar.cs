@@ -19,7 +19,7 @@ using Terraria.Graphics.Effects;
 using LobotomyCorp.Visuals.DeathAnimations;
 using ReLogic.Content;
 using Terraria.Graphics.Renderers;
-using LobotomyCorp.Visuals.PrimEffects;
+using LobotomyCorp.Visuals.LobEffects;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -63,7 +63,10 @@ namespace LobotomyCorp.Projectiles.Realized
 
             Projectile.netImportant = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 2;
+            Projectile.timeLeft = 1500;
+
+            //Projectile.sentry = true;
+            //Projectile.minion = true;
 
             Projectile.hide = true;
 
@@ -91,7 +94,19 @@ namespace LobotomyCorp.Projectiles.Realized
         public override void AI()
         {
             if (!CheckActive(Main.player[Projectile.owner]))
-                return;
+            {
+                if (Projectile.timeLeft >= 999)
+                {
+                    if (state == 0)
+                    {
+                        Projectile.timeLeft = (int)timer + 180;
+                    }
+                    else
+                    {
+                        Projectile.timeLeft = 180;
+                    }
+                }
+            }
 
             Projectile.localAI[0]++;
 
@@ -122,7 +137,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     state++;
 
                     // If Power is enough, also hits the owner
-                    if (power > 0)
+                    if (power >= 20)
                     {
                         Player owner = Main.player[Projectile.owner];
                         if (owner.CanHit(Projectile))
@@ -131,8 +146,14 @@ namespace LobotomyCorp.Projectiles.Realized
                             PlayerDeathReason playerDeath = PlayerDeathReason.ByCustomReason(text);
                             playerDeath.SourceProjectileType = Projectile.type;
                             playerDeath.SourceProjectileLocalIndex = Projectile.whoAmI;
-                            owner.Hurt(playerDeath, (int)power + 20, 0, dodgeable: false, knockback: 0);
-                            owner.AddBuff(ModContent.BuffType<SoundOfAStarNostalgic>(), 60 * 5);
+                            int damage = (int)power;
+                            if (Main.masterMode)
+                                damage /= 3;
+                            else if (Main.expertMode)
+                                damage /= 2;
+
+                            owner.Hurt(playerDeath, damage, 0, dodgeable: false, knockback: 0);
+                            owner.AddBuff(ModContent.BuffType<SoundOfAStarNostalgic>(), 60 * 10);
                         }
                     }
                 }                
@@ -156,6 +177,21 @@ namespace LobotomyCorp.Projectiles.Realized
                     Dust.NewDustPerfect(Projectile.Center, 91, speed).noGravity = true;
                 }
 
+                foreach (Projectile minion in Main.ActiveProjectiles)
+                {
+                    if (minion.owner == Projectile.owner && minion.minion && !SoundOfAStarEGOProjType(minion.type))
+                    {
+                        if (Collision.CanHit(Projectile, minion))
+                        {
+                            HealPlayer();
+
+                            minion.Kill();
+                            SetSwirlyDistortion(minion);
+                            power += minion.minionSlots * 10f;
+                        }
+                    }
+                }
+
                 for (int i = 0; i < 3; i++)
                 {
                     CreateShineRandom();
@@ -172,6 +208,8 @@ namespace LobotomyCorp.Projectiles.Realized
                         g.velocity = g.position.DirectionTo(Projectile.Center) * 12f;
                     }
                 }
+
+                Main.player[Projectile.owner].GetModPlayer<LobotomyAlephPlayer>().SoundOfAStarBlueStarPower = (int)power;
 
                 timer--;
                 Projectile.frame = 2;
@@ -223,6 +261,11 @@ namespace LobotomyCorp.Projectiles.Realized
             }
         }
 
+        public static bool SoundOfAStarEGOProjType(int type)
+        {
+            return type == ModContent.ProjectileType<SoundOfAStarBall>() || type == ModContent.ProjectileType<SoundOfAStarMinion>();
+        }
+
         private bool CheckActive(Player owner)
         {
             int bufType = ModContent.BuffType<SoundOfAStarBlueStarBuff>();
@@ -232,7 +275,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 var death = owner.GetModPlayer<LobotomyDeathPlayer>();
                 if (death.deathActive)
                 {
-                    Projectile.timeLeft = 3;
+                    Projectile.timeLeft = 31;
                     return true;
                 }
 
@@ -241,11 +284,13 @@ namespace LobotomyCorp.Projectiles.Realized
                 return false;
             }
 
-            if (owner.HasBuff(bufType) && Projectile.timeLeft < 2)
+            if (owner.HasBuff(bufType))
             {
-                Projectile.timeLeft = 3;
+                if (Projectile.timeLeft < 1000)
+                    Projectile.timeLeft = 1000;
+                return true;
             }
-            return true;
+            return false;
         }
 
         private void CreateShineRandom()
@@ -254,6 +299,26 @@ namespace LobotomyCorp.Projectiles.Realized
             Vector2 vel = Projectile.Center.DirectionTo(position);
             BlueStarShine shine = new BlueStarShine(position, 45, 0.7f + Main.rand.NextFloat(0.4f), vel);
             LobCustomDraw.Instance().AddVEffects(shine);
+        }
+
+        private void IncreasePower(int add)
+        {
+            power += add;
+            int limit = 300;
+            if (power > limit)
+                power = limit;
+        }
+
+        private void HealPlayer()
+        {
+            if (timer == 30 || timer == 0)
+            {
+                int heal = 100 - (int)(power * 0.3f);
+                if (heal <= 0)
+                    heal = 1;
+                timer = 31;
+                Main.player[Projectile.owner].Heal(heal);
+            }
         }
 
         public override void OnKill(int timeLeft)
@@ -278,30 +343,50 @@ namespace LobotomyCorp.Projectiles.Realized
         {
             if (target.life <= 0)
             {
-                power += target.lifeMax / 1000f;
+                HealPlayer();
 
-                Projectile.localAI[1] = 1f;
-                float distance = (target.Distance(Projectile.Center) + 32) / Main.screenHeight;
-                if (distance > Projectile.localAI[2])
-                {
-                    Projectile.localAI[2] = distance;
-                }
-                int heal = 100 - (int)power;
-                if (heal <= 0)
-                    heal = 1;
-                Main.player[Projectile.owner].Heal(heal);
+                IncreasePower(10);
+
+                SetSwirlyDistortion(target);
+                
                 CreateShineRandom();
             }
+        }
+
+        private void SetSwirlyDistortion(Entity target)
+        {
+            Projectile.localAI[1] = 1f;
+            float distance = (target.Distance(Projectile.Center) + 32) / Main.screenHeight;
+            if (distance > Projectile.localAI[2])
+                Projectile.localAI[2] = distance;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
             modifiers.SourceDamage += power / 100f;
+            modifiers.SourceDamage += EmptySlotAmount(Projectile.owner) * 0.9f;
 
             if (!target.boss && target.life <= target.lifeMax * 0.2f)
             {
                 modifiers.FinalDamage += 1000f;
             }
+        }
+
+        private int EmptySlotAmount(int whoAmI)
+        {
+            Player player = Main.player[whoAmI];
+            int slots = player.maxTurrets;
+            foreach (Projectile proj in Main.ActiveProjectiles)
+            {
+                if (proj.owner == whoAmI && proj.sentry)
+                {
+                    slots--;
+                }
+            }
+            slots--;
+            if (slots < 0)
+                slots = 0;
+            return slots;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -319,23 +404,32 @@ namespace LobotomyCorp.Projectiles.Realized
             Vector2 pos = Projectile.Center - Main.screenPosition + Vector2.UnitY * (offY + Projectile.gfxOffY);
             Vector2 origin = new Vector2(95, 79);
 
+            float projScale = Projectile.scale + 0.6f;
+            float timeLeft = Math.Clamp((Projectile.timeLeft - 15) / 15f, 0f, 1f);
+            if (timeLeft < 1f)
+            {
+                timeLeft = 1f - (float)Math.Pow(1f - timeLeft, 3);
+            }
+
             float rotOff = MathHelper.ToRadians(2) * (float)Math.Sin((Projectile.localAI[0] / 314f) * 6.28f);
-            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation + rotOff, origin, Projectile.scale + 0.6f, 0);
+            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation + rotOff, origin, projScale * timeLeft, 0);
 
             tex = Legs2.Value;
             rotOff = MathHelper.ToRadians(-4) * (float)Math.Sin((Projectile.localAI[0] / 634f) * 6.28f);
-            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation + rotOff, origin, Projectile.scale + 0.6f, 0);
+            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation + rotOff, origin, projScale * timeLeft, 0);
 
             tex = Legs1.Value;
             rotOff = MathHelper.ToRadians(5) * (float)Math.Sin((Projectile.localAI[0] / 512f) * 6.28f);
-            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation + rotOff, origin, Projectile.scale + 0.6f, 0);
+            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation + rotOff, origin, projScale * timeLeft, 0);
 
             tex = Glow;
             frame = tex.Frame();
             float plusScale = 0.01f * (float)Math.Sin((Projectile.localAI[0] / 432f) * 6.28f);
             float colorOp = 0.5f + 0.2f * (float)Math.Sin((Projectile.localAI[0] / 432f) * 6.28f);
 
-            Main.EntitySpriteDraw(tex, pos, frame, Color.White * colorOp, Projectile.rotation, origin, Projectile.scale + 0.6f + plusScale, 0);
+            timeLeft = Math.Clamp(Projectile.timeLeft / 15f, 0f, 1f);
+
+            Main.EntitySpriteDraw(tex, pos, frame, Color.White * colorOp, Projectile.rotation, origin, (projScale + plusScale) * timeLeft, 0);
 
             tex = TextureAssets.Projectile[Projectile.type].Value;			
             Vector2 scale = new Vector2(1f, 1f);
@@ -361,7 +455,7 @@ namespace LobotomyCorp.Projectiles.Realized
 
             scale *= Projectile.scale + 0.6f + plusScale;
 
-            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation, origin, scale, 0);
+            Main.EntitySpriteDraw(tex, pos, frame, Color.White, Projectile.rotation, origin, scale * timeLeft, 0);
 
 			return false;
         }

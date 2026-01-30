@@ -15,6 +15,7 @@ namespace LobotomyCorp.Items.Ruina.Social
             return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
         }
 
+        /*
         public override void SetStaticDefaults()
         {
             // Tooltip.SetDefault("\"Friends, Friends, let us all go home together!\"");
@@ -22,7 +23,7 @@ namespace LobotomyCorp.Items.Ruina.Social
                           "A Road Walked Together - Create temporary yellow brick road that gives buffs to nearby teammates\n" +
                           "|On the Way Home - While a yellow brick road or this weapon is active, the user gains a debuff when not near it";
             EgoColor = LobotomyCorp.HeRarity;
-        }
+        }*/
 
         public override void SetDefaults()
         {

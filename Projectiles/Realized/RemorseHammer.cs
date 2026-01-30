@@ -26,6 +26,9 @@ namespace LobotomyCorp.Projectiles.Realized
             //Projectile.hide = true;
             Projectile.DamageType = DamageClass.Default;
             Projectile.friendly = true;
+
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 5;
         }
 
         public override void AI()

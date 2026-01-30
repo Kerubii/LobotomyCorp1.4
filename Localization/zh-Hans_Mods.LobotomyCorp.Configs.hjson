@@ -29,11 +29,19 @@ LobotomyConfig: {
 		// Tooltip: ""
 	}
 
-	// Header.GeneralConfiguration: Settings
-	// Headers.GeneralConfiguration: Settings
+	Headers: {
+		// GeneralConfiguration: Item Description
+		// VisualEffects: Visual Effects
+		// Sound: Sound Config
+	}
 
 	ScreenEffectOpacity: {
 		// Label: Screen Effect Opacity
+		// Tooltip: ""
+	}
+
+	SolemnDingDongChance: {
+		// Label: Solemn Ding Dong Chance
 		// Tooltip: ""
 	}
 }

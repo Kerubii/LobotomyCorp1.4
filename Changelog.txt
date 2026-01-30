@@ -1,4 +1,3 @@
-0.10.2.1 Hotfix Changelog
+0.11.1 Changelog
 
-Fixed water and certain things not rendering
-If problems still persist: Disable LobEffects Bloom 
+ - Fixed Sound of a Star R being able to spawn more than one Blue Star

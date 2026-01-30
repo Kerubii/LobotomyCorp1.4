@@ -4,6 +4,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -50,7 +51,7 @@ namespace LobotomyCorp.Items.Waw
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.autoReuse = true;
             Item.DamageType = DamageClass.Ranged;
-            Item.UseSound = LobotomyCorp.WeaponSounds.Gun;
+            //Item.UseSound = LobotomyCorp.WeaponSounds.Gun;
             Item.noMelee = true;
             AlternateAttack = false;
             EGORiskLevel = RiskLevel.Waw;
@@ -119,15 +120,21 @@ namespace LobotomyCorp.Items.Waw
             else
             {
                 AlternateAttack = Main.rand.NextBool(2);
+                SoundStyle sound = LobotomyCorp.WeaponSounds.Gun;
+                float dingdong = ModContent.GetInstance<Configs.LobotomyConfig>().SolemnDingDongChance;
                 if (AlternateAttack)
                 {
                     TextureAssets.Item[Item.type] = SolemnGun2;
-
+                    if (dingdong > 0f && Main.rand.Next(100) < (int)(dingdong * 100f))
+                        sound = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_Black") with { Volume = 0.1f, MaxInstances = -1 };
                 }
                 else
                 {
                     TextureAssets.Item[Item.type] = SolemnGun1;
+                    if (dingdong > 0f && Main.rand.Next(100) < (int)(dingdong * 100f))
+                        sound = new SoundStyle("LobotomyCorp/Sounds/Item/ButterFlyMan_StongAtk_White") with { Volume = 0.1f, MaxInstances = -1 };
                 }
+                SoundEngine.PlaySound(sound, player.Center);
                 player.manaRegenDelay = player.maxRegenDelay;
                 return true;
             }

@@ -1516,7 +1516,6 @@ Mods: {
 			}
 
 			GoldRushR: {
-				// ItemTooltip: ...Sadness says: 'Begone, pass away!' But greed seeks eternity... seeks deep, deep eternity.
 				/* PassiveList:
 					'''
 					Road of the King - <right> to target all 'Fragment of Bliss' and additional nearest enemies (Up to 5). 30 second cooldown
@@ -1526,13 +1525,19 @@ Mods: {
 					|Voracity - When activating 'Road of King' under 50% health, Gain 'Greed' instead 'Happiness' for 1 minute
 					Greed - This E.G.O gains 300% increased damage. 'Road of King' costs up to 50 health with no cooldown
 					''' */
-				// Tooltip: ""
+				// Tooltip: ...Sadness says: 'Begone, pass away!' But greed seeks eternity... seeks deep, deep eternity.
 				// DisplayName: Gold Rush
 			}
 
 			TheHomingInstinctS: {
 				// Tooltip: ""
 				// DisplayName: The Homing Instinct
+				/* PassiveList:
+					'''
+					Home - Drop house
+					A Road Walked Together - Create temporary yellow brick road that gives buffs to nearby teammates
+					|On the Way Home - While a yellow brick road or this weapon is active, the user gains a debuff when not near it
+					''' */
 			}
 
 			#Social
@@ -1554,10 +1559,9 @@ Mods: {
 					Blue Star - <right> to summon Blue Star as a sentry, gains 120% increased damage for each empty sentry slots
 					Into the Star's Embrace - 'Blue Star' periodically creates a sound, damaging you and enemies nearby
 					Penance - Enemies killed by 'Into the Star's Embrace' increases 'Blue Star' damage by 10% (Up to 300%)
-					A Nostalgic Sound - When 'Penance' activates, heal 50 health
-					|Martyr - Non sound of a Star minion can be hit by 'Into the Star's Embrace', Recieve damage when 'Blue Star' is unsummoned
-					I Can Hear The Sound of the Star! - Gains 10% increased damage when hit by 'Into the Star's Embrace'
-					item unobtainable blah blah blah
+					A Nostalgic Sound - When 'Penance' activates, heal 100 health. Decreases by 3 for each damage increase
+					|Martyr - Non sound of a Star minion are killed by 'Into the Star's Embrace', 'Blue Star' attacks once when unsummoned
+					I Can Hear The Sound of the Star! - Gain 10% increased damage when hit by 'Into the Star's Embrace'
 					''' */
 			}
 
@@ -1582,18 +1586,17 @@ Mods: {
 				/* PassiveList:
 					'''
 					Nail - <right> to throw a nail. If the enemy has 'Guilt', inflcits Nail to 2 nearby enemies
-					Hammer - Deal 40 true damage equal to the amount of 'Nail', Consumes 'Nail' when hit 4 times
+					Hammer - Deal {0} true damage equal to the amount of 'Nail', Consumes 'Nail' when hit 4 times
 					Broken to Pieces - When a 'Nail' is consumed, Gain 1 'Leer' and inflict 1 'Guilt'
-					Guilt - Adds 1 flat damage taken from 'Nail' (Maximum of 20)
-					|Leer - Adds 1 flat damage to damage taken and dealt, Lose 1 every 5 seconds (Maximum of 30)
-					item unobtainable blah blah blah
+					Guilt - Adds 1 damage taken from 'Nail' (Maximum of 20)
+					|Leer - Adds 1 damage to damage dealt and taken, Lose 1 every 5 seconds (Max 30, Max 15 if not using Remorse)
 					''' */
 				/* CrackInTheMind:
 					'''
-					A Gap in the Mind - Pokes towards wherever you throw a nail, also inflicts 'Nail'
-					A Crack in the Mind - Slams a giant hammer where a hammer is thrown
-					Out of Sight - If an enemy has maximum 'Guilt', Automatically activates 'Please Don't Vanish Like This' against it
-					Please Don't Vanish Like This - Slams the target 5 times with a giant Nail and Hammer and remove all 'Guilt'
+					A Crack in the Mind - <left> slams a giant hammer towards the mouse cursor, Activates 'Hammer'
+					A Gap in the Mind - <right> pokes a giant nail towards the mouse cursor, Inflicts 'Nail'
+					Out of Sight - Automatically uses 'Please Don't Vanish Like This' on enemies with maximum 'Guilt'
+					Please Don't Vanish Like This - Slams the target 5 times with a giant Nail and Hammer, Removes all 'Guilt'
 					Silence - Returns to normal when 'Leer' is reduced to 10 or less
 					''' */
 				// AlephUpgrade: ... - This EGO awakens again when Golem is defeated
@@ -3371,6 +3374,7 @@ Mods: {
 			SoundOfAStarBlueStarBuff: {
 				// DisplayName: Blue Star
 				// Description: I can hear the sound of the stars
+				// Description2: "{0}% increased damage"
 			}
 		}
 
@@ -3437,5 +3441,7 @@ Mods: {
 			// ExtractorBlack.DisplayName: BLACK damage
 			// ExtractorPale.DisplayName: PALE damage
 		}
+
+		// PassiveList: Mods.LobotomyCorp.PassiveList
 	}
 }
