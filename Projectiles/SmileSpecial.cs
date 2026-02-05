@@ -1,5 +1,5 @@
 ﻿using LobotomyCorp.Buffs;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

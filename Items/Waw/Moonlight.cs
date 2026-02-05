@@ -15,7 +15,7 @@ namespace LobotomyCorp.Items.Waw
                                "25% chance to apply Black Shields to nearby allies when used"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 62;
             Item.DamageType = DamageClass.Melee;

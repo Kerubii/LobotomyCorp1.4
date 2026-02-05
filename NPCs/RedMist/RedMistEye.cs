@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Audio;
 using LobotomyCorp;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using LobotomyCorp.UI;
 using System.Collections.Generic;
 using System.IO;

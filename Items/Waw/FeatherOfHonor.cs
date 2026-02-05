@@ -18,7 +18,7 @@ namespace LobotomyCorp.Items.Waw
 
         public int FeatherShoot = 0;
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 24;
             Item.DamageType = DamageClass.Summon;

@@ -13,7 +13,7 @@ namespace LobotomyCorp.Items.Teth
                                "Only those who maintain a clean \'hairstyle\' with no impurities on their head will be deemed worthy of equipping this weapon."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 16;
             Item.DamageType = DamageClass.Ranged;

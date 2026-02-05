@@ -18,7 +18,7 @@ namespace LobotomyCorp.Items.Aleph
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 42;
             Item.knockBack = 6;

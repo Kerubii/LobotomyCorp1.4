@@ -26,7 +26,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			Item.height = 70;
 
 			Item.damage = 92;
-			Item.DamageType = DamageClass.Melee;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
 			Item.knockBack = 2.3f;
 			Item.useTime = 42;
 			Item.useAnimation = 42;

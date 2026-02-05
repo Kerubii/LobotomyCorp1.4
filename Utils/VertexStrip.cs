@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
 	public class VertexStrip
 	{

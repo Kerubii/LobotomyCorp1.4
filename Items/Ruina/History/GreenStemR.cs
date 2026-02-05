@@ -22,7 +22,7 @@ namespace LobotomyCorp.Items.Ruina.History
             EgoColor = LobotomyCorp.WawRarity;
 
             Item.damage = 48;
-            Item.DamageType = DamageClass.Magic;
+            Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMagic>();
             Item.width = 40;
             Item.height = 40;
 

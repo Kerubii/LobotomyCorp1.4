@@ -10,6 +10,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using LobotomyCorp.Players.DamageType;
 
 namespace LobotomyCorp.Items.Ruina.Art
 {
@@ -18,7 +19,7 @@ namespace LobotomyCorp.Items.Ruina.Art
         public override void SetDefaults() 
 		{
             Item.damage = 240;
-			Item.DamageType = DamageClass.Melee;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 24;

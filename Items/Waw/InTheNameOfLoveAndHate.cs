@@ -15,7 +15,7 @@ namespace LobotomyCorp.Items.Waw
             //Item.staff[Item.type] = true;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 38; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
             Item.DamageType = DamageClass.Magic; ; // sets the damage type to ranged

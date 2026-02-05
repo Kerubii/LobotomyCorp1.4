@@ -20,7 +20,7 @@ namespace LobotomyCorp.Items.Aleph
 							   "Alternate attack be used again after 8 seconds while holding this weapon"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 68;
             Item.scale = 1.3f;

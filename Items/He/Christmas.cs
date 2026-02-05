@@ -17,7 +17,7 @@ namespace LobotomyCorp.Items.He
 							   "Can be obtained from Presents"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 40;
             Item.DamageType = DamageClass.Melee;

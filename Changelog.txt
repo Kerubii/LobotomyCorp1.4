@@ -1,3 +1,10 @@
 0.11.1 Changelog
 
  - Fixed Sound of a Star R being able to spawn more than one Blue Star
+ - Reduced Cherry Blossom's damage (24 -> 18)
+ - Light EGO weapons now have visual animation more similar to Lobcorp (Hitbox unchanged except for lasting longer)
+ - Mimicry now has a different visual swinging animation when charging or holding Right click (Hitbox unchanged)
+ - EGO now have their own global damage type while still inheriting from vanilla classes
+ - Life for a Daredevil's damage type is changed to EGO Melee from Generic
+ - Damage for all EGO weapons can now be adjusted in the config (Temporary)
+ - Fixed Harmony R left click causing errors making it unusable

@@ -9,7 +9,7 @@ namespace LobotomyCorp.Items.Teth
 {
     public class Beak : LobItemBase
     {
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 16;
             Item.knockBack = 4;

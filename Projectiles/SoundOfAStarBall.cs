@@ -1,6 +1,6 @@
 ﻿using LobotomyCorp.Buffs;
 using LobotomyCorp.Projectiles.Realized;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;

@@ -15,7 +15,7 @@ namespace LobotomyCorp.Items.Waw
 							   "Simply carrying it gives the illusion that you're standing in a forest in the middle of nowhere."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 38;
             Item.DamageType = DamageClass.Ranged;

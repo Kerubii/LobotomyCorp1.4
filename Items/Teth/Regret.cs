@@ -13,7 +13,7 @@ namespace LobotomyCorp.Items.Teth
 
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 52;
             Item.DamageType = DamageClass.Melee;

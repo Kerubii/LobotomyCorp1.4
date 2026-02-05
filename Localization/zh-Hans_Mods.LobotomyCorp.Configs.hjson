@@ -9,6 +9,21 @@ LobotomyServerConfig: {
 		// Label: Test Features
 		// Tooltip: Include unfinished items and NPCs. Requires a Reload
 	}
+
+	Headers: {
+		// ContentModifiers: Content Modifiers
+		// TestOptions: Test Options
+	}
+
+	ExtractorDamage: {
+		// Label: E.G.O Damage Increase
+		// Tooltip: Sets E.G.O base damage to this number as a percentage (100 is the default equivalent to x1)
+	}
+
+	ExtractorClass: {
+		// Label: "[TEST] Extractor Class"
+		// Tooltip: UNIMPLEMENTED, DUMMY OPTION FOR FUTURE USE
+	}
 }
 
 LobotomyConfig: {

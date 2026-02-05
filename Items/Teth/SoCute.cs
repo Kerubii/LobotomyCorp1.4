@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.Teth
                                "Oh but the soft jelly-like pawbs feel vewwy nice to touch."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.CloneDefaults(ItemID.CopperShortsword);
             Item.shoot = ModContent.ProjectileType<Projectiles.SoCute>();

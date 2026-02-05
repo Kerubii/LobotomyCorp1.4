@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.Teth
                                "Sold by the Merchant during Blood Moon"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.CloneDefaults(ItemID.CopperShortsword);
             Item.shoot = ModContent.ProjectileType<Projectiles.WristCutter>();

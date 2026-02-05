@@ -20,7 +20,7 @@ namespace LobotomyCorp.Items.Aleph
             ItemID.Sets.StaffMinionSlotsRequired[Item.type] = 0f;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 27;
             Item.DamageType = DamageClass.Summon;

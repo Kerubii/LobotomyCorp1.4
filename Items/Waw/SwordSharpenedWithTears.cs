@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.Waw
                                "Alternate attack to perform a flurry of stabs"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 38;
             Item.DamageType = DamageClass.Melee;

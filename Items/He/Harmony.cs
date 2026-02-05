@@ -17,7 +17,7 @@ namespace LobotomyCorp.Items.He
                                "30% increased damage when consuming 2% hp while having above 2% maximum health"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 77; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
             Item.DamageType = DamageClass.Magic; ; // sets the damage type to ranged

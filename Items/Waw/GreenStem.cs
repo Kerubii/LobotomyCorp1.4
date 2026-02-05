@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.Waw
 
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 36;
             Item.DamageType = DamageClass.MeleeNoSpeed;

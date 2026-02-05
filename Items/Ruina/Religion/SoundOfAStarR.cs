@@ -24,7 +24,7 @@ namespace LobotomyCorp.Items.Ruina.Religion
 		public override void SetDefaults() 
 		{
             Item.damage = 88;
-			Item.DamageType = DamageClass.Summon;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorSummon>();
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 26;

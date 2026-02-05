@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 
 namespace LobotomyCorp.Visuals.LobEffects
 {

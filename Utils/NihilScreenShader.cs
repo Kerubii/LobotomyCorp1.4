@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
 	public class NihilScreenShader : ScreenShaderData
     {

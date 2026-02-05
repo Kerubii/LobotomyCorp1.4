@@ -18,7 +18,7 @@ namespace LobotomyCorp.Items.He
                                "In your universe, am I to be found?\""); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 30;
             Item.DamageType = DamageClass.Melee;

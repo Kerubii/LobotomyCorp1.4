@@ -22,7 +22,7 @@ namespace LobotomyCorp.Items.Armor
                 );
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.vanity = true;
             Item.width = 40;
@@ -42,7 +42,7 @@ namespace LobotomyCorp.Items.Armor
             return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.vanity = true;
             Item.width = 40;
@@ -62,7 +62,7 @@ namespace LobotomyCorp.Items.Armor
             return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.vanity = true;
             Item.width = 40;

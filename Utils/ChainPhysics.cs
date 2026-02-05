@@ -7,7 +7,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
 	class ChainPhysics
     {

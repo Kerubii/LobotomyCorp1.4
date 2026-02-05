@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Terraria.Audio;
 using Terraria.GameContent;
 using System.IO;

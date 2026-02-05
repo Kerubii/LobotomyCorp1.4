@@ -1,6 +1,6 @@
 ﻿using System;
 using LobotomyCorp.ModSystems;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

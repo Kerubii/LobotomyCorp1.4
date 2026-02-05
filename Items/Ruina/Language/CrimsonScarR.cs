@@ -52,7 +52,7 @@ namespace LobotomyCorp.Items.Ruina.Language
             Item.useAnimation = 44;
             Item.useStyle = -1;
             Item.autoReuse = true;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
             Item.noUseGraphic = true;
             //Item.reuseDelay = 20;
         }

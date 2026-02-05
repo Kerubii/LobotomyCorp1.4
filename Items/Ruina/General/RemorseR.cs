@@ -20,7 +20,7 @@ namespace LobotomyCorp.Items.Ruina.General
         public override void SetDefaults() 
 		{
             Item.damage = 15;
-			Item.DamageType = DamageClass.Default;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorDefault>();
 			Item.width = 24;
 			Item.height = 24;
 			Item.useTime = 30;

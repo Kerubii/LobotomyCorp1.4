@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 using Terraria.GameContent;
 using Terraria.Chat;
 using LobotomyCorp;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using System.Collections.Generic;
 
 namespace LobotomyCorp.Projectiles

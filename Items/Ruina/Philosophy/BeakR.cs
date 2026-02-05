@@ -29,7 +29,7 @@ namespace LobotomyCorp.Items.Ruina.Philosophy
                           "This Item is incomplete and unobtainable";
 
             Item.damage = 1;
-			Item.DamageType = DamageClass.Melee;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 8;

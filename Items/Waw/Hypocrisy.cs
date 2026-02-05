@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.Waw
 							   "Sold by the Dryad after Queen Bee"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 40;
             Item.DamageType = DamageClass.Ranged;

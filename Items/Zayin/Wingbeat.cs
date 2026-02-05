@@ -18,7 +18,7 @@ namespace LobotomyCorp.Items.Zayin
                                "Despite its cute shape, the E.G.O. itself is rather heavy."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 18;
             Item.DamageType = DamageClass.Melee;

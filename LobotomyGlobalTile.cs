@@ -4,7 +4,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ModLoader;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Items.Waw;

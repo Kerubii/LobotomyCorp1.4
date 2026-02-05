@@ -1,7 +1,7 @@
 ﻿using LobotomyCorp.Items.Ruina.General;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using LobotomyCorp.Visuals.LobEffects;
 using log4net.Filter;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

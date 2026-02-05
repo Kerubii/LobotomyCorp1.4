@@ -1,7 +1,7 @@
 ﻿using LobotomyCorp;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.UI;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Steamworks;
@@ -13,7 +13,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
     public class SkeletonBase
     {

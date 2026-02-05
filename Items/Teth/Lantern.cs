@@ -5,7 +5,7 @@ namespace LobotomyCorp.Items.Teth
 {
     public class Lantern : LobCorpHeavy
     {
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 62;
             Item.DamageType = DamageClass.Melee;

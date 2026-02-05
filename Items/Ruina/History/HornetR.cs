@@ -20,7 +20,7 @@ namespace LobotomyCorp.Items.Ruina.History
             EgoColor = LobotomyCorp.WawRarity;
 
             Item.damage = 110;
-			Item.DamageType = DamageClass.Summon;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorSummon>();
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 26;

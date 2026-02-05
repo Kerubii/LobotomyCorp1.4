@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.He
                                "The sound of the projectile splitting the air is reminiscent of her piercing scream."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 30;
             Item.DamageType = DamageClass.Ranged;

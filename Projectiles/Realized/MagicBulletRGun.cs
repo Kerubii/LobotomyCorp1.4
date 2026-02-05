@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Terraria.GameContent;
 using ReLogic.Content;
 using Terraria.Graphics.Shaders;

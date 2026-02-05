@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.He
 							   "Can be dropped by Eye of Cthulhu"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 12;
             Item.DamageType = DamageClass.Ranged;

@@ -13,7 +13,7 @@ namespace LobotomyCorp.Items.Waw
                                "You can ignore the ridiculous advice that you can see it with your mind."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 50;
             Item.DamageType = DamageClass.Melee;

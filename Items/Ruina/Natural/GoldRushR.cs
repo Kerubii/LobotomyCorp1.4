@@ -25,7 +25,7 @@ namespace LobotomyCorp.Items.Ruina.Natural
             EgoColor = LobotomyCorp.AlephRarity;
 
             Item.damage = 60;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
             Item.width = 40;
             Item.height = 20;
             Item.useTime = 9;

@@ -7,7 +7,7 @@ namespace LobotomyCorp.Players.DamageType
         public override StatInheritanceData GetModifierInheritance(DamageClass damageClass)
         {
             if (damageClass == DamageClass.Generic || 
-                damageClass == Mod.GetContent<ExtractorDamage>())
+                damageClass == ModContent.GetInstance<ExtractorDamage>())
                 return StatInheritanceData.Full;
             if (damageClass == DamageClass.Melee)
                 return StatInheritanceData.Full;
@@ -17,7 +17,7 @@ namespace LobotomyCorp.Players.DamageType
         public override bool GetEffectInheritance(DamageClass damageClass)
         {
             if (damageClass == DamageClass.Melee ||
-                damageClass == Mod.GetContent<ExtractorDamage>())
+                damageClass == ModContent.GetInstance<ExtractorDamage>())
                 return true;
             return false;
         }

@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.Waw
             // Tooltip.SetDefault("The slick sensation when holding this E.G.O may disturb some employees.");
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 24; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
             Item.DamageType = DamageClass.Magic; ; // sets the damage type to ranged

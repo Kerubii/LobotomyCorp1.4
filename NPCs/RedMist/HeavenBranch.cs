@@ -1,6 +1,6 @@
 ﻿using LobotomyCorp;
 using LobotomyCorp.Projectiles;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using LobotomyCorp.Visuals.DeathAnimations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

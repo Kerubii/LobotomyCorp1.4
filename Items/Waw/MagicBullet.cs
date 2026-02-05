@@ -15,7 +15,7 @@ namespace LobotomyCorp.Items.Waw
                                "Pierces through foes and friends alike"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 76; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
             Item.DamageType = DamageClass.Ranged; // sets the damage type to ranged

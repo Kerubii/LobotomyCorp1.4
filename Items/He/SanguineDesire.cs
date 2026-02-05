@@ -12,7 +12,7 @@ namespace LobotomyCorp.Items.He
                                "The weapon is stronger when used by an employee with strong conviction."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 28;
             Item.DamageType = DamageClass.Melee;

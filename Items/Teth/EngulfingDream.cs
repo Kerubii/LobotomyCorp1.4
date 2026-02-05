@@ -17,7 +17,7 @@ namespace LobotomyCorp.Items.Teth
                                "And when the crying stops, dawn will break."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 18;
             Item.DamageType = DamageClass.Magic;

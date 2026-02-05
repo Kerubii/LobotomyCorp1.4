@@ -20,7 +20,7 @@ namespace LobotomyCorp.Items.Aleph
 
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 72;
             Item.DamageType = DamageClass.Magic; ;

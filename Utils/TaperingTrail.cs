@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using Terraria.Graphics.Shaders;
 using Terraria;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
 	public struct TaperingTrail
 	{

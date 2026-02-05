@@ -6,11 +6,12 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using ReLogic.Content;
 using Terraria.Audio;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 
 namespace LobotomyCorp.Items.Ruina.Technology
 {
@@ -52,7 +53,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             EgoColor = LobotomyCorp.WawRarity;
 
             Item.damage = 62;
-			Item.DamageType = DamageClass.Ranged;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorRanged>();
 			Item.width = 40;
 			Item.height = 40;
 
@@ -390,7 +391,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             speedY = dir.Y;
 
             if (ammo.damage > 0)
-                damage = player.GetWeaponDamage(Item) + (int)player.GetTotalDamage(DamageClass.Ranged).ApplyTo(ammo.damage);
+                damage = player.GetWeaponDamage(Item) + (int)player.GetTotalDamage(ModContent.GetInstance<Players.DamageType.ExtractorRanged>()).ApplyTo(ammo.damage);
             else
                 damage = Item.damage;
 

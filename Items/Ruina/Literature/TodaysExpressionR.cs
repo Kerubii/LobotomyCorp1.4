@@ -25,7 +25,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			Item.height = 40;
 
 			Item.damage = 44;
-			Item.DamageType = DamageClass.Magic;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMagic>();
 			Item.knockBack = 6;
 			Item.useTime = 26;
 			Item.useAnimation = 20;

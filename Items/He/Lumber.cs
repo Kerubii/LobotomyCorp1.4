@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.He
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 96;
             Item.DamageType = DamageClass.Melee;

@@ -6,7 +6,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
     /// <summary>
     /// Overlayer puts a texture on the screen, it would stretch the image to fit the entire screen so it might look wack, Client-side only pls

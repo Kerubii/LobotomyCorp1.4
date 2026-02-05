@@ -17,7 +17,7 @@ namespace LobotomyCorp.Items.Teth
                                "Grants swiftness buff for 3 seconds on hit"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 22;
             Item.DamageType = DamageClass.Melee;

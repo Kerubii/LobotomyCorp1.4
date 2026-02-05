@@ -18,7 +18,7 @@ namespace LobotomyCorp.Items.Waw
 							   "Small chance to reflect damage taken"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 42;
             Item.knockBack = 6;

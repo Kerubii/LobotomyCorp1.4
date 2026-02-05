@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.Waw
                                "50% increased damage while under 50% health"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.CloneDefaults(ItemID.FetidBaghnakhs);
             Item.damage = 60;

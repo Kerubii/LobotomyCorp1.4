@@ -36,7 +36,7 @@ namespace LobotomyCorp.Items.Waw
 
         private bool AlternateAttack;
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.width = 32;
             Item.height = 32;

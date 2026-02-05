@@ -7,7 +7,7 @@ namespace LobotomyCorp.Players.DamageType
         public override StatInheritanceData GetModifierInheritance(DamageClass damageClass)
         {
             if (damageClass == DamageClass.Generic ||
-                damageClass == Mod.GetContent<ExtractorDamage>())
+                damageClass == ModContent.GetInstance<ExtractorDamage>())
                 return StatInheritanceData.Full;
             return StatInheritanceData.None;
         }

@@ -15,7 +15,7 @@ namespace LobotomyCorp.Items.He
 
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 45;
             Item.DamageType = DamageClass.Melee;

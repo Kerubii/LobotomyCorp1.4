@@ -36,7 +36,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 		public override void SetDefaults() 
 		{
             Item.damage = 128;
-			Item.DamageType = DamageClass.Melee;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 32;

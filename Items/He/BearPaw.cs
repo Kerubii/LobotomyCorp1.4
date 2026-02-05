@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.He
                                "Do not underestimate the weapon�'s power because of its fluffy exterior."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.CloneDefaults(ItemID.CopperShortsword);
             Item.shoot = ModContent.ProjectileType<Projectiles.BearPaw>();

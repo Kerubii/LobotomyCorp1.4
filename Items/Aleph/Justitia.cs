@@ -17,7 +17,7 @@ namespace LobotomyCorp.Items.Aleph
 							   "Has a chance to perform a special attack"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 30;
             Item.DamageType = DamageClass.MeleeNoSpeed;

@@ -5,7 +5,7 @@ using LobotomyCorp.Items.Teth;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Items.Zayin;
 using LobotomyCorp.Projectiles;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.PlayerDrawLayer;
 using Steamworks;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
     class Spring
     {
@@ -580,4 +580,22 @@ namespace LobotomyCorp.Utils
             }
         }
     }*/
+
+    class Easing
+    {
+        public static float EaseInCubic(float x)
+        {
+            return x * x * x;
+        }
+
+        public static float EaseOutCubic(float x)
+        {
+            return 1 - (float)Math.Pow(1 - x, 3);
+        }
+
+        public static float EaseOutExpo(float x)
+        {
+            return x == 1 ? 1 : 1 - (float)Math.Pow(2, -10 * x);
+        }
+    }
 }

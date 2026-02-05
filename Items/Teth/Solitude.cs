@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.Teth
                                "It was a rusty weapon from the beginning."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 20;
             Item.DamageType = DamageClass.Ranged;

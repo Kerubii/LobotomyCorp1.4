@@ -21,7 +21,7 @@ namespace LobotomyCorp.Items.Teth
                 );
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.vanity = true;
             Item.width = 40;
@@ -42,7 +42,7 @@ namespace LobotomyCorp.Items.Teth
             return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.vanity = true;
             Item.width = 40;
@@ -63,7 +63,7 @@ namespace LobotomyCorp.Items.Teth
             return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.vanity = true;
             Item.width = 40;

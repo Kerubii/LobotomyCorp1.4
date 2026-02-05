@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LobotomyCorp.Items;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

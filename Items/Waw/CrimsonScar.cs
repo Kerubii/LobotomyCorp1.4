@@ -44,7 +44,7 @@ namespace LobotomyCorp.Items.Waw
             base.ModifyTooltips(tooltips);
         }*/
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.width = 34;
             Item.height = 32;

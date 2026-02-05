@@ -1,6 +1,6 @@
 ﻿using LobotomyCorp.Items.He;
 using LobotomyCorp.Players;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -21,7 +21,7 @@ namespace LobotomyCorp.Projectiles
         public override void Load()
         {
             SawHead = ModContent.Request<Texture2D>(Texture + "Head");
-            SawHead = ModContent.Request<Texture2D>(Texture + "String");
+            String = ModContent.Request<Texture2D>(Texture + "String");
         }
         public override void SetDefaults() {
 			Projectile.width = 46;

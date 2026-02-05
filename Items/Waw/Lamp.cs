@@ -15,7 +15,7 @@ namespace LobotomyCorp.Items.Waw
                                "On this weapon, the radiant pride is apparent."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 110;
             Item.DamageType = DamageClass.Melee;

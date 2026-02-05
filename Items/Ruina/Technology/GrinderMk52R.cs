@@ -22,7 +22,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             EgoColor = LobotomyCorp.HeRarity;
 
             Item.damage = 63;
-			Item.DamageType = DamageClass.Summon;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorSummon>();
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 20;

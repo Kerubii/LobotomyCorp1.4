@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
 	//Studying VertexStrip and BladeDrawer
 	public class SlashTrail

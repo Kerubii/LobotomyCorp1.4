@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.Zayin
                                "Whenever this E.G.O. is used, a faint scent of grapes wafts through the air."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 9;
             Item.DamageType = DamageClass.Ranged;

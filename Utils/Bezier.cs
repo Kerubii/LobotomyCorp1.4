@@ -8,7 +8,7 @@ using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using static tModPorter.ProgressUpdate;
 
-namespace LobotomyCorp.Utils
+namespace LobotomyCorp.Util
 {
 	class Bezier
     {

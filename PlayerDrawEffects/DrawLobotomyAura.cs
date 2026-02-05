@@ -1,5 +1,5 @@
 using LobotomyCorp.Visuals.ParticlesAura;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;

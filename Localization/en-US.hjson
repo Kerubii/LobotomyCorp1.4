@@ -1007,6 +1007,14 @@ Mods: {
 					Scorching Embers - Increases damage taken from on fire debuffs. Counts as 'On Fire'
 					|Footfalls - <right> on fourth use to inflict Scorching Embers to self and explode, taking 20% of your health
 					'''
+				PassiveUpdate:
+					'''
+					Warmth of a Flame - Inflicts 'On Fire'. 400% damage on fourth use and Inflict 'Scorching Embers'
+					Matchlight - 16% increased damage while the EGO user is 'On Fire'
+					Scorching Embers - Increases damage taken from on fire debuffs. Counts as 'On Fire'
+					|Footfalls - <right> on fourth use to inflict 'Scorching Embers' to self and explode, costs 20% of your health
+					Crumbled Hope - Inflict 'On Fire' to self if 'Matchlight' is active while this E.G.O is not held. Extends 'Matchlight'
+					'''
 			}
 
 			ForgottenR: {
@@ -1018,6 +1026,13 @@ Mods: {
 					Happy Memories - Decreases contact damage by 1%-40%. Decreases while not using this E.G.O or if the enemy is far away
 					Nostalgic Embrace - <right> to hug an enemy with 'Happy Memories', removing it. Invincible if 'Happy Memories' is max
 					|Unattended - Getting hit by projectiles or other enemies without mark decreases 'Happy Memories'
+					'''
+				PassiveUpdate:
+					'''
+					Display of Affection - Attacking the same enemy three times in a row marks them with 'Happy Memories' (1 Maximum)
+					Happy Memories - Decreases contact damage inflicted by 1%-40%. Decreases while not using E.G.O or if the enemy is far away
+					Nostalgic Embrace - <right> to hug an enemy with 'Happy Memories', removing it. Invincible if 'Happy Memories' is max
+					|Unattended - Getting hit by projectiles or other enemies without 'Happy Memories' decreases 'Happy Memories'
 					'''
 			}
 
@@ -1154,10 +1169,11 @@ Mods: {
 					'''
 				PassiveListRework:
 					'''
-					Harmony of Despair - Continously hitting enemies increases the weapon's damage, splash damage and hit rate
-					Performance - <right> shoots a soundwave that decreases defense. Shoots three while having 'Musical Addiction'
-					Let's Make Music! - Hit enemies gain 'Musical Addiction' and produces Harmony Notes that gives 'Musical Addiction' when picked up
-					|Musical Addiction - 12% increased damage, 8% increased melee speed. Decreased life regeneration on NPCs
+					Harmony of Despair - Charges up while held out or hitting enemies, Activates 'Performance' when released
+					Performance - <right> shoots a soundwave that decreases defense, Shoots three when activated by 'Harmony of Despair'
+					Let's Make Music! - If 'Harmony of Despair' has maximum charge, hit enemies gain 'Musical Addiction' and produce 'Crooked Notes'
+					Crooked Notes - Gain 'Musical Addiction' and temporarily negates it negative effects when acquired
+					|Musical Addiction - 12% increased damage, -10 defense. Decreased life regeneration on NPCs
 					'''
 			}
 
@@ -1171,6 +1187,13 @@ Mods: {
 					Hand of Salvation - Bullets deal 15% increased damage and spawn butterflies against enemies with the lowest health
 					|Lament - <right> to transform bullets into numerous butterflies, reduces 'Tranquility'. Temporarily disabled on kill
 					'''
+				PassiveListRework:
+					'''
+					Eternal Rest - The second gun uses the next ammo type in your inventory, it does not shoot otherwise.
+					Tranquility - Rate of fire increases when shooting, gain 'Hand of Salvation'. Slowly decreases while not shooting
+					Hand of Salvation - 15% increased damage and spawn butterflies against enemies with the lowest health
+					|Lament - <right> to transform bullets into numerous butterflies, reduces 'Tranquility'. Sets 'Tranquility' to 0 on kill
+					'''
 			}
 
 			MagicBulletR: {
@@ -1182,6 +1205,14 @@ Mods: {
 					Request - Right click to Mark a target, The bullets only targets the marked target. Removed when switching weapons
 					Dark Flame - After the Seventh shot, Gain Dark Flame buff, boosting this weapon's damage by 70%
 					|The Seventh Bullet - The 7th Bullet always targets Town NPCs. If there is none, targets allies. Pierces the user's heart if there are none left
+					'''
+				PassiveListRework:
+					'''
+					Magic Bullet - Each shot has a special damage, target and property. The bullets always hits its mark
+					Request - <right> to mark a target, The bullets only targets the marked target and takes 8% increased damage
+					Contract Renewal - If a 'Request' target is killed, gain 'Dark Flame' and then 'Request' the nearest target unless killed by Magic Bullet
+					|The Seventh Bullet - The 7th Bullet targets Town NPCs, allies and the user's heart in that priority. Gain 'Dark Flame' afterwards					
+					Dark Flame - 70% increased damage, massively decreased life regeneration while not using Magic Bullet
 					'''
 			}
 
@@ -1428,7 +1459,7 @@ Mods: {
 			}
 
 			SmileR: {
-				DisplayName: Smile R
+				DisplayName: Smile
 				Tooltip: The smiling faces are unfamiliar yet sorrowful.
 				PassiveList:
 					'''
@@ -3453,15 +3484,17 @@ Mods: {
 		}
 
 		DamageClasses: {
-			ExtractorSummon.DisplayName: summon E.G.O damage
-			ExtractorRanged.DisplayName: ranged E.G.O damage
-			ExtractorMelee.DisplayName: melee E.G.O damage
-			ExtractorMagic.DisplayName: magic E.G.O damage
-			ExtractorDamage.DisplayName: E.G.O damage
-			ExtractorRed.DisplayName: RED damage
-			ExtractorWhite.DisplayName: WHITE damage
-			ExtractorBlack.DisplayName: BLACK damage
-			ExtractorPale.DisplayName: PALE damage
+			ExtractorSummon.DisplayName: E.G.O{$LegacyTooltip.53}
+			ExtractorRanged.DisplayName: E.G.O{$LegacyTooltip.3}
+			ExtractorMelee.DisplayName: E.G.O{$LegacyTooltip.2}
+			ExtractorMagic.DisplayName: E.G.O{$LegacyTooltip.4}
+			ExtractorDamage.DisplayName: E.G.O{$LegacyTooltip.55}
+			ExtractorRed.DisplayName: RED{$LegacyTooltip.55}
+			ExtractorWhite.DisplayName: WHITE{$LegacyTooltip.55}
+			ExtractorBlack.DisplayName: BLACK{$LegacyTooltip.55}
+			ExtractorPale.DisplayName: PALE{$LegacyTooltip.55}
+			ExtractorMeleeNoSpeed.DisplayName: E.G.O{$LegacyTooltip.2}
+			ExtractorDefault.DisplayName: E.G.O true damage
 		}
 
 		PassiveList: Mods.LobotomyCorp.PassiveList

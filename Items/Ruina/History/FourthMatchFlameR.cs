@@ -28,7 +28,7 @@ namespace LobotomyCorp.Items.Ruina.History
             EgoColor = LobotomyCorp.TethRarity;
 
             Item.damage = 41;
-			Item.DamageType = DamageClass.Melee;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
 			Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 30;

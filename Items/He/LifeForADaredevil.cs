@@ -14,7 +14,7 @@ namespace LobotomyCorp.Items.He
                                "Ignores target's defense"); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.autoReuse = true;
             Item.useTurn = true;
@@ -28,7 +28,7 @@ namespace LobotomyCorp.Items.He
 
             Item.useStyle = 15;
             Item.damage = 32;
-            Item.DamageType = DamageClass.Generic;
+            Item.DamageType = DamageClass.Melee;
             Item.rare = ModContent.RarityType<HeB>();
             Item.UseSound = LobotomyCorp.WeaponSound("katana");
             EGORiskLevel = RiskLevel.He;

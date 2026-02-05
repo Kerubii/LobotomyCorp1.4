@@ -6,7 +6,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 
 namespace LobotomyCorp.Projectiles.RedMist
 {

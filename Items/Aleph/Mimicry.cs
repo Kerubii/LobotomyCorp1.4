@@ -1,8 +1,9 @@
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Audio;
 
 namespace LobotomyCorp.Items.Aleph
 {
@@ -17,11 +18,12 @@ namespace LobotomyCorp.Items.Aleph
 							   "Can be charged for 300% increased damage\n" +
 							   "Recovers 25% damage dealt on hit"); */
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Item.type] = true;
+            ItemID.Sets.SkipsInitialUseSound[Item.type] = true;
         }
 
         private bool MimicryHeal = false;
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 52;
             Item.DamageType = DamageClass.Melee;
@@ -35,7 +37,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.channel = true;
             Item.rare = ModContent.RarityType<AlephB>();
             MimicryHeal = false;
-            //Item.UseSound = SoundID.Item1;
+            Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Attack1") with { Volume = 0.3f };
             EGORiskLevel = RiskLevel.Aleph;
         }
 
@@ -59,6 +61,12 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
+            if (Item.useStyle == 15)
+            {
+                float rotation = rot(player);
+                PseudoUseStyleSwing(player, heldItemFrame, rotation);
+            }
+
             LobotomyModPlayer modPlayer = LobotomyModPlayer.ModPlayer(player);
             if (player.channel)
             {
@@ -75,20 +83,65 @@ namespace LobotomyCorp.Items.Aleph
             }
             if (player.itemAnimation == player.itemAnimationMax - 1)
             {
-                SoundStyle swingSound;
+                SoundStyle swingSound = (SoundStyle) Item.UseSound;
                 if (modPlayer.ChargeWeaponHelper >= 0.9f)
                     swingSound = new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Skill3_Finish") with { Volume = 0.3f };
-                else
-                    swingSound = new SoundStyle("LobotomyCorp/Sounds/Item/Nullthing_Attack1") with { Volume = 0.3f };
 
                 SoundEngine.PlaySound(swingSound, player.Center);
             }
         }
 
+        public override void UseItemFrameAlt(Player player)
+        {
+            float rotation = rot(player);
+            LobItemFrame(player, rotation - 90);
+        }
+
+        private float rot(Player player)
+        {
+            float prog = 1f - player.itemAnimation / (float)player.itemAnimationMax;
+            float rotation = 0;
+            int startRot = 85;
+            int endRot = 120;
+            int total = startRot + endRot;
+
+            if (player.altFunctionUse == 2)
+            {
+                startRot = 85;
+                endRot = 230;
+                total = startRot + endRot;
+
+                if (prog < 0.6f)
+                {
+                    prog = (prog) / 0.6f;
+                    prog = Easing.EaseOutCubic(prog);
+                    rotation = (-startRot + total * prog);//(float)Math.Sin(1.57f * prog));
+                }
+                else
+                {
+                    rotation = endRot;
+                }
+
+                return rotation;
+            }
+            
+
+            if (prog < 0.3f)
+            {
+                prog = (prog) / 0.3f;
+                prog = Easing.EaseOutCubic(prog);
+                rotation = (-startRot + total * prog);//(float)Math.Sin(1.57f * prog));
+            }
+            else
+            {
+                rotation = endRot;
+            }
+            return rotation;
+        }
+
         public override void ModifyItemScale(Player player, ref float scale)
         {
             scale += 1f * LobotomyModPlayer.ModPlayer(player).ChargeWeaponHelper;
-            base.ModifyItemScale(player, ref scale);
         }
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage)

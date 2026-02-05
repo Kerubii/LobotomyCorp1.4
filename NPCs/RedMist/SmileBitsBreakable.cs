@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 using Terraria.GameContent;
 using Terraria.Chat;
 using LobotomyCorp;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Terraria.Audio;
 
 namespace LobotomyCorp.NPCs.RedMist

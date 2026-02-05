@@ -1,6 +1,6 @@
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

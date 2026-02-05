@@ -28,7 +28,7 @@ namespace LobotomyCorp.Items.Ruina.Social
         public override void SetDefaults()
         {
             Item.damage = 9000; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
-            Item.DamageType = DamageClass.Ranged; // sets the damage type to ranged
+            Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorRanged>(); // sets the damage type to ranged
             Item.width = 40; // hitbox width of the Item
             Item.height = 42; // hitbox height of the Item
             Item.useTime = 120; // The Item's use time in ticks (60 ticks == 1 second.)

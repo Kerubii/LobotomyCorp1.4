@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LobotomyCorp.PlayerDrawEffects;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

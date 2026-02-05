@@ -6,7 +6,7 @@ using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.KingPortal;
 using LobotomyCorp.UI;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Xna.Framework;

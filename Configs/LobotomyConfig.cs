@@ -31,20 +31,28 @@ namespace LobotomyCorp.Configs
         [Range(0f, 1f)]
         public float SolemnDingDongChance;
 
-        /*
-        [DefaultValue(false)]
-        public bool ExtractorClass
-        */
     }
 
     public class LobotomyServerConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
+        [Header("ContentModifiers")]
+
+        [Range(10, 5000)]
+        [Increment(10)]
+        [DefaultValue(100)]
+        public int ExtractorDamage;
+
+        [Header("TestOptions")]
         //[Label("Test Items")]
         //[Tooltip("Include unfinished items and NPCs. Requires a Reload")]
         [DefaultValue(false)]
         [ReloadRequired]
         public bool TestItemEnable { get; set; }
+
+        [DefaultValue(false)]
+        [ReloadRequired]
+        public bool ExtractorClass;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using LobotomyCorp.Items;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.Players;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

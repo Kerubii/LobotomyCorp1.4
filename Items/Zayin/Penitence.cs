@@ -8,6 +8,7 @@ using LobotomyCorp.Projectiles;
 using static LobotomyCorp.Items.LobItemBase;
 using LobotomyCorp.Visuals.LobEffects;
 using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players.DamageType;
 
 namespace LobotomyCorp.Items.Zayin
 {
@@ -21,10 +22,10 @@ namespace LobotomyCorp.Items.Zayin
                                "and the observer reshaped it into a weapon."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 14;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorWhite>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 30;
@@ -66,6 +67,7 @@ namespace LobotomyCorp.Items.Zayin
             {
                 scale += 0.5f;
             }
+            base.ModifyItemScale(player, ref scale);
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

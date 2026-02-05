@@ -27,7 +27,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 			Item.height = 64;
 
 			Item.damage = 90;
-			Item.DamageType = DamageClass.Summon;
+			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorSummon>();
 			Item.knockBack = 1f;
 			Item.useTime = 20;
 			Item.useAnimation = 20;

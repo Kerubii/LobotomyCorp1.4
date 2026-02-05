@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp.Utils;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using LobotomyCorp.Items.Ruina.Art;

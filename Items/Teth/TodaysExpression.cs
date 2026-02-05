@@ -16,7 +16,7 @@ namespace LobotomyCorp.Items.Teth
                                "The inability to show one's face is perhaps a form of shyness."); */
         }
 
-        public override void SetDefaults()
+        public override void LobSetDefaults()
         {
             Item.damage = 20;
             Item.DamageType = DamageClass.Ranged;
