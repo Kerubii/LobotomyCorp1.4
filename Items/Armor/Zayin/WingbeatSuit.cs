@@ -1,11 +1,13 @@
+using LobotomyCorp.Items.Armor.Zayin;
 using LobotomyCorp.Items.Zayin;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LobotomyCorp.Items.Armor
+namespace LobotomyCorp.Items.Armor.Zayin
 {
     [AutoloadEquip(EquipType.Head)]
-    public class SodaGift : LobItemBase
+    public class WingbeatGift : LobItemBase
     {
         public override bool IsLoadingEnabled(Mod mod)
         {
@@ -17,8 +19,8 @@ namespace LobotomyCorp.Items.Armor
             ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
             // Links the ego weapon to the armor, used for temporary vanity set acquiration
             PEBox.EgoSets.Add(
-                ModContent.ItemType<Soda>(),
-                new int[3] { ModContent.ItemType<SodaGift>(), ModContent.ItemType<SodaSuit>(), ModContent.ItemType<SodaPants>() }
+                ModContent.ItemType<Wingbeat>(),
+                new int[3] { ModContent.ItemType<WingbeatGift>(), ModContent.ItemType<WingbeatSuit>(), ModContent.ItemType<WingbeatPants>() }
                 );
         }
 
@@ -35,7 +37,7 @@ namespace LobotomyCorp.Items.Armor
     }
 
     [AutoloadEquip(EquipType.Body)]
-    public class SodaSuit : LobItemBase
+    public class WingbeatSuit : LobItemBase
     {
         public override bool IsLoadingEnabled(Mod mod)
         {
@@ -52,10 +54,15 @@ namespace LobotomyCorp.Items.Armor
             Item.rare = ModContent.RarityType<ZayinB>();
             EGORiskLevel = RiskLevel.Zayin;
         }
+
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return legs.type == ModContent.ItemType<WingbeatPants>();
+        }
     }
 
     [AutoloadEquip(EquipType.Legs)]
-    public class SodaPants : LobItemBase
+    public class WingbeatPants : LobItemBase
     {
         public override bool IsLoadingEnabled(Mod mod)
         {

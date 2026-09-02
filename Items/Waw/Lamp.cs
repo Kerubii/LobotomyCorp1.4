@@ -10,9 +10,7 @@ namespace LobotomyCorp.Items.Waw
     {
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Penitence"); // By default, capitalization in classnames will damage spaces to the display name. You can customize the display name here by uncommenting this line.
-            /* Tooltip.SetDefault("Big Bird's eyes gained another in number for every creature it saved.\n" +
-                               "On this weapon, the radiant pride is apparent."); */
+            ItemID.Sets.ShimmerTransformToItem[Item.type] = ModContent.ItemType<LampAlt>();
         }
 
         public override void LobSetDefaults()
@@ -52,6 +50,9 @@ namespace LobotomyCorp.Items.Waw
             .AddIngredient(ItemID.Feather, 4)
             .AddIngredient(ItemID.Bone, 10)
             .AddTile(Mod, "BlackBox3")
+            .AddCustomShimmerResult(ItemID.BlueDungeonLamp, 1)
+            .AddCustomShimmerResult(ItemID.Feather, 4)
+            .AddCustomShimmerResult(ItemID.Bone, 10)
             .Register();
         }
     }

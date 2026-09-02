@@ -9,6 +9,7 @@ using static LobotomyCorp.Items.LobItemBase;
 using LobotomyCorp.Visuals.LobEffects;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players.DamageType;
+using LobotomyCorp.Buffs;
 
 namespace LobotomyCorp.Items.Zayin
 {

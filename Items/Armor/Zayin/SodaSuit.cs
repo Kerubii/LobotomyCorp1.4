@@ -1,10 +1,12 @@
+using LobotomyCorp.Items.Zayin;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LobotomyCorp.Items.Teth
+namespace LobotomyCorp.Items.Armor.Zayin
 {
     [AutoloadEquip(EquipType.Head)]
-    public class RegretGift : LobItemBase
+    public class SodaGift : LobItemBase
     {
         public override bool IsLoadingEnabled(Mod mod)
         {
@@ -16,8 +18,8 @@ namespace LobotomyCorp.Items.Teth
             ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
             // Links the ego weapon to the armor, used for temporary vanity set acquiration
             PEBox.EgoSets.Add(
-                ModContent.ItemType<Regret>(),
-                new int[3] { ModContent.ItemType<RegretGift>(), ModContent.ItemType<RegretChestplate>(), ModContent.ItemType<RegretPants>() }
+                ModContent.ItemType<Soda>(),
+                new int[3] { ModContent.ItemType<SodaGift>(), ModContent.ItemType<SodaSuit>(), ModContent.ItemType<SodaPants>() }
                 );
         }
 
@@ -28,14 +30,13 @@ namespace LobotomyCorp.Items.Teth
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ModContent.RarityType<TethB>();
-            Item.defense = 6;
-            EGORiskLevel = RiskLevel.Teth;
+            Item.rare = ModContent.RarityType<ZayinB>();
+            EGORiskLevel = RiskLevel.Zayin;
         }
     }
 
     [AutoloadEquip(EquipType.Body)]
-    public class RegretChestplate : LobItemBase
+    public class SodaSuit : LobItemBase
     {
         public override bool IsLoadingEnabled(Mod mod)
         {
@@ -49,14 +50,18 @@ namespace LobotomyCorp.Items.Teth
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ModContent.RarityType<TethB>();
-            Item.defense = 6;
-            EGORiskLevel = RiskLevel.Teth;
+            Item.rare = ModContent.RarityType<ZayinB>();
+            EGORiskLevel = RiskLevel.Zayin;
+        }
+
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return legs.type == ModContent.ItemType<SodaPants>();
         }
     }
 
     [AutoloadEquip(EquipType.Legs)]
-    public class RegretPants : LobItemBase
+    public class SodaPants : LobItemBase
     {
         public override bool IsLoadingEnabled(Mod mod)
         {
@@ -70,9 +75,8 @@ namespace LobotomyCorp.Items.Teth
             Item.height = 40;
             Item.useTime = 56;
             Item.value = 10000;
-            Item.rare = ModContent.RarityType<TethB>();
-            Item.defense = 6;
-            EGORiskLevel = RiskLevel.Teth;
+            Item.rare = ModContent.RarityType<ZayinB>();
+            EGORiskLevel = RiskLevel.Zayin;
         }
     }
 }

@@ -28,10 +28,23 @@ namespace LobotomyCorp.ModSystems
                 Main.QueueMainThreadAction(() =>
                 {
                     layer = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+                    layerSwap = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+                    screenClone = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
                 });
             }
             Bloom = Mod.Assets.Request<Effect>("Effects/Bloom", AssetRequestMode.ImmediateLoad);
             On_Main.DrawDust += CustomDrawLayerPostDust;
+            Main.OnResolutionChanged += Main_OnResolutionChanged;
+        }
+
+        private void Main_OnResolutionChanged(Vector2 obj)
+        {
+            Main.QueueMainThreadAction(() =>
+            {
+                layer = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+                layerSwap = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+                screenClone = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferWidth, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+            });
         }
 
         public override void Unload()
@@ -49,6 +62,7 @@ namespace LobotomyCorp.ModSystems
             if (!DrawEffectsIsActive()) return;
 
             bool enable = ModContent.GetInstance<LobotomyConfig>().BloomEnable;
+            var Previous = Main.instance.GraphicsDevice.GetRenderTargets();
             // Store all custom draws on Layer
             if (enable)
             {
@@ -75,35 +89,46 @@ namespace LobotomyCorp.ModSystems
 
             if (enable)
             {
-                Main.instance.GraphicsDevice.SetRenderTarget(null);
+                //Main.instance.GraphicsDevice.SetRenderTarget(null);
                 if (applyBloom)
                 {
                     // Save current screen + custom draws on Swap
-                    Main.instance.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+                    Main.instance.GraphicsDevice.SetRenderTarget(screenClone);
                     Main.instance.GraphicsDevice.Clear(Color.Transparent);
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                    Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                    foreach (RenderTargetBinding rtb in Previous)
+                    {
+                        if (rtb.RenderTarget is RenderTarget2D rt2d)
+                            Main.spriteBatch.Draw(rt2d, Vector2.Zero, Color.White);
+                    }
                     Main.spriteBatch.Draw(layer, Vector2.Zero, Color.White);
                     Main.spriteBatch.End();
 
                     // Get Bloom texture through layer
-                    ApplyBloom(Main.instance.GraphicsDevice, layer, Main.screenTarget);
+                    ApplyBloom(Main.instance.GraphicsDevice, layer, layerSwap);
 
                     // Add Bloom to Swap and render it
-                    Main.instance.GraphicsDevice.SetRenderTarget(Main.screenTarget);
+                    Main.instance.GraphicsDevice.SetRenderTargets(Previous);
                     Main.instance.GraphicsDevice.Clear(Color.Transparent);
                     Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-                    Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                    Main.spriteBatch.Draw(screenClone, Vector2.Zero, Color.White);
                     Main.spriteBatch.Draw(layer, Vector2.Zero, Color.White);
                     Main.spriteBatch.End();
                 }
             }
         }
 
-        RenderTarget2D layer;
+        static RenderTarget2D layer;
+        static RenderTarget2D layerSwap;
+        static RenderTarget2D screenClone;
 
         private bool DrawEffectsIsActive()
         {
+            if (drawEffects == null)
+            {
+                return false;
+            }
+
             foreach (LobDrawEffects we in drawEffects)
             {
                 if (we.active)
@@ -328,18 +353,19 @@ namespace LobotomyCorp.ModSystems
             return screenFilters[layer].Active;
         }
 
-        public void AddVEffects(LobDrawEffects draw)
+        public int AddVEffects(LobDrawEffects draw)
         {
             if (Main.netMode == NetmodeID.Server)
-                return;
+                return -1;
 
             for (int i = 0; i < drawEffects.Length; i++)
             {
                 if (drawEffects[i].active)
                     continue;
                 drawEffects[i] = draw;
-                break;
+                return i;
             }
+            return -1;
         }
     }
 }

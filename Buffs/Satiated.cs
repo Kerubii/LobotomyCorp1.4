@@ -15,6 +15,10 @@ namespace LobotomyCorp.Buffs
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetModPlayer<LobotomyHePlayer>().HarmonyConnected = true;
+			if (player.buffTime[buffIndex] == 1)
+			{
+                player.GetModPlayer<LobotomyHePlayer>().HarmonyLoseRhythm(1);
+            }
         }
     }
 }

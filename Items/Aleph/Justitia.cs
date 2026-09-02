@@ -90,7 +90,7 @@ namespace LobotomyCorp.Items.Aleph
         {
             if (PreviouslyHitNPC >= 0)
             {
-                SetPlayerMeleeCooldown(player, ref PreviouslyHitNPC, 3, 0);
+                SetPlayerMeleeCooldown(player, ref PreviouslyHitNPC, 3);
                 /*
 				Main.npc[PreviouslyHitNPC].immune[player.whoAmI] = 3;
 				player.attackCD = 1;
@@ -113,10 +113,10 @@ namespace LobotomyCorp.Items.Aleph
             base.UseStyleAlt(player, heldItemFrame);
         }
 
-        public override void UseItemHitboxAlt(Player player, ref Rectangle hitbox, ref bool noHitbox)
+        /*public override void UseItemHitboxAlt(Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
             noHitbox = false;
-        }
+        }*/
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {

@@ -308,6 +308,7 @@ namespace LobotomyCorp.Projectiles.QueenLaser
                 if (target.realLife > -1)
                     target = Main.npc[target.realLife];
                 target.AddBuff(ModContent.BuffType<Villain>(), 6000);
+                target.GetGlobalNPC<LobotomyGlobalNPC>().InTheNameOfLoveAndHateVillain = 6000;
                 wawPlayer.LoveAndHateVillain = target.whoAmI;
                 Projectile.ai[2]++;
             }                

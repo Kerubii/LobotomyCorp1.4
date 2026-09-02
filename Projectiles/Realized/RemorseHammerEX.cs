@@ -1,4 +1,5 @@
 ﻿using LobotomyCorp.Items.Ruina.General;
+using LobotomyCorp.Misc;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
 using LobotomyCorp.Util;
@@ -341,7 +342,7 @@ namespace LobotomyCorp.Projectiles.Realized
             float startRot = MathHelper.ToRadians(Projectile.spriteDirection == 1 ? -135f : -45);
             circ.Setup(Projectile, new Vector2(40 * Projectile.spriteDirection, 0), startRot, time, Projectile.spriteDirection);
             circ.SetupSemiCircle(55, 250, MathHelper.ToRadians(20), MathHelper.ToRadians(120), MathHelper.ToRadians(170));
-            circ.SetShaderImage("Misc/ShaderTextures/RemorseBrown");
+            circ.SetShaderImage(MiscAssets.RemorseBrown);
             circ.Color = Color.White;
             LobCustomDraw.Instance().AddVEffects(circ);
         }
@@ -351,7 +352,7 @@ namespace LobotomyCorp.Projectiles.Realized
             WeaponSmearLine line = new();
             line.Setup(position, Vector2.Zero, -1.57f, 12, 0);
             line.SetupLine(38, 12, 240);
-            line.SetShaderImage("Misc/ShaderTextures/RemorseBrown");
+            line.SetShaderImage(MiscAssets.RemorseBrown);
             line.SetShaderTexOffset(Main.rand.NextFloat(1f), Main.rand.NextFloat(1f));
             line.Color = Color.White * 0.6f;
             LobCustomDraw.Instance().AddVEffects(line);            
@@ -359,7 +360,7 @@ namespace LobotomyCorp.Projectiles.Realized
             WeaponSmearEllipse elli = new();
             elli.Setup(position, Vector2.Zero, 0, 10, Projectile.spriteDirection);
             elli.SetupEllipse(60, 23, 60, 20, Main.rand.NextFloat(6.28f), 0.1f, 2f);
-            elli.SetShaderImage("Misc/ShaderTextures/RemorseBrown"); 
+            elli.SetShaderImage(MiscAssets.RemorseBrown); 
             elli.Color = Color.White * 0.6f;
             LobCustomDraw.Instance().AddVEffects(elli);
 
@@ -370,7 +371,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 vel = vel.RotatedBy(-1.57f);
                 line2.Setup(position, vel, vel.ToRotation() + 3.14f, 12 + Main.rand.Next(7), 1);
                 line2.SetupLine(6, 12, 30 + Main.rand.Next(60));
-                line2.SetShaderImage("Misc/ShaderTextures/RemorseBright", "Misc/GenericWindTrail");
+                line2.SetShaderImage(MiscAssets.RemorseBright, MiscAssets.WindTrail);
                 line2.SetShaderTexOffset(Main.rand.NextFloat(1f), Main.rand.NextFloat(1f));
                 LobCustomDraw.Instance().AddVEffects(line2);
             }

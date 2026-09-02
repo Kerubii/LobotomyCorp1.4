@@ -35,6 +35,7 @@ namespace LobotomyCorp.Players
         public int HarmonyTime = 0;
         public bool HarmonyAddiction = false;
         public bool HarmonyConnected = false;
+        public int HarmonyRhythm = 0;
 
         public int ForgottenSoundCooldown = 0;
         public int ForgottenAffection = -1;
@@ -389,7 +390,7 @@ namespace LobotomyCorp.Players
                 dmgMult += 0.1f;
             foreach (NPC n in Main.npc)
             {
-                if (n.active && !n.friendly)
+                if (n.active && !n.friendly && !n.dontTakeDamage)
                 {
                     float npcDist = Distance * (n.boss ? 2 : 1);
                     bool segmentLimit = false;
@@ -458,6 +459,26 @@ namespace LobotomyCorp.Players
             {
                 Projectile.NewProjectile(Player.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<Projectiles.Realized.LifeForADareDevilEffects>(), 0, 0, Player.whoAmI, -Main.rand.NextFloat(6.28f), width * scale);
             }
+        }
+
+        public void HarmonyGainRhythm(int amount)
+        {
+            HarmonyRhythm = Math.Min(HarmonyRhythm + amount, 5);
+
+            Player.AddBuff(ModContent.BuffType<Satiated>(), 60 * 5);
+        }
+
+        public void HarmonyLoseRhythm(int amount)
+        {
+            HarmonyRhythm--;
+            if (HarmonyRhythm < 0)
+                HarmonyRhythm = 0;
+            else if (HarmonyRhythm == 0)
+            {
+                return;
+            }
+            Player.AddBuff(ModContent.BuffType<Satiated>(), 60 * 5);
+            // Place Rhythm Loss Effect Here
         }
     }
 }

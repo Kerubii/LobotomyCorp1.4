@@ -21,6 +21,10 @@ namespace LobotomyCorp.NPCs.RedMist
     class RedMistSkeleton : SkeletonBase
     {
         NPC NPC;
+        private Vector2 ArmLPointingTo;
+        private Vector2 ArmRPointingTo;
+        private bool ArmLPoint;
+        private bool ArmRPoint;
 
         public enum BoneLabel
         {

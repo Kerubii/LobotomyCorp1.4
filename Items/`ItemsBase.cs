@@ -4,6 +4,7 @@ using LobotomyCorp.Util;
 using log4net.Util;
 using Microsoft.Build.Graph;
 using Microsoft.Xna.Framework;
+using MonoMod.Core.Platforms;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,7 @@ namespace LobotomyCorp.Items
             if (LobModifyTooltips(tooltips, ref arg))
             {
                 var RealizedEGOTooltip = new TooltipLine(Mod, "PositivePassive", $"{Language.GetTextValue("Mods.LobotomyCorp.EgoItemTooltip.RealizedEgo")}") { OverrideColor = Color.Lerp(Color.Yellow, Color.Cyan, 0.5f + 0.5f * (float)Math.Sin(6.28f * (Main.timeForVisualEffects % 120 / 120f))) };
+
                 int index = tooltips.FindIndex(x => x.Mod == "Terraria" && x.Name == "Tooltip0");
                 tooltips.Insert(index, RealizedEGOTooltip);
 
@@ -63,7 +65,23 @@ namespace LobotomyCorp.Items
                 { OverrideColor = LobotomyCorp.PositivePE };
                 if (Passive != null)
                     Passive.Text = Lang.SupportGlyphs(Passive.Text);
-                index = tooltips.FindIndex(x => x.Mod == "Terraria" && x.Name == "Tooltip0") + 1;
+
+                bool sentinel = true;
+                int curIndex = 0;
+                do
+                {
+                    int selectedIndex = tooltips.FindIndex(x => x.Mod == "Terraria" && x.Name == "Tooltip" + curIndex);
+                    if (selectedIndex == -1)
+                    {
+                        sentinel = false;
+                    }
+                    else
+                    {
+                        index = selectedIndex + 1;
+                        curIndex++;
+                    }
+                } while (sentinel);
+
                 tooltips.Insert(index++, Passive);
 
                 Passive = new TooltipLine(Mod, "NegativePassive", $"{PassiveInitialize(GetPassiveList(arg), ExtraShow, true)}") { OverrideColor = LobotomyCorp.NegativePE };
@@ -156,7 +174,7 @@ namespace LobotomyCorp.Items
 
     public abstract class LobItemBase : ModItem
     {
-        public float RedMistMaskDamageBoost => 0f;
+        public float RedMistMaskDamageBoost = 0f;
 
         public sealed override void SetDefaults()
         {
@@ -171,6 +189,9 @@ namespace LobotomyCorp.Items
 
         public static void ConvertVanillaDamageToExtractor(Item Item)
         {
+            if (!ModContent.GetInstance<Configs.LobotomyServerConfig>().ExtractorDamageEnable)
+                return;
+
             if (Item.DamageType == DamageClass.Melee)
             {
                 Item.DamageType = ModContent.GetInstance<ExtractorMelee>();
@@ -195,6 +216,10 @@ namespace LobotomyCorp.Items
             {
                 Item.DamageType = ModContent.GetInstance<ExtractorDamage>();
             }
+            else if (Item.DamageType == DamageClass.Default)
+            {
+                Item.DamageType = ModContent.GetInstance<ExtractorDefault>();
+            }
         }
 
         public virtual void LobSetDefaults()
@@ -206,27 +231,7 @@ namespace LobotomyCorp.Items
 
         public bool RedMistMaskUpgrade(Player player)
         {
-            if (LobotomyModPlayer.ModPlayer(player).RedMistMask)
-            {
-                switch (EGORiskLevel)
-                {
-                    case RiskLevel.Zayin:
-                    case RiskLevel.Teth:
-                        return true;
-                    case RiskLevel.He:
-                        if (NPC.downedMechBossAny) return true;
-                        break;
-                    case RiskLevel.Waw:
-                        if (NPC.downedPlantBoss) return true;
-                        break;
-                    case RiskLevel.Aleph:
-                        if (NPC.downedGolemBoss) return true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return false;
+            return RedMistMaskUpgrade(player, EGORiskLevel);
         }
 
         /// <summary>
@@ -237,6 +242,7 @@ namespace LobotomyCorp.Items
         {
             if (LobotomyModPlayer.ModPlayer(player).RedMistMask)
             {
+                return true;
                 switch (riskLevel)
                 {
                     case RiskLevel.Zayin:
@@ -267,6 +273,7 @@ namespace LobotomyCorp.Items
             if (RedMistMaskUpgrade(Main.LocalPlayer))
             {
                 string text = Language.GetTextValue("Mods.LobotomyCorp.Items." + Name + ".Tooltip2");
+                text = Lang.SupportGlyphs(text);
                 TooltipLine tooltip2 = new TooltipLine(Mod, "RedMistMask", text);
                 tooltip2.OverrideColor = Color.Crimson;
                 tooltips.Add(tooltip2);
@@ -940,8 +947,9 @@ namespace LobotomyCorp.Items
         /// <param name="rotation"></param>
         public static void LobItemFrame(Player player, float rotation, int direction = 1)
         {
-            rotation = Math.Clamp(rotation, -180, 180);
             rotation = MathHelper.ToRadians(rotation);
+            MathHelper.WrapAngle(rotation);
+            rotation = Math.Clamp(rotation, -3.14f, 3.14f);
             float x = (float)Math.Cos(rotation) * direction;
             float y = (float)Math.Sin(rotation);
 

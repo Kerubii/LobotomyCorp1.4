@@ -28,8 +28,8 @@ namespace LobotomyCorp.Items.Ruina.Natural
         {
             EgoColor = LobotomyCorp.AlephRarity;
             Item.damage = 30;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorDamage>();
-			Item.width = 20;
+            Item.DamageType = DamageClass.Generic; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 20;
 			Item.height = 20;
 			Item.useTime = 20;
 			Item.useAnimation = 20;

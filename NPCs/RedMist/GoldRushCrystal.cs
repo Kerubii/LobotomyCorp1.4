@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameContent;
+using LobotomyCorp.Projectiles;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
@@ -54,7 +55,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
         public override void OnKill(int timeLeft)
         {
-            Projectiles.GoldRushHold.DiamondDust(Projectile.Center, DustID.GoldCoin, 5, 8, 4, 1.2f, Projectile.ai[0]);
+            GoldRushHold.DiamondDust(Projectile.Center, DustID.GoldCoin, 5, 8, 4, 1.2f, Projectile.ai[0]);
             if (Main.netMode != NetmodeID.MultiplayerClient)
             { 
                 Vector2 vel = new Vector2(4f, 0).RotatedBy(Projectile.ai[0]);

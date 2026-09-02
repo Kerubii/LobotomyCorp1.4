@@ -23,8 +23,8 @@ namespace LobotomyCorp.Items.Ruina.Natural
 		public override void SetDefaults() 
 		{
             Item.damage = 88;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorSummon>();
-			Item.width = 40;
+            Item.DamageType = DamageClass.Summon; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 26;
 			Item.useAnimation = 20;

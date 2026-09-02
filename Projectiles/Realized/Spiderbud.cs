@@ -74,8 +74,16 @@ namespace LobotomyCorp.Projectiles.Realized
 
 			if (Projectile.ai[0] == 30)
             {
-                Projectile.position.X = Main.npc[(int)(Projectile.ai[1] - 1)].Center.X - Projectile.width / 2 - 75f * owner.direction;
-				Projectile.position.Y = Main.npc[(int)(Projectile.ai[1] - 1)].Center.Y - (1057f / 2 + Projectile.height);
+				NPC n = Main.npc[(int)(Projectile.ai[1] - 1)];
+				if (n.life <= 0 || !n.active)
+				{
+					Projectile.ai[1] = 0;
+				}
+				else
+				{
+                    Projectile.position.X = n.Center.X - Projectile.width / 2 - 75f * owner.direction;
+                    Projectile.position.Y = n.Center.Y - (1057f / 2 + Projectile.height);
+                }					
 				Projectile.spriteDirection = owner.direction;
 				Projectile.netUpdate = true;
 			}

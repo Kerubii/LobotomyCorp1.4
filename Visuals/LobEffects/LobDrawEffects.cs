@@ -1,3 +1,5 @@
+using LobotomyCorp.ModSystems;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -6,7 +8,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
-using LobotomyCorp.Util;
 
 namespace LobotomyCorp.Visuals.LobEffects
 {
@@ -51,6 +52,11 @@ namespace LobotomyCorp.Visuals.LobEffects
 
         public virtual void Draw()
         {
+        }
+
+        public int AddEffect()
+        {
+            return LobCustomDraw.Instance().AddVEffects(this);
         }
     }
 }

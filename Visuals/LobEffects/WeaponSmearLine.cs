@@ -13,13 +13,15 @@ namespace LobotomyCorp.Visuals.LobEffects
     class WeaponSmearLine : WeaponSmear
     {
         protected float Width;
+        protected float WidthOffset;
 
         protected float Length;
         protected float LengthOffset;
 
-        public void SetupLine(float width, float length, float lengthOffset = 0)
+        public void SetupLine(float width, float length, float lengthOffset = 0, float widthOffset = 0)
         {
             Width = width;
+            WidthOffset = widthOffset;
             Length = length;
             LengthOffset = lengthOffset;
 
@@ -43,13 +45,16 @@ namespace LobotomyCorp.Visuals.LobEffects
             float prog = Time / (float)TimeMax;
 
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(GetOpacity(prog));
-            shader.UseImage1(Mod, Image1)
-                  .UseImage2(Mod, Image2)
-                  .UseImage3(Mod, Image3)
-                  .UseCustomShaderDate(TexOffX, TexOffY);
+            shader.UseImage1(Image1)
+                 .UseImage2(Image2)
+                 .UseImage3(Image3)
+                 .UseCustomShaderDate(TexOffX, TexOffY);
 
             int direction = Direction;
-            SlashTrail trail = new SlashTrail(Width, 0);
+            int newWidth = (int)(Width + (WidthOffset * (float)Math.Sin(prog * 1.57f)));
+            if (newWidth < 1)
+                newWidth = 1;
+            SlashTrail trail = new SlashTrail(newWidth, 0);
             trail.color = GetColor(prog);
 
             float len = Length + LengthOffset * (float)Math.Sin(prog * 1.57f);

@@ -18,7 +18,8 @@ namespace LobotomyCorp.Players.DamageType
 
         public override bool GetEffectInheritance(DamageClass damageClass)
         {
-            if (damageClass == DamageClass.Summon ||
+            if (damageClass == DamageClass.Generic || 
+                damageClass == DamageClass.Summon ||
                 damageClass == ModContent.GetInstance<ExtractorDamage>())
                 return true;
             return false;
@@ -26,7 +27,7 @@ namespace LobotomyCorp.Players.DamageType
 
         public override bool GetPrefixInheritance(DamageClass damageClass)
         {
-            if (damageClass == DamageClass.Summon)
+            if (damageClass == DamageClass.Generic || damageClass == DamageClass.Summon)
                 return true;
             return false;
         }

@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameContent;
+using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Items.Ruina.Technology
 {
@@ -70,6 +71,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
                 LobotomyModPlayer.ModPlayer(player).HarmonyTime = 600;
             player.AddBuff(ModContent.BuffType<Buffs.MusicalAddiction>(), LobotomyModPlayer.ModPlayer(player).HarmonyTime, true);*/
             player.AddBuff(ModContent.BuffType<Buffs.Satiated>(), 300, true);
+            player.GetModPlayer<LobotomyHePlayer>().HarmonyGainRhythm(1);
             return false;
         }
     }

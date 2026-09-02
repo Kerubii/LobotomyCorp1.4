@@ -24,8 +24,8 @@ namespace LobotomyCorp.Items.Ruina.Religion
 		public override void SetDefaults() 
 		{
             Item.damage = 88;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorSummon>();
-			Item.width = 40;
+            Item.DamageType = DamageClass.Summon; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 26;
 			Item.useAnimation = 20;
@@ -55,9 +55,38 @@ namespace LobotomyCorp.Items.Ruina.Religion
             }
         }
 
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (player.altFunctionUse == 2 && player.ownedProjectileCounts[ModContent.ProjectileType<SoundOfAStarBlueStar>()] > 0)
+            {
+                return false;
+            }
+
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+
         public override bool AltFunctionUse(Player player)
         {
-            return player.ownedProjectileCounts[ModContent.ProjectileType<SoundOfAStarBlueStar>()] == 0;
+            return true;
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            if (player.altFunctionUse == 2 && player.ownedProjectileCounts[ModContent.ProjectileType<SoundOfAStarBlueStar>()] > 0)
+            {
+                foreach (Projectile p in Main.ActiveProjectiles)
+                {
+                    if (p.owner == player.whoAmI && p.type == ModContent.ProjectileType<SoundOfAStarBlueStar>())
+                    {
+                        p.Center = Main.MouseWorld;
+                        p.netUpdate = true;
+                        break;
+                    }
+                }
+                return true;
+            }
+
+            return base.UseItem(player);
         }
 
         public override void AddRecipes()

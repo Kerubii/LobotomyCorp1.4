@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.Chat;
 using Terraria.GameContent;
 using LobotomyCorp;
+using LobotomyCorp.Projectiles;
 
 
 namespace LobotomyCorp.NPCs.RedMist
@@ -76,8 +77,8 @@ namespace LobotomyCorp.NPCs.RedMist
             Texture2D tex = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/JustitiaExtended").Value;
             Texture2D texFlipped = ModContent.Request<Texture2D>("LobotomyCorp/Projectiles/JustitiaExtendedFlip").Value;
 
-            Texture2D brightTex = Projectiles.JustitiaExtended.JustitiaTexture(false);
-            Texture2D brighTexFlipped = Projectiles.JustitiaExtended.JustitiaTexture(true);
+            Texture2D brightTex = JustitiaExtended.JustitiaTexture(false);
+            Texture2D brighTexFlipped = JustitiaExtended.JustitiaTexture(true);
 
             Rectangle frame = tex.Frame();
             float originOffset = -60 * Projectile.spriteDirection;

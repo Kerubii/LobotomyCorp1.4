@@ -16,6 +16,7 @@ namespace LobotomyCorp.Items.Teth
                                "It was a rusty weapon from the beginning."); */
         }
 
+        public int BulletSolitude = 0;
         public override void LobSetDefaults()
         {
             Item.damage = 20;

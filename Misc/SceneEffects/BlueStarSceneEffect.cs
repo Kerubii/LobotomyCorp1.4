@@ -1,4 +1,5 @@
 //css_ref ../../tModLoader.dll
+using LobotomyCorp.Configs;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -10,7 +11,9 @@ namespace LobotomyCorp.Misc.Dusts
 	{
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
 
-        public override int Music => MusicLoader.GetMusicSlot(LobotomyCorp.Instance, "Sounds/Music/BlueStar_Bgm");
+        public override int Music => ModContent.GetInstance<LobotomyConfig>().NoBlueStarAmbience ?
+                                     -1 : 
+                                     MusicLoader.GetMusicSlot(LobotomyCorp.Instance, "Sounds/Music/BlueStar_Bgm");
 
         public override bool IsSceneEffectActive(Player player)
         {

@@ -26,10 +26,10 @@ namespace LobotomyCorp.Buffs
         public override void Update(Player player, ref int buffIndex)
         {
             player.GetModPlayer<LobotomyAlephPlayer>().MimicryHusk = true;
-            player.statDefense -= 8;
+            //player.statDefense -= 8;
             //LobotomyModPlayer.ModPlayer(player).MimicryHuskDeficit = player.buffTime[buffIndex];
-            if (player.HeldItem.type == ModContent.ItemType<Items.Ruina.Language.MimicryR>())
-                player.buffTime[buffIndex] = 60 * 5;
+            //if (player.HeldItem.type == ModContent.ItemType<Items.Ruina.Language.MimicryR>())
+                //player.buffTime[buffIndex] = 60 * 5;
         }
     }
 }

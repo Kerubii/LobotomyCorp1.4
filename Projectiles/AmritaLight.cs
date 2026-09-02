@@ -8,13 +8,10 @@ namespace LobotomyCorp.Projectiles
 {
 	public class AmritaLight : ModProjectile
 	{
-        protected virtual float HoldoutRangeMin => 24f;
-        protected virtual float HoldoutRangeMax => 112f;
-
         public override void SetDefaults()
         {
-            Projectile.width = 22;
-            Projectile.height = 22;
+            Projectile.width = 46;
+            Projectile.height = 46;
             Projectile.timeLeft = 120;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
@@ -37,12 +34,32 @@ namespace LobotomyCorp.Projectiles
                 }
             }
 
-            Projectile.velocity *= 0.8f;
-            if (Projectile.timeLeft < 60)
+            Projectile.velocity *= 0.95f;
+            if (Projectile.timeLeft < 30)
             {
                 Projectile.alpha += 255 / 60;
+                DrawOriginOffsetX = Main.rand.Next(-1, 2);
+                DrawOriginOffsetY = Main.rand.Next(-1, 2);
             }
         }
+
+        public override void OnKill(int timeLeft)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                float rot = Projectile.rotation + MathHelper.ToRadians(45) * i;
+                Vector2 startPos = Projectile.Center + new Vector2(14, 0).RotatedBy(rot);
+                Vector2 vel = new Vector2(Main.rand.Next(4, 8), 0).RotatedBy(rot);
+                if (Main.myPlayer == Projectile.owner)
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), startPos, vel, ModContent.ProjectileType<AmritaMiniLight>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                rot -= MathHelper.ToRadians(22.5f);
+                startPos = Projectile.Center + new Vector2(14, 0).RotatedBy(rot);
+                vel = new Vector2(Main.rand.Next(2, 4), 0).RotatedBy(rot);
+                Dust d = Dust.NewDustPerfect(startPos, DustID.PurificationPowder, vel);
+                d.noGravity = true;
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
             lightColor = Color.White;

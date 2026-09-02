@@ -17,7 +17,7 @@ namespace LobotomyCorp.Buffs
 
         public override void Update(NPC npc, ref int buffIndex)
         {
-            npc.GetGlobalNPC<LobotomyGlobalNPC>().InTheNameOfLoveAndHateVillain = true;
+            //npc.GetGlobalNPC<LobotomyGlobalNPC>().InTheNameOfLoveAndHateVillain = true;
         }
     }
 }

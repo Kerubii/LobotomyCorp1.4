@@ -1,4 +1,5 @@
 ﻿using LobotomyCorp.Items.He;
+using LobotomyCorp.Misc;
 using LobotomyCorp.Players;
 using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
@@ -41,6 +42,9 @@ namespace LobotomyCorp.Projectiles
 
         private float SawRotation;
 
+        private const int SawMaxSpin = 60;
+        private const int SawSpinRate = 5;
+
 		public override void AI() {
             
             Player player = Main.player[Projectile.owner];
@@ -73,13 +77,30 @@ namespace LobotomyCorp.Projectiles
             }
             else //Sawblade goes faster and faster, on OnHit goes up to 60
             {
-                if (Projectile.ai[0] < 40)
-                    Projectile.ai[0] += 5f;
+                if (Projectile.ai[0] < SawMaxSpin * 2 / 3)
+                    Projectile.ai[0] += SawSpinRate;
+                else if (Projectile.ai[0] < SawMaxSpin)
+                    Projectile.ai[0] += SawSpinRate * 0.01f;
                 Projectile.timeLeft = 30;
                 if (Main.myPlayer == Projectile.owner)//Hold out on direction of cursor
                 {
-                    Projectile.velocity = Main.MouseWorld - mountedCenter;
+                    float shaking = (Projectile.ai[0] - 30) / 30f;
+                    if (shaking < 0)
+                        shaking = 0;
+                    shaking *= MathHelper.ToRadians(3);
+                    Projectile.velocity = (Main.MouseWorld - mountedCenter).RotatedByRandom(shaking);
                     SawRotation = Projectile.velocity.ToRotation();
+                }
+
+                if (Projectile.ai[0] > 30)
+                {
+                    float speed = 1f - (Projectile.ai[0] - 30) / 30f;
+                    if (Projectile.ai[2] > 15 + 105 * speed)
+                    {
+                        Projectile.ai[2] = 0;
+                        ShootBlood(2 + 4 * (1f - speed), false);
+                    }
+                    Projectile.ai[2]++;
                 }
             }
 
@@ -95,7 +116,11 @@ namespace LobotomyCorp.Projectiles
             player.itemRotation = (float)Math.Atan2(Projectile.velocity.Y * player.direction, Projectile.velocity.X * player.direction);
 
             Projectile.rotation += (MathHelper.ToRadians(20) * (Projectile.ai[0] / 60)) * player.direction;
-            if (Main.rand.Next((int)(30 - 30 * (Projectile.ai[0] / 60))) == 0)
+
+            int chance = (int)(30 - 30 * (Projectile.ai[0] / SawMaxSpin));
+            if (chance <= 0)
+                chance = 1;
+            if (Main.rand.NextBool(chance))
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -109,7 +134,7 @@ namespace LobotomyCorp.Projectiles
             if (Projectile.localAI[0] <= -15)
             {
                 SoundEngine.PlaySound(SoundID.Item22, Projectile.position);
-                Projectile.localAI[0] = 45 - 15 * (Projectile.ai[0] / 60);
+                Projectile.localAI[0] = 45 - 15 * (Projectile.ai[0] / SawMaxSpin);
             }
 
             Projectile.localAI[0]--;
@@ -181,21 +206,31 @@ namespace LobotomyCorp.Projectiles
                 Projectile.localAI[0] = 60 - 30 * (Projectile.ai[0] / 60);
             }
 
-            if (Projectile.ai[0] > 30 && Projectile.ai[1] <= 0 && Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>().HarmonyAddiction)
+            if (Projectile.ai[0] > SawMaxSpin / 2 && Projectile.ai[1] <= 0 && Main.player[Projectile.owner].GetModPlayer<LobotomyHePlayer>().HarmonyAddiction)
             {
                 Projectile.ai[1] = 15;
-                if (Main.myPlayer == Projectile.owner)
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<HarmonyBloodEffect>(), Projectile.damage, 0, Projectile.owner, Projectile.whoAmI, Main.rand.NextFloat(0.6f , 0.8f) * Projectile.ai[0] / 60f);
+                ShootBlood(0);
             }
 
-            if (Projectile.ai[0] < 60)
-                Projectile.ai[0] += 2f;
+            if (Projectile.ai[0] < SawMaxSpin)
+                Projectile.ai[0] += SawSpinRate * 0.4f;
+
+            Projectile.ai[2] = 0;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
             if (!Main.player[Projectile.owner].channel)
                 modifiers.FinalDamage *= 2f;
+        }
+
+        private void ShootBlood(float speed, bool tracksSaw = true)
+        {
+            if (Main.myPlayer == Projectile.owner)
+            {
+                Vector2 projSpeed = Vector2.Normalize(Projectile.velocity) * speed;
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, projSpeed, ModContent.ProjectileType<HarmonyBloodEffect>(), Projectile.damage, 0, Projectile.owner, tracksSaw ? Projectile.whoAmI : -1, Main.rand.NextFloat(0.6f, 0.8f) * Projectile.ai[0] / SawMaxSpin);
+            }
         }
     }
 
@@ -230,13 +265,23 @@ namespace LobotomyCorp.Projectiles
             }
             Projectile.rotation += Projectile.ai[1] * Projectile.spriteDirection;
 
+            if (Projectile.ai[0] <= 0)
+                return;
+
             if (Main.projectile[(int)Projectile.ai[0]].active)
-                Projectile.Center = Main.projectile[(int)Projectile.ai[0]].Center;
+            {
+                Vector2 offset = Vector2.Normalize(Main.projectile[(int)Projectile.ai[0]].velocity) * Projectile.velocity.Length();
+                offset *= Projectile.ai[2];
+                Projectile.Center = Main.projectile[(int)Projectile.ai[0]].Center + offset;
+            }
+            else
+                Projectile.ai[0] = -1;
+            Projectile.ai[2]++;
         }
 
         public override void ModifyDamageHitbox(ref Rectangle hitbox)
         {
-            float prog = 1f - Projectile.timeLeft / 30f;
+            float prog = 0.3f + 0.7f - Projectile.timeLeft / 30f;
             hitbox.Width = (int)(prog * 180);
             hitbox.Height = (int)(prog * 180);
             hitbox.X = (int)Projectile.Center.X - hitbox.Width / 2;
@@ -246,10 +291,10 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
-            float prog = 1f - Projectile.timeLeft / 30f;
+            float prog = 0.3f + 0.7f - Projectile.timeLeft / 30f;
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["TextureTrail"].UseOpacity(0.5f + 0.5f * (prog));
-            shader.UseImage1(Mod, "Misc/BloodTrail");
-            shader.UseImage2(Mod, "Misc/BloodTrail");
+            shader.UseImage1(MiscAssets.BloodTrail);
+            shader.UseImage2(MiscAssets.BloodTrail);
 
             SlashTrail trail = new SlashTrail(16, 1.57f);
             trail.color = Color.DarkRed;

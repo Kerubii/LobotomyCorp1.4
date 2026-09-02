@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Items;
+using LobotomyCorp.Items.Accessories;
+using LobotomyCorp.Projectiles.RedMist;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
@@ -51,8 +54,13 @@ namespace LobotomyCorp.Projectiles
                 if (Main.myPlayer == Projectile.owner)
                 {
                     Vector2 velNorm = Vector2.Normalize(Projectile.velocity);
-                    Vector2 projPos = Projectile.Center - velNorm * 11;
+                    Vector2 projPos = Projectile.Center - velNorm * 22;
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), projPos, velNorm * 5, ModContent.ProjectileType<AmritaLight>(), Projectile.damage * 2 / 3, Projectile.knockBack, Projectile.owner);
+
+                    if (LobItemBase.RedMistMaskUpgrade(Main.LocalPlayer, RiskLevel.Waw))
+                    {
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), projPos, velNorm * 5, ModContent.ProjectileType<AmritaSarira>(), Projectile.damage * 2 / 3, Projectile.knockBack, Projectile.owner);
+                    }
                 }
             }
 

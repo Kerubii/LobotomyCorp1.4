@@ -28,8 +28,9 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			Item.height = 40;
 
 			Item.damage = 44;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorSummon>();
-			Item.knockBack = 6;
+			Item.DamageType = DamageClass.Summon;
+            LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.knockBack = 6;
 			Item.useTime = 26;
 			Item.useAnimation = 20;
 			Item.useStyle = ItemUseStyleID.Shoot;

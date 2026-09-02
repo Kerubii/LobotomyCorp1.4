@@ -1,5 +1,7 @@
+using LobotomyCorp.Buffs;
 using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -25,7 +27,7 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void LobSetDefaults()
         {
-            Item.damage = 52;
+            Item.damage = 60;
             Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 40;
@@ -47,6 +49,18 @@ namespace LobotomyCorp.Items.Aleph
             LobotomyModPlayer.ModPlayer(player).ChargeWeaponHelper = 0;
             MimicryHeal = false;
             return true;
+        }
+
+        public override void UseAnimation(Player player)
+        {
+            Vector2 pointPoisition = player.RotatedRelativePoint(player.MountedCenter);
+            Vector2 value = Vector2.UnitX.RotatedBy(player.fullRotation);
+            Vector2 vector = Main.MouseWorld - pointPoisition;
+            float num = Vector2.Dot(value, vector);
+            if (num > 0f)
+                player.ChangeDir(1);
+            else
+                player.ChangeDir(-1);
         }
 
         public override void HoldItem(Player player)
@@ -159,12 +173,12 @@ namespace LobotomyCorp.Items.Aleph
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (MimicryHeal || target.type == NPCID.TargetDummy)
+            if (MimicryHeal || player.HasBuff<MimicryHarden>() || player.HasBuff<MimicryInterrupted>() || target.type == NPCID.TargetDummy)
                 return;
 
             MimicryHeal = true;
-            int heal = (int)(damageDone * 0.25f);
-            int healMax = 30;
+            int heal = (int)(hit.SourceDamage * 0.25f);
+            int healMax = 60;
             if (heal > healMax)
             {
                 heal = healMax; 
@@ -173,6 +187,7 @@ namespace LobotomyCorp.Items.Aleph
             player.statLife += heal;
             if (Main.myPlayer == player.whoAmI && LobotomyModPlayer.ModPlayer(player).ChargeWeaponHelper >= 0.9f)
                 Projectile.NewProjectile(Item.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<Projectiles.MimicrySEffect>(), 0, 0, player.whoAmI, player.direction);
+            player.AddBuff(ModContent.BuffType<MimicryHarden>(), 5 * 60);
         }
 
         public override void AddRecipes()

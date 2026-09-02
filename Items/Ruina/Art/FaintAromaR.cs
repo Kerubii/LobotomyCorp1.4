@@ -1,23 +1,31 @@
+using LobotomyCorp.Misc;
+using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
+using LobotomyCorp.Projectiles;
+using LobotomyCorp.Projectiles.Realized;
+using LobotomyCorp.Util;
+using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Ruina.Art
 {
-    public class FaintAromaS : SEgoItem
+    public class FaintAromaR : SEgoItem
 	{
+        public override string Texture => "LobotomyCorp/Items/Ruina/Art/FaintAromaS";
         private static Asset<Texture2D> Display;
+        private bool swingdirection = false;
+        public bool SwingDirection { get { return swingdirection; } }
 
-        public override bool IsLoadingEnabled(Mod mod)
-        {
-            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
-        }
+        private int PreviousTarget = -1;
 
         public override void Load()
         {
@@ -25,117 +33,340 @@ namespace LobotomyCorp.Items.Ruina.Art
             base.Load();
         }
 
-        public override void SetStaticDefaults() 
-		{
-			// DisplayName.SetDefault("Penitence"); // By default, capitalization in classnames will damage spaces to the display name. You can customize the display name here by uncommenting this line.
-			// Tooltip.SetDefault("\"Bearing the hope to return to dust, it shall go back to the grave with all that desires to live.\"");
-
-            EgoColor = LobotomyCorp.WawRarity;
+        public override void SetStaticDefaults()
+        {
+            ItemID.Sets.SkipsInitialUseSound[Item.type] = true;
         }
 
 		public override void SetDefaults() 
 		{
-            Item.damage = 128;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.width = 40;
+            Item.damage = 116;
+			Item.DamageType = DamageClass.Melee;
+            LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
-			Item.useTime = 32;
-			Item.useAnimation = 32;
+			Item.useTime = 42;
+			Item.useAnimation = 42;
+            Item.reuseDelay = 4;
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.knockBack = 0;
 			Item.value = 10000;
 			Item.rare = ModContent.RarityType<WawR>();
-			Item.UseSound = SoundID.Item1;
-			Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<Projectiles.AlriuneDeathAnimation>();
+			Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Ali_Sub_Atk") with {MaxInstances = 2};
+            Item.autoReuse = true;
+            Item.shoot = ModContent.ProjectileType<FaintAromaSlash>();//ModContent.ProjectileType<FaintAromaRAlt>();
             Item.shootSpeed = 1f;
+            swingdirection = false;
 		}
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            /*foreach (NPC n in Main.npc)
-            {
-                if (n.active && n.chaseable && n.CanBeChasedBy(ModContent.ProjectileType<Projectiles.AlriuneDeathAnimation")) && (n.Center - player.Center).Length() < 800)
-                    Projectile.NewProjectile(n.Center, Vector2.Zero, ModContent.ProjectileType<Projectiles.AlriuneDeathAnimation"), Item.damage, 0, player.whoAmI, n.whoAmI);
-            }*/
-            if (Main.myPlayer == player.whoAmI)
-                Projectile.NewProjectile(source, position, velocity, type, damage, 0, player.whoAmI, (int)(player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal/ player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax) - 1);
-            return false;
-        }
-
-        public override bool SafeCanUseItem(Player player)
-        {
-            if (player.altFunctionUse != 2)
-            {
-                Item.useTime = 26;
-                Item.useAnimation = 26;
-                Item.shootSpeed = 1f;
-                if (player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal > player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax)
-                {
-                    Item.shoot = ModContent.ProjectileType<Projectiles.FaintAromaS>();
-                    Item.useStyle = 5;
-                    Item.noUseGraphic = true;
-                    Item.noMelee = true;
-                    switch ((int)(player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal / player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax))
-                    {
-                        case 1:
-                            Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Ali_Sub_Atk");
-                            break;
-                        case 2:
-                            Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Ali_StrongAtk");
-                            break;
-                        case 3:
-                            Item.UseSound = new SoundStyle("LobotomyCorp/Sounds/Item/Ali_StrongAtk_Finish");
-                            break;
-                        default:
-                            Item.UseSound = SoundID.Item1;
-                            break;
-                    }
-                }
-                else
-                {
-                    Item.shoot = ModContent.ProjectileType<Projectiles.Realized.FaintAromaSlash>();
-                    Item.shootSpeed = 24;
-                    Item.useStyle = 1;
-                    Item.noUseGraphic = false;
-                    Item.noMelee = false;
-                    Item.UseSound = SoundID.Item1;
-                }
-            }
-            else
-            {
-                Item.useTime = 2;
-                Item.useAnimation = 2;
-                Item.shoot = 0;
-                Item.shootSpeed = 0;
-                Item.useStyle = ItemUseStyleID.HoldUp;
-                Item.noUseGraphic = true;
-                Item.noMelee = true;
-                Item.UseSound = SoundID.Item1;
-            }
-            return true;
-        }
 
         public override bool AltFunctionUse(Player player)
         {
+            return true;//player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalNum() > 0;
+        }
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                LobotomyWawPlayer wawPlayer = player.GetModPlayer<LobotomyWawPlayer>();
+                float boost = 1f + .2f * wawPlayer.FaintAromaPetalNum();
+                velocity *= 28f * boost;
+
+                type = ModContent.ProjectileType<FaintAromaRAlt>();
+            }
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (type == Item.shoot)
+            {
+                int petals = player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalNum();
+                int time = 20;
+                float velMult = 12f;
+                switch (petals)
+                {
+                    case 1:
+                        velMult += 4f;
+                        time -= 2;
+                        break;
+                    case 2:
+                        velMult += 12f;
+                        time -= 4;
+                        break;
+                    case 3:
+                        velMult += 20f;
+                        time -= 8;
+                        break;
+                }
+                velocity *= velMult;
+                damage /= 3;
+
+                // First instant Projectile
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, time, 0);
+
+                // Second slash Projectile with delay
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, time, player.itemAnimationMax / 2);
+
+                return false;
+            }
             return true;
         }
 
         public override void UseStyle(Player player, Rectangle heldItemFrame)
         {
-            if (player.altFunctionUse == 2 && player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal < player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30)
+            int petals = player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalNum();
+            if (player.altFunctionUse != 2)
             {
-                player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal += 1f + player.GetModPlayer<LobotomyWawPlayer>().FaintAromaDecay * 2;
-                if (player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal > player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30)
-                    player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal = player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30;
+                if (player.itemAnimation == player.itemAnimationMax - 1)
+                {
+                    if (Main.rand.NextBool(2))
+                    {
+                        SmearCircle(player, swingdirection);
+                    }
+                    else
+                    {
+                        SmearEllipse(player, swingdirection);
+                    }                        
+                    SoundEngine.PlaySound(Item.UseSound, player.position);
+                }
+
+                if (player.itemAnimation == player.itemAnimationMax / 2)
+                {
+                    if (Main.rand.NextBool(2))
+                    {
+                        SmearCircle(player, swingdirection);
+                    }
+                    else
+                    {
+                        SmearEllipse(player, swingdirection);
+                    }
+                    SoundEngine.PlaySound(Item.UseSound, player.position);
+                }
+
+                LobCorpLight.PseudoUseStyleSwing(player, heldItemFrame, SwingRotation(player));
             }
+            else
+            {
+                if (player.heldProj >= 0)
+                {
+                    Projectile held = Main.projectile[player.heldProj];
+                    player.itemRotation = (float)Math.Atan2(held.velocity.Y * (float)player.direction, held.velocity.X * (float)player.direction) - player.fullRotation;    
+                }
+
+                player.itemLocation.X = player.position.X + (float)player.width * 0.5f - (float)(player.direction * 2); // forward port from 1.4.5
+                player.itemLocation.Y = player.MountedCenter.Y - (float)heldItemFrame.Height * 0.5f;
+            }
+
+            if (player.itemAnimation == player.itemAnimationMax / 2)
+            {
+                player.ResetMeleeHitCooldowns();
+            }
+
+            float backWeaponSwing = SwingRotation2(player);
+            player.GetModPlayer<LobotomyModPlayer>().DrawWeaponBack(
+                TextureAssets.Item[Item.type].Value,
+                LobCorpLight.LobItemLocation(player, heldItemFrame, backWeaponSwing - 90) + new Vector2(8f * player.direction, 0),
+                MathHelper.ToRadians(backWeaponSwing - 45) * player.direction);
+        }
+
+        public static void SmearCircle(Player player, bool isDown)
+        {
+            WeaponSmearCircle smear = new WeaponSmearCircle();
+            
+            int dir = isDown ? -1 : 1;
+            float start = player.direction > 0 ? -140 : -50;
+
+            smear.Setup(player, new Vector2(12 * player.direction, 0), MathHelper.ToRadians(start * dir), player.itemAnimationMax / 3, player.direction * dir, true);
+            smear.SetupSemiCircle(35, 100, MathHelper.ToRadians(10), MathHelper.ToRadians(180), MathHelper.ToRadians(270));
+            smear.SetShaderImage(
+                MiscAssets.FlatColor,
+                MiscAssets.TexTrail2,
+                MiscAssets.Gradient
+                );
+            smear.Color = new Color(249, 159, 253);
+
+            smear.AddEffect();
+        }
+
+        public static void SmearEllipse(Player player, bool isDown)
+        {
+            WeaponSmearEllipse smear = new WeaponSmearEllipse();    
+            int dir = isDown ? -1 : 1;
+            float start = -140 * player.direction;
+
+            smear.Setup(player, new Vector2(12 * player.direction, 0), (player.direction > 0 ? 0 : 3.14f) + Main.rand.NextFloat(-0.3f, 0.3f), player.itemAnimationMax / 3, player.direction * dir, true);
+            smear.SetupPartEllipse(90, 65, 160, 125, MathHelper.ToRadians(start * dir), MathHelper.ToRadians(10), MathHelper.ToRadians(180), MathHelper.ToRadians(270));
+            smear.Color = new Color(249, 159, 253);
+            smear.SetShaderImage(
+                MiscAssets.FlatColor,
+                MiscAssets.TexTrail2,
+                MiscAssets.Gradient
+                );
+
+            LobCustomDraw.Instance().AddVEffects(smear);
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            swingdirection = !swingdirection;
+            if (player.altFunctionUse == 2)
+                Item.noUseGraphic = true;
+            else
+                Item.noUseGraphic = false;
+            return true;
+        }
+
+        public override void UseItemFrame(Player player)
+        {
+            if (player.altFunctionUse != 2)
+                LobCorpLight.LobItemFrame(player, SwingRotation(player) - 90);
+            else
+            {
+                float num20 = player.itemRotation * (float)player.direction;
+                player.bodyFrame.Y = player.bodyFrame.Height * 3;
+                if ((double)num20 < -0.75)
+                {
+                    player.bodyFrame.Y = player.bodyFrame.Height * 2;
+                    if (player.gravDir == -1f)
+                        player.bodyFrame.Y = player.bodyFrame.Height * 4;
+                }
+
+                if ((double)num20 > 0.6)
+                {
+                    player.bodyFrame.Y = player.bodyFrame.Height * 4;
+                    if (player.gravDir == -1f)
+                        player.bodyFrame.Y = player.bodyFrame.Height * 2;
+                }
+            }
+        }
+
+        float SwingRotation(Player player)
+        {
+            float time = 1f - (float)player.itemAnimation / player.itemAnimationMax;
+            bool direction = swingdirection;
+            if (player.ItemAnimationJustStarted)
+                direction = !direction;
+
+            if (!direction)
+            {
+                return -70 + 290 * Easing.EaseOutExpo(time);
+            }
+            else
+            {
+                return 220 - 290 * Easing.EaseOutExpo(time);
+            }
+        }
+        
+        public float SwingRotation2(Player player)
+        {
+            float time = 1f - (float)player.itemAnimation / player.itemAnimationMax;
+            bool direction = swingdirection;
+            if (player.ItemAnimationJustStarted)
+                direction = !direction;
+
+            if (time < 0.5f)
+            {
+                time += 0.5f;
+                direction = !direction;
+            }
+            else
+                time -= 0.5f;
+
+            time = Math.Clamp(time, 0, 1);
+
+
+            if (!direction)
+            {
+                return -70 + 290 * Easing.EaseOutExpo(time);
+            }
+            else
+            {
+                return 220 - 290 * Easing.EaseOutExpo(time);
+            }
+        }
+
+        public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
+        {
+            float time = ((float)player.itemAnimation / player.itemAnimationMax) % 0.5f;
+            if (time > 0.2f && (player.altFunctionUse != 2 || player.itemAnimation <= player.itemAnimationMax / 2))
+            {
+                if (swingdirection)
+                    time = 0.2f + (0.5f - time);
+
+                hitbox = new Rectangle((int)player.Center.X, (int)player.Center.Y, 32, 32);
+                if (!Main.dedServ)
+                {
+                    Rectangle hitboxSize = Item.GetDrawHitbox(Item.type, player);
+                    hitbox = new Rectangle((int)player.Center.X, (int)player.Center.Y, hitboxSize.Width, hitboxSize.Height);
+                }
+                float secondaryScale = 0.4f;
+                float adjustedItemScale = player.GetAdjustedItemScale(Item);
+                hitbox.Width = (int)(hitbox.Width * adjustedItemScale);
+                hitbox.Height = (int)(hitbox.Height * (adjustedItemScale + secondaryScale));
+                if (player.direction == -1)
+                {
+                    hitbox.X -= hitbox.Width;
+                }
+                if (player.gravDir == 1f)
+                {
+                    hitbox.Y -= hitbox.Height;
+                }
+
+                if (time > 0.4f)
+                {
+                    if (player.direction == 1)
+                    {
+                        hitbox.X -= (int)(hitbox.Width * 1);
+                    }
+                    hitbox.Width *= 2;
+                    hitbox.Y -= (int)((hitbox.Height * 1.4 - hitbox.Height) * player.gravDir);
+                    hitbox.Height = (int)(hitbox.Height * 1.4);
+                }
+                else if (time > 0.3f)
+                {
+                    if (player.direction == -1)
+                    {
+                        hitbox.X -= (int)((double)hitbox.Width * (1.4 + secondaryScale + 0.3f) - (double)hitbox.Width);
+                    }
+                    hitbox.Width = (int)((double)hitbox.Width * (1.4 + secondaryScale + 0.3f));
+                    hitbox.Y += (int)((double)hitbox.Height * 0.5 * (double)player.gravDir);
+                    hitbox.Height = (int)((double)hitbox.Height * 1.4);
+                }
+                else
+                {
+                    if (player.direction == 1)
+                    {
+                        hitbox.X -= (int)(hitbox.Width * 1);
+                    }
+                    hitbox.Width *= 2;
+                    hitbox.Y += (int)((hitbox.Height * 2.0 - hitbox.Height) * player.gravDir);
+                    hitbox.Height = (int)(hitbox.Height * 1.4);
+                }
+            }
+            else
+                noHitbox = true;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal += 30f;
-            if (player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal > player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30)
-                player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetal = player.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalMax * 3 + 30;
+            LobotomyWawPlayer wawPlayer = player.GetModPlayer<LobotomyWawPlayer>();
+            int variableAmount = 10;
+            if (wawPlayer.FaintAromaPetalNum() <= 1)
+                variableAmount *= 3;
+            wawPlayer.FaintAromaAddPetal(variableAmount);
+
+            player.GetModPlayer<LobotomyModPlayer>().ReplaceItemCooldown(0.1f, 0.5f, target.whoAmI);
+        }
+
+        public override void MeleeEffects(Player player, Rectangle hitbox)
+        {
+            float time = ((float)player.itemAnimation / player.itemAnimationMax) % 0.5f;
+            if (time > 0.2f && player.altFunctionUse != 2)
+            {
+                Dust dust = Main.dust[Dust.NewDust(hitbox.TopLeft(), hitbox.Width, hitbox.Height, DustID.VenomStaff)];
+                //dust.fadeIn = 1.2f;
+                dust.noGravity = true;
+            }
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
@@ -153,6 +384,14 @@ namespace LobotomyCorp.Items.Ruina.Art
 
         public override void AddRecipes() 
 		{
-		}
+            CreateRecipe()
+            .AddIngredient(ModContent.ItemType<Items.Waw.FaintAroma>())
+            .AddIngredient(ItemID.MudBud)
+            .AddIngredient(ItemID.GuideVoodooDoll)
+            .AddIngredient(ItemID.Pearlwood, 10)
+            .AddTile<Tiles.BlackBox3>()
+            .AddCondition(RedMistCond)
+            .Register();
+        }
 	}
 }

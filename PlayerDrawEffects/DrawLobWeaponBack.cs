@@ -148,7 +148,7 @@ namespace LobotomyCorp.PlayerDrawEffects
                     }
                 }
 
-                else if (Player.HeldItem.type == ModContent.ItemType<Items.Ruina.Art.FaintAromaS>() && Player.heldProj > -1 && Main.projectile[Player.heldProj].type == ModContent.ProjectileType<Projectiles.FaintAromaS>())
+                else if (Player.HeldItem.type == ModContent.ItemType<Items.Ruina.Art.FaintAromaR>() && Player.heldProj > -1 && Main.projectile[Player.heldProj].type == ModContent.ProjectileType<Projectiles.FaintAromaS>())
                 {
                     Projectile projectile = Main.projectile[Player.heldProj];
 
@@ -162,6 +162,28 @@ namespace LobotomyCorp.PlayerDrawEffects
                     drawInfo.DrawDataCache.Add(
                         new DrawData(tex, position, tex.Frame(), color, rot + MathHelper.ToRadians(45), origin, projectile.scale * 1.2f, 0, 0));
 
+                }
+
+                LobotomyModPlayer modPlayer = Player.GetModPlayer<LobotomyModPlayer>();
+                if (modPlayer.WeaponBackDraw)
+                {
+                    Texture2D texture = modPlayer.WeaponBackTexture;
+                    Vector2 position = modPlayer.WeaponBackPosition - Main.screenPosition;
+                    Vector2 origin = new Vector2(Player.direction == 1 ? 0 : texture.Width, texture.Height);
+                    float rot = modPlayer.WeaponBackRotation;
+
+                    drawInfo.DrawDataCache.Add(
+                        new DrawData(
+                            texture,
+                            position,
+                            texture.Frame(),
+                            color,
+                            rot,
+                            origin,
+                            Player.HeldItem.scale,
+                            drawInfo.playerEffect,
+                            0
+                        ));
                 }
             }
         }

@@ -19,8 +19,9 @@ namespace LobotomyCorp.Items.Ruina.Art
         public override void SetDefaults() 
 		{
             Item.damage = 240;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.width = 40;
+			Item.DamageType = DamageClass.Melee;
+            LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 24;
 			Item.useAnimation = 24;
@@ -32,7 +33,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 			Item.autoReuse = true;
             Item.shoot = ModContent.ProjectileType<DaCapoMusicSlash>();
             Item.shootSpeed = 1;
-
+            
             EgoColor = LobotomyCorp.AlephRarity;
         }
 

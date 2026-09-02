@@ -46,6 +46,7 @@ namespace LobotomyCorp.Players
 
         public int TwilightSpecial = 10;
 
+        public bool MimicryProtection = false;
         public bool MimicryShell = false;
         public int MimicryShellHealth = 0;
         public float MimicryShellDamage = 1f;
@@ -78,6 +79,7 @@ namespace LobotomyCorp.Players
             GoldRushRoadCooldown = false;
             GoldRushGreed = false;
 
+            MimicryProtection = false;
             MimicryShell = false;
             MimicryHusk = false;
             MimicryHuskDeficit = 0;
@@ -154,6 +156,31 @@ namespace LobotomyCorp.Players
                 float percent = Math.Min(1f, (float)SmileMountain / Player.statLifeMax2);
                 float resistance = .25f + .25f * percent;
                 modifiers.FinalDamage *= 1f - resistance;
+            }
+
+            if (MimicryProtection)
+            {
+                modifiers.FinalDamage *= 0.8f;
+                int buffType = ModContent.BuffType<MimicryHarden>();
+                int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)];
+                Player.ClearBuff(buffType);
+                Player.AddBuff(ModContent.BuffType<MimicryInterrupted>(), remainingBuffTime);
+            }
+            if (MimicryShell)
+            {
+                modifiers.FinalDamage *= 0.9f;
+                int buffType = ModContent.BuffType<Shell>();
+                int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)];
+                Player.ClearBuff(buffType);
+                Player.AddBuff(ModContent.BuffType<Husk>(), remainingBuffTime);
+            }
+            else if (MimicryHusk)
+            {
+                modifiers.FinalDamage *= 1.3f;
+                int buffType = ModContent.BuffType<Husk>();
+                int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)] - 60;
+                Player.ClearBuff(buffType);
+                Player.AddBuff(ModContent.BuffType<Shell>(), remainingBuffTime);
             }
         }
 
@@ -274,17 +301,22 @@ namespace LobotomyCorp.Players
                 Dust.NewDust(Player.position, Player.width, Player.height, DustID.Blood);
             }
 
+            int maxHealth = Math.Min((int)(n.lifeMax * 0.1f), 500);
+            bool hasBuff = Player.HasBuff<Shell>();
             if (Player.HasBuff<Husk>())
             {
                 Player.ClearBuff(ModContent.BuffType<Husk>());
             }
-            int time = Math.Min(n.lifeMax * 30, 300 * 60);
+            int time = 60 * 60;// Math.Min(n.lifeMax * 30, 300 * 60);
             Player.AddBuff(ModContent.BuffType<Shell>(), time);
+            MimicryShellTimerMax = time;
             MimicryShell = true;
+
+            if (hasBuff && MimicryShellHealth > maxHealth)
+                return;
             MimicryShellDamage = Math.Min(n.damage / 10f, .8f);
             MimicryShellDefense = Math.Min(n.defense, 30);
-            MimicryShellHealth = Math.Min((int)(n.lifeMax * 0.1f), 500);
-            MimicryShellTimerMax = time;
+            MimicryShellHealth = maxHealth;
         }
 
         /// <summary>
@@ -293,6 +325,11 @@ namespace LobotomyCorp.Players
         /// <param name="Time"></param>
         public void MimicryIncreaseShellTime(int Time)
         {
+            int buffType = ModContent.BuffType<Husk>();
+            int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)] - 60;
+            Player.ClearBuff(buffType);
+            Player.AddBuff(ModContent.BuffType<Shell>(), remainingBuffTime);
+
             int index = Player.FindBuffIndex(ModContent.BuffType<Shell>());
             Player.buffTime[index] += Time;
             if (Player.buffTime[index] > MimicryShellTimerMax)

@@ -39,6 +39,14 @@ namespace LobotomyCorp.Items.Waw
             EGORiskLevel = RiskLevel.Waw;
         }
 
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (RedMistMaskUpgrade(player))
+            {
+
+            }
+        }
+
         public override bool CanUseItem(Player player)
         {
             // Ensures no more than one spear can be thrown out, use this when using autoReuse

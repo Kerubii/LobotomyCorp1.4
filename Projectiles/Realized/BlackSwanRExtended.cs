@@ -1,4 +1,5 @@
-﻿using LobotomyCorp.Players;
+﻿using LobotomyCorp.Misc;
+using LobotomyCorp.Players;
 using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -148,9 +149,9 @@ namespace LobotomyCorp.Projectiles.Realized
 				//trail.color *= opacity;
 			}
 			CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(opacity);
-			shader.UseImage1(Mod, "Misc/Noise4");
-			shader.UseImage2(Mod, "Misc/Trail713");
-			shader.UseImage3(Mod, "Misc/Trail52");
+			shader.UseImage1(MiscAssets.NoiseTexture);
+			shader.UseImage2(MiscAssets.TrailSpear2);
+			shader.UseImage3(MiscAssets.TrailSmoke);
 
 			int max = Projectile.timeLeft > 4 ? 10 - (Projectile.timeLeft - 4) : 10;
 			max = (int)(max * 0.7f);

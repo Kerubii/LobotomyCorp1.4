@@ -56,16 +56,16 @@ namespace LobotomyCorp.Misc.LobSky
         {
             if (isActive)
             {
+                Vector2? currentStarPos = blueStarCenter(out projectileWhoAmI);
+                if (currentStarPos.HasValue)
+                {
+                    starPosition = (Vector2)currentStarPos;
+                }
                 if (intensity < 1f)
                 {
-                    Vector2? currentStarPos = blueStarCenter(out projectileWhoAmI);
                     if (intensity < 0.5f || currentStarPos.HasValue)
                     {
                         intensity += 0.01f;
-                        if (currentStarPos.HasValue)
-                        {
-                            starPosition = (Vector2)currentStarPos;
-                        }
                     }
                     else
                     {

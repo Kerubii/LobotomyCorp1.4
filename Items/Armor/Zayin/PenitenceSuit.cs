@@ -2,11 +2,14 @@ using LobotomyCorp.Items.Zayin;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LobotomyCorp.Items.Armor
+namespace LobotomyCorp.Items.Armor.Zayin
 {
+    /*
     [AutoloadEquip(EquipType.Head)]
-    public class WingbeatGift : LobItemBase
+    public class SodaGift : LobItemBase
     {
+        public override string Texture => "LobotomyCorp/Items/PEBox";
+
         public override bool IsLoadingEnabled(Mod mod)
         {
             return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
@@ -17,8 +20,37 @@ namespace LobotomyCorp.Items.Armor
             ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
             // Links the ego weapon to the armor, used for temporary vanity set acquiration
             PEBox.EgoSets.Add(
-                ModContent.ItemType<Wingbeat>(),
-                new int[3] { ModContent.ItemType<WingbeatGift>(), ModContent.ItemType<WingbeatSuit>(), ModContent.ItemType<WingbeatPants>() }
+                ModContent.ItemType<Soda>(),
+                new int[3] { ModContent.ItemType<SodaGift>(), ModContent.ItemType<SodaSuit>(), ModContent.ItemType<SodaPants>() }
+                );
+        }
+
+        public override void LobSetDefaults()
+        {
+            Item.vanity = true;
+            Item.width = 40;
+            Item.height = 40;
+            Item.useTime = 56;
+            Item.value = 10000;
+            Item.rare = ModContent.RarityType<ZayinB>();
+            EGORiskLevel = RiskLevel.Zayin;
+        }
+    }*/
+
+    [AutoloadEquip(EquipType.Body)]
+    public class PenitenceSuit : LobItemBase
+    {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            // Links the ego weapon to the armor, used for temporary vanity set acquiration
+            PEBox.EgoSets.Add(
+                ModContent.ItemType<Penitence>(),
+                new int[3] { ModContent.ItemType<SodaGift>(), ModContent.ItemType<SodaSuit>(), ModContent.ItemType<SodaPants>() }
                 );
         }
 
@@ -34,28 +66,8 @@ namespace LobotomyCorp.Items.Armor
         }
     }
 
-    [AutoloadEquip(EquipType.Body)]
-    public class WingbeatSuit : LobItemBase
-    {
-        public override bool IsLoadingEnabled(Mod mod)
-        {
-            return ModContent.GetInstance<Configs.LobotomyServerConfig>().TestItemEnable;
-        }
-
-        public override void LobSetDefaults()
-        {
-            Item.vanity = true;
-            Item.width = 40;
-            Item.height = 40;
-            Item.useTime = 56;
-            Item.value = 10000;
-            Item.rare = ModContent.RarityType<ZayinB>();
-            EGORiskLevel = RiskLevel.Zayin;
-        }
-    }
-
     [AutoloadEquip(EquipType.Legs)]
-    public class WingbeatPants : LobItemBase
+    public class PenitencePants : LobItemBase
     {
         public override bool IsLoadingEnabled(Mod mod)
         {

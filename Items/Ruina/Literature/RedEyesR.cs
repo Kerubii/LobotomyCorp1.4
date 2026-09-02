@@ -27,8 +27,8 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			Item.height = 70;
 
 			Item.damage = 62;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.knockBack = 2.3f;
+			Item.DamageType = DamageClass.Melee; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.knockBack = 2.3f;
 			Item.useTime = 26;
 			Item.useAnimation = 26;
 			Item.useStyle = 1;
@@ -57,7 +57,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			bool isMeal = false;
 			foreach(NPC n in Main.ActiveNPCs)
             {
-				if (!n.dontTakeDamage)
+				if (!n.dontTakeDamage && !n.friendly && !n.CountsAsACritter)
                 {
 					LobotomyGlobalNPC modNPC = n.GetGlobalNPC<LobotomyGlobalNPC>();
 					float dist = Vector2.Distance(n.Center, position);

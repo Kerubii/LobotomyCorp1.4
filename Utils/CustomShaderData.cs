@@ -81,22 +81,34 @@ namespace LobotomyCorp.Util
 			return this;
 		}
 
+		public CustomShaderData UseImage1(Asset<Texture2D> texture)
+		{
+			_uImage1 = texture;
+			return this;
+		}
+
 		public CustomShaderData UseImage2(Mod mod, string texturePath)
 		{
 			_uImage2 = mod.Assets.Request<Texture2D>(texturePath);
 			return this;
 		}
 
-		public CustomShaderData UseImage3(Mod mod, string texturePath)
+        public CustomShaderData UseImage2(Asset<Texture2D> texture)
+        {
+            _uImage2 = texture;
+            return this;
+        }
+
+        public CustomShaderData UseImage3(Mod mod, string texturePath)
 		{
 			_uImage3 = mod.Assets.Request<Texture2D>(texturePath);
 			return this;
 		}
 
-		public CustomShaderData UseImage3(Asset<Texture2D> tex)
+        public CustomShaderData UseImage3(Asset<Texture2D> texture)
         {
-			_uImage3 = tex;
-			return this;
+            _uImage3 = texture;
+            return this;
         }
 
 		public CustomShaderData UseColor(float r, float g, float b)

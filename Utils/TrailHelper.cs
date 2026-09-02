@@ -9,12 +9,12 @@ namespace LobotomyCorp.Util
 	public class Trailhelper
     {
         public Vector2[] TrailPos;
+        public Vector2[] TrailVel;
         public float[] TrailRotation;
 
         public Trailhelper(int length)
         {
-            TrailPos = new Vector2[length];
-            TrailRotation = new float[length];
+            ResetTrail(length);
         }
 
         public void TrailUpdate(Vector2 position, float rotation)
@@ -23,7 +23,7 @@ namespace LobotomyCorp.Util
             {
                 if (i > 0)
                 {
-                    if (TrailPos[i - 1] != null)
+                    if (TrailPos[i - 1] != Vector2.Zero)
                         TrailPos[i] = TrailPos[i - 1];
 
                     TrailRotation[i] = TrailRotation[i - 1];
@@ -36,11 +36,34 @@ namespace LobotomyCorp.Util
             }
         }
 
-        public void ResetTrail()    
+        public void TrailUpdate(Vector2 position, float rotation, Vector2 velocity)
         {
-            int length = TrailPos.Length;
+            for (int i = TrailPos.Length - 1; i >= 0; i--)
+            {
+                if (i > 0)
+                {
+                    if (TrailPos[i - 1] != Vector2.Zero)
+                        TrailPos[i] = TrailPos[i - 1];
+
+                    TrailRotation[i] = TrailRotation[i - 1];
+                    TrailVel[i] = TrailVel[i - 1];
+
+                    TrailPos[i] += TrailVel[i];
+                }
+                else
+                {
+                    TrailPos[i] = position;
+                    TrailRotation[i] = rotation;
+                    TrailVel[i] = velocity;
+                }
+            }
+        }
+
+        public void ResetTrail(int length)    
+        {
             TrailPos = new Vector2[length];
             TrailRotation = new float[length];
+            TrailVel = new Vector2[length];
         }
     }
 }

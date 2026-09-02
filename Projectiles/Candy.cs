@@ -1,4 +1,5 @@
 ﻿using System;
+using LobotomyCorp.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -40,7 +41,8 @@ namespace LobotomyCorp.Projectiles
             Projectile.ai[1]++;
             if (Projectile.ai[1] > 15)
             {
-                Projectile.velocity.Y -= 0.04f;
+                if (!LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Waw))
+                    Projectile.velocity.Y -= 0.04f;
                 Projectile.velocity.X *= 0.98f;
             }
             Projectile.rotation += MathHelper.ToRadians(8) * Projectile.velocity.X / 12f;

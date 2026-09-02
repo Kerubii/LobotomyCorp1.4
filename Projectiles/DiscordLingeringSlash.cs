@@ -43,5 +43,18 @@ namespace LobotomyCorp.Projectiles
         {
             return false;
         }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            lightColor = Color.White;
+            if (Projectile.ai[0] == 0)
+            {
+                lightColor.R = 0;
+                lightColor.G = 0;
+                lightColor.B = 0;
+            }
+
+            return base.PreDraw(ref lightColor);
+        }
     }
 }

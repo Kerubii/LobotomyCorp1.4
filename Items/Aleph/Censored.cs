@@ -1,3 +1,4 @@
+using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -68,11 +69,29 @@ namespace LobotomyCorp.Items.Aleph
             return base.UseSpeedMultiplier(player);
         }
 
+        public override float UseTimeMultiplier(Player player)
+        {
+            if (player.altFunctionUse == 2 && RedMistMaskUpgrade(player))
+            {
+                return 0.33f;
+            }
+            return base.UseTimeMultiplier(player);
+        }
+
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             if (player.altFunctionUse != 2)
             {
                 damage = (int)(damage * 0.8f);
+            }
+            else
+            {
+                if (RedMistMaskUpgrade(player))
+                {
+                    type = ModContent.ProjectileType<CensoredTentacle>();
+                    velocity *= 680;
+                    velocity.RotatedByRandom(MathHelper.ToRadians(60));
+                }
             }
             base.ModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
         }

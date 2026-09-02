@@ -1,17 +1,18 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using LobotomyCorp.Util;
-using Terraria.GameContent;
-using System.Collections.Generic;
-using Terraria.Audio;
+﻿using LobotomyCorp.Buffs;
+using LobotomyCorp.Misc;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
-using LobotomyCorp.Buffs;
+using LobotomyCorp.Util;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -166,9 +167,18 @@ namespace LobotomyCorp.Projectiles.Realized
 
             Projectile.localAI[1] -= 1 / 60f;
 
-			// Default, stays on the player or on the blue star
-			// Becomes more spread out the more hearts exists
-			if (state <= 0)
+			// teleport if too far
+            float chaseDist = Vector2.Distance(Projectile.Center, player.Center);
+            if (chaseDist > 2000f)
+            {
+                Projectile.position.X = player.position.X + (float)(player.width / 2) - (float)(Projectile.width / 2);
+                Projectile.position.Y = player.position.Y + (float)(player.height / 2) - (float)(Projectile.height / 2);
+				state = 0;
+            }
+
+            // Default, stays on the player or on the blue star
+            // Becomes more spread out the more hearts exists
+            if (state <= 1)
 			{
 				float targetWidth = 60 + (20 * Pos);
 				float targetRotation = Projectile.localAI[0];
@@ -201,7 +211,6 @@ namespace LobotomyCorp.Projectiles.Realized
 					state++;
 					return;
 				}
-
 				float dist = 1500;
 				int most = -1;
 				int target = -1;
@@ -258,19 +267,33 @@ namespace LobotomyCorp.Projectiles.Realized
 					finalTarget /= targets.Count;
 					targetPos = finalTarget;
 
-					// Proceed to next state if a target position is marked down
-					Projectile.velocity *= 0;
-					state++;
-
-					// Give other balls a cooldown
-					foreach (Projectile p in Main.ActiveProjectiles)
+					// Give other balls a cooldown to delay the attacks
+					// Does not work if the ball just finished attacking so it does not delay the remaining ones
+					if (state == 0)
 					{
-						if (p.active && p.whoAmI != Projectile.whoAmI && p.type == Projectile.type && p.owner == Projectile.owner && p.ai[0] <= 0f)
-						{
-							p.ai[0] = -10;
-							p.netUpdate = true;
-						}
-					}
+                        foreach (Projectile p in Main.ActiveProjectiles)
+                        {
+                            if (p.active && p.whoAmI != Projectile.whoAmI && p.type == Projectile.type && p.owner == Projectile.owner && p.ai[0] <= 0f)
+                            {
+                                p.ai[0] = -10;
+                                if (doesStarExist)
+                                {
+                                    p.ai[0] = -8;
+                                }
+                                p.netUpdate = true;
+                            }
+                        }
+						state++;
+                    }
+
+                    // Proceed to next state if a target position is marked down
+                    Projectile.velocity *= 0;
+                    state++;
+                }
+				else
+				{
+					if (state > 0)
+						state = 0;
 				}
 				return;
 			}
@@ -320,7 +343,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			else
 			{
 				Projectile.localAI[0] = Main.rand.NextFloat(3.14f);
-				state = -1;
+				state = 0;
 			}
 			state++;
         }
@@ -455,9 +478,9 @@ namespace LobotomyCorp.Projectiles.Realized
 		{
 			float range = (float)Math.Sin(MathHelper.ToRadians((Projectile.localAI[1] * 1.2f)));
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(0.7f + 0.1f * range);
-            shader.UseImage1(Mod, "Misc/StarColor");
-            shader.UseImage2(Mod, "Misc/gradient");
-            shader.UseImage3(Mod, "Misc/flametrail");
+            shader.UseImage1(MiscAssets.StarColor);
+            shader.UseImage2(MiscAssets.Gradient);
+            shader.UseImage3(MiscAssets.FlameTrail);
 			shader.UseCustomShaderDate(Projectile.localAI[1], 0);
 
             SlashTrail slashTrail = new SlashTrail(14, 0);

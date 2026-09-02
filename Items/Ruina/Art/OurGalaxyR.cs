@@ -24,8 +24,9 @@ namespace LobotomyCorp.Items.Ruina.Art
 			Item.height = 64;
 
 			Item.damage = 90;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMagic>();
-			Item.knockBack = 1f;
+			Item.DamageType = DamageClass.Magic;
+            LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.knockBack = 1f;
 			Item.useTime = 11;
 			Item.reuseDelay = 48;
 			Item.useAnimation = 33;

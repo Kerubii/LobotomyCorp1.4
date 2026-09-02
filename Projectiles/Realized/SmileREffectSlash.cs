@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LobotomyCorp.Misc;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -74,17 +75,17 @@ namespace LobotomyCorp.Projectiles.Realized
             int thickness = 50 + (int)(Projectile.ai[2] / 2);
             SlashTrail trail = new SlashTrail(thickness, 1.57f);
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(opacity);
-            shader.UseImage1(Mod, "Misc/oil");
-            shader.UseImage2(Mod, "Misc/FX_Tex_Trail1");
-            shader.UseImage3(Mod, "Misc/Worley");
+            shader.UseImage1(MiscAssets.OilTexture);
+            shader.UseImage2(MiscAssets.TexTrail1);
+            shader.UseImage3(MiscAssets.Worley);
             trail.color = lightColor;
 
             int radius = 145 + (int)Projectile.ai[2];
             trail.DrawPartCircle(Projectile.Center, Projectile.rotation, length, Projectile.spriteDirection, radius, 32, shader);
 
-            shader.UseImage1(Mod, "Misc/BloodTexture");
-            shader.UseImage2(Mod, "Misc/FX_Tex_Noise_Plasma2");
-            shader.UseImage3(Mod, "Misc/FX_Tex_Noise_Plasma1");
+            shader.UseImage1(MiscAssets.BloodTexture);
+            shader.UseImage2(MiscAssets.PlasmaNoiseForArcs);
+            shader.UseImage3(MiscAssets.PlasmaNoise);
 
             trail.DrawPartCircle(Projectile.Center, Projectile.rotation, length, Projectile.spriteDirection, radius, 32, shader);
 

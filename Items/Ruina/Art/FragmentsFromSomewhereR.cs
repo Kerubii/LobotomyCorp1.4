@@ -25,8 +25,9 @@ namespace LobotomyCorp.Items.Ruina.Art
 			Item.height = 64;
 
 			Item.damage = 90;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.knockBack = 2.3f;
+			Item.DamageType = DamageClass.Melee;
+            LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.knockBack = 2.3f;
 			Item.useTime = 22;
 			Item.useAnimation = 22;
 			Item.useStyle = ItemUseStyleID.Shoot;

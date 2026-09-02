@@ -116,7 +116,7 @@ namespace LobotomyCorp.NPCs.RedMist
                             if (type < 0)
                                 ai0 = Main.rand.Next(3, 8) * type;
                             //Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, delta * 12f, ModContent.ProjectileType<Projectiles.SmileBits>(), 16, 0, Main.myPlayer);//, Main.rand.NextFloat(0.26f));
-                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, delta * 8f, ModContent.ProjectileType<Projectiles.SmileBobs>(), 1, 0, -1, ai0, 8f, NPC.target);
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, delta * 8f, ModContent.ProjectileType<SmileBobs>(), 1, 0, -1, ai0, 8f, NPC.target);
                         }
 
                         for (int i = 0; i < 8; i++)

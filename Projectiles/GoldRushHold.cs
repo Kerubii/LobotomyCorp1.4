@@ -257,7 +257,7 @@ namespace LobotomyCorp.Projectiles
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
-            modifiers.SourceDamage *= (Projectile.ai[0] / 60f);
+            modifiers.SourceDamage *= 1f + (Projectile.ai[0] / 30f); // Increases damage by 200% every second
             if (Projectile.ai[1] == 2)
                 modifiers.SourceDamage *= 0.7f;
             modifiers.Knockback *= 2f - target.knockBackResist;

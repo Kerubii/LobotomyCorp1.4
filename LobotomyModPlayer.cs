@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.Graphics;
+using Steamworks;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -23,10 +24,15 @@ using Terraria.Utilities;
 
 namespace LobotomyCorp
 {
+    /// <summary>
+    /// Contains general player effects. for EGO specific effects, place it on its associated item tier
+    /// </summary>
     public class LobotomyModPlayer : ModPlayer
     {
         public int SynchronizedEGO = -1;
         public bool Desync = false;
+
+        public bool EGOSetEquipped = false;
 
         public int AttackComboOrder = 0;
         public int AttackComboOrderCooldown = 0;
@@ -58,12 +64,31 @@ namespace LobotomyCorp
 
         public int LuminousGreed = 0;
 
+        public float FallSpeedMult = 0f;
+
         private bool forcePlayerVelocity = false;
         private Vector2 forcePlayerVelocityValue;
+
+        private int LobWeaponOverrideAttackCD = 0;
+        private int LobWeaponOverrideMeleeImmune = 0;
+        private int LobWeaponOverrideMeleeTarget = 0;
 
         //Aura Vanity
         public List<AuraBehavior> CurrentAura;
         public AuraParticle[] PlayerParticles = new AuraParticle[100];
+
+
+        //Dual Weapon Wielding drawing
+        public bool WeaponBackDraw = false;
+        public Vector2 WeaponBackPosition = Vector2.Zero;
+        public Texture2D WeaponBackTexture = null;
+        public float WeaponBackRotation = 0;
+
+        //NPC Grabbing for invulnerabilities
+        private bool GrabIsGrabbing = false;
+        private int GrabCurrentlyGrabbingNPC;
+        private bool GrabStickyToEnemy;
+        private Vector2 GrabDeltaToEnemy;
 
         public static LobotomyModPlayer ModPlayer(Player Player)
         {
@@ -73,6 +98,9 @@ namespace LobotomyCorp
         public override void ResetEffects()
         {
             Desync = false;
+            WeaponBackDraw = false;
+
+            EGOSetEquipped = true;
 
             if (HeavyWeaponHelper > 0)
                 HeavyWeaponHelper--;
@@ -94,9 +122,11 @@ namespace LobotomyCorp
 
             statSanityMax = 17 + statPrudence;
 
-            //RemoveMaxFallSpeed = false;
-
             CurrentAura = new List<AuraBehavior>();
+
+            if (!GrabIsGrabbing)
+                GrabCurrentlyGrabbingNPC = -1;
+            GrabIsGrabbing = false;
         }
 
         private void ResetAttackCombo()
@@ -174,6 +204,23 @@ namespace LobotomyCorp
                         ShieldAnim = 120;
                 }
             }
+
+            if (GrabCurrentlyGrabbingNPC >= 0 && GrabIsGrabbing)
+            {
+                NPC n = Main.npc[GrabCurrentlyGrabbingNPC];
+                if (GrabStickyToEnemy)
+                {
+                    Player.Center = n.Center - GrabDeltaToEnemy;
+                    Player.immune = true;
+                    Player.immuneTime = 5;
+                    Player.immuneNoBlink = true;
+                }
+                else
+                {
+                    n.Center = Player.Center + GrabDeltaToEnemy;
+                    n.GetGlobalNPC<LobotomyGlobalNPC>().IsGrabbedBy(Player.whoAmI);
+                }
+            }
         }
 
         public override void PreUpdateMovement()
@@ -231,6 +278,13 @@ namespace LobotomyCorp
                     PlayerParticles[i].Update(Player, Player.direction, Player.gravDir, (float)Main.timeForVisualEffects);
                 }
             }
+
+            //Changes maximum fall speed
+            if (FallSpeedMult > 0f)
+            {
+                Player.maxFallSpeed *= FallSpeedMult;
+                FallSpeedMult = 0;
+            }
         }
 
         public void ForcePlayerVelocity(Vector2 vel)
@@ -249,6 +303,41 @@ namespace LobotomyCorp
             return base.PreItemCheck();
         }
 
+        public override void PostItemCheck()
+        {
+            if (LobWeaponOverrideAttackCD > 0)
+            {
+                Player.attackCD = LobWeaponOverrideAttackCD;
+                Player.SetMeleeHitCooldown(LobWeaponOverrideMeleeTarget, LobWeaponOverrideMeleeImmune);
+                LobWeaponOverrideAttackCD = 0;
+            }
+        }
+
+        /// <summary>
+        /// Place this on [OnHit] Effects for melee weapons, Int version applies it as is
+        /// </summary>
+        /// <param name="attackCD"></param>
+        /// <param name="immune"></param>
+        /// <param name="target"></param>
+        public void ReplaceItemCooldown(int attackCD, int immune, int target)
+        {
+            LobWeaponOverrideAttackCD = attackCD;
+            LobWeaponOverrideMeleeImmune = Player.itemAnimation % immune;
+            LobWeaponOverrideMeleeTarget = target;
+        }
+
+        /// <summary>
+        /// Place this on [OnHit] Effects for melee weapons, Float version multiplies it to Player ItemAnimationMax
+        /// </summary>
+        /// <param name="attackCD"></param>
+        /// <param name="immune"></param>
+        /// <param name="target"></param>
+        public void ReplaceItemCooldown(float attackCD, float immune, int target)
+        {
+            LobWeaponOverrideAttackCD = (int)(Player.itemAnimationMax * attackCD) + 1;
+            LobWeaponOverrideMeleeImmune = Player.itemAnimation % (int)(Player.itemAnimationMax * immune) + 1;
+            LobWeaponOverrideMeleeTarget = target;
+        }
 
         public override void OnHurt(Player.HurtInfo info)
         {
@@ -267,6 +356,13 @@ namespace LobotomyCorp
                     info.Damage = ShieldDamage(info.Damage);
                 }
             }
+        }
+
+        public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
+        {
+            if (GrabCurrentlyGrabbingNPC == npc.whoAmI)
+                return false;
+            return base.CanBeHitByNPC(npc, ref cooldownSlot);
         }
 
         /*
@@ -341,6 +437,37 @@ namespace LobotomyCorp
                 return x2 * (1 - progress) + x * progress;
             else
                 return x * (1 - progress) + x2 * progress;
+        }
+
+        public void DrawWeaponBack(Texture2D tex, Vector2 weaponPos, float rotation)
+        {
+            WeaponBackDraw = true;
+            WeaponBackTexture = tex;
+            WeaponBackPosition = weaponPos;
+            WeaponBackRotation = rotation;
+        }
+
+        /// <summary>
+        /// Sets enemy distance equal to player and gain immunity to that enemy, Turns off NPC AI.
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="stickToEnemy">If true, makes the player dragged by the enemy instead, becoming invincible and turns on NPC AI</param>
+        public void GrabEnemy(NPC npc, bool stickToEnemy = false)
+        {
+            if (GrabCurrentlyGrabbingNPC == -1)
+                GrabDeltaToEnemy = npc.Center - Player.Center;
+            GrabCurrentlyGrabbingNPC = npc.whoAmI;
+            GrabStickyToEnemy = stickToEnemy;
+
+            GrabIsGrabbing = true;
+        }
+
+        public void GrabEnemySetWhere(NPC npc, Vector2 delta, bool stickToEnemy = false)
+        {
+            GrabCurrentlyGrabbingNPC = npc.whoAmI;
+            GrabStickyToEnemy = stickToEnemy;
+            GrabDeltaToEnemy = delta;
+            GrabIsGrabbing = true;
         }
 
         #region SHIELD STUFF

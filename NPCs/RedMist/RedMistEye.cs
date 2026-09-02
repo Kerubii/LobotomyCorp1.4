@@ -18,6 +18,7 @@ using Terraria.GameContent.NetModules;
 using Terraria.Localization;
 using Terraria.Chat;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using LobotomyCorp.Misc;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
@@ -67,7 +68,7 @@ namespace LobotomyCorp.NPCs.RedMist
         {
             lightColor = Color.White;
 
-            CustomShaderData shader = LobotomyCorp.LobcorpShaders["GenericTrail"].UseImage1(Mod, "Misc/GenTrail");
+            CustomShaderData shader = LobotomyCorp.LobcorpShaders["GenericTrail"].UseImage1(MiscAssets.GeneralTrail);
             TaperingTrail Trail = new TaperingTrail();
             Trail.ColorStart = Color.Red;
             Trail.ColorEnd = Color.Red;

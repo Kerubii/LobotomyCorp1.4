@@ -1,6 +1,7 @@
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Configs;
 using LobotomyCorp.Items.Ruina.Literature;
+using LobotomyCorp.Misc;
 using LobotomyCorp.Misc.LobSky;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
@@ -130,6 +131,8 @@ namespace LobotomyCorp
                     KingPortal1 = Assets.Request<Texture2D>("Projectiles/KingPortal/KingPortal1", AssetRequestMode.ImmediateLoad);
                     KingPortal2 = Assets.Request<Texture2D>("Projectiles/KingPortal/KingPortal2", AssetRequestMode.ImmediateLoad);
                     KingPortal3 = Assets.Request<Texture2D>("Projectiles/KingPortal/KingPortal3", AssetRequestMode.ImmediateLoad);
+
+                    MiscAssets.LoadStaticAssets(this);
 
                     MagicBulletBullet = Assets.Request<Texture2D>("Projectiles/MagicBulletBullet");
 

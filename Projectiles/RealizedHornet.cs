@@ -81,7 +81,23 @@ namespace LobotomyCorp.Projectiles
             }
 
             if (projOwner.channel)
+            {
+                if (Main.myPlayer == Projectile.owner)
+                {
+                    float length = Projectile.velocity.Length();
+                    Vector2 vec = Main.MouseWorld - projOwner.MountedCenter;
+                    vec.Normalize();
+                    float drag = 0.95f;
+                    vec = Vector2.Normalize(Vector2.Lerp(vec, Vector2.Normalize(Projectile.velocity), drag));
+                    if (vec.X != Projectile.velocity.X || vec.Y != Projectile.velocity.Y)
+                    {
+                        Projectile.netUpdate = true;
+                    }
+                    Projectile.velocity = vec * length;
+                }
+
                 return;
+            }
 
             if (Projectile.ai[1] == 0)
             {
@@ -147,6 +163,8 @@ namespace LobotomyCorp.Projectiles
             projOwner.velocity = 28f * Vector2.Normalize(Projectile.velocity);
             projOwner.immune = true;
             projOwner.immuneTime = 10;
+
+            projOwner.GetModPlayer<LobotomyModPlayer>().FallSpeedMult = 3;
 
 
             if (Projectile.ai[1] == (int)Projectile.ai[0])

@@ -9,8 +9,8 @@ namespace LobotomyCorp.Projectiles
 {
 	class Discord2 : ModProjectile
 	{
-        protected virtual float HoldoutRangeMin => 24f;
-        protected virtual float HoldoutRangeMax => 184;
+        protected virtual float HoldoutRangeMin => 88f;
+        protected virtual float HoldoutRangeMax => 208;
 
         public override void SetDefaults()
         {

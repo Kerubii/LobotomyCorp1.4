@@ -74,15 +74,19 @@ namespace LobotomyCorp.ModSystems
             });
             RecipeGroup.RegisterGroup("LobotomyCorp:Butterflies", rec);
 
-            rec = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + "Dungeon Lanterns", new[]
+            rec = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + "Dungeon Lamps", new[]
             {
+                (int)ItemID.BlueDungeonLamp,
+                ItemID.PinkDungeonLamp,
+                ItemID.GreenDungeonLamp
+                /*
                 (int)ItemID.ChainLantern,
                 ItemID.BrassLantern,
                 ItemID.CagedLantern,
                 ItemID.CarriageLantern,
                 ItemID.AlchemyLantern,
                 ItemID.DiablostLamp,
-                ItemID.OilRagSconse
+                ItemID.OilRagSconse*/
             });
             RecipeGroup.RegisterGroup("LobotomyCorp:DungeonLantern", rec);
 
@@ -90,7 +94,7 @@ namespace LobotomyCorp.ModSystems
            {
                 (int)ItemID.KingSlimeMask,
                 (int)2112,
-                2103,
+                2104,
                 2111,
                 2108,
                 1281,

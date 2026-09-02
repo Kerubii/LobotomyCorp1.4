@@ -37,6 +37,11 @@ namespace LobotomyCorp.Buffs
             player.GetModPlayer<LobotomyModPlayer>().CurrentAura.Add(darkFlame);
         }
 
+        public override void Update(NPC npc, ref int buffIndex)
+        {
+            
+        }
+
         private void DarkFlameDust(Player player)
         {
             int num = player.bodyFrame.Y / 56;

@@ -1,3 +1,4 @@
+using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -56,6 +57,40 @@ namespace LobotomyCorp.Items.Waw
             {
                 damage /= 2;
             }
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (RedMistMaskUpgrade(player))
+            {
+                if (player.altFunctionUse != 2)
+                {
+                    foreach (Item item in player.inventory)
+                    {
+                        if (item.active && item.type == ItemID.LightShard)
+                        {
+                            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<DiscordSlashInv>(), damage, knockback, player.whoAmI, ai2: 1);
+                            break;
+                        }
+                    }
+                    Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai2: 1);
+                    return false;
+                }
+                else
+                {
+                    foreach (Item item in player.inventory)
+                    {
+                        if (item.active && item.type == ItemID.LightShard)
+                        {
+                            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<Discord2Inv>(), damage, knockback, player.whoAmI, ai2: 128);
+                            break;
+                        }
+                    }
+                    Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai2: 128);
+                    return false;
+                }
+            }
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
 
         public override bool CanUseItem(Player player)

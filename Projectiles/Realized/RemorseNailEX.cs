@@ -1,19 +1,20 @@
-﻿using System;
+﻿using LobotomyCorp.Items.Ruina.General;
+using LobotomyCorp.Misc;
+using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players;
+using LobotomyCorp.Util;
+using LobotomyCorp.Visuals.LobEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp.Util;
-using Terraria.Audio;
-using Terraria.GameContent;
-using System.IO;
-using System.Collections.Generic;
-using Terraria.DataStructures;
-using LobotomyCorp.Items.Ruina.General;
-using LobotomyCorp.Players;
-using LobotomyCorp.Visuals.LobEffects;
-using LobotomyCorp.ModSystems;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -349,7 +350,7 @@ namespace LobotomyCorp.Projectiles.Realized
             WeaponSmearLine line = new();
             line.Setup(hand.GetPosition(Projectile.spriteDirection), vel, vel.ToRotation(), time / 2, Projectile.spriteDirection);
             line.SetupLine(30, 60, 230);
-            line.SetShaderImage("Misc/ShaderTextures/RemorseBrown", "Misc/GenericWindTrail", "Misc/FX_Tex_Noise_Plasma1");
+            line.SetShaderImage(MiscAssets.RemorseBrown, MiscAssets.WindTrail, MiscAssets.PlasmaNoise);
             LobCustomDraw.Instance().AddVEffects(line);
         }
 

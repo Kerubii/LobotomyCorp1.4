@@ -36,7 +36,7 @@ namespace LobotomyCorp.Items.Waw
             Item.UseSound = LobotomyCorp.WeaponSound("Porccu");
             Item.noMelee = true;
             Item.autoReuse = true;
-            EGORiskLevel = RiskLevel.Waw;
+            EGORiskLevel = RiskLevel.He;
         }
 
         public override bool CanUseItem(Player player)

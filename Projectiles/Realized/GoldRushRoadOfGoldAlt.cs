@@ -153,7 +153,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     owner.statLife -= dmg;
                     if (owner.statLife <= 0)
                     {
-                        NetworkText text = NetworkText.FromKey("Mods.LobotomyCorp.DeathMessages.Greed" + Main.rand.Next(1,3), owner.name);
+                        NetworkText text = NetworkText.FromKey("Mods.LobotomyCorp.DeathMessages.GoldRush" + Main.rand.Next(1,3), owner.name);
                         PlayerDeathReason playerDeath = PlayerDeathReason.ByCustomReason(text);
                         owner.KillMe(playerDeath, Projectile.damage, 1);
                     }

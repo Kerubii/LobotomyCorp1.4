@@ -44,7 +44,8 @@ namespace LobotomyCorp.Players
 
         public float FaintAromaPetal = 0;
         public int FaintAromaPetalMax = 60;
-        public float FaintAromaDecay = 0.1f;
+        public float FaintAromaDecay = 0.05f;
+        public bool FaintAromaUnwitheringFlower = false;
 
         public bool PleasureDebuff = false;
         public bool PleasureTail = false;
@@ -85,6 +86,8 @@ namespace LobotomyCorp.Players
             CrimsonScarRuddedWelts = false;
             CrimsonScarHowlingNightmare = false;
 
+            FaintAromaUnwitheringFlower = false;
+
             LoveAndHateLove = false;
             LoveAndHateRegenBuff = false;
             LoveAndHateHatred = false;
@@ -94,7 +97,7 @@ namespace LobotomyCorp.Players
             }
             if (LoveAndHateVillain > -1)
             {
-                if (!Main.npc[LoveAndHateVillain].HasBuff<Villain>())
+                if (Main.npc[LoveAndHateVillain].GetGlobalNPC<LobotomyGlobalNPC>().InTheNameOfLoveAndHateVillain <= 0)
                     LoveAndHateVillain = -1;
             }
 
@@ -442,10 +445,15 @@ namespace LobotomyCorp.Players
         {
             if (FaintAromaPetal > 0)
             {
+                /*
                 if (FaintAromaPetal < FaintAromaPetalMax)
                     modifiers.FinalDamage *= (1.1f + ((float)FaintAromaPetal / (float)FaintAromaPetalMax));
                 else
                     modifiers.FinalDamage *= 1.2f;
+                */
+                float maxdmg = npc.GetGlobalNPC<LobotomyGlobalNPC>().FaintAromaLaurelWreath;
+
+                modifiers.FinalDamage *= 1f + (maxdmg * (FaintAromaPetalNum() / 3f));
             }
             else if (SwordSharpenedBlessing)
             {
@@ -463,7 +471,7 @@ namespace LobotomyCorp.Players
 
         public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
         {
-            if (FaintAromaPetal > 0 && Player.HeldItem.type == ModContent.ItemType<Items.Ruina.Art.FaintAromaS>() && Player.itemAnimation > 0 && npc.immune[Player.whoAmI] > 0)
+            if (FaintAromaPetal > 0 && Player.HeldItem.type == ModContent.ItemType<Items.Ruina.Art.FaintAromaR>() && Player.itemAnimation > 0 && npc.immune[Player.whoAmI] > 0)
                 return false;
             return base.CanBeHitByNPC(npc, ref cooldownSlot);
         }
@@ -831,6 +839,26 @@ namespace LobotomyCorp.Players
                 }
             }
         }*/
+
+        /// <summary>
+        /// Ranges from 0 Petals to 3 Petals
+        /// </summary>
+        /// <returns></returns>
+        public int FaintAromaPetalNum()
+        {
+            int x = (int)Math.Floor(FaintAromaPetal / FaintAromaPetalMax);
+            x = Math.Clamp(x, 0, 3);
+            if (FaintAromaUnwitheringFlower)
+                x = 3;
+            return x;
+        }
+
+        public void FaintAromaAddPetal(float x)
+        {
+            FaintAromaPetal += x;
+            if (FaintAromaPetal > FaintAromaPetalMax * 3 + 30)
+                FaintAromaPetal = FaintAromaPetalMax * 3 + 30;
+        }
 
         public bool CrimsonScarLowHealthActive => Player.statLife <= Player.statLifeMax2 / 2;
     }

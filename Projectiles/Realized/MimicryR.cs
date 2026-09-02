@@ -276,12 +276,43 @@ namespace LobotomyCorp.Projectiles.Realized
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<MimicrySEffect>(), 0, 0, Projectile.owner, Main.player[Projectile.owner].direction);
                     if (modPlayer.MimicryShell)
                     {
-                        modPlayer.MimicryIncreaseShellTime(60);
+                        modPlayer.MimicryIncreaseShellTime(10);
                     }
-                    if (Projectile.ai[2] == 0 && target.type != NPCID.TargetDummy && NPCID.Sets.ProjectileNPC[target.type] == false)
+                    if (Projectile.ai[2] < 2 && target.type != NPCID.TargetDummy && NPCID.Sets.ProjectileNPC[target.type] == false)
                     {
-                        Projectile.ai[2]++;
+                        Projectile.ai[2] = 2;
                         int heal = (int)(damageDone * 0.01f);
+                        Player player = Main.player[Projectile.owner];
+                        if (heal > player.statLifeMax2 * 0.12f)
+                        {
+                            heal = (int)(player.statLifeMax2 * 0.12f);
+                        }
+                        player.HealEffect(heal);
+                        player.statLife += heal;
+                    }
+                }
+            }
+            else
+            {
+                if (modPlayer.MimicryShell && Projectile.ai[2] < 2 && target.type != NPCID.TargetDummy && NPCID.Sets.ProjectileNPC[target.type] == false)
+                {
+                    bool healing = false;
+                    // Lifesteal if
+                    // its the first hit of the projectile in general
+                    if (Projectile.ai[2] == 0)
+                    {
+                        Projectile.ai[2] = 1;
+                        healing = true;
+                    }
+                    // the uncharged swing of the projectile
+                    if (Projectile.ai[0] == 2)
+                    {
+                        healing = true;
+                        Projectile.ai[2] = 2;
+                    }
+                    if (healing)
+                    {
+                        int heal = (int)(damageDone * 0.05f);
                         Player player = Main.player[Projectile.owner];
                         if (heal > player.statLifeMax2 * 0.05f)
                         {
@@ -292,7 +323,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     }
                 }
             }
-            if (target.life <= 0 && !modPlayer.MimicryShell)
+            if (target.life <= 0 && (!modPlayer.MimicryShell || !modPlayer.MimicryHusk))
             {
                 modPlayer.MimicryWearShell(target);
                 /*

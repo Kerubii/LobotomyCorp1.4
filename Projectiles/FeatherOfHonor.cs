@@ -42,7 +42,7 @@ namespace LobotomyCorp.Projectiles
             Projectile.width = 12;
             Projectile.height = 12;
             Projectile.aiStyle = -1;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = 3;
             Projectile.scale = 1f;
             Projectile.timeLeft = 20;
 
@@ -51,6 +51,9 @@ namespace LobotomyCorp.Projectiles
             Projectile.DamageType = DamageClass.Summon;
             Projectile.friendly = true;
             Projectile.extraUpdates = 3;
+
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 15;
         }
 
         public override void AI()
@@ -129,6 +132,8 @@ namespace LobotomyCorp.Projectiles
             {
                 int i = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch);
                 Main.dust[i].noGravity = true;
+
+                Projectile.rotation = Projectile.velocity.ToRotation() + (Projectile.spriteDirection == 1 ? 0 : 3.14f);
             }
         }
 
@@ -143,6 +148,12 @@ namespace LobotomyCorp.Projectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.OnFire, 60 * 5);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            if (Projectile.ai[1] == 4)
+                modifiers.ArmorPenetration += 8;
         }
 
         public override bool? CanHitNPC(NPC target)

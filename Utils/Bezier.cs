@@ -58,7 +58,7 @@ namespace LobotomyCorp.Util
         /// </summary>
         /// <param name="targetPosition"></param>
         /// <param name="velocity"></param>
-        public void CPoint1Move(Vector2 targetPosition, float velocity)
+        public void CPoint1Move(Vector2 targetPosition, float velocity = -1)
         {
             PointMove(targetPosition, ref point1, velocity);
         }
@@ -68,7 +68,7 @@ namespace LobotomyCorp.Util
         /// </summary>
         /// <param name="targetPosition"></param>
         /// <param name="velocity"></param>
-        public void CPoint2Move(Vector2 targetPosition, float velocity)
+        public void CPoint2Move(Vector2 targetPosition, float velocity = -1)
         {
             PointMove(targetPosition, ref point2, velocity);
         }
@@ -86,7 +86,7 @@ namespace LobotomyCorp.Util
             }
 
             Vector2 movement = Vector2.Normalize(delta) * velocity;
-            if (delta.Length() < velocity)
+            if (delta.Length() < velocity || velocity < 0)
                 movement = delta;
 
             point += movement;
@@ -224,13 +224,30 @@ namespace LobotomyCorp.Util
             return p2;
         }
 
-        public DrawData DrawCurveRotatedtoNext(Texture2D tex, Rectangle? frame, Color color, float scale, float rotationOffset, Vector2 frameOrigin, SpriteEffects spEffect, float progressPoint1, float progressPoint2)
+        public float DistanceBetweenPoint(float progressPoint1, float progressPoint2)
+        {
+            Vector2 p1 = BezierPoint(progressPoint1);
+            Vector2 p2 = BezierPoint(progressPoint2);
+
+            return p1.Distance(p2);
+        }
+
+        public DrawData DrawCurveRotatedtoNext(Texture2D tex, Rectangle? frame, Color color, float scale, float rotationOffset, Vector2 frameOrigin, SpriteEffects spEffect, float progressPoint1, float progressPoint2, Vector2 posOffset = default(Vector2))
         {
             Vector2 p1 = BezierPoint(progressPoint1);
             Vector2 p2 = BezierPoint(progressPoint2);
             float rotation = (p2 - p1).ToRotation();
 
-            return new DrawData(tex, p1 - Main.screenPosition, frame, color, rotation + rotationOffset, frameOrigin, scale, spEffect, 0);
+            return new DrawData(tex, p1 - Main.screenPosition + posOffset, frame, color, rotation + rotationOffset, frameOrigin, scale, spEffect, 0);
+        }
+
+        public DrawData DrawCurveRotatedtoNext(Texture2D tex, Rectangle? frame, Color color, Vector2 scale, float rotationOffset, Vector2 frameOrigin, SpriteEffects spEffect, float progressPoint1, float progressPoint2, Vector2 posOffset = default(Vector2))
+        {
+            Vector2 p1 = BezierPoint(progressPoint1);
+            Vector2 p2 = BezierPoint(progressPoint2);
+            float rotation = (p2 - p1).ToRotation();
+
+            return new DrawData(tex, p1 - Main.screenPosition + posOffset, frame, color, rotation + rotationOffset, frameOrigin, scale, spEffect, 0);
         }
 
         public DrawData DrawCurve(Texture2D tex, Rectangle? frame, Color color, float scale, float rotation, Vector2 frameOrigin, SpriteEffects spEffect, float curveProgress)
@@ -260,6 +277,21 @@ namespace LobotomyCorp.Util
                 array[i] = DerivativeRotation(t);
             }
             return array;
+        }
+
+        public bool Collision(Rectangle target, float steps, Vector2 size, float limit = 1f)
+        {
+            if (steps < 0)
+                return false;
+            float currentStep = steps;
+            while (currentStep <= limit)
+            {
+                Vector2 point = BezierPoint(currentStep);
+                Rectangle rect = new Rectangle((int)(point.X - size.X / 2f), (int)(point.Y - size.Y / 2f), (int)size.X, (int)size.Y);
+                if (rect.Intersects(target)) return true;
+                currentStep += steps;
+            }
+            return false;
         }
 
         public void DustTest()

@@ -1,3 +1,4 @@
+using LobotomyCorp.Misc;
 using LobotomyCorp.Players;
 using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
@@ -159,9 +160,9 @@ namespace LobotomyCorp.Projectiles.Realized
 
                 SlashTrail trail = new SlashTrail(xbig, ybig, 1.57f);
                 CustomShaderData shader = LobcorpShaders["SwingTrail"].UseOpacity(opacity);
-                shader.UseImage1(Mod, "Misc/Seamless_Rainbow");
-                shader.UseImage2(Mod, "Misc/Extra_201");
-                shader.UseImage3(Mod, "Misc/FX_Tex_Noise_Plasma1");
+                shader.UseImage1(MiscAssets.RainbowTexture);
+                shader.UseImage2(MiscAssets.TerrariaExtra201);
+                shader.UseImage3(MiscAssets.PlasmaNoise);
                 shader.UseCustomShaderDate(0, 0, 0, Projectile.localAI[0]);
                 trail.color = Color.White;
 
@@ -173,15 +174,15 @@ namespace LobotomyCorp.Projectiles.Realized
                 shader.UseCustomShaderDate(0, 0, 0, Projectile.localAI[0]);
                 trail.color = Color.White * opacity;
 
-                shader.UseImage1(Mod, "Misc/SheetNote2RGBGlow");
-                shader.UseImage2(Mod, "Misc/SheetNote2WAGlow");
-                shader.UseImage3(Mod, "Misc/SheetNote2WAGlow");
+                shader.UseImage1(MiscAssets.SheetNote2RGBGlow);
+                shader.UseImage2(MiscAssets.SheetNote2WAGlow);
+                shader.UseImage3(MiscAssets.SheetNote2WAGlow);
 
                 trail.DrawEllipse(Projectile.Center, Projectile.rotation, rot, direction, distance + diff, distance * 0.2f + diff/2, 60, shader);
 
-                shader.UseImage1(Mod, "Misc/SheetNote2WA");
-                shader.UseImage2(Mod, "Misc/SheetNote2WA");
-                shader.UseImage3(Mod, "Misc/SheetNote2WA");
+                shader.UseImage1(MiscAssets.SheetNote2WA);
+                shader.UseImage2(MiscAssets.SheetNote2WA);
+                shader.UseImage3(MiscAssets.SheetNote2WA);
 
                 trail.DrawEllipse(Projectile.Center, Projectile.rotation, rot, direction, distance + diff, distance * 0.2f + diff / 2, 60, shader);
 
@@ -212,9 +213,9 @@ namespace LobotomyCorp.Projectiles.Realized
                 }
 
                 CustomShaderData shader = LobcorpShaders["SwingTrail"].UseOpacity(opacity);
-                shader.UseImage1(Mod, "Misc/FlatColor");
-                shader.UseImage2(Mod, "Misc/Extra_201");
-                shader.UseImage3(Mod, "Misc/FX_Tex_Noise_Plasma1");
+                shader.UseImage1(MiscAssets.FlatColor);
+                shader.UseImage2(MiscAssets.TerrariaExtra201);
+                shader.UseImage3(MiscAssets.PlasmaNoise);
                 //shader.UseCustomShaderDate(Projectile.localAI[0], Projectile.localAI[1]);
                 trail.color = Color.Black;// * opacity;
 
@@ -223,9 +224,9 @@ namespace LobotomyCorp.Projectiles.Realized
                 trail = new SlashTrail(60, 1.57f);
 
                 shader = LobcorpShaders["SwingTrail"].UseOpacity(0.92f * opacity);
-                shader.UseImage1(Mod, "Misc/SheetNote2B");
-                shader.UseImage2(Mod, "Misc/SheetNote2A");
-                shader.UseImage3(Mod, "Misc/Extra_201");
+                shader.UseImage1(MiscAssets.SheetNote2B);
+                shader.UseImage2(MiscAssets.SheetNote2A);
+                shader.UseImage3(MiscAssets.TerrariaExtra201);
                 shader.UseCustomShaderDate(0, 0, 1200 * (0.1f + progress), Projectile.localAI[0]);
                 trail.color = Color.White;
 

@@ -17,12 +17,17 @@ LobotomyServerConfig: {
 
 	ExtractorDamage: {
 		// Label: E.G.O Damage Increase
-		// Tooltip: Sets E.G.O base damage to this number as a percentage (100 is the default equivalent to x1)
+		// Tooltip: Sets E.G.O base damage to this number as a percentage (100 is the default equivalent to x1), only in effect if Extractor Damage is enabled
 	}
 
 	ExtractorClass: {
 		// Label: "[TEST] Extractor Class"
 		// Tooltip: UNIMPLEMENTED, DUMMY OPTION FOR FUTURE USE
+	}
+
+	ExtractorDamageEnable: {
+		// Label: E.G.O Damage type
+		// Tooltip: ""
 	}
 }
 
@@ -57,6 +62,16 @@ LobotomyConfig: {
 
 	SolemnDingDongChance: {
 		// Label: Solemn Ding Dong Chance
+		// Tooltip: ""
+	}
+
+	NoSilentOrchestraPerformance: {
+		// Label: No Silent Orchestra Performance
+		// Tooltip: ""
+	}
+
+	NoBlueStarAmbience: {
+		// Label: Disables Blue Star's ambient music
 		// Tooltip: ""
 	}
 }

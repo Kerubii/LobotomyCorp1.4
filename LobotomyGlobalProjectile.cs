@@ -31,6 +31,7 @@ namespace LobotomyCorp
         public bool CrimsonScarRBullet = false;
         public bool CrimsonScarBullet = false;
         public bool HypocrisyArrow = false;
+        public bool LampArrow = false;
         public bool SodaSpecial = false;
         public int SolitudeTimer = 0;
         public bool SolitudeSpecial = false;
@@ -164,6 +165,11 @@ namespace LobotomyCorp
             if (LaetitiaBullet)
             {
                 LaetitiaExplodeGift(target, projectile.damage, projectile.owner);
+            }
+
+            if (LampArrow)
+            {
+                target.AddBuff(BuffID.OnFire3, 4 * 60);
             }
 
             if (projectile.owner == Main.myPlayer)

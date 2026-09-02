@@ -1,8 +1,9 @@
 //css_ref ../tModLoader.dll
-using System;
+using LobotomyCorp.Buffs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -22,11 +23,12 @@ namespace LobotomyCorp.Projectiles
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[Projectile.type] = 13;
-			//Main.projPet[Projectile.type] = true;
-			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
-		}
-		
-		public override void SetDefaults()
+            Main.projPet[Projectile.type] = true;
+            ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
+        }
+
+        public override void SetDefaults()
 		{
 			Projectile.netImportant = true;
 			Projectile.width = 32;
@@ -40,11 +42,13 @@ namespace LobotomyCorp.Projectiles
 
             Projectile.localNPCHitCooldown = 30;
             Projectile.usesLocalNPCImmunity = true;
+            Projectile.timeLeft = 3;
 
+            Projectile.minionSlots = 1f;
             IntestinePhysics = Vector2.Zero;
 		}
 
-        private Vector2 IntestinePhysics = Vector2.Zero;
+        internal Vector2 IntestinePhysics = Vector2.Zero;
 
         public override void AI()
         {
@@ -54,11 +58,8 @@ namespace LobotomyCorp.Projectiles
 
             bool moveLeft = false;
             bool moveRight = false;
-            int Pos = 0;
-            for (int i = Projectile.whoAmI - 1; i >= 0; i--)
-            {
-                if (Main.projectile[i].active && Main.projectile[i].type == Projectile.type && Main.projectile[i].owner == Projectile.owner) Pos++;
-            }
+            int Pos = getPos();
+            
             int targetFollowDist = 40 * (Pos + 1) * player.direction;
             if (player.Center.X < Projectile.Center.X + (float)targetFollowDist - 10f)
             {
@@ -522,6 +523,16 @@ namespace LobotomyCorp.Projectiles
                 }
         }
 
+        public virtual int getPos()
+        {
+            int Pos = 0;
+            for (int i = Projectile.whoAmI - 1; i >= 0; i--)
+            {
+                if (Main.projectile[i].active && Main.projectile[i].type == Projectile.type && Main.projectile[i].owner == Projectile.owner) Pos++;
+            }
+            return Pos;
+        }
+
         private Vector2 IntestineAttachPoint()
         {
             Vector2 IntestineAttachPoint = new Vector2(Projectile.Center.X - 15 * Projectile.spriteDirection, Projectile.position.Y + Projectile.height - 13);
@@ -540,15 +551,18 @@ namespace LobotomyCorp.Projectiles
             return IntestineAttachPoint;
         }
 
-        private void CheckActive(Player p)
+        public virtual void CheckActive(Player p)
         {
+            int bufType = ModContent.BuffType<HornetWorkerBee>();
+
             if (!p.active || p.dead)
-                Projectile.Kill();
-            if (p.statLife < p.statLifeMax * 0.25f)
             {
-                Projectile.Kill();
-                if (p.whoAmI == Main.myPlayer)
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, ModContent.ProjectileType<AngryWorkerBee>(), 20, Projectile.knockBack, 255, Projectile.owner);
+                p.ClearBuff(bufType);
+            }
+
+            if (p.HasBuff(bufType) && Projectile.timeLeft < 2)
+            {
+                Projectile.timeLeft = 3;
             }
         }
 
@@ -581,11 +595,17 @@ namespace LobotomyCorp.Projectiles
             }
         }
 
+        public override bool MinionContactDamage()
+        {
+            return true;
+        }
+
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
+            modifiers.SourceDamage /= 2;
             if (Main.player[Projectile.owner].HasBuff<Buffs.BoostSpore>())
             {
-                modifiers.FinalDamage *= 0.2f;
+                modifiers.FinalDamage *= 1.2f;
             }
         }
 
@@ -631,7 +651,7 @@ namespace LobotomyCorp.Projectiles
         }
     }
 
-    class AngryWorkerBee : ModProjectile
+    class WorkerBeeA : ModProjectile
     {
         public override string Texture { get { return "LobotomyCorp/Projectiles/WorkerBee"; } }
 
@@ -999,6 +1019,64 @@ namespace LobotomyCorp.Projectiles
 
             Main.EntitySpriteDraw(tex, position, frame, lightColor, Projectile.rotation, origin, Projectile.scale, Projectile.spriteDirection >= 0 ? 0 : SpriteEffects.FlipHorizontally, 0);
             return false;
+        }
+    }
+
+    class WorkerBeeT : WorkerBee
+    {
+        public override string Texture => "LobotomyCorp/Projectiles/WorkerBee";
+
+        public override void SetStaticDefaults()
+        {
+            Main.projFrames[Projectile.type] = 13;
+            //Main.projPet[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.netImportant = true;
+            Projectile.width = 32;
+            Projectile.height = 42;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Summon;
+            Projectile.minion = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 30 * 60;
+            Projectile.tileCollide = false;
+
+            Projectile.localNPCHitCooldown = 30;
+            Projectile.usesLocalNPCImmunity = true;
+
+            IntestinePhysics = Vector2.Zero;
+        }
+
+        public override int getPos()
+        {
+            int Pos = 0;
+            foreach (Projectile p in Main.ActiveProjectiles)
+            {
+                if (p.active && p.type == ModContent.ProjectileType<WorkerBee>() && p.owner == Projectile.owner) Pos++;
+            }
+
+            for (int i = Projectile.whoAmI - 1; i >= 0; i--)
+            {
+                if (Main.projectile[i].active && Main.projectile[i].type == Projectile.type && Main.projectile[i].owner == Projectile.owner) Pos++;
+            }
+
+            return Pos;
+        }
+
+        public override void CheckActive(Player p)
+        {
+            if (!p.active || p.dead)
+                Projectile.Kill();
+            if (p.statLife < p.statLifeMax * 0.25f)
+            {
+                Projectile.Kill();
+                if (p.whoAmI == Main.myPlayer)
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, ModContent.ProjectileType<WorkerBeeA>(), 20, Projectile.knockBack, 255, Projectile.owner);
+            }
         }
     }
 }

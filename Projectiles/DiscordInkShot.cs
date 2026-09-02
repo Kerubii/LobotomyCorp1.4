@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Misc;
+using LobotomyCorp.Visuals.LobEffects;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -31,9 +33,14 @@ namespace LobotomyCorp.Projectiles
         {
             float size = Projectile.timeLeft / 5f;
 
+            Projectile.ai[0] += Main.rand.NextFloat(-6, 6f);
+            Projectile.ai[0] = Math.Clamp(Projectile.ai[0], -12f, 12f);
+
+            Vector2 offset = new Vector2(0, Projectile.ai[0]).RotatedBy(Projectile.velocity.ToRotation());
             for (int i = 0; i < 4; i++)
             {
-                Dust d = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Wraith)];
+
+                Dust d = Main.dust[Dust.NewDust(Projectile.position + offset, Projectile.width, Projectile.height, DustID.Wraith)];
                 d.noGravity = true;
                 d.color = Color.Black;
                 d.fadeIn = 1.2f * size;
@@ -45,6 +52,18 @@ namespace LobotomyCorp.Projectiles
             {
                 Projectile.frameCounter = 0;
                 Projectile.frame++;
+            }
+
+            if (Projectile.ai[1] == 1)
+            {
+                WeaponSmearLine line = new WeaponSmearLine();
+                line.Setup(Projectile, Vector2.Zero, Projectile.rotation, 12, 1);
+                line.SetupLine(30, 30, 30 * Projectile.velocity.Length() * 6);
+                line.Color = Color.Black;
+                line.SetShaderImage(image2: MiscAssets.BloodTrail);
+                line.SetShaderTexOffset(Main.rand.NextFloat(1f), Main.rand.NextFloat(1f));
+                line.AddEffect();
+                Projectile.ai[1]++;
             }
         }
     }

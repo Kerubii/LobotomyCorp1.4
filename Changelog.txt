@@ -1,10 +1,53 @@
-0.11.1 Changelog
+0.12.0 Changelog
 
- - Fixed Sound of a Star R being able to spawn more than one Blue Star
- - Reduced Cherry Blossom's damage (24 -> 18)
- - Light EGO weapons now have visual animation more similar to Lobcorp (Hitbox unchanged except for lasting longer)
- - Mimicry now has a different visual swinging animation when charging or holding Right click (Hitbox unchanged)
- - EGO now have their own global damage type while still inheriting from vanilla classes
- - Life for a Daredevil's damage type is changed to EGO Melee from Generic
- - Damage for all EGO weapons can now be adjusted in the config (Temporary)
- - Fixed Harmony R left click causing errors making it unusable
+New R Weapon
+Penitence R
+Confession - When used, you and all allies heal 50% of your maximum health, all allies gain 'Atonement' for 5 minutes
+Hardship - While held with 'Atonement', 8% decreased movement speed and attacks nearby enemies with holy light at the cost of {0} mana
+Crown of Thorns - While held, taking damage reduces 'Atonement' and recovers some Mana from damage recieved
+|Atonement - Gain 2 defense and reduces healing gained and dealt by this EGO, Enemies are more likely to target you while this EGO is held
+
+Red Mist Expert mode drop
+'Seed of Light'
+-15% increased EGO damage
+-Certain Lobotomy EGOs have new base damage and new effects
+-Most Lobotomy EGOs does not have new effects yet and will be added next update
+
+Mimicry 
+-Damage buffed (52 -> 60)
+-Maximum life steal increased (Max 30 -> Max 60)
+-Lifesteal now uses base damage (ignores certain boosts like crits)
+-Now applies 'Hardening Shell' buff on lifesteal for 5 seconds
+-Hardening Shell reduces damage taken by 20%
+-After being hit, Reduces Hardening Shell turns to Failed Assimilation with the same timer
+-Failed Assimilation reduces defense by 10
+-Having either buffs stops Mimicry from lifestealing
+
+Mimicry R 
+Now heals the player with 'Shell' when uncharged (First and Second hit individually)
+'Shell' reworked
+-Timer is capped at 1 minute
+-Does not tick down while Mimicry is held
+-'GoDdByE' hits adds a tiny bit to Shell's timer
+-Reduces 10% of damage taken and turns into 'Imperfect Imitation' when the user is hit
+'Hollow Husk' is replaced by 'Imperfect Imitation'
+-20% increased damage taken and turns into 'Shell' when hit, reducing its time
+-Landing a 'GoDdByE' also reverts it back to 'Shell'
+
+Misc lob ego changes:
+Amrita
+-Ring of lights visually changed to a ring of beads that explode into smaller beads after a certain amount of time
+Adoration
+-Now affected by gravity, removed the falling slime
+-While charging, Erupts normal damage slime projectiles until firing
+-Sticks to enemies when charged, dealing damage over time shortly before exploding instead of exploding on impact
+
+Harmony R
+-Added a short range projectile when its not hitting something
+-Ramps up faster but starts slower
+-I was gonna rework this more but the rework I thought kinda sucked ass so just this for now
+
+E.G.O damage type can now be disabled for mod compatibility
+Fixed potential E.G.O damage mod compatibility
+Fixed Life for a Daredevil R being able to hit invincible enemies
+"Bloom" is now disabled by default just to prevent bugs, enable it so effects look more vibrant 

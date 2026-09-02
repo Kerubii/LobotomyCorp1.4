@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Items;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -31,6 +32,8 @@ namespace LobotomyCorp.Projectiles
             Projectile.friendly = true;
         }
 
+        public const int SlashOffset = 76;
+
         public override void AI() {
             Player projOwner = Main.player[Projectile.owner];
             Vector2 ownerMountedCenter = projOwner.RotatedRelativePoint(projOwner.MountedCenter, true);
@@ -41,19 +44,31 @@ namespace LobotomyCorp.Projectiles
             float rot = Projectile.velocity.ToRotation();
 
             float progress = 1f - (float)projOwner.itemAnimation / (float)projOwner.itemAnimationMax;
-            rot += MathHelper.ToRadians(205f * (float) Math.Sin(1.6f * progress) - 160f) * Projectile.spriteDirection;
+            int slashAmount = 6;
+            float dustSpawnUntil = 0.63f;
+
+            if (LobItemBase.RedMistMaskUpgrade(projOwner, RiskLevel.Waw))
+            {
+                rot += MathHelper.ToRadians(340f * (float)Math.Sin(1.6f * progress) - 170f) * Projectile.spriteDirection;
+                slashAmount = 12;
+                Projectile.ai[0] = SlashOffset * (float)Math.Sin(1.6f * progress);
+                dustSpawnUntil = 0.98f;
+            }
+            else
+                rot += MathHelper.ToRadians(205f * (float)Math.Sin(1.6f * progress) - 160f) * Projectile.spriteDirection;
 
             Vector2 velRot = new Vector2(1, 0).RotatedBy(rot);
             projOwner.itemRotation = (float)Math.Atan2(velRot.Y * Projectile.direction, velRot.X * Projectile.direction);
             projOwner.direction = Projectile.spriteDirection;
             Projectile.rotation = rot + MathHelper.ToRadians(Projectile.spriteDirection == 1 ? 45 : 135);
 
-            Projectile.Center = ownerMountedCenter + (120 + Projectile.ai[0]) * velRot;
+            Vector2 offset = (120 + Projectile.ai[0]) * velRot;
+            Projectile.Center = ownerMountedCenter + offset;
 
             if (projOwner.itemAnimation == 1)
                 Projectile.Kill();
 
-            if (projOwner.itemAnimation % (projOwner.itemAnimationMax / 6) == 0 && Main.myPlayer == Projectile.owner)
+            if (projOwner.itemAnimation % (projOwner.itemAnimationMax / slashAmount) == 0 && Main.myPlayer == Projectile.owner)
             {
                 Vector2 delta = Projectile.Center - projOwner.Center;
                 delta.Normalize();
@@ -63,7 +78,9 @@ namespace LobotomyCorp.Projectiles
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, delta, ModContent.ProjectileType<DiscordInkShot>(), Projectile.damage * 2 / 3, Projectile.knockBack, Projectile.owner);
             }
 
-            if (0.14f < progress && progress < 0.63f)
+            
+            if (0.14f < progress && progress < dustSpawnUntil)
+            {
                 for (int i = 0; i < 16; i++)
                 {
                     Dust d = Main.dust[Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Wraith)];
@@ -73,6 +90,7 @@ namespace LobotomyCorp.Projectiles
                     d.scale = 2;
                     d.velocity *= 0;
                 }
+            }
 
             /*if (Projectile.ai[1] == 0 && projOwner.itemAnimation < projOwner.itemAnimationMax / 2)
             {
@@ -93,16 +111,10 @@ namespace LobotomyCorp.Projectiles
             //Dust.NewDustPerfect(ownerMountedCenter, 14, Vector2.Zero);
             Vector2 position = ownerMountedCenter - Main.screenPosition;
             Vector2 originOffset = new Vector2(Projectile.ai[0] - 20, 0).RotatedBy(MathHelper.ToRadians(Projectile.direction == 1 ? 135 : 45));
-            Vector2 origin = new Vector2((Projectile.spriteDirection == 1 ? 14 : 95), 95) + originOffset;
+            Vector2 origin = new Vector2((Projectile.spriteDirection == 1 ? (128 - 95) : 95), 99) + originOffset;
             SpriteEffects spriteEffect = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            Main.EntitySpriteDraw(TextureAssets.Projectile[Projectile.type].Value, position, new Microsoft.Xna.Framework.Rectangle?
-                                    (
-                                        new Rectangle
-                                        (
-                                            0, 0, TextureAssets.Projectile[Projectile.type].Width(), TextureAssets.Projectile[Projectile.type].Height()
-                                        )
-                                    ),
-                lightColor * ((float)(255 - Projectile.alpha) / 255f), Projectile.rotation, origin, Projectile.scale, spriteEffect, 0);
+            Main.EntitySpriteDraw(TextureAssets.Projectile[Projectile.type].Value, position, null,
+                lightColor * Projectile.Opacity, Projectile.rotation, origin, Projectile.scale, spriteEffect, 0);
             return false;
         }
     }

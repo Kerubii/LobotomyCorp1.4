@@ -13,6 +13,8 @@ namespace LobotomyCorp.Tiles
 {
 	public class DisciplinaryShell : ModTile
 	{
+		//public static bool ClientSideDropPrevention;
+
 		public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
@@ -31,7 +33,7 @@ namespace LobotomyCorp.Tiles
         public override bool CanDrop(int i, int j)
         {
             int redMistType = ModContent.NPCType<NPCs.RedMist.RedMist>();
-            if (NPC.AnyNPCs(redMistType))
+            if (NPC.AnyNPCs(redMistType) && Main.netMode == NetmodeID.SinglePlayer)
 			{
 				return false;
 			}
@@ -51,8 +53,8 @@ namespace LobotomyCorp.Tiles
 				}
 				else
                 {
-                    WorldGen.KillTile(i, j, false, false, true);
                     NPC.SpawnBoss(i * 16, (j + 1) * 16, redMistType, 0);
+                    WorldGen.KillTile(i, j, false, false, true);
                 }
                 Gore.NewGore(null, new Vector2(i * 16, j * 16), new Vector2(-1, 0), ModContent.Find<ModGore>("LobotomyCorp/ShellGore").Type);
 				Gore.NewGore(null, new Vector2(i * 16, j * 16), new Vector2(1, 0), ModContent.Find<ModGore>("LobotomyCorp/ShellGore2").Type);

@@ -1,4 +1,5 @@
 using LobotomyCorp.Buffs;
+using LobotomyCorp.Configs;
 using LobotomyCorp.Players;
 using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
@@ -85,7 +86,7 @@ namespace LobotomyCorp.Projectiles.Realized
         {
 			Player owner = Main.player[Projectile.owner];
 
-            if (Time == 0)
+            if (Time == 0 && !ModContent.GetInstance<LobotomyConfig>().NoSilentOrchestraPerformance)
             {
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Art/Sym_movment_0_clap"), Projectile.Center);
             }
@@ -140,7 +141,8 @@ namespace LobotomyCorp.Projectiles.Realized
                     owner.GetModPlayer<LobotomyAlephPlayer>().DaCapoTotalDamage = 0;
                     break;
             }
-            if (playSound)
+
+            if (playSound && !ModContent.GetInstance<LobotomyConfig>().NoSilentOrchestraPerformance)
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Art/" + sound) with { Volume = volume});
 
             if (Projectile.localAI[0] > 0)

@@ -66,6 +66,8 @@ namespace LobotomyCorp.Items.Waw
             Lnpc.DiffractionHealth = Main.rand.NextFloat(1f - range, 1f + range);
 
             npc.lifeMax = (int)(npc.lifeMax * Lnpc.DiffractionHealth);
+            if (npc.life > npc.lifeMax)
+                npc.life = npc.lifeMax;
         }
     }
 }

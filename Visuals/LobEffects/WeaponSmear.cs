@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using LobotomyCorp.Util;
+using static LobotomyCorp.Misc.MiscAssets;
 
 namespace LobotomyCorp.Visuals.LobEffects
 {
@@ -17,9 +18,9 @@ namespace LobotomyCorp.Visuals.LobEffects
         protected bool Accelerate;
         protected Vector2 origVelocity;
 
-        protected string Image1;
-        protected string Image2;
-        protected string Image3;
+        protected Asset<Texture2D> Image1;
+        protected Asset<Texture2D> Image2;
+        protected Asset<Texture2D> Image3;
         protected float TexOffX;
         protected float TexOffY;
         protected float TexScrollX;
@@ -56,9 +57,9 @@ namespace LobotomyCorp.Visuals.LobEffects
             origVelocity = vel;
             active = true;
 
-            Image1 = "Misc/FlatColor";
-            Image2 = "Misc/FX_Tex_Trail1";
-            Image3 = "Misc/Worley";
+            Image1 = FlatColor;
+            Image2 = TexTrail1;
+            Image3 = Worley;
             TexOffX = 0;
             TexOffY = 0;
             TexScrollX = 0;
@@ -67,7 +68,23 @@ namespace LobotomyCorp.Visuals.LobEffects
             SmearType = 0;
         }
 
+        /// <summary>
+        /// "Direct folder from LobotomyCorp/ ie 'Misc/FlatColor'"
+        /// </summary>
+        /// <param name="image1"></param>
+        /// <param name="image2"></param>
+        /// <param name="image3"></param>
         public void SetShaderImage(string image1 = null, string image2 = null, string image3 = null)
+        {
+            if (image1 != null)
+                Image1 = Mod.Assets.Request<Texture2D>(image1);
+            if (image2 != null)
+                Image2 = Mod.Assets.Request<Texture2D>(image2);
+            if (image3 != null)
+                Image3 = Mod.Assets.Request<Texture2D>(image3);
+        }
+
+        public void SetShaderImage(Asset<Texture2D> image1 = null, Asset<Texture2D> image2 = null, Asset<Texture2D> image3 = null)
         {
             if (image1 != null)
                 Image1 = image1;
@@ -91,12 +108,23 @@ namespace LobotomyCorp.Visuals.LobEffects
             if (Owner != null)
             {
                 position = Owner.Center;
+                if (!Owner.active)
+                    Deactivate();
             }
             position += velocity;
             if (Accelerate)
                 velocity += origVelocity;
             TexOffX += TexScrollX;
             TexOffY += TexScrollY;
+        }
+
+        public void Detach(Vector2 newVel = default(Vector2))
+        {
+            if (Owner == null)
+                return;
+            position = Owner.Center;
+            Owner = null;
+            velocity = newVel;
         }
 
         public virtual float GetOpacity(float time)

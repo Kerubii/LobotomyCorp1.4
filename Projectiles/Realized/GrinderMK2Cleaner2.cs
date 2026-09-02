@@ -1,15 +1,16 @@
-﻿using System;
+﻿using LobotomyCorp.Misc;
+using LobotomyCorp.Players;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System;
+using System.IO;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using LobotomyCorp.Util;
 using Terraria.Audio;
 using Terraria.GameContent;
-using System.IO;
-using LobotomyCorp.Players;
-using ReLogic.Content;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -426,8 +427,8 @@ namespace LobotomyCorp.Projectiles.Realized
                     float prog = ((Projectile.ai[1] - 10) / 20);
 
                     CustomShaderData shader = LobotomyCorp.LobcorpShaders["TextureTrail"].UseOpacity(0.5f + 0.5f * prog);
-                    shader.UseImage1(Mod, "Misc/BloodTrail");
-                    shader.UseImage2(Mod, "Misc/BloodTrail");
+                    shader.UseImage1(MiscAssets.BloodTrail);
+                    shader.UseImage2(MiscAssets.BloodTrail);
 
                     //Im a fucking idiot wtf is this code, too diferent than circle >:V
 

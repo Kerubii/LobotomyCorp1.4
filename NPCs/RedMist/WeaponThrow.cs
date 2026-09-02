@@ -1,13 +1,14 @@
-﻿using System;
+﻿using LobotomyCorp;
+using LobotomyCorp.Misc;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.Chat;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.GameContent;
-using Terraria.Chat;
-using LobotomyCorp;
-using LobotomyCorp.Util;
 
 namespace LobotomyCorp.NPCs.RedMist
 {
@@ -107,6 +108,7 @@ namespace LobotomyCorp.NPCs.RedMist
             Projectile.height = 60;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 1200;
+            Projectile.penetrate = -1;
 
             Projectile.hostile = true;
             Projectile.friendly = false;
@@ -188,7 +190,7 @@ namespace LobotomyCorp.NPCs.RedMist
 
         public override bool PreDraw(ref Color lightColor)
         {
-            CustomShaderData shader = LobotomyCorp.LobcorpShaders["GenericTrail"].UseImage1(Mod, "Misc/GenTrail");
+            CustomShaderData shader = LobotomyCorp.LobcorpShaders["GenericTrail"].UseImage1(MiscAssets.GeneralTrail);
             TaperingTrail trail = new TaperingTrail();
             trail.ColorStart = Color.LightBlue;
             trail.ColorEnd = Color.Blue;

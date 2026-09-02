@@ -21,8 +21,9 @@ namespace LobotomyCorp.Items.Ruina.Language
         public override void SetDefaults() 
 		{
             Item.damage = 280;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.width = 40;
+            Item.DamageType = DamageClass.Melee;
+            LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 48;
 			Item.useAnimation = 48;

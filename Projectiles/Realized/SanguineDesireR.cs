@@ -1,4 +1,5 @@
-﻿using LobotomyCorp.Util;
+﻿using LobotomyCorp.Misc;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -303,9 +304,9 @@ namespace LobotomyCorp.Projectiles.Realized
                 }
 
                 CustomShaderData shader = LobcorpShaders["SwingTrail"].UseOpacity(opacity);
-                shader.UseImage1(Mod, "Misc/Noise4");
-                shader.UseImage2(Mod, "Misc/BloodTrail2");
-                shader.UseImage3(Mod, "Misc/Worley");
+                shader.UseImage1(MiscAssets.NoiseTexture);
+                shader.UseImage2(MiscAssets.BloodTrail);
+                shader.UseImage3(MiscAssets.Worley);
                 //shader.UseCustomShaderDate(Projectile.localAI[0], Projectile.localAI[1]);
                 trail.color = Color.Red;// * opacity;
 

@@ -21,6 +21,7 @@ Mods: {
 					'''
 					Splash from the slime creates additional splash when it hits tiles or enemies
 					Splashes now form slimes that sticks to tiles and walls that damages enemies on them
+					Slimes stuck to tiles and walls shoot slime to nearby enemies when it dissapears
 					'''
 				DisplayName: Adoration
 			}
@@ -33,9 +34,10 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Creates sarira that pulses, up to 4 while having maximum health
-					Sarira can be hit again to be launched and returns to the owner
-					Sariras are only active while this weapon is held
+					Creates sarira that damages nearby enemies, up to 4 while having maximum health
+					Sariras can be hit again to be launched and returns to the owner
+					Sariras only do damage while this weapon is held
+					<right> to recall all Sariras
 					'''
 				DisplayName: Amrita
 			}
@@ -62,7 +64,8 @@ Mods: {
 					'Its adorable appearance makes it something that might even appeal to a child as a gift.
 					Do not underestimate the weapon's power because of its fluffy exterior.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Right click to grab enemies with no knockback resistance
 					Grabbed enemies are damaged over time and cannot damage you
@@ -79,7 +82,8 @@ Mods: {
 					All that was left is a worn parasol it once treasured.'
 					Small chance to reflect damage taken
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Shoots a blast of toxic waves
 					Increased chance to reflect damage taken
@@ -98,6 +102,7 @@ Mods: {
 				Tooltip2:
 					'''
 					Reach and size increased
+					<right> fires more rapidly and more innacurate
 					Hit enemies take 400 damage per second for 5 seconds when hit
 					'''
 				DisplayName: Censored
@@ -137,6 +142,7 @@ Mods: {
 				Tooltip:
 					'''
 					'Once upon a time, these claws would cut open the bellies of numerous creatures and tear apart their guts.'
+					Hit enemies recieve additional damage over time
 					Chance for a 10% increased melee and movement speed for 10 seconds on hit
 					50% increased damage and guaranteed buff while under 50% health
 					'''
@@ -144,21 +150,24 @@ Mods: {
 					'''
 					Creates blood slashes while having no 'Well Fed' buff
 					Killed enemies give 'Well Fed' buff
-					While 'Well Fed', Attacks change to a close ranged heavier strike combo instead
+					While 'Well Fed', Attacks change to a close ranged multistrike attack
+					If <left> is released, lunges towards the cursor
 					'''
 				DisplayName: Cobalt Scar
 			}
 
 			CrimsonScar: {
-				TTooltip:
+				Tooltip:
 					'''
-					'With steel in one hand and gunpowder in the other, there's nothing to fear in this place.
-					It's more important to deliver a decisive strike in blind hatred without hesitation than to hold on to insecure courage.'
-					Benefits from Ranged damage increases
-					Empowers next Range attack after hitting with a Normal Melee attack and vice versa
-					50% increased damage under 50% health
+						'With steel in one hand and gunpowder in the other, there's nothing to fear in this place.
+						It's more important to deliver a decisive strike in blind hatred without hesitation than to hold on to insecure courage.'
+						Benefits from Ranged damage increases
+						Empowers next Range attack after hitting with a Normal Melee attack and vice versa
+						50% increased damage under 50% health
+						
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					All attacks are empowered
 					If attacks are empowered normally, they are further empowered
@@ -166,7 +175,6 @@ Mods: {
 					Empowered Shots aims semi randomly consecutively
 					'''
 				DisplayName: Crimson Scar
-				Tooltip: ""
 			}
 
 			Diffraction: {
@@ -175,7 +183,6 @@ Mods: {
 					'To see this E.G.O, one must thoroughly concentrate.
 					You can ignore the ridiculous advice that you can see it with your mind.'
 					Randomizes enemy stats on first hit
-					Effective on Ring Maestros
 					'''
 				Tooltip2:
 					'''
@@ -192,7 +199,8 @@ Mods: {
 					'A scythe that swings silently and with discipline like a conductor's gestures and baton.
 					If there were a score for this song, it would be one that sings of the apocalypse.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Creates seeking homing notes when hitting or striking the ground
 					Third swing is thrown instead
@@ -207,7 +215,7 @@ Mods: {
 					'''
 					Bubbles dont flow upwards
 					Gain increased movement speed when firing
-					Sboots one extra bubble that does not do damage
+					Sboots one extra bubble that does not dissapear
 					<right> to dash towards the bubble nearest to the cursor
 					Dashing leaves a trail of bubbles
 					'''
@@ -222,11 +230,11 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Swings the weapon 360 degrees
-					Pokes the weapon on both sides
+					Swings the weapon around you
+					Shoots projectile when poking
 					Following effects activate while Light Shard is present in the inventory
-					Creates an outer ring when swung
-					Creates Light projectiles when poking
+					Both attacks have a counterpart mirroring it
+					Creates an inner ring of light when swung
 					'''
 				DisplayName: Discord
 			}
@@ -268,9 +276,9 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Converts Arrows into Full Bloom Arrows
-					Full Bloom Arrows splits into three arrows on hitting an enemy and homes back in
 					Petals home in on the nearest enemy
+					Converts Arrows into Full Bloom Arrows
+					Full Bloom Arrows pierce through enemies and create petals on hit
 					'''
 				DisplayName: Faint Aroma
 			}
@@ -283,7 +291,11 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Feathers appear while being held
+					All feathers fire with no delay
+					<right> spawns Feathers that seeks an enemy equal to minion slots
+					Inflicts Oiled
+
+					Additional feathers appear while being held
 					Amount of feathers increase per empty minion slot
 					All Feathers fire Simultaneously
 					<right> to make individual Feathers seek an enemy
@@ -299,7 +311,8 @@ Mods: {
 					The light of the match will not go out.'
 					Consumes torch
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Bigger and stronger explosion
 					Can be charged to create an even bigger explosion
@@ -331,7 +344,7 @@ Mods: {
 				Tooltip2:
 					'''
 					Icicles are faster and bigger
-					Icicles explode to smaller icicles
+					Icicles explode to smaller icicles when not sticking
 					Right click to swing
 					Hit enemies gain up to 3 Icicles
 					'''
@@ -359,9 +372,10 @@ Mods: {
 					'The weapon she used to brandish in her prime, before the greed solidified and became what it is now.
 					One can release their primal desires and strike enemies with full force; technical skill is unneeded.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
-					Increased Flurry Intensity
+					Increased flurry intensity
 					Right click to Teleport
 					Right click while channeling to Continously teleport
 					'''
@@ -370,9 +384,11 @@ Mods: {
 
 			GreenStem: {
 				Tooltip: Those who come in contact die by the deep-seated hatred rather than the sharpness of its tip.
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
-					Creates a random spread of Vines
+					Creates a random spread of Vines forward
+					spread of vines creates vine traps
 					Vines traps hit three times
 					Increased Vine range
 					'''
@@ -385,7 +401,8 @@ Mods: {
 					'The sharp sawtooth of the grinder makes a clean cut through its enemy.
 					Its operation is simple and straightforward, but that doesn't necessarily make it easy to wield.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					A sawblade is released when returning
 					Sawblades travel along tiles until it hits an enemy
@@ -404,7 +421,8 @@ Mods: {
 					After all, art is a devil's gift, born from despair and suffering.'
 					Consumes 2% health to increase damage by 30% unless its fatal
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Health consumption is negated
 					Increased amount of Projectiles
@@ -439,7 +457,8 @@ Mods: {
 					The weapon's bullets selectively fly toward threats, so skillful aiming isn't required; all that's needed is the will to hit the target.'
 					Bullets are converted to bees
 					'''
-				Tooltip2: Bullets are converted to Worker Beellets instead
+				Tooltip2: Unavailable
+				Tooltip3: Bullets are converted to Spore Rounds instead
 				DisplayName: Hornet
 			}
 
@@ -451,12 +470,10 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					{0} Mana cost
-					Deals additional Magic Damage while having Mana
-					<right> fires a hook when used, can also stick to enemies
-					If a hook is attached to an enemy, <right> to pull towards the enemy
-					Hook manasteals 10% of damage dealt
-					Hook detaches when mana reaches full
+					Extended range while having full mana
+					Deals additional damage based on missing mana
+					<right> swings a hook, costs 10 mana and cannot be reduced
+					Hitting an enemy with a hook retracts it and restores mana
 					'''
 				DisplayName: Harvest
 			}
@@ -489,8 +506,7 @@ Mods: {
 					'''
 					Arrows are converted to Great Tree Arrows
 					Great Tree Arrows creates a fruit on hit for 3 seconds that restores health
-					If a fruit is not consumed it turns into a poisonous fruit instead that damages you
-					After 1 more second, the fruit explodes
+					If a fruit is not consumed it turns into a poisonous fruit that explodes after 1 second
 					'''
 				DisplayName: Hypocrisy
 			}
@@ -501,7 +517,8 @@ Mods: {
 					'A magic wand surging with the lovely energy of a magical girl.
 					The holy light can cleanse the body and mind of every villain, and they shall be born anew.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Increased projectile amount
 					Stars can home in to nearest damaged allies
@@ -521,8 +538,10 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
+					Projectile range is increased
+					Always performs a stronger special attack
 					Increased Range
-					Right click to do Twilight special attack
+					Right click to do a stronger Twilight special attack
 					'''
 				DisplayName: Justitia
 			}
@@ -548,6 +567,7 @@ Mods: {
 					'''
 					'Big Bird's eyes gained another in number for every creature it saved.
 					On this weapon, the radiant pride is apparent.'
+					Can be shimmered into Lamp [Alteration]
 					'''
 				Tooltip2:
 					'''
@@ -565,8 +585,12 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Hit enemies are consumed by this weapon, healing you
-					Right click to swing the weapon around
+					Enemies are more likely to target you
+					Holding <left> makes the weapon take bites
+					Only bites enemies that take knockback
+					<right> to swing the weapon around you
+					The first enemy hit by an attack is hit again after attacking
+					Heal 2 health each hit on enemies targeting you
 					'''
 				DisplayName: Lantern
 			}
@@ -578,7 +602,8 @@ Mods: {
 					Just as its archetype desired, it will be useless in the hands of the frightened'
 					Ignores target's defense
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Does extra 10% of the non boss enemy's health as damage
 					Right click for judgement cut
@@ -596,9 +621,11 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Can be charged and held
+					Can be charged and held, increasing its damage
+					Creates trees forwards that damages enemies when charged
+					Hitting a tree on its heart explodes it and drops a heart pickup
 					Deals more damage having more health
-					Increased melee speed on low health
+					Increased charge rate and melee speed on low health
 					Grants Heartreach buff on hit
 					'''
 				DisplayName: Logging
@@ -611,7 +638,8 @@ Mods: {
 					The weapon's bullets travel across the corridor, along the horizon.'
 					Pierces through foes and friends alike
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Inflicts dark flame
 					First hit of each bullets increases next bullet damage by 7%
@@ -628,9 +656,11 @@ Mods: {
 					It can deliver a powerful downswing that should be impossible for a human.'
 					Can be charged up to 450% increased damage
 					Full charge deals 600% increased damage
-					Recovers 25% damage dealt on the first enemy hit on swing (Max 30)
+					Recovers 25% base damage dealt on the first enemy hit on swing (Max 60, 5 second cooldown)
+					While on cooldown, reduces first damage taken by 20% and gain -10 defense after
 					'''
-				Tooltip2: Don’t you desire a human shell as well?
+				Tooltip2: Unavailable
+				Tooltip3: Don’t you desire a human shell as well?
 				DisplayName: Mimicry
 			}
 
@@ -641,7 +671,7 @@ Mods: {
 					It temporarily invites the user to the world of trance.'
 					25% chance to apply Black Shields to nearby allies when used
 					'''
-				Tooltip2: ???
+				Tooltip2: Unavailable
 				DisplayName: Moonlight
 			}
 
@@ -669,7 +699,8 @@ Mods: {
 					At the same time, I am the one who kindled the light to face the world.
 					My loved ones, who now eagerly desire the greater gifts; I will show you the most excellent way.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Can be used in the air
 					Attacks vary slightly
@@ -719,7 +750,7 @@ Mods: {
 					When the powder that falls from the thorns becomes known to the world,
 					People may forever sink into the swamp of intoxication.'
 					'''
-				Tooltip2: ???
+				Tooltip2: Unavailable
 				DisplayName: Pleasure
 			}
 
@@ -730,7 +761,8 @@ Mods: {
 					This tenacity carried over to the E.G.O., demonstrating an outstanding ability to track down targets.'
 					Grants swiftness buff for 3 seconds on hit
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Grants Hunter buff while held
 					Right click to teleport to an enemy and attack
@@ -745,9 +777,11 @@ Mods: {
 					'Enemies crushed by this regret can never return to their normal life.
 					Before swinging this weapon, expressing one's condolences for the demise of the inmate who couldn't even have a funeral would be nice.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Normal swing has a second hit
+					The Second hit deals more damage based on knockback modifiers
 					Right click to swing the weapon three times consecutively
 					'''
 				DisplayName: Regret
@@ -759,7 +793,7 @@ Mods: {
 					'The axe may seem light, but the wielder musn't forget that it has hurt countless people as a consequence of poor choices.
 					The weapon is stronger when used by an employee with strong conviction.'
 					'''
-				Tooltip2: ???
+				Tooltip2: Unavailable
 				DisplayName: Sanguine Desire
 			}
 
@@ -773,7 +807,7 @@ Mods: {
 					'''
 					Wooden Arrows are converted to Screaming Arrows
 					Screaming Arrows are unaffected by gravity
-					Screaming Arrows create a piercing scream on hit
+					Screaming Arrows deals additional damage and speeds up on hit
 					'''
 				DisplayName: Screaming Wedge
 			}
@@ -785,7 +819,8 @@ Mods: {
 					Upon striking with the weapon, the monstrous mouth opens wide to devour the target, its hunger insatiable.'
 					<right> to slam down an enemy or the ground, decreasing target defense
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Vomits in all directions
 					Killing an enemy vomits projectiles everywhere
@@ -800,7 +835,7 @@ Mods: {
 					'Beware that the beast inside you may awaken if you use this weapon too much...
 					Oh but the soft jelly-like pawbs feel vewwy nice to touch.'
 					'''
-				Tooltip2: ???
+				Tooltip2: Unavailable
 				DisplayName: So Cute
 			}
 
@@ -827,7 +862,8 @@ Mods: {
 					Switches randomly between guns
 					Right click to fire both guns
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Fire rate increased
 					Needs to be reloaded first
@@ -850,7 +886,9 @@ Mods: {
 					'''
 					Bullets leave a trail of damaging smoke
 					Smoke attaches itself to enemies hit
-					Bullets dispel nearby smoke when hitting enemies
+					Firing Bullets loads in Bullet::Solitude, up to 6
+					Right click shoots all loaded Bullet::Solitude rapidly
+					Bullet::Solitude dispel nearby smoke when hitting enemies
 					Dispelled smoke explodes
 					'''
 				DisplayName: Solitude
@@ -863,7 +901,8 @@ Mods: {
 					The weapon's small, evocative sphere fires a warm ray
 					In the light, everything is equal.'
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Summons Orbs equal to unused minion slots + 3
 					Orbs automatically attack nearby enemies
@@ -880,7 +919,12 @@ Mods: {
 					'A spear covered in spores and affection.
 					It lights the employee's heart, shines like a star, and steadily tames them.'
 					'''
-				Tooltip2: ???
+				Tooltip2:
+					'''
+					Can be charged to gather spores
+					When released with low spores, shoots out a mid range attack
+					When released with high spores, it explodes outwards
+					'''
 				DisplayName: Spore
 			}
 
@@ -891,7 +935,8 @@ Mods: {
 					Even someone unskilled in dueling can rapidly puncture an enemy using this E.G.O with remarkable agility.'
 					Chance to perform a flurry of stabs
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Ignores defense
 					Always performs a flurry of stabs
@@ -951,7 +996,8 @@ Mods: {
 					<right> to leap back and forth, slashing with invincibility frames
 					<right> has 8 seconds of cooldown while holding this weapon
 					'''
-				Tooltip2:
+				Tooltip2: Unavailable
+				Tooltip3:
 					'''
 					Getting hit increases fire rate
 					Creates projectiles when swung
@@ -1067,11 +1113,12 @@ Mods: {
 					'''
 				PassiveList:
 					'''
-					Strike of Retribution - Charge up a forward strike, the distance travelled depends on how long you've charged
-					Loyalty - Summon 2 worker bees at your aide whenever you have no worker bees alive, Worker Bees lasts 60 seconds
-					Spores - Hitting enemies with this weapon marks them with spores that produce more temporary worker bees when killed
-					Pheromones - Release Pheromones that strengthens your worker bees for 30 seconds, -14 defense. Cannot be reused while active
-					|Embrace of Death - Having less that 25% of your maximum health will turn your worker bees hostile
+					Strike of Retribution - Charge up a forward strike, the distance travelled depends on how long you've charged. Inflicts 'Spores'
+					Loyalty - <right> to summon a 'Worker Bee', If minion slot is full, release 'Pheromones' instead
+					Worker Bee - Takes up 1 minion slot. Increased damage and speed under 'Spores' and prioritizes enemies with 'Spores'
+					Pheromones - Inflict 'Spores' to self and nearby enemies. Unable to use under 'Spores', Immunity to 'Spores' Decreased life regeneration
+					Spores - Decreases life regeneration, Reduces defense and spawns a 'Worker Bee' on death for 30 seconds (Up to half of Maximum minion slot). 
+					|Embrace of Death - Having less that 25% of your maximum health will turn your temporary 'Worker Bees' hostile, lasting 10 seconds
 					'''
 				Simplified:
 					'''
@@ -1084,12 +1131,11 @@ Mods: {
 					'''
 				PassiveListRework:
 					'''
-					Strike of Retribution - Charge up a forward strike, the distance travelled depends on how long you've charged. Inflicts 'Spores'
-					Loyalty - <right> to summon a 'Worker Bee', If minion slot is full, release 'Pheromones' instead
-					Worker Bee - Takes up 1 minion slot. Strengthens damage and speed under the effects of 'Spores' and prioritizes enemies with 'Spores'
-					Pheromones - Inflict 'Spores' to 'Worker Bees' and nearby enemies. -5 Defense and a cooldown of 30 seconds when used
-					Spores - Decreases life regeneration, Reduces defense and creates a temporary 'Worker Bee' on death for 30 seconds (Up to half of Maximum minion slot). 
-					|Embrace of Death - Having less that 25% of your maximum health will turn your temporary 'Worker Bees' hostile, lasting 10 seconds
+					Strike of Retribution - Charge up a forward strike, the distance travelled depends on how long you've charged
+					Loyalty - Summon 2 worker bees at your aide whenever you have no worker bees alive, Worker Bees lasts 60 seconds
+					Spores - Hitting enemies with this weapon marks them with spores that produce more temporary worker bees when killed
+					Pheromones - Release Pheromones that strengthens your worker bees for 30 seconds, -14 defense. Cannot be reused while active
+					|Embrace of Death - Having less that 25% of your maximum health will turn your worker bees hostile
 					'''
 			}
 
@@ -1169,11 +1215,13 @@ Mods: {
 					'''
 				PassiveListRework:
 					'''
-					Harmony of Despair - Charges up while held out or hitting enemies, Activates 'Performance' when released
-					Performance - <right> shoots a soundwave that decreases defense, Shoots three when activated by 'Harmony of Despair'
-					Let's Make Music! - If 'Harmony of Despair' has maximum charge, hit enemies gain 'Musical Addiction' and produce 'Crooked Notes'
-					Crooked Notes - Gain 'Musical Addiction' and temporarily negates it negative effects when acquired
-					|Musical Addiction - 12% increased damage, -10 defense. Decreased life regeneration on NPCs
+					Harmony of Despair - Sawblade spins faster on hit. Uses an empowered 'Performance' with no cost when released while spun fast enough
+					Crooked Notes - Chance to spawn a note on hit, gives 1 'Rhythm' for 5 seconds and 'Musical Addiction' for 10 seconds when picked up
+					Rhythm - Decreases the negative effects of 'Musical Addiction' and increases 'Harmony of Despair' base spin. Maximum 5
+					Performance - <right> to shoot a soundwave. Consumes 1 'Rhythm' to empower, additionally consumes 5% health to increase damage while above 20% health
+					Let's Make Music! - Losing 'Rhythm' applies 'Musical Addiction' to the nearest enemy without one. Resets all nearby 'Musical Addiction' timer
+					|Musical Addiction - 12% increased damage, -20 defense. Decreases life regeneration
+					I CRAVE that Melody - On killing an enemy with the Sawblade, heal 5% of your health for each 'Rhythm' and consume it.
 					'''
 			}
 
@@ -1189,10 +1237,17 @@ Mods: {
 					'''
 				PassiveListRework:
 					'''
-					Eternal Rest - The second gun uses the next ammo type in your inventory, it does not shoot otherwise.
-					Tranquility - Rate of fire increases when shooting, gain 'Hand of Salvation'. Slowly decreases while not shooting
-					Hand of Salvation - 15% increased damage and spawn butterflies against enemies with the lowest health
-					|Lament - <right> to transform bullets into numerous butterflies, reduces 'Tranquility'. Sets 'Tranquility' to 0 on kill
+					Eternal Rest - <right> shoots the second gun with the next ammo type, it cannot shoot without other ammo type.
+					Tranquility - Firerate is temporarily increased when switching between the two guns. Shoots
+					Hand of Salvation - Bullets deal 15% increased damage and spawn butterflies against enemies with the lowest health
+					|Lament - After taking a total of 25% health damage while holding this weapon, disables one of the gun for 5 seconds. Only one gun can be disabled at a time
+					'''
+				Passive2:
+					'''
+					Eternal Rest - Uses two different ammo types. If there is no other ammo type, it shoots a blank with butterfly instead
+					Tranquility - Fire rate increases while shooting. At maximum firerate, additionally shoots numerous butterflies 
+					Hand of Salvation - Bullets deal 15% increased damage and spawn butterflies against enemies with the lowest health
+					|Lament - <right> to fire a burst of butterflies, decreasing 'Tranquility' until it reaches 0. Also set 'Tranquility' to 0 on kill
 					'''
 			}
 
@@ -1342,26 +1397,17 @@ Mods: {
 					'''
 			}
 
-			FaintAromaS: {
+			FaintAromaR: {
 				DisplayName: Faint Aroma
 				Tooltip: Bearing the hope to return to dust, it shall go back to the grave with all that desires to live.
 				PassiveList:
 					'''
-					Spring's Genesis - <right> lunges forwards, hit enemies gain a Laurel Wreath
-					Magnificent End - Holding <right> while having 3 petals consumes all of it and applies 300% damage to all enemies nearby and removes Laurel Wreath
-					Flower Petals - Hitting enemies charges up to 3 petal that dissapears after a short time, enhancing this weapon's attacks and damage
-					Doll Fashioned from the Earth - Negate any negative life regen while a petal is active
-					|Laurel Wreath - 15% increased contact damage per full petals on the user
-					This Item is incomplete and unobtainable
-					'''
-				PassiveListRework:
-					'''
-					Spring's Genesis - <right> lunges forwards, hit enemies gain a 'Laurel Wreath'
-					Magnificent End - Channel <right> and consume 3 petals to apply damage to all enemies, removing 'Laurel Wreath'
-					Flower Petals - Hitting enemies charges up to 3 petal that dissapears after a short time. Enhances Faint Aroma's attacks and damage
-					Doll Fashioned from the Earth - Negate any negative life regeneration while a petal is active
-					|Laurel Wreath - 10% increased damage for each full 'Flower Petals' on the targett
-					This Item is incomplete and unobtainable
+					Flower Petals - Gain petals when hitting enemies, up to 3. Increases this EGO's range for each petals
+					Spring's Genesis - <right> to lunge forward, hit enemies gain a Laurel Wreath and with 3 'Flower Petals', use 'Magnificent End'
+					Magnificent End - Deals 300% damage to all enemies with 'Laurel Wreath', lose all 'Flower Petals' and gain 'Unwithering Flower' for 10 seconds
+					Doll Fashioned from the Earth - Immunity to negative life regeneration while having 'Flower Petals'
+					|Laurel Wreath - 5% increased damage for each petal on the player
+					Unwithering Flower - Acts as if the user has 3 'Flower Petals', Disables 'Magnificent End'
 					'''
 			}
 
@@ -1441,20 +1487,21 @@ Mods: {
 				DisplayName: Mimicry
 				PassiveList:
 					'''
-					Mimic - After killing an enemy while having no 'Shell', Restore 20% of your maximum health and gain Shell based on the enemy's health
-					Shell - Enables 'GoDdByE' and increases 'heLLo?' range with 15% increased damage, +10 defense and increased maximum health based on enemy killed
-					GoDdByE - Charge and deal up to 1000% increased damage and gain 'Shell' when hitting its sweetspot, Recovers 1% damage dealt on the first enemy hit (Maximum 5% of health)
-					heLLo? - <right> shoots a piercing Projectile, reducing enemy defense
-					|Cocoon - Shell reduces quickly when not holding this weapon, When 'Shell' runs out, gain 'Hollow Husk'
-					Hollow Husk - Enables 'GoDdByE', -8 Defense. Timer set to 5 seconds while holding this weapon
+					Mimic - On kill, Gain 'Shell' and restore 20% of your maximum health. 'Shell' gains bonus health based on enemy killed
+					Shell - Enables 'GoDdByE' and enhances 'heLLo?', +10 defense and increased maximum health. Mimicry recovers 5% damage dealt on first enemy hit (Max 5% of health)
+					GoDdByE - Charge and deal up to 1000% increased damage and regain 'Shell', 'Shell' Recovers 1% damage dealt instead (Max 12% of health) and increases its duration
+					heLLo? - <right> shoots a piercing Projectile, reducing enemy defense. Cannot lifesteal
+					|Cocoon - 'Shell' does not tick down while held. When hit with 'Shell', Reduce damage recieved by 20% and convert 'Shell' to 'Imperfect Imitation'
+					Imperfect Imitation - Enables 'GoDdByE', take 20% increased damage and increased maximum health. Regain 'Shell' after taking damage, reducing its duration
 					'''
 				Simplified:
 					'''
-					Killing an enemy grants a stat boost buff
-					Buff also improves this weapon
+					Killing an enemy grants a buff that gives extra health
+					The buff enhances this weapon's attacks, allowing a charged hit
 					Hitting an enemy with a charged hit's sweetspot does more damage
-					Buff decays quicker while not using this weapon
-					Gain a debuff after Buff timer runs out, also improves this weapon 
+					Buff decays while not using this weapon
+					Getting hit temporarily decays the buff and reduces damage taken
+
 					'''
 			}
 
@@ -1604,7 +1651,7 @@ Mods: {
 				Tooltip: Let us meet again as stars.
 				PassiveList:
 					'''
-					Blue Star - <right> to summon Blue Star as a sentry, gains 120% increased damage for each empty sentry slots
+					Blue Star - <right> to summon Blue Star as a sentry, gains 120% increased damage for each empty sentry slots. Empowers Sound of A Star minions
 					Into the Star's Embrace - 'Blue Star' periodically creates a sound, damaging you and enemies nearby
 					Penance - Enemies killed by 'Into the Star's Embrace' increases 'Blue Star' damage by 10% (Up to 300%)
 					A Nostalgic Sound - When 'Penance' activates, heal 100 health. Decreases by 3 for each damage increase
@@ -1657,7 +1704,7 @@ Mods: {
 				Tooltip:
 					'''
 					A Tool to extract from the subconsciousness of mankind
-					Allows the creation of WAW and ALEPH E.G.O
+					Allows the creation of E.G.O from WAW and ALEPH Abnormalities
 					'''
 				TooltipBinah:
 					'''
@@ -1673,7 +1720,7 @@ Mods: {
 				Tooltip:
 					'''
 					Contains an abnormal energy
-					Allows the creation of HE E.G.O
+					Allows the creation of E.G.O from HE Abnormalities
 					'''
 				TooltipCapture:
 					'''
@@ -1687,7 +1734,7 @@ Mods: {
 				Tooltip:
 					'''
 					Absorbs an unknown energy around itself
-					Allows the creation of ZAYIN and TETH E.G.O
+					Allows the creation of E.G.O from ZAYIN and TETH Abnormalities
 					"The Bucket rises from the Well of a person, filled with the water that can only be drawn by that person."
 					'''
 				DisplayName: Black Box
@@ -1809,6 +1856,63 @@ Mods: {
 					ANYONE, YOU SAY?
 					'''
 				DisplayName: Magic Bullet
+			}
+
+			LampAlt: {
+				Tooltip:
+					'''
+					'Big Bird's eyes gained another in number for every creature it saved.
+					On this weapon, the radiant pride is apparent.'
+					Inflicts Hellfire
+					'''
+				Tooltip2:
+					'''
+					Creates more projectiles while swinging
+					Right click to create a projectile for each enemy on screen
+					'''
+				DisplayName: Lamp [Alteration]
+			}
+
+			FourthMatchFlamePants: {
+				DisplayName: Fourth Match Flame Pants
+				Tooltip: ""
+			}
+
+			FourthMatchFlameSuit: {
+				DisplayName: Fourth Match Flame Suit
+				Tooltip: ""
+			}
+
+			PenitencePants: {
+				DisplayName: Penitence Pants
+				Tooltip: ""
+			}
+
+			PenitenceSuit: {
+				DisplayName: Penitence Suit
+				Tooltip: ""
+			}
+
+			SporeRound: {
+				DisplayName: Spore Round
+				Tooltip: ""
+			}
+
+			HornetAlt: {
+				DisplayName: Hornet Alt
+				Tooltip: ""
+			}
+
+			PenitenceR: {
+				DisplayName: Penitence
+				Tooltip: It feeds on the 'evil' that seeps out during conversations between people.
+				PassiveList:
+					'''
+					Confession - When used, you and all allies heal 50% of your maximum health, all allies gain 'Atonement' for 5 minutes
+					Hardship - While held with 'Atonement', reduces movement speed and attacks nearby enemies with holy light at the cost of {0} mana
+					Crown of Thorns - While held, taking damage reduces 'Atonement' and recovers some Mana from damage recieved
+					|Atonement - Gain 2 defense and reduces healing gained and dealt by this EGO, Enemies are more likely to target you while this EGO is held
+					'''
 			}
 		}
 
@@ -2034,24 +2138,28 @@ Mods: {
 					'''
 			}
 
-			Penitence: {
+			PenitenceR: {
 				ItemTooltip: It feeds on the 'evil' that seeps out during conversations between people.
 				PassiveList:
 					'''
-					Confession - All allies heal 100% Health after using this weapon
-					|Penance - This weapon is unusable for 1 minute after a succesful Confession
+					Confession - When used, you and all allies heal 50% of your maximum health, all allies gain 'Atonement' for 5 minutes
+					Hardship - While held with 'Atonement', reduces movement speed and attacks nearby enemies with holy light at the cost of {0} mana
+					Crown of Thorns - While held, taking damage reduces 'Atonement' and recovers some Mana from damage recieved
+					|Atonement - Gain 2 defense and reduces healing gained and dealt by this EGO, Enemies are more likely to target you while this EGO is held
 					'''
 			}
 
 			ParadiseLost: {
-				ItemTooltip: I shall heal you, curing you of all disease and injury you possess.
+				ItemTooltip: Rise, my servants. Rise and serve me.
 				PassiveList:
 					'''
-					Behold My Power - Alternate attack to create a pale ring that deals flat damage, summon 10 'Apostles'
-					Apostles - Occupies a Minion Slot, has a random weapon that changes how it attacks
-					Guardian - When held, 2 'Apostles' are summoned that sticks near you
-					Advent - All players in your team can be revived with 'Behold My Power'
-					|Why art thou in fear? - Effects persist until death
+					Behold My Power - <right> to create a pale ring that deals flat damage, transforms nearby Town NPCs into 'Apostle' (max 10)
+					Apostle - Carries one of three weapons that changes how it acts. Can be hit by projectiles and reduces its damage
+					Guardian - The first 2 'Apostle' are summoned with scythes that sticks closer to the player
+					Advent - All 'Apostle' are revived to full health with 'Behold My Power'. Allied players revive at 10% of their health
+					|I am with thee - If all 12 'Apostle' is active, White Night appears and occasionally strengthens an 'Apostle' to attack indiscriminately
+					Why art thou in fear? - If White Night is active, it can be damaged by players and all EGO effects persist through death 
+					Do Not Deny Me - 'Why art thou in fear' can only be removed through Penitence 'Confession' or when White Night is killed
 					'''
 			}
 
@@ -2996,6 +3104,36 @@ Mods: {
 			SoundOfAStarBall.DisplayName: Sound Of A Star
 			SmileBobsFriendly.DisplayName: Smile Bobs
 			NihilAttack.DisplayName: Nihil Attack
+			CobaltScarExtraSlash.DisplayName: Cobalt Scar Extra Slash
+			CobaltScarTag.DisplayName: Cobalt Scar Tag
+			FaintAromaRAlt.DisplayName: Faint Aroma R Alt
+			FeatherOfHonorMinion.DisplayName: Feather Of Honor
+			WorkerBeeA.DisplayName: Disloyal Worker Bee
+			WorkerBeeT.DisplayName: Loyal Worker Bee
+			FullBloomArrowProjectile.DisplayName: Full Bloom Arrow Projectile
+			PenitenceRLight.DisplayName: Penitence R Light
+			HarmonyBloodEffect2.DisplayName: Harmony Blood Effect2
+			AmritaMiniLight.DisplayName: Amrita Mini Light
+			AdorationSplashSlime.DisplayName: Adoration Splash Slime
+			CensoredTentacle.DisplayName: Censored Tentacle
+			ChristmasBall.DisplayName: Christmas Ball
+			ChristmasCane.DisplayName: Christmas Cane
+			ChristmasPresent.DisplayName: Christmas Present
+			ChristmasStar.DisplayName: Christmas Star
+			DiscordSlashInv.DisplayName: Discord Slash Inv
+			Discord2Inv.DisplayName: Discord2 Inv
+			PenitenceRCross.DisplayName: Penitence R Cross
+			DiscordInkShot2.DisplayName: Discord Ink Shot2
+			RedMistSodaGeyser.DisplayName: Red Mist Soda Geyser
+			RedMistSodaBullet.DisplayName: Red Mist Soda Bullet
+			RedMistPenitenceStar2.DisplayName: Red Mist Penitence Star2
+			RedMistRedEyesPortal.DisplayName: Red Mist Red Eyes Portal
+			LanternSwingAround.DisplayName: Lantern Swing Around
+			LanternSwing.DisplayName: Lantern Swing
+			LanternNom.DisplayName: Lantern Nom
+			CobaltScarRapidStrikes.DisplayName: Cobalt Scar Rapid Strikes
+			CobaltScarBloodSlash.DisplayName: Cobalt Scar Blood Slash
+			Spore2.DisplayName: Spore2
 		}
 
 		Buffs: {
@@ -3189,7 +3327,7 @@ Mods: {
 
 			BoostSpore: {
 				Description: They live for the only one queen
-				DisplayName: Increase Aggression
+				DisplayName: Spores (Increase Aggression)
 			}
 
 			BindingJacket: {
@@ -3224,8 +3362,8 @@ Mods: {
 			}
 
 			Husk: {
-				DisplayName: Husk
-				Description: -8 Defense, Empty husk
+				DisplayName: Imperfect Imitation
+				Description: Take 20% increased damage
 			}
 
 			Shell: {
@@ -3429,6 +3567,36 @@ Mods: {
 				Description: I can hear the sound of the stars
 				Description2: "{0}% increased damage"
 			}
+
+			FaintAromaUnwithering: {
+				Description: Unwithering flowers violently blossom
+				DisplayName: Unwithering Flower
+			}
+
+			FeatherOfHonorM: {
+				Description: It strikes with vivid flame, neither weak nor faint
+				DisplayName: Feather Of Honor
+			}
+
+			HornetWorkerBee: {
+				DisplayName: Worker Bee
+				Description: We must protect the queen! Raise your teeth and be on guard!
+			}
+
+			MimicryInterrupted: {
+				Description: -10 defense
+				DisplayName: Failed Assimilation
+			}
+
+			MimicryHarden: {
+				Description: Reduces damage taken by 10%
+				DisplayName: Mimicry Harden
+			}
+
+			PenitenceAtonement: {
+				DisplayName: Atonement
+				Description: To be willing to bear pain is half the atonement.
+			}
 		}
 
 		Tiles: {
@@ -3479,7 +3647,7 @@ Mods: {
 		BossChecklistIntegration: {
 			RedMist: {
 				EntryName: Red Mist
-				SpawnInfo: Place [i:LobotomyCorp/DisciplinaryShell] and right click it, can also be obtained by right clicking [i:LobotomyCorp/BlackBox3] while placed during Hardmode if Red Mist has not been defeated (Only in single player)
+				SpawnInfo: Place [i:LobotomyCorp/DisciplinaryShell] and right click it, can also be obtained by right clicking [i:LobotomyCorp/BlackBox3] while placed in expert if Red Mist has not been defeated (Only in single player)
 			}
 		}
 

@@ -51,6 +51,24 @@ namespace LobotomyCorp.Items.Waw
             //On hit, 10% chance to increase sp by 40% for 30 seconds
         }
 
+        public override bool AltFunctionUse(Player player)
+        {
+            if (RedMistMaskUpgrade(player, RiskLevel.Waw))
+            {
+                return true;
+            }
+
+            return base.AltFunctionUse(player);
+        }
+
+        public override bool CanShoot(Player player)
+        {
+            if (player.altFunctionUse == 2)
+                return false;
+
+            return base.CanShoot(player);
+        }
+
         public override void AddRecipes()
         {
             CreateRecipe()

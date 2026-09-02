@@ -1,4 +1,5 @@
 ﻿using LobotomyCorp.Buffs;
+using LobotomyCorp.Misc;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
 using LobotomyCorp.Util;
@@ -309,9 +310,9 @@ namespace LobotomyCorp.Projectiles
             if (prog > 0.5f)
                 opacity *= 1f - (prog - 0.5f) / 0.5f;
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(opacity);
-            shader.UseImage1(Mod, "Misc/FX_Tex_Trail1");
-            shader.UseImage2(Mod, "Misc/FX_Tex_Trail1");
-            shader.UseImage3(Mod, "Misc/Worley");
+            shader.UseImage1(MiscAssets.TexTrail1);
+            shader.UseImage2(MiscAssets.TexTrail1);
+            shader.UseImage3(MiscAssets.Worley);
 
             int dir = player.direction;
 

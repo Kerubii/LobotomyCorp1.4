@@ -1,14 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LobotomyCorp.Misc;
+using LobotomyCorp.Players;
+using LobotomyCorp.Util;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp.Util;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
 using static tModPorter.ProgressUpdate;
-using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -75,9 +76,9 @@ namespace LobotomyCorp.Projectiles.Realized
 			Rectangle frame = tex.Frame();
 			
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(1f);
-            shader.UseImage1(Mod, "Misc/SheetNote2WA");
-            shader.UseImage2(Mod, "Misc/SheetNote2WA");
-            shader.UseImage3(Mod, "Misc/FlatColor");
+            shader.UseImage1(MiscAssets.SheetNote2WA);
+            shader.UseImage2(MiscAssets.SheetNote2WA);
+            shader.UseImage3(MiscAssets.WindTrail);
             shader.UseCustomShaderDate(0, 0);
 
             SlashTrail slashTrail = new SlashTrail(30, 0);

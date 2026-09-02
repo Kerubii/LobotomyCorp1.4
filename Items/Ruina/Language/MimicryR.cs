@@ -29,8 +29,9 @@ namespace LobotomyCorp.Items.Ruina.Language
         {
             EgoColor = LobotomyCorp.AlephRarity;
             Item.damage = 265;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.width = 40;
+            Item.DamageType = DamageClass.Melee;
+            LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 25;
 			Item.useAnimation = 25;

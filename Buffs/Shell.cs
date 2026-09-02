@@ -12,7 +12,7 @@ namespace LobotomyCorp.Buffs
         public override void SetStaticDefaults()
         {
             //Main.debuff[Type] = true;
-            //BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
+            BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
         }
 
         /* override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
@@ -31,11 +31,13 @@ namespace LobotomyCorp.Buffs
             player.statDefense += 10;
             //player.GetDamage(DamageClass.Generic) += modPlayer.MimicryBonusDamage;
 
-            if (player.HeldItem.type != ModContent.ItemType<Items.Ruina.Language.MimicryR>())
-                player.buffTime[buffIndex] -= 5;
+            if (player.HeldItem.type == ModContent.ItemType<Items.Ruina.Language.MimicryR>())
+                player.buffTime[buffIndex] += 1;
 
+            /*
             if (player.buffTime[buffIndex] <= 0)
                 player.AddBuff(ModContent.BuffType<Husk>(), 2);
+            */
         }
     }
 }

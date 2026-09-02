@@ -45,6 +45,20 @@ namespace LobotomyCorp.Projectiles
             if (!CheckActive(projOwner))
                 return;
 
+            // teleport if too far
+            int flyDistance = 1200 + 40 * Projectile.minionPos;
+            float chaseDist = Vector2.Distance(Projectile.Center, projOwner.Center);
+            if (chaseDist > 2000f)
+            {
+                Projectile.position.X = projOwner.position.X + (float)(projOwner.width / 2) - (float)(Projectile.width / 2);
+                Projectile.position.Y = projOwner.position.Y + (float)(projOwner.height / 2) - (float)(Projectile.height / 2);
+            }
+            else if (chaseDist > flyDistance)
+            {
+                Projectile.ai[0] = 1f;
+                Projectile.netUpdate = true;
+            }
+
             // Teleport to player
             if (Projectile.ai[0] != 0)
             {

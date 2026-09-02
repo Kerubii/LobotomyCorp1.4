@@ -1,15 +1,16 @@
-﻿using System;
+﻿using LobotomyCorp.Misc;
+using LobotomyCorp.Players;
+using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using LobotomyCorp.Util;
 using Terraria.Audio;
 using Terraria.GameContent;
-using System.IO;
-using LobotomyCorp.Players;
-using System.Collections.Generic;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -100,9 +101,9 @@ namespace LobotomyCorp.Projectiles.Realized
                     if (prog < 0.3f)
                         opacity *= prog / 0.3f;
                     CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(opacity);
-                    shader.UseImage1(Mod, "Misc/GreedSnippetTexture");
-                    shader.UseImage2(Mod, "Misc/FistTrail");
-                    shader.UseImage3(Mod, "Misc/FistTrail");
+                    shader.UseImage1(MiscAssets.KingOfGreedTexture);
+                    shader.UseImage2(MiscAssets.FistTrail);
+                    shader.UseImage3(MiscAssets.FistTrail);
                     SlashTrail trail = new SlashTrail(30 + 30 * (1f - prog), 1.57f);
                     trail.color = Color.LightYellow * opacity;
                     float startPos = MathHelper.ToRadians(120 - 240 * (float)Math.Sin(1.57f - 1.57f * prog));

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.IO;
+using LobotomyCorp.Items;
+using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using rail;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -12,6 +16,13 @@ namespace LobotomyCorp.Projectiles
 {
 	public class MeltyLove : ModProjectile
 	{
+        public static Asset<Texture2D> MeltyLoveStickTex;
+
+        public override void Load()
+        {
+            MeltyLoveStickTex = ModContent.Request<Texture2D>(Texture + "Stick");
+        }
+
 		public override void SetStaticDefaults() {
             // DisplayName.SetDefault("Gunk");
         }
@@ -21,13 +32,29 @@ namespace LobotomyCorp.Projectiles
             Projectile.width = 12;
             Projectile.height = 12;
             Projectile.aiStyle = -1;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = -1;
             Projectile.scale = 1f;
             Projectile.timeLeft = 300;
+
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 30;
 
             Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = true;
             Projectile.friendly = true;
+            StickToTarget = -1;
+        }
+
+        public int StickToTarget;
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(StickToTarget);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            StickToTarget = reader.ReadInt32();
         }
 
         public override void AI()
@@ -56,10 +83,19 @@ namespace LobotomyCorp.Projectiles
                         delta.Normalize();
                         Projectile.velocity = Projectile.velocity.Length() * delta;
                         owner.direction = Math.Sign(delta.X);
+
+                        if (Projectile.ai[0] % 20 == 0 && owner.CheckMana(owner.GetManaCost(owner.HeldItem) / 2, true))
+                        {
+                            Vector2 vel = Vector2.Normalize(Projectile.velocity).RotatedByRandom(Main.rand.NextFloat(-0.5f, 0.5f));
+                            vel *= Main.rand.Next(12, 16);
+
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel, ModContent.ProjectileType<MeltyLoveSmall>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                        }
                     }
 
                     owner.itemRotation = (float)Math.Atan2(Projectile.velocity.Y * owner.direction, Projectile.velocity.X * owner.direction);
                     owner.itemTime = owner.itemAnimation = owner.itemAnimationMax;
+
                     return;
                 }
                 for (int i = 0; i < 10; i++)
@@ -81,11 +117,31 @@ namespace LobotomyCorp.Projectiles
                 Projectile.scale = 1f + scale;
                 Projectile.alpha = 0;
             }
+            else if (Projectile.ai[1] > 0)
+            {
+                Projectile.ai[1]++;
+                if (Projectile.ai[1] > 10)
+                {
+                    Projectile.velocity.Y += 0.12f;
+                }
+            }
+            else
+            {
+                Projectile.ai[1]--;
+                Projectile.Center = Main.npc[StickToTarget].Center + Projectile.velocity;
+
+                if (Projectile.timeLeft < 15)
+                Projectile.scale -= 0.005f;
+
+                if (Projectile.ai[1] == 60)
+                    Projectile.Kill();
+                return;
+            }
 
             if (++Projectile.ai[2] % (int)(60 - 50 * (Projectile.ai[0] / 80f)) == 0)
             {
-                float speed = 7.6f + 8f * (Projectile.ai[0] / 80f);
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, speed), ModContent.ProjectileType<MeltyLoveSmall>(), (int)(Projectile.damage * (1f + damageBoost())), Projectile.knockBack, Projectile.owner);
+                /*float speed = 7.6f + 2f * (Projectile.ai[0] / 80f);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, speed), ModContent.ProjectileType<MeltyLoveSmall>(), (int)(Projectile.damage * (1f + damageBoost())), Projectile.knockBack, Projectile.owner);*/
             }
 
             if (Projectile.localAI[1]++ == 2)
@@ -99,7 +155,7 @@ namespace LobotomyCorp.Projectiles
         public override bool ShouldUpdatePosition()
         {
             Player owner = Main.player[Projectile.owner];
-            return !(owner.channel && Projectile.ai[1] == 0);
+            return !(owner.channel && Projectile.ai[1] == 0 && StickToTarget > 0);
         }
 
         public override void OnKill(int timeLeft)
@@ -108,34 +164,61 @@ namespace LobotomyCorp.Projectiles
             {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 251);
             }
+
+            if (Projectile.ai[1] < 0)
+            {
+                int amount = 4;
+                if (Projectile.ai[0] > 40)
+                {
+                    amount += (int)(4 * (Projectile.ai[0] - 40) / 40f);
+                }
+                for (int i = 0; i < amount; i++)
+                {
+                    float speed = 7;
+                    if (Projectile.ai[0] > 40)
+                    {
+                        speed *= 1f + 0.5f * ((Projectile.ai[0] - 40) / 40f);
+                    }
+                    if (Main.myPlayer == Projectile.owner)
+                    {
+                        Vector2 velRand = new Vector2(speed, 0).RotateRandom(6.28f);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velRand, ModContent.ProjectileType<MeltyLoveSmall>(), (int)(Projectile.damage * (1f + damageBoost()) / 2), Projectile.knockBack, Projectile.owner, 0, StickToTarget);
+                    }
+                }
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(ModContent.BuffType<Buffs.Slow>(), 300);
-
-            if (Projectile.ai[0] < 20)
+            if (Projectile.ai[0] < 20 || Projectile.ai[1] < 0)
                 return;
+            
+            Projectile.ai[1] = -1;
+            StickToTarget = target.whoAmI;
+            Projectile.velocity = Projectile.Center - target.Center + Projectile.velocity;
+            Projectile.frame = Main.rand.Next(3);
+            Projectile.rotation = Main.rand.NextFloat(6.28f);
+            Projectile.timeLeft = 60 * 3;
+        }
 
-            int amount = 4;
-            float speed = Projectile.velocity.Length();
-            if (Projectile.ai[0] > 40)
+        public override void ModifyDamageHitbox(ref Rectangle hitbox)
+        {
+            if (Projectile.ai[1] < 0)
             {
-                amount += (int)(4 * (Projectile.ai[0] - 40) / 40f);
-                speed *= 1.8f * ((Projectile.ai[0] - 40) / 40f);
-            }
-            for (int i = 0; i < amount; i++)
-            {
-                if (Main.myPlayer == Projectile.owner)
-                {
-                    Vector2 velRand = new Vector2(speed, 0).RotateRandom(6.28f);
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velRand, ModContent.ProjectileType<MeltyLoveSmall>(), (int)(Projectile.damage * (1f + damageBoost()) / 2), Projectile.knockBack, Projectile.owner, 0, target.whoAmI);
-                }
+                int size = 70;
+                hitbox = new Rectangle(hitbox.Center.X - size / 2, hitbox.Center.Y - size / 2, size, size);
             }
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
         {
+            if (Projectile.ai[1] < 0)
+            {
+                modifiers.SourceDamage -= 0.5f;
+                return;
+
+            }
             float dmgMult = damageBoost();
             modifiers.FinalDamage += dmgMult;
             base.ModifyHitNPC(target, ref modifiers);
@@ -148,6 +231,24 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
+            if (StickToTarget > 0)
+            {
+                Texture2D tex2 = MeltyLoveStickTex.Value;
+                Rectangle frame = tex2.Frame(1, 3, frameY: Projectile.frame);
+                Main.EntitySpriteDraw(
+                    tex2,
+                    Projectile.Center - Main.screenPosition,
+                    frame,
+                    lightColor * (1f - Projectile.alpha / 255f),
+                    Projectile.rotation,
+                    frame.Size() / 2,
+                    Projectile.scale,
+                    0,
+                    0);
+
+                return false;
+            }
+
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             Main.EntitySpriteDraw(
                 tex,
@@ -177,9 +278,9 @@ namespace LobotomyCorp.Projectiles
             Projectile.width = 12;
             Projectile.height = 12;
             Projectile.aiStyle = -1;
-            Projectile.penetrate = 3;
+            Projectile.penetrate = 1;
             Projectile.scale = 1f;
-            Projectile.timeLeft = 30;
+            Projectile.timeLeft = 120;
 
             Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = true;
@@ -197,6 +298,26 @@ namespace LobotomyCorp.Projectiles
                 Projectile.localAI[1] = 0;
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
+
+            if (Projectile.ai[2] < 0)
+                return;
+
+            Projectile.velocity.Y += 0.12f;
+            if (Projectile.velocity.Y > 24f)
+                Projectile.velocity.Y = 24f;            
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            if (Main.myPlayer == Projectile.owner && Projectile.ai[2] == 0)
+            {
+                if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Aleph))
+                {
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AdorationSplashSlime>(), Projectile.damage, Projectile.knockBack, Projectile.owner, -1);
+                }
+            }
+
+            return base.OnTileCollide(oldVelocity);
         }
 
         public override bool? CanHitNPC(NPC target)
@@ -209,6 +330,16 @@ namespace LobotomyCorp.Projectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(ModContent.BuffType<Buffs.Slow>(), 300);
+
+            if (Main.myPlayer == Projectile.owner && Projectile.ai[2] == 0)
+            {
+                if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.Aleph))
+                {
+                    Vector2 distance = Projectile.Center - target.Center;
+
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, distance, ModContent.ProjectileType<AdorationSplashSlime>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
+                }
+            }
         }
 
         public override bool PreDraw(ref Color lightColor)

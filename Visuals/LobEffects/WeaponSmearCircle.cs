@@ -67,9 +67,9 @@ namespace LobotomyCorp.Visuals.LobEffects
             float prog = Time / (float)TimeMax;
 
             CustomShaderData shader = LobotomyCorp.LobcorpShaders["SwingTrail"].UseOpacity(GetOpacity(prog));
-            shader.UseImage1(Mod, Image1)
-                  .UseImage2(Mod, Image2)
-                  .UseImage3(Mod, Image3)
+            shader.UseImage1(Image1)
+                  .UseImage2(Image2)
+                  .UseImage3(Image3)
                   .UseCustomShaderDate(TexOffX, TexOffY);
 
             int direction = Direction;

@@ -25,8 +25,8 @@ namespace LobotomyCorp.Items.Ruina.Technology
 			EgoColor = LobotomyCorp.HeRarity;
 
             Item.damage = 38;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.width = 40;
+			Item.DamageType = DamageClass.Melee; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
 
 			Item.useTime = 5;

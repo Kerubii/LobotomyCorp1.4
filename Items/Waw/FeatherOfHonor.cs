@@ -1,4 +1,6 @@
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -13,9 +15,10 @@ namespace LobotomyCorp.Items.Waw
             // DisplayName.SetDefault("Penitence"); // By default, capitalization in classnames will damage spaces to the display name. You can customize the display name here by uncommenting this line.
             /* Tooltip.SetDefault("The feather strikes with vivid flame. It is not weak, nor faint.\n" +
                                "The flame pierces the body and melts the frost of the heart."); */
-
+            ItemID.Sets.StaffMinionSlotsRequired[Item.type] = 0f;
         }
 
+        [Obsolete]
         public int FeatherShoot = 0;
 
         public override void LobSetDefaults()
@@ -34,12 +37,12 @@ namespace LobotomyCorp.Items.Waw
             Item.rare = ModContent.RarityType<WawB>();
             //Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<Projectiles.FeatherOfHonor>();
+            Item.shoot = ModContent.ProjectileType<Projectiles.FeatherOfHonorMinion>();
             Item.shootSpeed = 1f;
             Item.noUseGraphic = true;
             Item.channel = true;
-            FeatherShoot = 0;
-            EGORiskLevel = RiskLevel.Waw;
+            //FeatherShoot = 0;
+            Item.buffType = ModContent.BuffType<Buffs.FeatherOfHonorM>();
         }
 
         public override void HoldItem(Player player)
@@ -50,6 +53,7 @@ namespace LobotomyCorp.Items.Waw
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            /*
             for (int i = 0; i < 5; i++)
             {
                 int order = i;
@@ -62,6 +66,58 @@ namespace LobotomyCorp.Items.Waw
             }
 
             return false;
+            */
+            return true;
+        }
+
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            player.AddBuff(Item.buffType, 2);
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            List<Projectile> feathers = new List<Projectile>();
+            float minionCount = 0;
+
+            foreach (Projectile p in Main.ActiveProjectiles)
+            {
+                if (p.minion && p.owner == player.whoAmI)
+                {
+                    minionCount += p.minionSlots;
+                    if (p.type == Item.shoot)
+                    {
+                        feathers.Add(p);
+                    }
+                }
+            }
+
+            if (minionCount >= player.maxMinions)
+            {
+                int order = 0;
+                //int extra = 5 - feathers.Count;
+
+                while (feathers.Count > 0)
+                {
+                    Projectile p = feathers[Main.rand.Next(feathers.Count)];
+                    if (p.ai[1] == 0)
+                    {
+                        p.ai[1] = 5 + 5 * order;
+                        p.netUpdate = true;
+                    }
+                    order++;
+
+                    feathers.Remove(p);
+                }
+
+                //while (extra > 0)
+                //{
+                    //extra--;
+                //}
+                return true;
+            }
+
+            return base.UseItem(player);
         }
 
         public override void AddRecipes()

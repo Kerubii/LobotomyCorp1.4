@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -29,9 +30,12 @@ namespace LobotomyCorp
 {
     public class LobotomyGlobalNPC : GlobalNPC
     {
+        public static Asset<Texture2D> AlriuneLaurelWreath;
+
         public override void Load()
         {
             Terraria.IL_NPC.TargetClosest += forcetarget;
+            AlriuneLaurelWreath = ModContent.Request<Texture2D>("LobotomyCorp/Misc/AlriuneLaurelWreath");
 
             base.Load();
         }
@@ -79,6 +83,8 @@ namespace LobotomyCorp
         public float DiffractionDefense = 1f;
         public float DiffractionHealth = 1f;
 
+        public float FaintAromaLaurelWreath = 0f;
+
         public float FragmentsFromSomewhereTentacles = 0;
         public bool FragmentsFromSomewhereEnlightenment = false;
         public int FragmentsFromSomewherePlayer = -1;
@@ -88,7 +94,7 @@ namespace LobotomyCorp
 
         public bool HarmonyMusicalAddiction = false;
 
-        public bool InTheNameOfLoveAndHateVillain = false;
+        public int InTheNameOfLoveAndHateVillain = 0;
 
         public int LaetitiaGiftDamage = 0;
         public int LaetitiaGiftOwner = -1;
@@ -137,6 +143,8 @@ namespace LobotomyCorp
 
         public bool WristCutterScars = false;
 
+        private bool IsBeingGrabbed = false;
+
         public static LobotomyGlobalNPC LNPC (NPC npc)
         {
             return npc.GetGlobalNPC<LobotomyGlobalNPC>();
@@ -158,7 +166,8 @@ namespace LobotomyCorp
 
             HarmonyMusicalAddiction = false;
 
-            InTheNameOfLoveAndHateVillain = false;
+            if (InTheNameOfLoveAndHateVillain > 0)
+                InTheNameOfLoveAndHateVillain--;
 
             MatchstickBurn = false;
 
@@ -203,6 +212,12 @@ namespace LobotomyCorp
 
 		public override bool PreAI(NPC npc)
 		{
+            if (IsBeingGrabbed)
+            {
+                IsBeingGrabbed = false;
+                return false;
+            }
+
 			return !BODExecute;
 		}
 
@@ -545,7 +560,7 @@ namespace LobotomyCorp
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            if (InTheNameOfLoveAndHateVillain && Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateVillain == npc.whoAmI)
+            if (InTheNameOfLoveAndHateVillain > 0 && Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateVillain == npc.whoAmI)
             {
                 Texture2D mark = LobotomyCorp.VillainMark.Value;
                 Vector2 position = npc.position - Main.screenPosition + new Vector2(npc.width/2, 0);
@@ -722,6 +737,25 @@ namespace LobotomyCorp
                         spriteBatch.Draw(texture, position, texture.Frame(), lightColor, 0, texture.Size() / 2, 1.1f + 0.1f * (float)Math.Sin(3.14f * Main.timeForVisualEffects / 120f), SpriteEffects.None, 0f);
                     }
                 }
+
+                if (FaintAromaLaurelWreath > 0f && modWawPlayer.FaintAromaPetalNum() > 0)
+                {
+                    Texture2D texture = AlriuneLaurelWreath.Value;
+                    float offset = 4 * (float)Math.Sin(6.28f * (Main.timeForVisualEffects / 300));
+                    Vector2 pos = npc.position + new Vector2(npc.width / 2, -36 + offset) - Main.screenPosition;
+                    
+                    spriteBatch.Draw(texture, pos, texture.Frame(), drawColor, 0, texture.Size() / 2, 1f, SpriteEffects.None, 0f);
+
+                    if (Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalNum() == 3)
+                    {
+                        float offScale = (float)Math.Sin(6.28f * (Main.timeForVisualEffects / 120));
+                        if (offset < 0f)
+                            offset *= -1f;
+                        float scale = 1f + .2f * offScale;
+                        Color glowColor = new Color(1f, 1f, 1f, 0.4f) * 0.8f * offScale;
+                        spriteBatch.Draw(texture, pos, texture.Frame(), glowColor, 0, texture.Size() / 2, scale, SpriteEffects.None, 0f);
+                    }
+                }
             }
 
             if (SanguineDesireGlitter && SanguineDesireGlitterTarget == Main.myPlayer && SanguineDesireGlitterTarget == npc.target)
@@ -851,8 +885,30 @@ namespace LobotomyCorp
                     if (player <= -1)
                         return;
                 }
+                int type = ModContent.ProjectileType<Projectiles.WorkerBeeT>();
+                if (Main.player[player].ownedProjectileCounts[type] >= (int)Math.Ceiling(Main.player[player].maxMinions / 2f))
+                {
+                    // This Kill()s the bee with the least time to live for
+                    // kill is just to make sure the projectile isn't null for some reason (highly unlikely)
+                    Projectile toKill = new();
+                    int time = 10000000;
+                    bool kill = false;
+                    foreach (Projectile p in Main.ActiveProjectiles)
+                    {
+                        if (p.type == type && p.owner == player)
+                        {
+                            if (p.timeLeft < time)
+                            {
+                                kill = true;
+                                toKill = p;
+                                time = p.timeLeft;
+                            }
+                        }
+                    }
+                    if (kill) toKill.Kill();
+                }
 
-                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Projectiles.WorkerBee>(), damage, knockBack, player);
+                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, type, damage, knockBack, player);
                 Main.projectile[proj].originalDamage = damage;
                 for (int i = 0; i < 5; i++)
                 {
@@ -1029,6 +1085,11 @@ namespace LobotomyCorp
             int remove = Math.Min(10, Lnpc.RemorseNailTotal/2);
             Lnpc.RemorseNailTotal -= remove;
             Lnpc.RemorseGuilt += remove;
+        }
+
+        public void IsGrabbedBy(int player)
+        {
+            IsBeingGrabbed = true;
         }
     }
 }

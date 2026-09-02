@@ -40,6 +40,15 @@ namespace LobotomyCorp.Projectiles
                 Projectile.height = n.height + 30;
                 Projectile.Center = n.Center;
             }
+
+            if (Main.rand.NextBool(5))
+            {
+                Vector2 vel = new Vector2(-4, 4) * (1f + Main.rand.NextFloat(0.2f));
+
+                Dust dust = Main.dust[Dust.NewDust(Projectile.position + new Vector2(16, 0), Projectile.width - 16, Projectile.height - 16, DustID.VenomStaff)];
+                dust.noGravity = true;
+                dust.velocity = vel;
+            }
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -157,11 +166,6 @@ namespace LobotomyCorp.Projectiles
                 else
                     scale = 1f - (timer - min) / (max - min);
             }
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-        {
-            modifiers.SourceDamage.Base = target.life * 2;
         }
 
         public override bool? CanHitNPC(NPC target)

@@ -29,8 +29,8 @@ namespace LobotomyCorp.Items.Ruina.Technology
 			EgoColor = LobotomyCorp.WawRarity;
 
 			Item.damage = 320;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorRanged>();
-			Item.width = 40;
+			Item.DamageType = DamageClass.Ranged; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 100;
 			Item.useAnimation = 100;

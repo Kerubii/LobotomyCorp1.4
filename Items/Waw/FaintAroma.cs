@@ -37,14 +37,25 @@ namespace LobotomyCorp.Items.Waw
             EGORiskLevel = RiskLevel.Waw;
         }
 
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (RedMistMaskUpgrade(player) && type == ProjectileID.WoodenArrowFriendly)
+            {
+                type = ModContent.ProjectileType<FullBloomArrowProjectile>();
+                velocity *= 2.2f;
+            }
+        }
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             for (int i = -1; i <= 1; i++)
             {
                 float rotation = MathHelper.ToRadians(30) * i;
 
-                Vector2 vel = velocity.RotatedBy(rotation) * 0.8f;
-                Projectile.NewProjectile(source, position, vel, ModContent.ProjectileType<FaintAromaShot>(), damage / 3, knockback, player.whoAmI);
+                Vector2 vel = velocity.RotatedBy(rotation);
+                vel.Normalize();
+                vel *= 8;
+                Projectile.NewProjectile(source, position, vel, ModContent.ProjectileType<FaintAromaShot>(), damage / 3, knockback, player.whoAmI, RedMistMaskUpgrade(player) ? 10 : 0);
             }
 
             return base.Shoot(player, source, position, velocity, type, damage, knockback);

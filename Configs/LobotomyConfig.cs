@@ -18,7 +18,7 @@ namespace LobotomyCorp.Configs
         [DefaultValue(true)]
         public bool ScreenShakeEnabled;
 
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public bool BloomEnable;
 
         [DefaultValue(1f)]
@@ -31,6 +31,11 @@ namespace LobotomyCorp.Configs
         [Range(0f, 1f)]
         public float SolemnDingDongChance;
 
+        [DefaultValue(false)]
+        public bool NoSilentOrchestraPerformance;
+
+        [DefaultValue(false)]
+        public bool NoBlueStarAmbience;
     }
 
     public class LobotomyServerConfig : ModConfig
@@ -43,6 +48,10 @@ namespace LobotomyCorp.Configs
         [Increment(10)]
         [DefaultValue(100)]
         public int ExtractorDamage;
+
+        [DefaultValue(true)]
+        [ReloadRequired]
+        public bool ExtractorDamageEnable;
 
         [Header("TestOptions")]
         //[Label("Test Items")]
