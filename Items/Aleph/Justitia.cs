@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -20,7 +21,7 @@ namespace LobotomyCorp.Items.Aleph
         public override void LobSetDefaults()
         {
             Item.damage = 30;
-            Item.DamageType = DamageClass.MeleeNoSpeed;
+            Item.DamageType = RWBPEnable(DamageClass.MeleeNoSpeed, ModContent.GetInstance<ExtractorPale>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 30;
@@ -98,7 +99,7 @@ namespace LobotomyCorp.Items.Aleph
             }
         }
 
-        public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public override bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
             if (AlternateAttack)
             {
@@ -110,7 +111,7 @@ namespace LobotomyCorp.Items.Aleph
                 Item.useStyle = 15;
                 Item.noUseGraphic = false;
             }
-            base.UseStyleAlt(player, heldItemFrame);
+            return true;
         }
 
         /*public override void UseItemHitboxAlt(Player player, ref Rectangle hitbox, ref bool noHitbox)

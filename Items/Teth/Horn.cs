@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -20,7 +21,7 @@ namespace LobotomyCorp.Items.Teth
         public override void LobSetDefaults()
         {
             Item.damage = 28;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             Item.width = 40;
             Item.height = 40;
 

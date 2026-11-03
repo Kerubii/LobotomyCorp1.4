@@ -1,10 +1,11 @@
-using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Audio;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Ruina.Technology
 {
@@ -29,7 +30,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
 			EgoColor = LobotomyCorp.WawRarity;
 
 			Item.damage = 320;
-			Item.DamageType = DamageClass.Ranged; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Ranged, ModContent.GetInstance<ExtractorBlack>()); LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 100;

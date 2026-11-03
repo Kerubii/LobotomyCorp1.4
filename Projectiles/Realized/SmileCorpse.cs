@@ -60,6 +60,8 @@ namespace LobotomyCorp.Projectiles.Realized
                 Projectile.velocity *= 0.95f;
             Projectile.rotation += MathHelper.ToRadians(Projectile.velocity.X);
             Projectile.ai[1]++;
+
+            CheckNearbyPlayerConsume(Projectile);
             /*
             Player owner = Main.player[Projectile.owner];
             if (owner.Hitbox.Intersects(Projectile.Hitbox))
@@ -68,6 +70,28 @@ namespace LobotomyCorp.Projectiles.Realized
 
                 Projectile.Kill();
             }*/
+        }
+
+        public static void CheckNearbyPlayerConsume(Projectile Projectile)
+        {
+            Player owner = Main.player[Projectile.owner];
+            LobotomyAlephPlayer modPlayer = owner.GetModPlayer<LobotomyAlephPlayer>();
+            float mountain = modPlayer.SmileMountain / (float)owner.statLifeMax2;
+            if (mountain < 0.30f)
+                return;
+            mountain -= 0.30f;
+            mountain /= 0.70f;
+            int range = (int)(16 * 5 * mountain);
+            if (owner.Center.DistanceSQ(Projectile.Center) < range * range && owner.CanHit(Projectile))
+            {
+                Projectile.velocity = Projectile.Center.DirectionTo(owner.Center) * 6f;
+                if (owner.Hitbox.Intersects(Projectile.Hitbox))
+                {
+                    modPlayer.SmileConsumeCorpse(Projectile);
+                    Main.NewText("Eat");
+                }
+            }
+
         }
 
         public override void OnKill(int timeLeft)

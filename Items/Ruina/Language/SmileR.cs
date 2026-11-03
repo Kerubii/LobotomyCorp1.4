@@ -1,4 +1,5 @@
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -21,7 +22,7 @@ namespace LobotomyCorp.Items.Ruina.Language
         public override void SetDefaults() 
 		{
             Item.damage = 280;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;

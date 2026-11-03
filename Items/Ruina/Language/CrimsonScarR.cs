@@ -2,6 +2,7 @@ using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,7 +53,7 @@ namespace LobotomyCorp.Items.Ruina.Language
             Item.useAnimation = 44;
             Item.useStyle = -1;
             Item.autoReuse = true;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.noUseGraphic = true;
             //Item.reuseDelay = 20;

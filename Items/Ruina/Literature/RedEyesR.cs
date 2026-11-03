@@ -1,13 +1,14 @@
-using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Audio;
-using Terraria.DataStructures;
-using System;
+using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Teth;
 using LobotomyCorp.Players;
-using LobotomyCorp.Buffs;
+using LobotomyCorp.Players.DamageType;
+using Microsoft.Xna.Framework;
+using System;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Ruina.Literature
 {
@@ -27,7 +28,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			Item.height = 70;
 
 			Item.damage = 62;
-			Item.DamageType = DamageClass.Melee; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorRed>()); LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.knockBack = 2.3f;
 			Item.useTime = 26;
 			Item.useAnimation = 26;

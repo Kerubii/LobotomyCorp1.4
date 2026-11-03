@@ -15,18 +15,26 @@ namespace LobotomyCorp.Buffs
 {
 	public class Love : ModBuff
 	{
-		public override void SetStaticDefaults()
+        public static LocalizedText SlaveCost { get; private set; }
+        public static LocalizedText Hysteria { get; private set; }
+
+        public override void SetStaticDefaults()
 		{
             // DisplayName.SetDefault("Festival");
             // Description.SetDefault("Everything will be peaceful");
             //BuffID.Sets.TimeLeftDoesNotDecrease[Type] = true;
             Main.buffNoTimeDisplay[Type] = true;
+
+            SlaveCost = this.GetLocalization("ArcanaSlaveCost");
+            Hysteria = this.GetLocalization("Hysteria");
         }
 
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
-            tip += $"\n{Language.GetTextValue("Mods.LobotomyCorp.Buffs.Love.ArcanaSlaveCost", Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost)}";
-            tip += $"\n{Language.GetTextValue("Mods.LobotomyCorp.Buffs.Love.Hysteria", (int)(Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateHysteriaPercent() * 100))}";
+            int arg = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost;
+            tip += $"\n{SlaveCost.Format(arg)}";
+            arg = (int)(Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateHysteriaPercent() * 100);
+            tip += $"\n{Hysteria.Format(arg)}";
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, int buffIndex, ref BuffDrawParams drawParams)

@@ -1,5 +1,6 @@
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Items.Ruina.History
             EgoColor = LobotomyCorp.WawRarity;
 
             Item.damage = 110;
-            Item.DamageType = DamageClass.Summon;
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Summon, ModContent.GetInstance<ExtractorRed>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;

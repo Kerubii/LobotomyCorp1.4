@@ -1,6 +1,7 @@
 using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Items.Ruina.Religion
 		public override void SetDefaults() 
 		{
             Item.damage = 88;
-            Item.DamageType = DamageClass.Summon; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Summon, ModContent.GetInstance<ExtractorWhite>()); ; LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 26;

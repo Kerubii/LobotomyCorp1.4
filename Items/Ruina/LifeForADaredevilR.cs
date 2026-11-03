@@ -1,6 +1,7 @@
 using LobotomyCorp.Items.He;
 using LobotomyCorp.Items.Teth;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Items.Ruina
 			EgoColor = LobotomyCorp.HeRarity;
 
 			Item.damage = 72;
-			Item.DamageType = DamageClass.Melee; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorPale>()); LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;
 

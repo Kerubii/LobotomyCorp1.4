@@ -66,7 +66,11 @@ namespace LobotomyCorp.Projectiles
 					type = ModContent.ProjectileType<Projectiles.TwilightSlashes>();
 				}
                 if (Main.myPlayer == Projectile.owner)
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, velocity, type, Projectile.damage, 0, Projectile.owner, Projectile.ai[0], Projectile.ai[1] - 1);
+                {
+                    int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, velocity, type, Projectile.damage, 0, Projectile.owner, Projectile.ai[0], Projectile.ai[1] - 1);
+                    Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Main.projectile[p]);
+                    Main.projectile[p].netUpdate = true;
+                }
 			}
 		}
 
@@ -112,6 +116,11 @@ namespace LobotomyCorp.Projectiles
 			}*/
 
 			return false;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Projectile);
         }
     }
 
@@ -205,7 +214,12 @@ namespace LobotomyCorp.Projectiles
                     type = ModContent.ProjectileType<Projectiles.TwilightSlashes>();
                 }
                 if (Main.myPlayer == Projectile.owner)
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, velocity, type, Projectile.damage, 0, Projectile.owner, Projectile.ai[0], Projectile.ai[1] - 1);
+                {
+                    int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, velocity, type, Projectile.damage, 0, Projectile.owner, Projectile.ai[0], Projectile.ai[1] - 1);
+                    Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Main.projectile[p]);
+                    Main.projectile[p].netUpdate = true;
+
+                }
             }
 
             if (Projectile.timeLeft <= 5)
@@ -235,6 +249,11 @@ namespace LobotomyCorp.Projectiles
 
             Main.EntitySpriteDraw(tex, pos, frame, color, Projectile.rotation, origin, Projectile.scale, 0f, 0);
             return false;
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Projectile);
         }
     }
 }

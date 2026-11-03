@@ -36,13 +36,18 @@ namespace LobotomyCorp.Projectiles.Realized
 
 		public override void AI()
 		{
-			if (Projectile.localAI[0] == 0)
+			if (Projectile.soundDelay == 0)
             {
-				Projectile.localAI[0]++;
+				Projectile.soundDelay = -1;
 				SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Sis_skill") with { Volume = 0.5f }, Projectile.Center);
 			}
+            if (Projectile.localAI[0] % 20 == 0)
+			{
+                LobotomyCorp.ScreenShakePosition(Projectile.Center, 300, 1200, 10, 8f, 0.6f);
+            }
+            Projectile.localAI[0]++;
 
-			Player player = Main.player[Projectile.owner];
+            Player player = Main.player[Projectile.owner];
 
 			Vector2 center = player.RotatedRelativePoint(player.MountedCenter, true);
 

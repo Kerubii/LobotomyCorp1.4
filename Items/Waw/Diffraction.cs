@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,7 +17,7 @@ namespace LobotomyCorp.Items.Waw
         public override void LobSetDefaults()
         {
             Item.damage = 50;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorWhite>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 28;

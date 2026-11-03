@@ -1,6 +1,7 @@
 using LobotomyCorp.Misc;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.Realized;
 using LobotomyCorp.Util;
@@ -41,7 +42,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 		public override void SetDefaults() 
 		{
             Item.damage = 116;
-			Item.DamageType = DamageClass.Melee;
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorWhite>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;

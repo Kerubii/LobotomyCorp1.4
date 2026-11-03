@@ -1,4 +1,5 @@
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -29,7 +30,7 @@ namespace LobotomyCorp.Items.Ruina.Language
         {
             EgoColor = LobotomyCorp.AlephRarity;
             Item.damage = 265;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;

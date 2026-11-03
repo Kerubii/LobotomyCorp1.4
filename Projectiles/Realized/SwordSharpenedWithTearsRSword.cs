@@ -19,6 +19,7 @@ using System.Security.Policy;
 using Terraria.Audio;
 using rail;
 using ReLogic.Content;
+using LobotomyCorp.Players.DamageType;
 
 namespace LobotomyCorp.Projectiles.Realized
 {
@@ -207,6 +208,12 @@ namespace LobotomyCorp.Projectiles.Realized
                                     state = 12;
                                     SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/KnightOfDespair_Atk_Strong") with { Volume = 0.2f }, Projectile.Center);
                                     speed = 16f;
+
+                                    if (Main.myPlayer == Projectile.owner)
+                                    {
+                                        LobotomyCorp.ScreenShake(10, 5f, 5f / 13f);
+                                    }
+                                    Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Projectile, ModContent.GetInstance<ExtractorPale>());
                                 }
                                 else
                                 {
@@ -261,7 +268,10 @@ namespace LobotomyCorp.Projectiles.Realized
                             if (Main.rand.NextBool(2))
                                 sound = "LobotomyCorp/Sounds/Item/Natural/KnightOfDespair_Stab";
                             if (modOwner.SwordSharpenedDespair)
+                            {
                                 sound += "_gaho";
+                                Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Projectile, ModContent.GetInstance<ExtractorPale>());
+                            }
                             SoundEngine.PlaySound(new SoundStyle(sound) with { Volume = 0.2f, MaxInstances = 0 }, Projectile.Center);
                         }
                     }
@@ -356,6 +366,8 @@ namespace LobotomyCorp.Projectiles.Realized
                         delta.Normalize();
                         Projectile.velocity = (delta * 18 / extraUpdateMult).RotatedByRandom(MathHelper.ToRadians(30));
                         SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Natural/KnightOfDespair_Gaho") with { Volume = 0.2f, PitchVariance = 0.2f, MaxInstances = 0}, Projectile.Center);
+
+                        Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Projectile, ModContent.GetInstance<ExtractorWhite>());
                     }
                 }
                 // Spawn Despair sword when missing
@@ -768,6 +780,10 @@ namespace LobotomyCorp.Projectiles.Realized
             target.immuneTime = 0;
             LobotomyWawPlayer modPlayer = target.GetModPlayer<LobotomyWawPlayer>();
             modPlayer.SwordSharpenedImpaledBy(Projectile, 0);
+            if (Main.myPlayer == Projectile.owner)
+            {
+                LobotomyCorp.ScreenShake(15, 10f, 10f / 13f);
+            }
             Projectile.Kill();
         }
 

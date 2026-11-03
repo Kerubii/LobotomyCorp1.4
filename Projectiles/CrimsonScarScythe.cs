@@ -36,6 +36,18 @@ namespace LobotomyCorp.Projectiles
             
         public override void AI() {
             Projectile.rotation += MathHelper.ToRadians(36);
+            if (Projectile.ai[0] > 0)
+            {
+                Projectile.ai[0]++;
+                if (Projectile.ai[0] % 15 == 0)
+                {
+                    Vector2 target = Projectile.Center + new Vector2(Main.rand.Next(-32, 32), Main.rand.Next(-32, 32));
+                    Vector2 speed = new Vector2(0, 12).RotatedBy(-10 - Main.rand.Next(30) * Projectile.direction);
+                    Vector2 pos = target - speed * 90;
+
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, speed, Projectile.type, Projectile.damage, Projectile.knockBack, Projectile.owner);
+                }
+            }
         }
 
         public override void OnKill(int timeLeft)

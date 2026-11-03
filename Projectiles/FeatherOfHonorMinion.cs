@@ -162,7 +162,7 @@ namespace LobotomyCorp.Projectiles
 
             if (Projectile.owner == Main.myPlayer)
             {
-                int p = Projectile.NewProjectile(projOwner.GetSource_FromThis(), Projectile.Center, shoot, ModContent.ProjectileType<FeatherOfHonor>(), Projectile.damage, Projectile.knockBack, projOwner.whoAmI, order, pen ? 3 : 4);
+                int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, shoot, ModContent.ProjectileType<FeatherOfHonor>(), Projectile.damage, Projectile.knockBack, projOwner.whoAmI, order, pen ? 3 : 4);
                 Main.projectile[p].timeLeft = 600;
                 Main.projectile[p].netUpdate = true;
             }

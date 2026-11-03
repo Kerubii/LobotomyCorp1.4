@@ -201,7 +201,6 @@ namespace LobotomyCorp.Players
             }
 
             float teee = (float)remainingTime / PenitenceMaxTime;
-            Main.NewText(remainingTime +" "+ PenitenceMaxTime);
 
             PenitenceMaxTime = 60 * 120;
 

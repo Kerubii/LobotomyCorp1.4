@@ -62,7 +62,7 @@ namespace LobotomyCorp.Projectiles
             speed.Normalize();
             speed *= 24f;
 
-            Projectile.NewProjectile(owner.GetSource_FromThis(), x, y, speed.X, speed.Y, ModContent.ProjectileType<CherryBlossomsPetal2>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), x, y, speed.X, speed.Y, ModContent.ProjectileType<CherryBlossomsPetal2>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
             base.OnHitNPC(target, hit, damageDone);
         }
 

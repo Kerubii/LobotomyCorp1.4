@@ -66,7 +66,7 @@ namespace LobotomyCorp.Projectiles.Realized
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             LobotomyAlephPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<LobotomyAlephPlayer>();
-            if (modPlayer.DaCapoSilentMusic)
+            if (modPlayer.DaCapoSilentMusic && target.type != NPCID.TargetDummy)
                 modPlayer.DaCapoTotalDamage += damageDone;
         }
 

@@ -1,4 +1,5 @@
 using LobotomyCorp.Configs;
+using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Util;
 using log4net.Util;
@@ -182,11 +183,26 @@ namespace LobotomyCorp.Items
             ConvertVanillaDamageToExtractor(Item);
         }
 
-        public static DamageClass RWBPEnable(DamageClass vanilla, DamageClass lobcorp)
+        public DamageClass RWBPEnable(DamageClass vanilla, DamageClass lobcorp)
         {
-            return ModContent.GetInstance<LobotomyServerConfig>().ExtractorClass ? lobcorp : vanilla;
+            return RWBPEnable(Item, vanilla, lobcorp);
         }
 
+
+        public static DamageClass RWBPEnable(Item item, DamageClass vanilla, DamageClass lobcorp)
+        {
+            if (ModContent.GetInstance<LobotomyServerConfig>().ExtractorClass)
+            {
+                if (ModLoader.TryGetMod("LobcorpModCPatch", out Mod res))
+                {
+                    item.GetGlobalItem<LobotomyGlobalItem>().StoredDamageClass = lobcorp;
+                    return vanilla;
+                }
+                return lobcorp;
+            }
+            return vanilla;
+        }
+                
         public static void ConvertVanillaDamageToExtractor(Item Item)
         {
             if (!ModContent.GetInstance<Configs.LobotomyServerConfig>().ExtractorDamageEnable)
@@ -724,12 +740,11 @@ namespace LobotomyCorp.Items
     {
         public sealed override void UseStyle(Player player, Rectangle heldItemFrame)
         {
-            if (Item.useStyle == 15)
+            if (UseStyleAlt(player, heldItemFrame) && Item.useStyle == 15)
             {
                 float rotation = ItemRotation(player);
                 PseudoUseStyleSwing(player, heldItemFrame, rotation);
             }
-            UseStyleAlt(player, heldItemFrame);
             base.UseStyle(player, heldItemFrame);
         }
 
@@ -892,24 +907,24 @@ namespace LobotomyCorp.Items
             return location;
         }
 
-        public virtual void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public virtual bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
+            return true;
         }
 
         public sealed override void UseItemFrame(Player player)
         {
-            if (Item.useStyle == 15)
+            if (UseItemFrameAlt(player) && Item.useStyle == 15)
             {
                 float rotation = ItemRotation(player);
                 LobItemFrame(player, rotation - 90);
-            }
-            UseItemFrameAlt(player);
+            }            
             base.UseItemFrame(player);
         }
 
-        public virtual void UseItemFrameAlt(Player player)
+        public virtual bool UseItemFrameAlt(Player player)
         {
-
+            return true;
         }
 
         /// <summary>
@@ -1154,14 +1169,13 @@ namespace LobotomyCorp.Items
 
         public sealed override void UseStyle(Player player, Rectangle heldItemFrame)
         {
-            if (Item.useStyle == 15)
+            if (UseStyleAlt(player, heldItemFrame) && Item.useStyle == 15)
             {
                 if (player.itemAnimation == (int)(player.itemAnimationMax * 0.6f) && SwingSound != null)
                     SoundEngine.PlaySound(SwingSound, player.Center);
                 float rotation = ItemRotation(player);
                 PseudoUseStyleSwing(player, heldItemFrame, rotation);
             }
-            UseStyleAlt(player, heldItemFrame);
             base.UseStyle(player, heldItemFrame);
         }
 
@@ -1178,19 +1192,25 @@ namespace LobotomyCorp.Items
             player.itemRotation = MathHelper.ToRadians(rotation - 45) * player.direction;
         }
 
-        public virtual void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public virtual bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
+            return true;
         }
 
         public sealed override void UseItemFrame(Player player)
         {
-            if (Item.useStyle == 15)
+            if (UseItemFrameAlt(player) && Item.useStyle == 15)
             {
                 float rotation = ItemRotation(player);
                 //PseudoUseItemFrame(player, rotation);
                 LobCorpLight.LobItemFrame(player, rotation - 90);
             }
             base.UseItemFrame(player);
+        }
+
+        public virtual bool UseItemFrameAlt(Player player)
+        {
+            return true;
         }
 
         /*
@@ -1224,7 +1244,7 @@ namespace LobotomyCorp.Items
 
         public sealed override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
-            if (Item.useStyle == 15)
+            if (UseItemHitboxAlt(player, ref hitbox, ref noHitbox) && Item.useStyle == 15)
             {
                 hitbox = new Rectangle((int)player.itemLocation.X, (int)player.itemLocation.Y, 32, 32);
                 if (!Main.dedServ)
@@ -1271,12 +1291,12 @@ namespace LobotomyCorp.Items
                 else
                     noHitbox = true;
             }
-            UseItemHitboxAlt(player, ref hitbox, ref noHitbox);
             base.UseItemHitbox(player, ref hitbox, ref noHitbox);
         }
 
-        public virtual void UseItemHitboxAlt(Player player, ref Rectangle hitbox, ref bool noHitbox)
+        public virtual bool UseItemHitboxAlt(Player player, ref Rectangle hitbox, ref bool noHitbox)
         {
+            return true;
         }
 
         public override bool? UseItem(Player player)

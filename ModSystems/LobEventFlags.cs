@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using LobotomyCorp.UI;
+﻿using LobotomyCorp.UI;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Terraria;
-using Terraria.UI;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using System.IO;
+using Terraria.UI;
 
 namespace LobotomyCorp.ModSystems
 {
@@ -16,6 +17,13 @@ namespace LobotomyCorp.ModSystems
         public static bool binahDoneTalk = false;
         public static bool downedAnArbiter = false;
         public static bool killedByRedMist = true;
+
+        /// <summary>
+        /// Used for Christmas EGO, same conds as Vanilla's normal christmas event check.
+        /// <br/>Done to prevent other kinds of forced christmas activation from mods or seeds
+        /// <br/>Checks on world load for simplicity
+        /// </summary>
+        public static bool IsChristmas;
 
         public enum FlagIDs
         {
@@ -35,6 +43,11 @@ namespace LobotomyCorp.ModSystems
             binahDoneTalk = false;
             downedAnArbiter = false;
             killedByRedMist = true;
+        }
+
+        public override void OnWorldLoad()
+        {
+            ChristmasCheck();
         }
 
         
@@ -140,6 +153,20 @@ namespace LobotomyCorp.ModSystems
             bossSpawn.Write((byte)3);
             bossSpawn.Write((byte)flagID);
             bossSpawn.Write(flagValue);
+        }
+        public void ChristmasCheck()
+        {
+            DateTime now = DateTime.Now;
+            int day = now.Day;
+            int month = now.Month;
+            if (day >= 15 && month == 12)
+            {
+                IsChristmas = true;
+            }
+            else
+            {
+                IsChristmas = false;
+            }
         }
     }
 }

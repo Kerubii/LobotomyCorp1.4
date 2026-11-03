@@ -1,53 +1,59 @@
-0.12.0 Changelog
+0.12.1 Changelog
+Hornet R
+-Permanent Worker Bees no longer despawn when touching water
+-Temporary Worker Bees are very slightly smaller to differentiate from the permanents
+-Hostile Worker Bees are very slightly larger with a faint glowing outline for visibility
 
-New R Weapon
-Penitence R
-Confession - When used, you and all allies heal 50% of your maximum health, all allies gain 'Atonement' for 5 minutes
-Hardship - While held with 'Atonement', 8% decreased movement speed and attacks nearby enemies with holy light at the cost of {0} mana
-Crown of Thorns - While held, taking damage reduces 'Atonement' and recovers some Mana from damage recieved
-|Atonement - Gain 2 defense and reduces healing gained and dealt by this EGO, Enemies are more likely to target you while this EGO is held
+Lamp
+-Removed onhit effect and on kill effect
+-Now creates an aura when swung that inflicts 'Everlasting Light' for 1 second
+-'Everlasting Light' increases damage taken from 'Lamp', deals damage overtime and has the previous onkill effect with lesser amount
+-Alt no longer inflicts Hellfire and inflicts Everlasting Light instead for 5 seconds
+-Recipe now use either Dungeon Lamps or Dungeon Lanterns
 
-Red Mist Expert mode drop
-'Seed of Light'
--15% increased EGO damage
--Certain Lobotomy EGOs have new base damage and new effects
--Most Lobotomy EGOs does not have new effects yet and will be added next update
+Christmas
+-Damage reduced and Projectile disabled if used outside the date of the Christmas event (December 15 to December 31)
+-Restriction removed during Hardmode
 
-Mimicry 
--Damage buffed (52 -> 60)
--Maximum life steal increased (Max 30 -> Max 60)
--Lifesteal now uses base damage (ignores certain boosts like crits)
--Now applies 'Hardening Shell' buff on lifesteal for 5 seconds
--Hardening Shell reduces damage taken by 20%
--After being hit, Reduces Hardening Shell turns to Failed Assimilation with the same timer
--Failed Assimilation reduces defense by 10
--Having either buffs stops Mimicry from lifestealing
+Smile R
+-The Bite attack deals 20% more dmg
+-Now has a small range to auto eat corpse nearby you at 30% mountain of corpses
+-Vomit consumes a flat 5 corpses instead of flat 1 corpses
 
-Mimicry R 
-Now heals the player with 'Shell' when uncharged (First and Second hit individually)
-'Shell' reworked
--Timer is capped at 1 minute
--Does not tick down while Mimicry is held
--'GoDdByE' hits adds a tiny bit to Shell's timer
--Reduces 10% of damage taken and turns into 'Imperfect Imitation' when the user is hit
-'Hollow Husk' is replaced by 'Imperfect Imitation'
--20% increased damage taken and turns into 'Shell' when hit, reducing its time
--Landing a 'GoDdByE' also reverts it back to 'Shell'
+Gaze
+-Now retracts after doing 10 hits
+-Reduced damage (25 -> 20)
+-Reduced damage ceiling (100% -> 75%)
 
-Misc lob ego changes:
-Amrita
--Ring of lights visually changed to a ring of beads that explode into smaller beads after a certain amount of time
-Adoration
--Now affected by gravity, removed the falling slime
--While charging, Erupts normal damage slime projectiles until firing
--Sticks to enemies when charged, dealing damage over time shortly before exploding instead of exploding on impact
+Doubled all dot debuff damage (They were undertuned all along....)
 
-Harmony R
--Added a short range projectile when its not hitting something
--Ramps up faster but starts slower
--I was gonna rework this more but the rework I thought kinda sucked ass so just this for now
+Removed Penitence R Debug text 
+Fixed Mimicry R Goodbye not working properly
+Fixed Road of King cooldown being cancellable
+Fixed Solemn Lament R Kaleidoscopes being the wrong color the whole time
+Reduced Da Capo R Perforamance opacity when the second one begins to 30%
+Da Capo's effects no longer trigger from Dummies
+Pleasure disables Mana Cuff and its upgrade's effects
 
-E.G.O damage type can now be disabled for mod compatibility
-Fixed potential E.G.O damage mod compatibility
-Fixed Life for a Daredevil R being able to hit invincible enemies
-"Bloom" is now disabled by default just to prevent bugs, enable it so effects look more vibrant 
+Adjusted Fragment of the Universe, Soda, Beak and Lamp recipe
+Recipes that uses Black Dye use Black Thread instead
+
+Increased Beak damage to 18 and fire rate to 18
+
+Added Screenshake to certain actions
+Fragments From Somewhere R Echoes
+DaCapo R Finale
+Faint Aroma R Spring's Genesis
+Faint Aroma R Magnificent End
+Mimicry R Goodbye
+Smile R Scream
+Smile R Vomit
+Remorse R A Crack in the Mind
+Remorse R Please Don't Vanish Like This
+Black Swan R Shriek
+Red Eyes R Cry Out
+Sword Sharpened with Tears R Justice
+Sword Sharpened with Tears R Hollow Pride
+Sound of a Star R Blue Star
+Life for a Daredevil R No Fear for Death
+Life for a Daredevil R Courage 

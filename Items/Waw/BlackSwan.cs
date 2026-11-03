@@ -1,4 +1,5 @@
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles;
 using Terraria;
 using Terraria.Audio;
@@ -22,7 +23,7 @@ namespace LobotomyCorp.Items.Waw
         {
             Item.damage = 42;
             Item.knockBack = 6;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>());
             Item.width = 40;
             Item.height = 40;
 

@@ -14,6 +14,8 @@ namespace LobotomyCorp.Buffs
 {
 	public class Absorption : ModBuff
 	{
+        
+
 		public override void SetStaticDefaults()
 		{
             BuffID.Sets.TimeLeftDoesNotDecrease[Type] = true;

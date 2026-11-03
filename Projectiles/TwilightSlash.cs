@@ -69,8 +69,12 @@ namespace LobotomyCorp.Projectiles
         {
 			float angle = Main.rand.NextFloat(6.28f);
 			Vector2 velocity = new Vector2(16f, 0f).RotatedBy(angle);
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center - velocity * 15, velocity, ModContent.ProjectileType<Projectiles.TwilightStrikes>(), hit.Damage / (int)(4 * 1.5f), 0, Projectile.owner, target.whoAmI, 1);
-		}
+			int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center - velocity * 15, velocity, ModContent.ProjectileType<Projectiles.TwilightStrikes>(), hit.Damage / (int)(4 * 1.5f), 0, Projectile.owner, target.whoAmI, 1);
+			Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Main.projectile[p]);
+			Main.projectile[p].netUpdate = true;
+
+            Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Projectile);
+        }
 
 		public override bool PreDraw(ref Color lightColor)
         {

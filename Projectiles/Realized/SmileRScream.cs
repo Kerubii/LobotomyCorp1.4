@@ -51,6 +51,8 @@ namespace LobotomyCorp.Projectiles.Realized
             {
                 Projectile.rotation = Main.rand.NextFloat(3.15f);
                 Projectile.localAI[0] = 1 + Main.rand.Next(3);
+                if (Main.myPlayer == Projectile.owner)
+                    LobotomyCorp.ScreenShake(5, 6f, 0.6f);
             }
 
             if (Projectile.ai[2] == 1)

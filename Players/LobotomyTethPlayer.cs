@@ -4,6 +4,7 @@ using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -153,8 +154,11 @@ namespace LobotomyCorp.Players
 
                 if (Player.ownedProjectileCounts[ModContent.ProjectileType<RemorseNailEX>()] == 0)
                 {
-                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseNailEX>(), 70, 0, Player.whoAmI);
-                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseHammerEX>(), 70, 0, Player.whoAmI);
+                    int p = Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseNailEX>(), 70, 0, Player.whoAmI);
+                    Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorPale>());
+
+                    p = Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<RemorseHammerEX>(), 70, 0, Player.whoAmI);
+                    Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorPale>());
                 }
             }
         }
@@ -310,7 +314,9 @@ namespace LobotomyCorp.Players
             }
             Vector2 position = Main.npc[target].Center;
             int real = target + 1;
-            Projectile.NewProjectile(Player.GetSource_FromThis(), position, Vector2.Zero, type, 1, 0, Player.whoAmI, -1, real);
+            int p = Projectile.NewProjectile(Player.GetSource_FromThis(), position, Vector2.Zero, type, 1, 0, Player.whoAmI, -1, real);
+
+            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorPale>());
         }
 
         public bool RedEyesEitherHeld => Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Ruina.Literature.RedEyesR>() || Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Teth.RedEyes>();

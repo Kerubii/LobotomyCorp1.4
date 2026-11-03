@@ -1,9 +1,10 @@
+using LobotomyCorp.Players.DamageType;
+using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
+using System;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LobotomyCorp.Projectiles;
-using Terraria;
-using System;
 
 namespace LobotomyCorp.Items.Aleph
 {
@@ -20,7 +21,7 @@ namespace LobotomyCorp.Items.Aleph
         public override void LobSetDefaults()
         {
             Item.damage = 48;
-            Item.DamageType = DamageClass.Magic;
+            Item.DamageType = RWBPEnable(DamageClass.Magic, ModContent.GetInstance<ExtractorBlack>());
             Item.mana = 6;
             Item.width = 40;
             Item.height = 16;

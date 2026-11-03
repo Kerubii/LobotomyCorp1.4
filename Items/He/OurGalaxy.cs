@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using System.Globalization;
@@ -21,7 +22,7 @@ namespace LobotomyCorp.Items.He
         public override void LobSetDefaults()
         {
             Item.damage = 30;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 26;
@@ -57,7 +58,7 @@ namespace LobotomyCorp.Items.He
             for (int i = 0; i < num; i++)
             {
                 Vector2 vel = velocity.RotatedByRandom(MathHelper.ToRadians(30));
-                Projectile.NewProjectile(player.GetSource_FromThis(), position, vel, type, (int)(damage * 0.6f), knockback, player.whoAmI);
+                Projectile.NewProjectile(source, position, vel, type, (int)(damage * 0.6f), knockback, player.whoAmI);
             }
             return false;
             //return base.Shoot(player, source, position, velocity, type, damage, knockback);

@@ -1,4 +1,5 @@
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -11,14 +12,14 @@ namespace LobotomyCorp.Items.Teth
     {
         public override void LobSetDefaults()
         {
-            Item.damage = 16;
+            Item.damage = 18;
             Item.knockBack = 4;
-            Item.DamageType = DamageClass.Ranged;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             Item.width = 40;
             Item.height = 16;
 
-            Item.useTime = 20;
-            Item.useAnimation = 20;
+            Item.useTime = 18;
+            Item.useAnimation = 18;
             Item.useStyle = ItemUseStyleID.Shoot;
 
             Item.noMelee = true;
@@ -114,7 +115,8 @@ namespace LobotomyCorp.Items.Teth
         {
             CreateRecipe()
             .AddIngredient(ItemID.FlintlockPistol)
-            .AddIngredient(ItemID.Feather, 2)
+            .AddIngredient(ItemID.Feather, 5)
+            .AddIngredient(ItemID.SharkToothNecklace)
             .AddTile(Mod, "BlackBox")
             .Register();
         }

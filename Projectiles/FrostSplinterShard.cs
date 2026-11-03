@@ -92,7 +92,6 @@ namespace LobotomyCorp.Projectiles
                 {
                     if (Main.player[Projectile.owner].CanNPCBeHitByPlayerOrPlayerProjectile(Main.npc[(int)Target], Projectile))
                         Main.player[Projectile.owner].ApplyDamageToNPC(Main.npc[(int)Target], Projectile.damage, 0, 1, Main.rand.Next(100) < Projectile.CritChance, Projectile.DamageType, true);
-
                     Projectile.Kill();
                 }
             }

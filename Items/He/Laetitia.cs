@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -17,7 +18,7 @@ namespace LobotomyCorp.Items.He
         public override void LobSetDefaults()
         {
             Item.damage = 50; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
-            Item.DamageType = DamageClass.Ranged; // sets the damage type to ranged
+            Item.DamageType = RWBPEnable(DamageClass.Ranged, ModContent.GetInstance<ExtractorBlack>()); // sets the damage type to ranged
             Item.width = 40; // hitbox width of the Item
             Item.height = 42; // hitbox height of the Item
             Item.useTime = 24; // The Item's use time in ticks (60 ticks == 1 second.)
@@ -42,7 +43,7 @@ namespace LobotomyCorp.Items.He
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            if (RedMistMaskUpgrade(player, RiskLevel.He))
+            if (RedMistMaskUpgrade(player))
             {
                 int p = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
                 Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().LaetitiaBullet = true;

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -24,6 +25,7 @@ namespace LobotomyCorp.Items.He
             Item.autoReuse = true;
             Item.UseSound = LobotomyCorp.WeaponSounds.Fist;
             Item.rare = ModContent.RarityType<HeB>();
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             EGORiskLevel = RiskLevel.He;
         }
         /*

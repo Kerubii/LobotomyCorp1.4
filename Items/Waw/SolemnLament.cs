@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -50,7 +51,7 @@ namespace LobotomyCorp.Items.Waw
             Item.useAnimation = 16;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.autoReuse = true;
-            Item.DamageType = DamageClass.Ranged;
+            Item.DamageType = RWBPEnable(DamageClass.Ranged, ModContent.GetInstance<ExtractorWhite>());
             //Item.UseSound = LobotomyCorp.WeaponSounds.Gun;
             Item.noMelee = true;
             AlternateAttack = false;
@@ -148,7 +149,10 @@ namespace LobotomyCorp.Items.Waw
             {
                 Vector2 vel = new Vector2(0, -6).RotatedBy(velocity.ToRotation());
                 if (player.CheckMana(ManaCost(player), true))
-                    Projectile.NewProjectile(source, position + vel, velocity, type, damage, knockback);
+                {
+                    int p = Projectile.NewProjectile(player.GetSource_FromThis(), position + vel, velocity, type, damage, knockback);
+                    Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorBlack>());
+                }
                 return true;
             }
             else
@@ -156,9 +160,11 @@ namespace LobotomyCorp.Items.Waw
                 if (AlternateAttack)
                 {
                     if (player.CheckMana(ManaCost(player), true))
-                        return true;
-                    else
-                        return false;
+                    {
+                        int p = Projectile.NewProjectile(player.GetSource_FromThis(), position, velocity, type, damage, knockback);
+                        Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorBlack>());
+                    }
+                    return false;
                 }    
             }
             return true;
@@ -219,7 +225,7 @@ namespace LobotomyCorp.Items.Waw
             CreateRecipe()
             .AddIngredient(ItemID.IllegalGunParts)
             .AddIngredient(ItemID.SilverDye, 2)
-            .AddIngredient(ItemID.BlackDye, 2)
+            .AddIngredient(ItemID.BlackThread, 2)
             .AddRecipeGroup("LobotomyCorp:Butterflies", 5)
             .AddTile(Mod, "BlackBox2")
             .Register();

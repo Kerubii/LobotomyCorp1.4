@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -19,7 +20,7 @@ namespace LobotomyCorp.Items.Waw
         public override void LobSetDefaults()
         {
             Item.damage = 40;
-            Item.DamageType = DamageClass.Ranged;
+            Item.DamageType = RWBPEnable(DamageClass.Ranged, ModContent.GetInstance<ExtractorRed>());
             Item.width = 40;
             Item.height = 20;
             Item.useTime = 26;

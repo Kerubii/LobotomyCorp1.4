@@ -1,16 +1,22 @@
+using LobotomyCorp.ModSystems;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.He
 {
     public class Christmas : LobCorpLight
     {
+        public static LocalizedText ChristmasTooltip { get; private set; }
+
         public override void SetStaticDefaults()
         {
             // DisplayName.SetDefault("Penitence"); // By default, capitalization in classnames will damage spaces to the display name. You can customize the display name here by uncommenting this line.
@@ -18,12 +24,13 @@ namespace LobotomyCorp.Items.He
 							   "The stitches are carefully woven, but for whom or for what, exactly, is unclear.\n" +
 							   "It is not elegant, but you can feel the devotion of its creator.\n" +
 							   "Can be obtained from Presents"); */
+            ChristmasTooltip = this.GetLocalization("TooltipWeakened");
         }
 
         public override void LobSetDefaults()
         {
             Item.damage = 40;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorWhite>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 24;
@@ -40,6 +47,26 @@ namespace LobotomyCorp.Items.He
             EGORiskLevel = RiskLevel.He;
 
             RedMistMaskDamageBoost = 0.5f;
+        }
+
+        public override void LobModifyTooltips(List<TooltipLine> tooltips)
+        {
+            if (LobEventFlags.IsChristmas || Main.hardMode)
+            {
+                var line = new TooltipLine(Mod, "LobotomyCorp:ChristmasLine", ChristmasTooltip.Value);
+                tooltips.Add(line);
+            }
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
+        {
+            if (!LobEventFlags.IsChristmas && !Main.hardMode)
+                damage.Base -= .75f;
+        }
+
+        public override bool CanShoot(Player player)
+        {
+            return LobEventFlags.IsChristmas || Main.hardMode;
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)

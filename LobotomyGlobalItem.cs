@@ -18,6 +18,8 @@ namespace LobotomyCorp
 
         public override bool InstancePerEntity => true;
 
+        public DamageClass StoredDamageClass; 
+
         public override GlobalItem Clone(Item item, Item itemClone)
         {
             return base.Clone(item, itemClone);

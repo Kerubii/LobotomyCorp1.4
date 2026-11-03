@@ -1,4 +1,5 @@
 using LobotomyCorp.Buffs;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Util;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
@@ -28,7 +29,7 @@ namespace LobotomyCorp.Items.Aleph
         public override void LobSetDefaults()
         {
             Item.damage = 60;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 32;
@@ -73,7 +74,7 @@ namespace LobotomyCorp.Items.Aleph
             return true;
         }
 
-        public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public override bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
             if (Item.useStyle == 15)
             {
@@ -103,12 +104,14 @@ namespace LobotomyCorp.Items.Aleph
 
                 SoundEngine.PlaySound(swingSound, player.Center);
             }
+            return false;
         }
 
-        public override void UseItemFrameAlt(Player player)
+        public override bool UseItemFrameAlt(Player player)
         {
             float rotation = rot(player);
             LobItemFrame(player, rotation - 90);
+            return false;
         }
 
         private float rot(Player player)

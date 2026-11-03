@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
@@ -21,7 +22,7 @@ namespace LobotomyCorp.Items.Zayin
         public override void LobSetDefaults()
         {
             Item.damage = 18;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 30;
@@ -57,7 +58,7 @@ namespace LobotomyCorp.Items.Zayin
                 type = ModContent.ProjectileType<WingbeatFairy2>();
                 if (player.ownedProjectileCounts[type] < 3)
                 {
-                    int n = Projectile.NewProjectile(player.GetSource_FromThis(), position, velocity * 1.1f, type, damage / 3, knockback, player.whoAmI);
+                    int n = Projectile.NewProjectile(source, position, velocity * 1.1f, type, damage / 3, knockback, player.whoAmI);
                 }
                 return true;
             }

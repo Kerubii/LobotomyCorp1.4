@@ -227,6 +227,9 @@ namespace LobotomyCorp.Projectiles.Realized
             float rotation = Projectile.rotation;
             Rectangle frame = currentTex.Frame();
             Color baseColor = Color.White * 0.8f;
+
+            if (Projectile.ai[1] > 0)
+                baseColor *= 0.2f;
             
             if (Time > moveclap)
             {
@@ -372,6 +375,9 @@ namespace LobotomyCorp.Projectiles.Realized
 
             player.statLife += player.statLifeMax2;
             CombatText.NewText(player.getRect(), CombatText.HealLife, player.statLifeMax2);
+
+            if (Main.myPlayer == Projectile.owner)
+               ScreenShake(20, 18f, 18 / 15f);
         }
 
         private void DisplayMovement(int movement = 1)

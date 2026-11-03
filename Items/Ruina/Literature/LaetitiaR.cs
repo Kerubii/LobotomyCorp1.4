@@ -1,9 +1,10 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Ruina.Literature
 {
@@ -28,7 +29,7 @@ namespace LobotomyCorp.Items.Ruina.Literature
 			Item.height = 40;
 
 			Item.damage = 44;
-			Item.DamageType = DamageClass.Summon;
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Summon, ModContent.GetInstance<ExtractorBlack>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.knockBack = 6;
 			Item.useTime = 26;

@@ -4,6 +4,7 @@ using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.NPCs.RedMist;
 using LobotomyCorp.PlayerDrawEffects;
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -414,7 +415,8 @@ namespace LobotomyCorp.Players
                             int slashes = 2;
                             if (LifeForADareDevilGift <= 600)
                                 slashes += 2;
-                            Projectile.NewProjectile(Player.GetSource_FromThis(), Player.position, Vector2.Zero, ModContent.ProjectileType<Projectiles.Realized.LifeForADareDevilEffectsSlashes>(), hitDamage, 0, Player.whoAmI, 60, slashes, n.whoAmI);
+                            int p = Projectile.NewProjectile(Player.GetSource_FromThis(), Player.position, Vector2.Zero, ModContent.ProjectileType<Projectiles.Realized.LifeForADareDevilEffectsSlashes>(), hitDamage, 0, Player.whoAmI, 60, slashes, n.whoAmI);
+                            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorPale>());
                         }
                         if (n.realLife > -1)
                         {
@@ -433,7 +435,11 @@ namespace LobotomyCorp.Players
 
             float scale = 1f + 1.5f * (1f - Player.statLife / (float)Player.statLifeMax2);
             if (Main.myPlayer == Player.whoAmI)
-                Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<Projectiles.Realized.LifeForADareDevilEffects>(), 0, 0, Player.whoAmI, scale, Player.direction);
+            {
+                int p = Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero, ModContent.ProjectileType<Projectiles.Realized.LifeForADareDevilEffects>(), 0, 0, Player.whoAmI, scale, Player.direction);
+                Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorPale>());
+            }
+                
 
             Player.immune = true;
             Player.immuneTime = 45;
@@ -457,7 +463,8 @@ namespace LobotomyCorp.Players
 
             if (Main.myPlayer == Player.whoAmI)
             {
-                Projectile.NewProjectile(Player.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<Projectiles.Realized.LifeForADareDevilEffects>(), 0, 0, Player.whoAmI, -Main.rand.NextFloat(6.28f), width * scale);
+                int p = Projectile.NewProjectile(Player.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<Projectiles.Realized.LifeForADareDevilEffects>(), 0, 0, Player.whoAmI, -Main.rand.NextFloat(6.28f), width * scale);
+                Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], ModContent.GetInstance<ExtractorPale>());
             }
         }
 

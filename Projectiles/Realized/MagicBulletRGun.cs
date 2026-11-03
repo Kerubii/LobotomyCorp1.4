@@ -249,7 +249,7 @@ namespace LobotomyCorp.Projectiles.Realized
 			Vector2 velocityRotation = new Vector2(1, 0).RotatedBy(rotation);
 			Vector2 spawnerPosition = npc.Center - velocityRotation * 128f;
 
-			return Projectile.NewProjectile(player.GetSource_FromThis(), spawnerPosition, velocityRotation * 12f, ModContent.ProjectileType<MagicBulletSpawner>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target + 1);
+			return Projectile.NewProjectile(Projectile.GetSource_FromThis(), spawnerPosition, velocityRotation * 12f, ModContent.ProjectileType<MagicBulletSpawner>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target + 1);
 		}
 
 		private int SpawnBulletOnPlayer(Player player, float rotation)

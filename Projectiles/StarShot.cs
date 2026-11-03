@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -62,6 +63,26 @@ namespace LobotomyCorp.Projectiles
             {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 58, Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f, 150, default(Color), 1.2f);
                 Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.position, new Vector2(Projectile.velocity.X * 0.05f, Projectile.velocity.Y * 0.05f), Main.rand.Next(16, 18), 1f);
+            }
+
+            if (Projectile.localAI[2] == 0)
+            {
+                Projectile.localAI[2]++;
+                switch (Projectile.ai[0])
+                {
+                    case 0:
+                        Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Projectile, ModContent.GetInstance<ExtractorRed>());
+                        break;
+                    case 2:
+                        Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Projectile, ModContent.GetInstance<ExtractorBlack>());
+                        break;
+                    case 3:
+                        Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Projectile, ModContent.GetInstance<ExtractorPale>());
+                        break;
+                    case 1:
+                        Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Projectile, ModContent.GetInstance<ExtractorWhite>());
+                        break;
+                }
             }
         }
 

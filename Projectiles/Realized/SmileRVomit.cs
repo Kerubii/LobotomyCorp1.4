@@ -42,6 +42,9 @@ namespace LobotomyCorp.Projectiles.Realized
             {
                 Projectile.velocity *= 0.95f;
             }
+
+            if (Main.myPlayer == Projectile.owner)
+                LobotomyCorp.ScreenShake(5, 2f, 0.2f);
         }
 
         public override bool? CanHitNPC(NPC target)

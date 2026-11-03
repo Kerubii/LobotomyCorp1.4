@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -20,7 +21,7 @@ namespace LobotomyCorp.Items.He
         public override void LobSetDefaults()
         {
             Item.damage = 77; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
-            Item.DamageType = DamageClass.Magic; ; // sets the damage type to ranged
+            Item.DamageType = RWBPEnable(DamageClass.Magic, ModContent.GetInstance<ExtractorWhite>()); // sets the damage type to ranged
             Item.width = 40; // hitbox width of the Item
             Item.height = 38; // hitbox height of the Item
             Item.useTime = 38; // The Item's use time in ticks (60 ticks == 1 second.)

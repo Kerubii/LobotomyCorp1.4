@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
 using rail;
@@ -23,7 +24,7 @@ namespace LobotomyCorp.Items.Aleph
         public override void LobSetDefaults()
         {
             Item.damage = 27;
-            Item.DamageType = DamageClass.Summon;
+            Item.DamageType = RWBPEnable(DamageClass.Summon, ModContent.GetInstance<ExtractorWhite>());
             Item.mana = 6;
             Item.width = 40;
             Item.height = 40;

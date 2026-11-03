@@ -1,10 +1,11 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using System;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Ruina.Art
 {
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Items.Ruina.Art
 			Item.height = 64;
 
 			Item.damage = 90;
-			Item.DamageType = DamageClass.Magic;
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Magic, ModContent.GetInstance<ExtractorBlack>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.knockBack = 1f;
 			Item.useTime = 11;

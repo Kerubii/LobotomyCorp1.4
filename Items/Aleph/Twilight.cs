@@ -1,9 +1,11 @@
+using LobotomyCorp.Configs;
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Audio;
 
 namespace LobotomyCorp.Items.Aleph
 {
@@ -24,7 +26,7 @@ namespace LobotomyCorp.Items.Aleph
         {
             Item.damage = 68;
             Item.scale = 1.3f;
-            Item.DamageType = DamageClass.MeleeNoSpeed;
+            Item.DamageType = RWBPEnable(DamageClass.MeleeNoSpeed, ModContent.GetInstance<ExtractorBlack>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 26;
@@ -84,6 +86,17 @@ namespace LobotomyCorp.Items.Aleph
             }
         }
 
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (ModContent.GetInstance<LobotomyServerConfig>().ExtractorClass)
+            {
+                Projectile.NewProjectile(player.GetSource_FromThis(), position, velocity, type, damage, knockback, player.whoAmI);
+                return false;
+            }
+
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
+        }
+
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
@@ -113,7 +126,7 @@ namespace LobotomyCorp.Items.Aleph
             return base.UseSpeedMultiplier(player);
         }
 
-        public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public override bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
             ResetPlayerAttackCooldown(player);
             /*
@@ -127,7 +140,7 @@ namespace LobotomyCorp.Items.Aleph
 					Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, vel, ModContent.ProjectileType<Projectiles.TwilightEye>(), 0, 0, player.whoAmI, MathHelper.ToRadians(5) * player.direction);
 				}
 			}*/
-            base.UseStyleAlt(player, heldItemFrame);
+            return true;
         }
 
         public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

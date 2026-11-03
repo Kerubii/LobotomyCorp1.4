@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -17,7 +18,7 @@ namespace LobotomyCorp.Items.Zayin
         public override void LobSetDefaults()
         {
             Item.damage = 9;
-            Item.DamageType = DamageClass.Ranged;
+            Item.DamageType = RWBPEnable(DamageClass.Ranged, ModContent.GetInstance<ExtractorRed>());
             Item.width = 40;
             Item.height = 20;
             Item.useTime = 16;
@@ -52,9 +53,9 @@ namespace LobotomyCorp.Items.Zayin
             if (RedMistMaskUpgrade(player))
             {
                 //Soder Shoot
-                int n = Projectile.NewProjectile(player.GetSource_FromThis(), position, velocity, type, damage, knockback, player.whoAmI);
-                Main.projectile[n].GetGlobalProjectile<LobotomyGlobalProjectile>().SodaSpecial = true;
-                Main.projectile[n].netUpdate = true;
+                int p = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+
+                Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().SodaSpecial = true;
                 return false;
             }
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
@@ -88,7 +89,7 @@ namespace LobotomyCorp.Items.Zayin
             .AddIngredient(RecipeGroupID.IronBar, 10)
             .AddIngredient(ItemID.LesserHealingPotion)
             .AddIngredient(ItemID.LesserManaPotion)
-            .AddIngredient(ItemID.BottledHoney)
+            .AddIngredient(ItemID.FruitJuice)
             .AddTile(Mod, "BlackBox")
             .Register();
         }

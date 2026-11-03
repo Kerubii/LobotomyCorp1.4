@@ -1,7 +1,9 @@
 using LobotomyCorp.Buffs;
+using LobotomyCorp.Configs;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.ModSystems;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles;
 using LobotomyCorp.Projectiles.Realized;
 using LobotomyCorp.Projectiles.RedMist;
@@ -36,6 +38,9 @@ namespace LobotomyCorp
         public int SolitudeTimer = 0;
         public bool SolitudeSpecial = false;
         public bool LaetitiaBullet = false;
+
+        public DamageClass DynamicDamageClass;
+        public bool ForceChange = false;
 
         public static void SetDeathAnimation(Projectile p, int deathAnimation)
         {
@@ -169,7 +174,7 @@ namespace LobotomyCorp
 
             if (LampArrow)
             {
-                target.AddBuff(BuffID.OnFire3, 4 * 60);
+                LobotomyGlobalNPC.LampInflictEverlastingLight(target, 5 * 60, projectile.damage, projectile.owner);
             }
 
             if (projectile.owner == Main.myPlayer)
@@ -199,13 +204,21 @@ namespace LobotomyCorp
             {
                 modifiers.SourceDamage += LobotomyWawPlayer.CrimsonScarPreyBoost;
             }
+
+            if (LampArrow)
+            {
+                if (target.HasBuff<LampLightDebuff>())
+                {
+                    modifiers.SourceDamage += 0.4f;
+                }
+            }
         }
 
         public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
         {
             if (SodaSpecial)
             {
-                Projectile.NewProjectile(Main.player[projectile.owner].GetSource_FromThis(), projectile.Center, -oldVelocity, ModContent.ProjectileType<SodaGeyser>(), projectile.damage, projectile.knockBack, projectile.owner);
+                Projectile.NewProjectile(projectile.GetSource_FromThis(), projectile.Center, -oldVelocity, ModContent.ProjectileType<SodaGeyser>(), projectile.damage, projectile.knockBack, projectile.owner);
             }
             return base.OnTileCollide(projectile, oldVelocity);
         }
@@ -245,6 +258,58 @@ namespace LobotomyCorp
             SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Literature/Laetitia_Friend_Born") with { Volume = 0.2f }, target.Center);
             Projectile.NewProjectile(Main.player[owner].GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<LaetitiaExplosion>(), damage, 0, owner);
             Projectile.NewProjectile(Main.player[owner].GetSource_FromThis(), target.Center, new Vector2(12, 0).RotatedByRandom(6.28f), ModContent.ProjectileType<LaetitiaFriendRocket>(), damage, 0f, owner, target.whoAmI);
+        }
+        
+        /// <summary>
+        /// Changes damage type to another, Only used for RWBP dynamically changing
+        /// </summary>
+        /// <param name="projectile"></param>
+        /// <param name="dmg"></param>
+        public void DynamicChangeDamageType(Projectile projectile, DamageClass dmg)
+        {
+            if (ModContent.GetInstance<LobotomyServerConfig>().ExtractorClass)
+            {
+                if (ModLoader.TryGetMod("LobcorpModCPatch", out Mod res))
+                {
+                    DynamicDamageClass = dmg;
+                    ForceChange = true;
+                    return;
+                }
+                projectile.DamageType = dmg;
+            }
+            return;
+        }
+
+        public void DynamicChangeDamageTypeRandom(Projectile projectile)
+        {
+            if (ModContent.GetInstance<LobotomyServerConfig>().ExtractorClass)
+            {
+                DamageClass dmg;
+                switch (Main.rand.Next(4))
+                {
+                    case 0:
+                        dmg = ModContent.GetInstance<ExtractorRed>();
+                        break;
+                    case 1:
+                        dmg = ModContent.GetInstance<ExtractorWhite>();
+                        break;
+                    case 2:
+                        dmg = ModContent.GetInstance<ExtractorBlack>();
+                        break;
+                    default:
+                        dmg = ModContent.GetInstance<ExtractorPale>();
+                        break;
+                }
+
+                if (ModLoader.TryGetMod("LobcorpModCPatch", out Mod res))
+                {
+                    DynamicDamageClass = dmg;
+                    ForceChange = true;
+                    return;
+                }
+                projectile.DamageType = dmg;
+            }
+            return;
         }
     }
 }

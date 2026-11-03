@@ -19,7 +19,7 @@ namespace LobotomyCorp.Items.Ruina.Art
         public override void SetDefaults() 
 		{
             Item.damage = 240;
-			Item.DamageType = DamageClass.Melee;
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorWhite>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;
@@ -231,7 +231,7 @@ namespace LobotomyCorp.Items.Ruina.Art
             }
 
             LobotomyAlephPlayer modPlayer = player.GetModPlayer<LobotomyAlephPlayer>();
-            if (modPlayer.DaCapoSilentMusic)
+            if (modPlayer.DaCapoSilentMusic && target.type != NPCID.TargetDummy)
                 modPlayer.DaCapoTotalDamage += damageDone;
 
             base.OnHitNPC(player, target, hit, damageDone);

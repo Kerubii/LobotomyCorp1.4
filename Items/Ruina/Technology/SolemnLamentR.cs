@@ -53,7 +53,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
             EgoColor = LobotomyCorp.WawRarity;
 
             Item.damage = 62;
-            Item.DamageType = DamageClass.Ranged; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Ranged, ModContent.GetInstance<ExtractorWhite>()); LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;
 
@@ -181,19 +181,24 @@ namespace LobotomyCorp.Items.Ruina.Technology
         {
             if (Main.myPlayer == player.whoAmI)
             {
+                DamageClass dtype = ModContent.GetInstance<ExtractorWhite>();
                 if (player.altFunctionUse != 2)
                 {
                     bool fire = true;
                     if (!modPlayer(player).SolemnSwitch)
                     {
                         if (AltAmmo(player))
+                        {
                             AltAmmoConsume(player, ref type, ref velocity.X, ref velocity.Y, ref damage);
+                            dtype = ModContent.GetInstance<ExtractorBlack>();
+                        }
                         else
                             fire = false;
                     }
                     if (fire)
                     {
-                        Main.projectile[Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI)].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = modPlayer(player).SolemnSwitch ? (byte)1 : (byte)2;
+                        int p = Projectile.NewProjectile(player.GetSource_FromThis(), position, velocity, type, damage, knockback, player.whoAmI);
+                        Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = modPlayer(player).SolemnSwitch ? (byte)2 : (byte)1;
                         int dustType = modPlayer(player).SolemnSwitch ? 91 : 109;
                         for (int i = 0; i < 10; i++)
                         {
@@ -205,6 +210,7 @@ namespace LobotomyCorp.Items.Ruina.Technology
                             d.noGravity = true;
                             d.fadeIn = 1.2f;
                         }
+                        Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], dtype);
                     }
                 }
                 else
@@ -213,7 +219,10 @@ namespace LobotomyCorp.Items.Ruina.Technology
                     if (!modPlayer(player).SolemnSwitch)
                     {
                         if (AltAmmo(player))
+                        {
                             AltAmmoConsume(player, ref type, ref velocity.X, ref velocity.Y, ref damage);
+                            dtype = ModContent.GetInstance<ExtractorBlack>();
+                        }
                         else
                             fire = false;
                     }
@@ -230,9 +239,11 @@ namespace LobotomyCorp.Items.Ruina.Technology
                                 tempVel *= Main.rand.NextFloat(0.6f, 1f);
                                 tempVel = tempVel.RotatedByRandom(MathHelper.ToRadians(15));
                             }
-                            int p = Projectile.NewProjectile(source, position, tempVel, ModContent.ProjectileType<Projectiles.Kaleidoscope>(), damage, knockback, player.whoAmI, -type);
-                            Main.projectile[p].localAI[0] = modPlayer(player).SolemnSwitch ? 1 : 2;
-                            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = modPlayer(player).SolemnSwitch ? (byte)1 : (byte)2;
+
+                            int p = Projectile.NewProjectile(player.GetSource_FromThis(), position, tempVel, ModContent.ProjectileType<Projectiles.Kaleidoscope>(), damage, knockback, player.whoAmI, -type);
+                            Main.projectile[p].localAI[0] = modPlayer(player).SolemnSwitch ? 2 : 1;
+                            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().Lament = modPlayer(player).SolemnSwitch ? (byte)2 : (byte)1;
+                            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageType(Main.projectile[p], dtype);
                         }
                         int dustType = modPlayer(player).SolemnSwitch ? 91 : 109;
                         for (int i = 0; i < 10; i++)

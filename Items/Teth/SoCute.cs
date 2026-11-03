@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -18,6 +19,7 @@ namespace LobotomyCorp.Items.Teth
         {
             Item.CloneDefaults(ItemID.CopperShortsword);
             Item.shoot = ModContent.ProjectileType<Projectiles.SoCute>();
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             Item.damage = 28;
             Item.useAnimation = 12;
             Item.useTime = 12;

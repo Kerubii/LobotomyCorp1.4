@@ -116,7 +116,7 @@ namespace LobotomyCorp.Projectiles.Realized
             }
 
             LobotomyAlephPlayer modPlayer = player.GetModPlayer<LobotomyAlephPlayer>();
-            if (modPlayer.DaCapoSilentMusic)
+            if (modPlayer.DaCapoSilentMusic && target.type != NPCID.TargetDummy)
                 modPlayer.DaCapoTotalDamage += damageDone;
         }
 

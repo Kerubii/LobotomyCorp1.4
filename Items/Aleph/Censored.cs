@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Items.Aleph
             Item.damage = 42;
             Item.knockBack = 6;
             Item.scale = 1.3f;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>());
             Item.width = 40;
             Item.height = 40;
 

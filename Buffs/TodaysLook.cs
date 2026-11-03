@@ -7,12 +7,23 @@ namespace LobotomyCorp.Buffs
 {
 	public class TodaysLook : ModBuff
 	{
-		public override void SetStaticDefaults()
+		public static LocalizedText Happy { get; private set; }
+        public static LocalizedText Smile { get; private set; }
+        public static LocalizedText Neutral { get; private set; }
+        public static LocalizedText Sad { get; private set; }
+        public static LocalizedText Angry { get; private set; }
+
+        public override void SetStaticDefaults()
 		{
 			// DisplayName.SetDefault("Look for the Day");
 			// Description.SetDefault("The Look for the Day");
 			Main.buffNoTimeDisplay[Type] = true;
-		}
+			Happy = this.GetLocalization("Happy");
+            Smile = this.GetLocalization("Smile");
+            Neutral = this.GetLocalization("Neutral");
+            Sad = this.GetLocalization("Sad");
+            Angry = this.GetLocalization("Angry");
+        }
 
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
@@ -20,20 +31,20 @@ namespace LobotomyCorp.Buffs
 			switch (todaysLook)
             {
 				case 0://Happy
-					tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.TodaysLook.Happy");
+					tip = Happy.Value;
 					break;
 				case 1://Smile
-					tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.TodaysLook.Smile");
-					break;
+					tip = Smile.Value;
+                    break;
 				default://Neutral
-					tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.TodaysLook.Neutral");
-					break;
+					tip = Neutral.Value;
+                    break;
 				case 3://Sad
-					tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.TodaysLook.Sad");
-					break;
+					tip = Sad.Value;
+                    break;
 				case 4://Angry
-					tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.TodaysLook.Angry");
-					break;
+					tip = Angry.Value;
+                    break;
             }
         }
 

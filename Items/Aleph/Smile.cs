@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -22,7 +23,7 @@ namespace LobotomyCorp.Items.Aleph
         public override void LobSetDefaults()
         {
             Item.damage = 94;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>());
             Item.width = 40;
             Item.height = 40;
 
@@ -51,7 +52,7 @@ namespace LobotomyCorp.Items.Aleph
             return true;
         }
 
-        public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public override bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
             if (player.altFunctionUse != 2)
                 ResetPlayerAttackCooldown(player);
@@ -84,6 +85,7 @@ namespace LobotomyCorp.Items.Aleph
             {
                 player.itemLocation.X -= 12 * player.direction;
             }
+            return true;
         }
 
         public override bool? UseItem(Player player)
@@ -137,7 +139,7 @@ namespace LobotomyCorp.Items.Aleph
                     float rotation = MathHelper.ToRadians((Main.rand.Next(20) - 2) * player.direction);
                     float velSpeed = velocity.Length() * -22f;
                     Vector2 vel = new Vector2(0, velSpeed).RotatedBy(rotation);
-                    Projectile.NewProjectile(player.GetSource_FromThis(), position, vel, type, (int)(damage * 0.7f), 0, player.whoAmI, (int)(player.itemAnimationMax * 0.6f));
+                    Projectile.NewProjectile(source, position, vel, type, (int)(damage * 0.7f), 0, player.whoAmI, (int)(player.itemAnimationMax * 0.6f));
                 }
                 return false;
             }

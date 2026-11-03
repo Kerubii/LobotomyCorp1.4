@@ -113,6 +113,11 @@ namespace LobotomyCorp.Projectiles.Realized
                                     //n.GetGlobalNPC<LobotomyGlobalNPC>().FaintAromaLaurelWreath = 0f;
                                 }
                             }
+
+                            if (Main.myPlayer == Projectile.owner)
+                            {
+                                LobotomyCorp.ScreenShake(15, 15f, 1f);
+                            }
                         }
 
                         //Doubled for Bloom Purposes
@@ -241,6 +246,12 @@ namespace LobotomyCorp.Projectiles.Realized
             target.GetGlobalNPC<LobotomyGlobalNPC>().FaintAromaLaurelWreath = 0.15f;
 
             target.immune[Projectile.owner] = Projectile.timeLeft - Main.player[Projectile.owner].itemAnimationMax;
+
+            if (Main.myPlayer == Projectile.owner)
+            {
+                float shake = 1f + 1.5f * Main.player[Projectile.owner].GetModPlayer<LobotomyWawPlayer>().FaintAromaPetalNum();
+                LobotomyCorp.ScreenShake(10, shake, shake / 8f);
+            }
         }
 
         public override bool? CanHitNPC(NPC target)

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -18,7 +19,7 @@ namespace LobotomyCorp.Items.Waw
         public override void LobSetDefaults()
         {
             Item.damage = 38; // Sets the Item's damage. Note that projectiles shot by this weapon will use its and the used ammunition's damage damageed together.
-            Item.DamageType = DamageClass.Magic; ; // sets the damage type to ranged
+            Item.DamageType = RWBPEnable(DamageClass.Magic, ModContent.GetInstance<ExtractorBlack>()); // sets the damage type to ranged
             Item.mana = 5;
             Item.width = 40; // hitbox width of the Item
             Item.height = 20; // hitbox height of the Item
@@ -44,7 +45,7 @@ namespace LobotomyCorp.Items.Waw
                 position = pos2;
             }
             if (Main.myPlayer == player.whoAmI)
-                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, Main.rand.Next(4));
+                Projectile.NewProjectile(player.GetSource_FromThis(), position, velocity, type, damage, knockback, player.whoAmI, Main.rand.Next(4));
             return false;
         }
 

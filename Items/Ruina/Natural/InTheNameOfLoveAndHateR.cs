@@ -2,6 +2,7 @@ using LobotomyCorp.Buffs;
 using LobotomyCorp.Items.Teth;
 using LobotomyCorp.Items.Waw;
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.QueenLaser;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Items.Ruina.Natural
         {
             EgoColor = LobotomyCorp.WawRarity;
             Item.damage = 60;
-            Item.DamageType = DamageClass.Magic; LobItemBase.ConvertVanillaDamageToExtractor(Item);
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>()); LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 20;
 			Item.useTime = 20;

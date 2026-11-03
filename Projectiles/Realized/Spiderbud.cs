@@ -179,6 +179,11 @@ namespace LobotomyCorp.Projectiles.Realized
 				owner.immune = true;
 				owner.immuneTime = 45;
 				owner.immuneNoBlink = true;
+
+				if (Main.myPlayer == Projectile.owner)
+				{
+					LobotomyCorp.ScreenShake(10, 8f, 0.6f);
+				}
 			}
         }
 

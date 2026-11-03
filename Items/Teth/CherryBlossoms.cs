@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -11,7 +12,7 @@ namespace LobotomyCorp.Items.Teth
         public override void LobSetDefaults()
         {
             Item.damage = 18;
-            Item.DamageType = DamageClass.Magic;
+            Item.DamageType = RWBPEnable(DamageClass.Magic, ModContent.GetInstance<ExtractorWhite>());
             Item.mana = 4;
             Item.width = 40;
             Item.height = 40;

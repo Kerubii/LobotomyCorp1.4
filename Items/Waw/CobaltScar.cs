@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.Realized;
 using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,7 +25,7 @@ namespace LobotomyCorp.Items.Waw
         public override void LobSetDefaults()
         {
             Item.CloneDefaults(ItemID.FetidBaghnakhs);
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             Item.damage = 60;
             Item.useTime = 30;
             Item.useAnimation = 30;

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
@@ -17,7 +18,7 @@ namespace LobotomyCorp.Items.He
         public override void LobSetDefaults()
         {
             Item.damage = 96;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             Item.width = 40;
             Item.height = 40;
             Item.useTime = 56;
@@ -71,14 +72,16 @@ namespace LobotomyCorp.Items.He
             }
         }
 
-        public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public override bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
             if (RedMistMaskUpgrade(player, RiskLevel.He) && player.itemAnimation > (int)(player.itemAnimationMax * 0.6f))
             {
                 float rotation = lumberRotation(player);
                 
                 PseudoUseStyleSwing(player, heldItemFrame, rotation);
+                return false;
             }
+            return true;
         }
 
         private float lumberRotation(Player player)

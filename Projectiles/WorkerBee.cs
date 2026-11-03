@@ -1005,20 +1005,32 @@ namespace LobotomyCorp.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
+            for (int i = 0; i < 8; i++)
+            {
+                Color red = Color.Red;
+                red.A = 40;
+                red *= 0.8f;
+                BeeDraw(new Vector2(4, 0).RotatedBy(i * (6.28f/8f)), red);
+            }
+            BeeDraw(Vector2.Zero, lightColor);
+            return false;
+        }
+
+        public void BeeDraw(Vector2 offset, Color lightColor)
+        {
             Texture2D tex = WorkerBee.IntestineTex.Value;
-            Vector2 intPos = IntestineAttachPoint();
+            Vector2 intPos = IntestineAttachPoint() + offset;
             Vector2 position = intPos + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition;
             Vector2 origin = new Vector2(Projectile.spriteDirection >= 0 ? 17 : 3, 3);
             float rotation = (IntestinePhysics - intPos).ToRotation() + (Projectile.spriteDirection >= 0 ? 3.14f : 0);
             Main.EntitySpriteDraw(tex, position, null, lightColor, rotation, origin, Projectile.scale, Projectile.spriteDirection >= 0 ? 0 : SpriteEffects.FlipHorizontally, 0);
 
             tex = TextureAssets.Projectile[Projectile.type].Value;
-            position = new Vector2(Projectile.Center.X, Projectile.Center.Y + Projectile.gfxOffY) - Main.screenPosition;
+            position = new Vector2(Projectile.Center.X, Projectile.Center.Y + Projectile.gfxOffY) + offset - Main.screenPosition;
             Rectangle frame = Terraria.Utils.Frame(tex, 1, Main.projFrames[Projectile.type], 0, Projectile.frame);
             origin = frame.Size() / 2;
 
-            Main.EntitySpriteDraw(tex, position, frame, lightColor, Projectile.rotation, origin, Projectile.scale, Projectile.spriteDirection >= 0 ? 0 : SpriteEffects.FlipHorizontally, 0);
-            return false;
+            Main.EntitySpriteDraw(tex, position, frame, lightColor, Projectile.rotation, origin, Projectile.scale * 1.1f, Projectile.spriteDirection >= 0 ? 0 : SpriteEffects.FlipHorizontally, 0);
         }
     }
 
@@ -1044,6 +1056,7 @@ namespace LobotomyCorp.Projectiles
             Projectile.penetrate = -1;
             Projectile.timeLeft = 30 * 60;
             Projectile.tileCollide = false;
+            Projectile.scale = 0.9f;
 
             Projectile.localNPCHitCooldown = 30;
             Projectile.usesLocalNPCImmunity = true;

@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -19,7 +20,7 @@ namespace LobotomyCorp.Items.Teth
         public override void LobSetDefaults()
         {
             Item.damage = 17;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>()); ;
             Item.width = 40;
             Item.height = 40;
 
@@ -58,10 +59,7 @@ namespace LobotomyCorp.Items.Teth
             .AddIngredient(ItemID.FallenStar, 8)
             .AddIngredient(ItemID.Amethyst)
             .AddIngredient(ItemID.Topaz)
-            .AddIngredient(ItemID.Emerald)
-            .AddIngredient(ItemID.Sapphire)
             .AddIngredient(ItemID.Ruby)
-            .AddIngredient(ItemID.Diamond)
             .AddTile(Mod, "BlackBox")
             .Register();
         }

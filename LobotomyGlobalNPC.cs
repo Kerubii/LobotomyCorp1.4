@@ -100,6 +100,10 @@ namespace LobotomyCorp
         public int LaetitiaGiftOwner = -1;
         public bool LaetitiaGiftRM = false;
 
+        public bool LampEverlastingLight = false;
+        public int LampEverlastingLightSource = -1;
+        public int LampEverlastingLightDamage = 0;
+
         public bool MatchstickBurn = false;
         public int MatchstickBurnTime = 0;
 
@@ -171,6 +175,8 @@ namespace LobotomyCorp
 
             MatchstickBurn = false;
 
+            LampEverlastingLight = false;
+
             PleasureDebuff = false;
 
             QueenBeeSpore = false;
@@ -226,6 +232,13 @@ namespace LobotomyCorp
             if (QueenBeeSpore)
             {
                 Dust.NewDust(npc.Center, 1, 1, ModContent.DustType<Misc.Dusts.HornetDust>());
+            }
+
+            if (LampEverlastingLight)
+            {
+                int d = Dust.NewDust(npc.position, npc.width, npc.height, DustID.Torch);
+                Main.dust[d].noGravity = true;
+                Main.dust[d].fadeIn = 0.5f;
             }
 
             if (WingbeatFairyMeal)
@@ -284,46 +297,52 @@ namespace LobotomyCorp
         {
             if (HarmonyMusicalAddiction)
             {
-                npc.lifeRegen = -12;
-                damage += 5;
+                npc.lifeRegen = -24;
+                damage += 10;
             }
 
             if (MatchstickBurn)
             {
-                npc.lifeRegen -= MatchstickBurnTime * 2;
+                npc.lifeRegen -= MatchstickBurnTime * 4;
                 damage += MatchstickBurnTime;
             }
             if (PleasureDebuff)
             {
-                npc.lifeRegen -= 10;
-                damage += 5;
+                npc.lifeRegen -= 20;
+                damage += 10;
             }
             if (QueenBeeSpore)
             {
+                npc.lifeRegen -= 60;
+                damage += 20;
+            }
+
+            if (LampEverlastingLight)
+            {
                 npc.lifeRegen -= 30;
-                damage += 10;
+                damage += 8;
             }
 
             if (SmileVomit)
             {
-                npc.lifeRegen -= 40;
-                damage += 30;
+                npc.lifeRegen -= 80;
+                damage += 20;
             }
 
             if (WristCutterScars)
             {
-                npc.lifeRegen -= 10;
-                damage += 2;
+                npc.lifeRegen -= 20;
+                damage += 4;
             }
 
             if (DaCapoSilentMusic)
             {
-                npc.lifeRegen -= 35;
+                npc.lifeRegen -= 70;
                 damage += 35;
                 if (DaCapoSilentMusicPhase % 5 > 1)
                 {
-                    npc.lifeRegen -= 10;
-                    damage += 10;
+                    npc.lifeRegen -= 30;
+                    damage += 15;
                 }
             }
         }
@@ -804,6 +823,10 @@ namespace LobotomyCorp
             {
                 SpawnHornet(npc);
             }
+            if (LampEverlastingLight)
+            {
+                LampEverlastingOnDeathProjectiles(npc);
+            }
             return true;
         }
 
@@ -1090,6 +1113,32 @@ namespace LobotomyCorp
         public void IsGrabbedBy(int player)
         {
             IsBeingGrabbed = true;
+        }
+
+        /// <summary>
+        /// Use this instead of adding Everlasting Light's debuff to npc to activate its On Death effect
+        /// </summary>
+        /// <param name="damage"></param>
+        /// <param name="owner"></param>
+        public static void LampInflictEverlastingLight(NPC npc, int time, int damage, int owner)
+        {
+            npc.AddBuff(ModContent.BuffType<LampLightDebuff>(), time);
+            LNPC(npc).LampEverlastingLightDamage = damage;
+            LNPC(npc).LampEverlastingLightSource = owner;
+        }
+
+        public void LampEverlastingOnDeathProjectiles(NPC npc)
+        {
+            if (LampEverlastingLightDamage <= 0)
+                return;
+
+            int amount = 2;
+            for (int i = 0; i < amount; i++)
+            {
+                Vector2 speed = new Vector2(16, 0).RotatedByRandom(6.28f);
+
+                Projectile.NewProjectile(Main.player[LampEverlastingLightSource].GetSource_FromThis(), npc.Center, speed, ModContent.ProjectileType<Projectiles.LampProjectile>(), LampEverlastingLightDamage * 2 / 3, 3, LampEverlastingLightSource, npc.whoAmI);
+            }
         }
     }
 }

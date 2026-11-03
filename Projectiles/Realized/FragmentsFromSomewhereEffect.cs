@@ -39,6 +39,9 @@ namespace LobotomyCorp.Projectiles.Realized
 			if (!Main.player[Projectile.owner].dead)
             {
 				Projectile.Center = Main.player[Projectile.owner].MountedCenter;
+
+				if (Main.myPlayer == Projectile.owner)
+					LobotomyCorp.ScreenShake(4, 4, 0.45f);
 			}
 		}
 

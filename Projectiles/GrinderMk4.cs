@@ -1,10 +1,13 @@
-﻿using LobotomyCorp.Misc.Dusts;
+﻿using LobotomyCorp.Items;
+using LobotomyCorp.Misc.Dusts;
+using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using ReLogic.Content;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Humanizer.In;
@@ -58,6 +61,31 @@ namespace LobotomyCorp.Projectiles
                 progress = (duration - Projectile.timeLeft) / ThirdDuration;
             }
 
+            // Spawn Saw when awakened
+            if (LobItemBase.RedMistMaskUpgrade(player, RiskLevel.He) && Projectile.timeLeft == duration / 3)
+            {
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 12f, ModContent.ProjectileType<GrinderMk4Saw>(), (int)(Projectile.damage * 0.9), Projectile.knockBack, Projectile.owner);
+                SoundEngine.PlaySound(SoundID.Item22, Projectile.Center);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    int num208 = Realized.GrinderMk2Cleaner2.SpawnTrailDust(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Misc.Dusts.ElectricTrail>(), Projectile.velocity, 0.5f, 5);
+                }
+
+                if (Main.myPlayer == Projectile.owner)
+                {
+                    for (int i = 0; i <3; i++)
+                    {
+                        Vector2 vector3 = new Vector2(Main.rand.Next(-100, 101), Main.rand.Next(-100, 101));
+                        vector3 += Projectile.velocity * 48 * 3f;
+                        vector3.Normalize();
+                        vector3 *= Main.rand.Next(35, 81) * 0.1f;
+                        int num15 = (int)(Projectile.damage * 0.5f);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, vector3.X, vector3.Y, ModContent.ProjectileType<GrinderMk4Spark>(), num15, Projectile.knockBack * 0.2f, Projectile.owner);
+                    }
+                }
+            }
+
             // Move the projectile from the HoldoutRangeMin to the HoldoutRangeMax and back, using SmoothStep for easing the movement
             Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * HoldoutRangeMin, Projectile.velocity * HoldoutRangeMax, progress);
 
@@ -80,6 +108,11 @@ namespace LobotomyCorp.Projectiles
 
         public override void PostDraw(Color lightColor)
         {
+            Player player = Main.player[Projectile.owner];
+            int duration = player.itemAnimationMax;
+            if (LobItemBase.RedMistMaskUpgrade(player, RiskLevel.He) && Projectile.timeLeft <= duration / 3)
+                return;
+
             Texture2D tex = SawHead.Value;
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), lightColor, Projectile.localAI[1], tex.Size()/2 , 1f, 0f, 0);
         }
@@ -107,6 +140,9 @@ namespace LobotomyCorp.Projectiles
         public override void SetDefaults()
         {
             Projectile.CloneDefaults(ProjectileID.Spark);
+
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 5;
         }
 
         public override bool PreAI()

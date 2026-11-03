@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -23,6 +24,7 @@ namespace LobotomyCorp.Items.Teth
             Item.damage = 16;
             Item.rare = ModContent.RarityType<TethB>();
             Item.UseSound = LobotomyCorp.WeaponSounds.Dagger;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorWhite>());
             EGORiskLevel = RiskLevel.Teth;
         }
 

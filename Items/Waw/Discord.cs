@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.RedMist;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -20,7 +21,7 @@ namespace LobotomyCorp.Items.Waw
         public override void LobSetDefaults()
         {
             Item.damage = 84;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorBlack>());
             Item.width = 40;
             Item.height = 40;
             Item.scale = 1.2f;
@@ -123,14 +124,14 @@ namespace LobotomyCorp.Items.Waw
         {
             CreateRecipe()
             .AddIngredient(ItemID.DarkLance)
-            .AddIngredient(ItemID.BlackDye)
+            .AddIngredient(ItemID.BlackThread)
             .AddIngredient(ItemID.EbonsandBlock, 100)
             .AddTile(Mod, "BlackBox3")
             .Register();
 
             CreateRecipe()
             .AddIngredient(ItemID.DarkLance)
-            .AddIngredient(ItemID.BlackDye)
+            .AddIngredient(ItemID.BlackThread)
             .AddIngredient(ItemID.CrimsandBlock, 100)
             .AddTile(Mod, "BlackBox3")
             .Register();

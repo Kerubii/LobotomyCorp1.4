@@ -1,14 +1,15 @@
+using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.GameContent;
-using Terraria.DataStructures;
-using Terraria.Audio;
-using System.Collections.Generic;
-using LobotomyCorp.Players;
-using ReLogic.Content;
 
 namespace LobotomyCorp.Items.Waw
 {
@@ -59,7 +60,7 @@ namespace LobotomyCorp.Items.Waw
             Item.useAnimation = 18;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.autoReuse = true;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             EGORiskLevel = RiskLevel.Waw;
         }
 
@@ -128,7 +129,7 @@ namespace LobotomyCorp.Items.Waw
             }
         }
 
-        public override void UseStyleAlt(Player player, Rectangle heldItemFrame)
+        public override bool UseStyleAlt(Player player, Rectangle heldItemFrame)
         {
             if (player.altFunctionUse != 2)
             {
@@ -139,7 +140,7 @@ namespace LobotomyCorp.Items.Waw
                     TextureAssets.Item[Item.type] = ScytheHalf;
                 }
             }
-            base.UseStyleAlt(player, heldItemFrame);
+            return true;
         }
 
         /*public override void ModifyItemScale(Player player, ref float scale)
@@ -194,30 +195,39 @@ namespace LobotomyCorp.Items.Waw
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             int empower = player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower;
+            if (RedMistMaskUpgrade(player))
+                empower += 3;
             if (player.altFunctionUse == 2)
             {
                 damage = (int)(damage * 0.7f);
                 knockback *= 0.7f;
             }
-            else if (empower == 1 || empower == 3)
+            else if (empower == 1 || empower == 3 || empower == 4 || empower == 6)
                 type = ModContent.ProjectileType<Projectiles.CrimsonScarScythe>();
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             int empower = player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower;
+            if (RedMistMaskUpgrade(player))
+                empower += 3;
             EmpowerReset(player);
 
             if (player.altFunctionUse != 2)
             {
                 if (empower == 3)
                     damage = (int)(damage * 0.5f);
+                if (empower == 4 || empower == 6)
+                {
+                    Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 1);
+                    return false;
+                }    
                 return true;
             }
 
             int p = Projectile.NewProjectile(source, position, velocity, type, (int)(damage * .8f), knockback, player.whoAmI);
             Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().CrimsonScarBullet = true;
-            if (empower >= 2)
+            if (empower >= 2 && empower != 4)
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -226,6 +236,13 @@ namespace LobotomyCorp.Items.Waw
                 }
             }
             return false;
+        }
+
+        public override float UseTimeMultiplier(Player player)
+        {
+            if (RedMistMaskUpgrade(player) && player.altFunctionUse == 2 && player.GetModPlayer<LobotomyWawPlayer>().CrimsonScarEmpower > 2)
+                return 0.25f;
+            return base.UseTimeMultiplier(player);
         }
 
         private void EmpowerReset(Player player)

@@ -626,9 +626,31 @@ namespace LobotomyCorp
             }
         }
 
+        /// <summary>
+        /// Creates a screenshake, somtimes need to specify (Main.myPlayer) so others don't get affected
+        /// </summary>
+        /// <param name="Time">Time the screen shakes in frames</param>
+        /// <param name="Intensity">How far will the screen move for each frame</param>
+        /// <param name="decay">How much intensity is reduced each frame</param>
+        /// <param name="Forced"></param>
         public static void ScreenShake(int Time, float Intensity, float decay = 0, bool Forced = true)
         {
             ModContent.GetInstance<ScreenSystem>().ScreenShake(Time, Intensity, decay, Forced);
+        }
+
+        /// <summary>
+        /// Creates a screenshake at the specified location, intensity varies depending on how close the player is
+        /// </summary>
+        /// <param name="pos">Where the shake is</param>
+        /// <param name="maxRange">Where is the shake at its maximum</param>
+        /// <param name="fallOffRange">Where will the shake be at 0</param>
+        /// <param name="Time">Time the screen shakes in frames</param>
+        /// <param name="Intensity">How far will the screen move for each frame</param>
+        /// <param name="decay">How much intensity is reduced each frame</param>
+        /// <param name="Forced"></param>
+        public static void ScreenShakePosition(Vector2 pos, int maxRange, float fallOffRange, int Time, float Intensity, float decay = 0, bool Forced = true)
+        {
+            ModContent.GetInstance<ScreenSystem>().ScreenShakeGlobal(pos, Main.LocalPlayer, maxRange, fallOffRange, Time, Intensity, decay, Forced);
         }
     }
 

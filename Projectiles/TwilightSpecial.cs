@@ -140,8 +140,12 @@ namespace LobotomyCorp.Projectiles
                         }
 
                         SoundEngine.PlaySound(LobotomyCorp.WeaponSound("judgement2_3"), ownerMountedCenter);
-                        if (Main.myPlayer == Projectile.owner) ;
-                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), projOwner.Center, Vector2.Normalize(Projectile.velocity) * 32f, ModContent.ProjectileType<TwilightSlash>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
+                        if (Main.myPlayer == Projectile.owner)
+                        {
+                            int p =Projectile.NewProjectile(Projectile.GetSource_FromThis(), projOwner.Center, Vector2.Normalize(Projectile.velocity) * 32f, ModContent.ProjectileType<TwilightSlash>(), (int)(Projectile.damage * 0.8f), Projectile.knockBack, Projectile.owner);
+                            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Main.projectile[p]);
+                            Main.projectile[p].netUpdate = true;
+                        }
                         Projectile.localAI[0] = 2;
                     }
                     if (projOwner.velocity.LengthSquared() < Projectile.velocity.LengthSquared() / 2)
@@ -308,7 +312,11 @@ namespace LobotomyCorp.Projectiles
 
             Vector2 speed = new Vector2(16, 0).RotatedByRandom(6.28f);
 
-            Projectile.NewProjectile(Main.player[Projectile.owner].GetSource_FromThis(), target.Center, speed, ModContent.ProjectileType<Projectiles.LampProjectile>(), hit.Damage * 2 / 3, hit.Knockback, Projectile.owner, target.whoAmI);
+            int p = Projectile.NewProjectile(Main.player[Projectile.owner].GetSource_FromThis(), target.Center, speed, ModContent.ProjectileType<Projectiles.LampProjectile>(), hit.Damage * 2 / 3, hit.Knockback, Projectile.owner, target.whoAmI);
+            Main.projectile[p].GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Main.projectile[p]);
+            Main.projectile[p].netUpdate = true;
+
+            Projectile.GetGlobalProjectile<LobotomyGlobalProjectile>().DynamicChangeDamageTypeRandom(Projectile);
         }
 
         public override bool PreDraw(ref Color lightColor)

@@ -1,12 +1,13 @@
 using LobotomyCorp.Configs;
+using LobotomyCorp.Players.DamageType;
 using LobotomyCorp.Projectiles.Realized;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Items.Ruina.General
 {
@@ -20,7 +21,7 @@ namespace LobotomyCorp.Items.Ruina.General
         public override void SetDefaults() 
 		{
             Item.damage = 15;
-            Item.DamageType = DamageClass.Default;
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Default, ModContent.GetInstance<ExtractorPale>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 24;
 			Item.height = 24;
@@ -64,11 +65,15 @@ namespace LobotomyCorp.Items.Ruina.General
                 if (Main.LocalPlayer.HasBuff<Buffs.RemorseCrack>())
                 {
                     Passive = new TooltipLine(Mod, "ExtraPassive", $"{Terraria.Localization.Language.GetTextValue("Mods.LobotomyCorp.Items." + ItemName() + ".CrackInTheMind")}") { OverrideColor = rColor };
+                    if (Passive != null)
+                        Passive.Text = Lang.SupportGlyphs(Passive.Text);
                     tooltips.Insert(index, Passive);
                 }
                 else
                 {
                     Passive = new TooltipLine(Mod, "ExtraPassive", $"{Terraria.Localization.Language.GetTextValue("Mods.LobotomyCorp.Items." + ItemName() + ".AlephVersion")}") { OverrideColor = rColor };
+                    if (Passive != null)
+                        Passive.Text = Lang.SupportGlyphs(Passive.Text);
                     tooltips.Insert(index, Passive);
                 }
             }

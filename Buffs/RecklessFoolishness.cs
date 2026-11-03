@@ -1,26 +1,33 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Terraria.DataStructures;
-using Terraria.Localization;
+using LobotomyCorp.Items.Aleph;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Players;
 using LobotomyCorp.Visuals.ParticlesAura;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace LobotomyCorp.Buffs
 {
 	public class RecklessFoolishness : ModBuff
 	{
-		public override void SetStaticDefaults()
+        public static LocalizedText Description { get; private set; }
+        public static LocalizedText Description2 { get; private set; }
+
+        public override void SetStaticDefaults()
 		{
 			// DisplayName.SetDefault("Reckless Foolishness");
 			// Description.SetDefault("");
 			BuffID.Sets.TimeLeftDoesNotDecrease[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
             Main.debuff[Type] = true;
+
+            Description = this.GetLocalization("Description");
+            Description2 = this.GetLocalization("Description2");
         }
 
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
@@ -28,10 +35,10 @@ namespace LobotomyCorp.Buffs
             int gift = Main.LocalPlayer.GetModPlayer<LobotomyHePlayer>().LifeForADareDevilGift;
             if (gift < 600)
             {
-                tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.RecklessFoolishness.Description2");
+                tip = Description2.Value;
             }
             else
-                tip = Language.GetTextValue("Mods.LobotomyCorp.Buffs.RecklessFoolishness.Description");
+                tip = Description.Value;
         }
 
         public override void Update(Player player, ref int buffIndex)

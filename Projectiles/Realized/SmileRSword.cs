@@ -143,7 +143,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 {
                     // Spawn Scream Projectiles
                     Vector2 Offset = new Vector2(110 * Projectile.scale, 0).RotatedBy(Projectile.rotation);
-                    Projectile.NewProjectile(owner.GetSource_FromThis(), Projectile.Center + Offset, Vector2.Zero, ModContent.ProjectileType<SmileRScream>(), (Projectile.damage * 2 / 3), Projectile.knockBack / 2, Projectile.owner, 1, 2, 2.5f);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Offset, Vector2.Zero, ModContent.ProjectileType<SmileRScream>(), (Projectile.damage * 2 / 3), Projectile.knockBack / 2, Projectile.owner, 1, 2, 2.5f);
                     float random = Main.rand.NextFloat(1.00f);
                     for (int i = 0; i < 28; i++)
                     {
@@ -217,6 +217,15 @@ namespace LobotomyCorp.Projectiles.Realized
                 {
                     owner.GetModPlayer<LobotomyAlephPlayer>().SmileCreateCorpse(target);
                 }
+            }
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            Player owner = Main.player[Projectile.owner];
+            if (owner.itemAnimation < owner.itemAnimationMax * 0.4f)
+            {
+                modifiers.SourceDamage += 0.2f;
             }
         }
 

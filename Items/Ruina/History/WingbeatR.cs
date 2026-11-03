@@ -1,10 +1,11 @@
+using LobotomyCorp.Items.Zayin;
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.Audio;
-using LobotomyCorp.Items.Zayin;
 
 namespace LobotomyCorp.Items.Ruina.History
 {
@@ -30,7 +31,7 @@ namespace LobotomyCorp.Items.Ruina.History
             EgoColor = LobotomyCorp.ZayinRarity;
 
             Item.damage = 48;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
 			Item.height = 40;

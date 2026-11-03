@@ -1,4 +1,5 @@
 using LobotomyCorp.Players;
+using LobotomyCorp.Players.DamageType;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -29,8 +30,8 @@ namespace LobotomyCorp.Items.Ruina.Philosophy
                           "This Item is incomplete and unobtainable";
 
             Item.damage = 1;
-			Item.DamageType = ModContent.GetInstance<Players.DamageType.ExtractorMelee>();
-			Item.width = 40;
+			Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Melee, ModContent.GetInstance<ExtractorRed>());
+            Item.width = 40;
 			Item.height = 40;
 			Item.useTime = 8;
 			Item.useAnimation = 8;

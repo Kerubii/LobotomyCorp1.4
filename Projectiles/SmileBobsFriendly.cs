@@ -164,7 +164,7 @@ namespace LobotomyCorp.Projectiles
                 {
                     Vector2 vel = velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-15, 15))) * Main.rand.Next(10, 14);
                     Vector2 randomPos = new Vector2(Projectile.position.X + Main.rand.Next(Projectile.width), Projectile.position.Y + Main.rand.Next(Projectile.height));
-                    Projectile.NewProjectile(owner.GetSource_FromThis(), randomPos, vel, ModContent.ProjectileType<Projectiles.SmileBitsFriendly>(), Projectile.damage / 3, 0, owner.whoAmI, target.whoAmI);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), randomPos, vel, ModContent.ProjectileType<Projectiles.SmileBitsFriendly>(), Projectile.damage / 3, 0, owner.whoAmI, target.whoAmI);
                 }
             }
             SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);

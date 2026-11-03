@@ -55,6 +55,8 @@ namespace LobotomyCorp.Projectiles.Realized
             Projectile.velocity.Y += defaultGravity / 2;
             Projectile.rotation += MathHelper.ToRadians(Projectile.velocity.X);
             Projectile.ai[1]++;
+
+            SmileCorpse.CheckNearbyPlayerConsume(Projectile);
             /*
             Player owner = Main.player[Projectile.owner];
             if (owner.Hitbox.Intersects(Projectile.Hitbox))

@@ -178,6 +178,7 @@ namespace LobotomyCorp.Projectiles.Realized
                     if (Projectile.ai[1] == time3 - 1)
                     {
                         SpawnImpact(Projectile.Center + new Vector2(330 * Projectile.spriteDirection, 32));
+                        LobotomyCorp.ScreenShakePosition(Projectile.Center + new Vector2(330 * Projectile.spriteDirection, 32), 700, 1500, 15, 8, 8 / 15f);
                     }
 
                     ikDist = 1f;
@@ -277,6 +278,7 @@ namespace LobotomyCorp.Projectiles.Realized
                             if (realTime == time3 - 1)
                             {
                                 SpawnImpact(Projectile.Center + new Vector2(300 * Projectile.spriteDirection, 32));
+                                LobotomyCorp.ScreenShakePosition(Projectile.Center + new Vector2(330 * Projectile.spriteDirection, 32), 700, 1500, 15, 8f, 8f / 15f);
                             }
                         }
                         else

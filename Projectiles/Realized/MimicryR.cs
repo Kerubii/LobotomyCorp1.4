@@ -289,6 +289,9 @@ namespace LobotomyCorp.Projectiles.Realized
                         }
                         player.HealEffect(heal);
                         player.statLife += heal;
+
+                        if (Main.myPlayer == Projectile.owner)
+                            LobotomyCorp.ScreenShake(5, 8f, 0.8f);
                     }
                 }
             }

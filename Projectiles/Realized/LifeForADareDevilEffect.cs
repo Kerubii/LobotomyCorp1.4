@@ -162,6 +162,11 @@ namespace LobotomyCorp.Projectiles.Realized
                 else
                     LifeForADareDevilPierceEffect(player, target.position, (int)(target.width * mult), (int)(target.height * mult));
 
+                if (Main.myPlayer == Projectile.owner)
+                {
+                    LobotomyCorp.ScreenShake(8, 8 * mult, 1f);
+                }
+
                 Projectile.localAI[0] += 0.1f;
             }
             if (Projectile.ai[1] == 0)

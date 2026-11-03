@@ -1,4 +1,5 @@
 using LobotomyCorp.Items.Waw;
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -22,7 +23,7 @@ namespace LobotomyCorp.Items.Ruina.History
             EgoColor = LobotomyCorp.WawRarity;
 
             Item.damage = 48;
-            Item.DamageType = DamageClass.Magic;
+            Item.DamageType = LobItemBase.RWBPEnable(Item, DamageClass.Magic, ModContent.GetInstance<ExtractorBlack>());
             LobItemBase.ConvertVanillaDamageToExtractor(Item);
             Item.width = 40;
             Item.height = 40;

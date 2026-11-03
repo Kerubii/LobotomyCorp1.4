@@ -46,7 +46,7 @@ namespace LobotomyCorp.Projectiles.Realized
             if (Projectile.ai[0] == 0)
             {
                 Projectile.ai[0]++;
-                owner.GetModPlayer<LobotomyAlephPlayer>().SmileReduceCorpse(1);
+                owner.GetModPlayer<LobotomyAlephPlayer>().SmileReduceCorpse(5);
                 SoundEngine.PlaySound(new SoundStyle("LobotomyCorp/Sounds/Item/Language/Danggo_Lv3_Special") with { Volume = 0.25f, MaxInstances = 1, SoundLimitBehavior = SoundLimitBehavior.IgnoreNew }, Projectile.Center);
             }
 
@@ -60,7 +60,7 @@ namespace LobotomyCorp.Projectiles.Realized
                 if (owner.itemAnimation % time == 0)
                 {
                     // Spawn Scream Projectiles
-                    Projectile.NewProjectile(owner.GetSource_FromThis(), Projectile.Center + Offset, Projectile.velocity * 12, ModContent.ProjectileType<SmileRVomit>(), Projectile.damage, Projectile.knockBack / 2, Projectile.owner, 1, 2, 1);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Offset, Projectile.velocity * 12, ModContent.ProjectileType<SmileRVomit>(), Projectile.damage, Projectile.knockBack / 2, Projectile.owner, 1, 2, 1);
                 }
 
                 for (int i = 0; i < 4; i++)

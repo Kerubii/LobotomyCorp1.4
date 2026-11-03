@@ -99,7 +99,7 @@ namespace LobotomyCorp.Projectiles
         {
             Projectile.ai[1]++;
             target.immune[Projectile.owner] = 5;
-            if (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.He) && Projectile.ai[1] > 80)
+            if (Projectile.ai[1] > 10 || (LobItemBase.RedMistMaskUpgrade(Main.player[Projectile.owner], RiskLevel.He) && Projectile.ai[1] > 60))
                 return;
 
             Player player = Main.player[Projectile.owner];

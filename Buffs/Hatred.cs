@@ -24,8 +24,10 @@ namespace LobotomyCorp.Buffs
 
         public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
         {
-            tip += $"\n{Language.GetTextValue("Mods.LobotomyCorp.Buffs.Love.ArcanaSlaveCost", Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost)}";
-            tip += $"\n{Language.GetTextValue("Mods.LobotomyCorp.Buffs.Love.Hysteria", (int)(Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateHysteriaPercent() * 100))}";
+            int arg = Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateArcanaCost;
+            tip += $"\n{Love.SlaveCost.Format(arg)}";
+            arg = (int)(Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().LoveAndHateHysteriaPercent() * 100);
+            tip += $"\n{Love.Hysteria.Format(arg)}";
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, int buffIndex, ref BuffDrawParams drawParams)

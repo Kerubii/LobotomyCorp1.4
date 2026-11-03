@@ -196,6 +196,8 @@ namespace LobotomyCorp.Projectiles.Realized
                 {
                     CreateShineRandom();
                 }
+
+                LobotomyCorp.ScreenShakePosition(Projectile.Center, 800, 2400, 20, 18f, 18f / 20f);
             }
             // Bing recovery
             else if (state == 3)

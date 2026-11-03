@@ -135,6 +135,7 @@ Mods: {
 					Additional assortment of holiday projectiles
 					Hit enemies gain 3 random debuffs for 5 seconds
 					'''
+				TooltipWeakened: Stronger during Christmas or Hardmode
 				DisplayName: Christmas
 			}
 
@@ -164,15 +165,13 @@ Mods: {
 						Benefits from Ranged damage increases
 						Empowers next Range attack after hitting with a Normal Melee attack and vice versa
 						50% increased damage under 50% health
-						
 					'''
-				Tooltip2: Unavailable
-				Tooltip3:
+				Tooltip2:
 					'''
 					All attacks are empowered
 					If attacks are empowered normally, they are further empowered
 					Empowered Scythes creates a rain of Scythes
-					Empowered Shots aims semi randomly consecutively
+					Empowered Shots gain increased fire rate
 					'''
 				DisplayName: Crimson Scar
 			}
@@ -401,13 +400,11 @@ Mods: {
 					'The sharp sawtooth of the grinder makes a clean cut through its enemy.
 					Its operation is simple and straightforward, but that doesn't necessarily make it easy to wield.'
 					'''
-				Tooltip2: Unavailable
-				Tooltip3:
+				Tooltip2:
 					'''
 					A sawblade is released when returning
-					Sawblades travel along tiles until it hits an enemy
-					Sawblades sticks to an enemy, damages it rapidly before piercing
-					Sawblades explode after a certain amount of time
+					Sawblades travel along tiles until it hits an enemy and stops momentarily
+					Sawblades explode after hitting 20 times or after enough time has passed
 					'''
 				DisplayName: Grinder Mk4
 			}
@@ -421,8 +418,7 @@ Mods: {
 					After all, art is a devil's gift, born from despair and suffering.'
 					Consumes 2% health to increase damage by 30% unless its fatal
 					'''
-				Tooltip2: Unavailable
-				Tooltip3:
+				Tooltip2:
 					'''
 					Health consumption is negated
 					Increased amount of Projectiles
@@ -441,8 +437,9 @@ Mods: {
 					'''
 				Tooltip2:
 					'''
-					Throws the spear
+					Throws the spear, creating damage dahlias
 					Right click to charge forwards
+					Bounces back when hitting enemies with the charge
 					Charge deals extra damage equal to missing health
 					'''
 				DisplayName: Horn
@@ -780,9 +777,11 @@ Mods: {
 				Tooltip2: Unavailable
 				Tooltip3:
 					'''
-					Normal swing has a second hit
+					Swings create shockwaves that damages nearby enemies
+					Normal swing has a second hit thrusting forwards
 					The Second hit deals more damage based on knockback modifiers
 					Right click to swing the weapon three times consecutively
+					Enemies hit by the hammer take damage again after a delay
 					'''
 				DisplayName: Regret
 			}
@@ -923,7 +922,8 @@ Mods: {
 					'''
 					Can be charged to gather spores
 					When released with low spores, shoots out a mid range attack
-					When released with high spores, it explodes outwards
+					When released with high spores, swings it around and it explodes outwards
+					Hit enemies leaves a trail of spores that damages other enemies
 					'''
 				DisplayName: Spore
 			}
@@ -939,9 +939,12 @@ Mods: {
 				Tooltip3:
 					'''
 					Ignores defense
-					Always performs a flurry of stabs
-					Chance to gain a floating sword on hit
-					Right click to stab an enemy to be hit by all floating swords
+					Always performs a flurry of stabs with a 
+					Each hit has a chance to gain up to 5 floating swords
+					Taking damage removes 1 floating sword to reduce damage by 10%
+					<right> switches all floating swords to attack mode, attacking with you
+					Launches one sword at the end of your attack
+					Cannot gain more until all swords are spent
 					'''
 				DisplayName: Sword Sharpened With Tears
 			}
@@ -1035,6 +1038,7 @@ Mods: {
 					Can only be thrown one at a time
 					Sticks to enemies
 					Enemies are periodically hit while stuck
+					Attacking unsticks the knife slowly instead, dealing damage
 					'''
 				DisplayName: Wrist Cutter
 			}
@@ -1511,8 +1515,8 @@ Mods: {
 				PassiveList:
 					'''
 					Absorption - Killing enemies or damaging a boss drops corpses. Bite corpses to absorb them, increasing 'Mountain of Corpses'
-					Mountain of Corpses - Increases damage dealt and damage reduction but lowers swing speed and movement speed
-					Putrid Vomit - Above 60% 'Mountain of Corpses', <right> vomits out projectiles decreasing 'Mountain of Corpses' by 1
+					Mountain of Corpses - Increases auto absorption range, damage dealt and damage reduction but lowers swing speed and movement speed
+					Putrid Vomit - Above 60% 'Mountain of Corpses', <right> vomits out projectiles decreasing 'Mountain of Corpses' by 5
 					Horrid Screech - Above 30% 'Mountain of Corpses', Channel this EGO for 1.5 seconds to Scream
 					|Division - Damage reduced by 'Mountain of Corpses' reduces it, increased by 50% when not held. Lose all stacks when healed by the nurse
 					Melted Corpses - If 'Mountain of Corpses' reaches 0, Temporarily Disable 'Absorption' and take 10% increased damage
@@ -2146,6 +2150,15 @@ Mods: {
 					Hardship - While held with 'Atonement', reduces movement speed and attacks nearby enemies with holy light at the cost of {0} mana
 					Crown of Thorns - While held, taking damage reduces 'Atonement' and recovers some Mana from damage recieved
 					|Atonement - Gain 2 defense and reduces healing gained and dealt by this EGO, Enemies are more likely to target you while this EGO is held
+					'''
+			}
+
+			Penitence: {
+				ItemTooltip: It feeds on the 'evil' that seeps out during conversations between people.
+				PassiveList:
+					'''
+					Confession - All allies heal 100% Health after using this weapon
+					|Penance - This weapon is unusable for 1 minute after a succesful Confession
 					'''
 			}
 
@@ -3134,6 +3147,9 @@ Mods: {
 			CobaltScarRapidStrikes.DisplayName: Cobalt Scar Rapid Strikes
 			CobaltScarBloodSlash.DisplayName: Cobalt Scar Blood Slash
 			Spore2.DisplayName: Spore2
+			RegretHelper.DisplayName: Regret Helper
+			GrinderMk4Saw.DisplayName: Grinder Mk4 Saw
+			LampPlayerSwing.DisplayName: Lamp Player Swing
 		}
 
 		Buffs: {
@@ -3589,13 +3605,18 @@ Mods: {
 			}
 
 			MimicryHarden: {
-				Description: Reduces damage taken by 10%
+				Description: Reduces damage taken by 20%
 				DisplayName: Mimicry Harden
 			}
 
 			PenitenceAtonement: {
 				DisplayName: Atonement
 				Description: To be willing to bear pain is half the atonement.
+			}
+
+			LampLightDebuff: {
+				Description: All of its feathers to make a wick, for a lamp that would burn forever
+				DisplayName: Everlasting Light
 			}
 		}
 

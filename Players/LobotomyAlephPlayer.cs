@@ -178,7 +178,7 @@ namespace LobotomyCorp.Players
             {
                 modifiers.FinalDamage *= 1.3f;
                 int buffType = ModContent.BuffType<Husk>();
-                int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)] - 60;
+                int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)] - 90;
                 Player.ClearBuff(buffType);
                 Player.AddBuff(ModContent.BuffType<Shell>(), remainingBuffTime);
             }
@@ -325,10 +325,15 @@ namespace LobotomyCorp.Players
         /// <param name="Time"></param>
         public void MimicryIncreaseShellTime(int Time)
         {
-            int buffType = ModContent.BuffType<Husk>();
-            int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)] - 60;
-            Player.ClearBuff(buffType);
-            Player.AddBuff(ModContent.BuffType<Shell>(), remainingBuffTime);
+            if (Player.HasBuff<Husk>())
+            {
+                int buffType = ModContent.BuffType<Husk>();
+                int remainingBuffTime = Player.buffTime[Player.FindBuffIndex(buffType)] - 60;
+                Player.ClearBuff(buffType);
+                Player.AddBuff(ModContent.BuffType<Shell>(), remainingBuffTime);
+            }
+            if (!Player.HasBuff<Shell>())
+                return;
 
             int index = Player.FindBuffIndex(ModContent.BuffType<Shell>());
             Player.buffTime[index] += Time;

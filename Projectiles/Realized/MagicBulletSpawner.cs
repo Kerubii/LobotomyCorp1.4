@@ -103,14 +103,14 @@ namespace LobotomyCorp.Projectiles.Realized
                 Vector2 offset = Projectile.velocity * 2;
                 if (Projectile.ai[0] > 0 && Projectile.owner == Main.myPlayer)
                 {
-                    int p = Projectile.NewProjectile(Main.player[Projectile.owner].GetSource_FromThis(), Projectile.Center - offset, Projectile.velocity, ModContent.ProjectileType<MagicBulletR>(), damage, Projectile.knockBack, Projectile.owner, Projectile.ai[0]);
+                    int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center - offset, Projectile.velocity, ModContent.ProjectileType<MagicBulletR>(), damage, Projectile.knockBack, Projectile.owner, Projectile.ai[0]);
                     Main.projectile[p].friendly = Projectile.friendly;
                     Main.projectile[p].hostile = Projectile.hostile;
                     Main.projectile[p].netUpdate = true;
                 }
                 else if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    int p = Projectile.NewProjectile(Main.player[Projectile.owner].GetSource_FromThis(), Projectile.Center - offset, Projectile.velocity, ModContent.ProjectileType<MagicBulletR>(), damage, Projectile.knockBack, 255, Projectile.owner + 1);
+                    int p = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center - offset, Projectile.velocity, ModContent.ProjectileType<MagicBulletR>(), damage, Projectile.knockBack, 255, Projectile.owner + 1);
                     if (Main.projectile[p].ModProjectile is MagicBulletR)
                     {
                         ((MagicBulletR)Main.projectile[p].ModProjectile).PlayerTarget = true;

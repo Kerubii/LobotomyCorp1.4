@@ -74,19 +74,18 @@ namespace LobotomyCorp.ModSystems
             });
             RecipeGroup.RegisterGroup("LobotomyCorp:Butterflies", rec);
 
-            rec = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + "Dungeon Lamps", new[]
+            rec = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + "Dungeon Lamps or Dungeon Lanterns", new[]
             {
                 (int)ItemID.BlueDungeonLamp,
                 ItemID.PinkDungeonLamp,
-                ItemID.GreenDungeonLamp
-                /*
+                ItemID.GreenDungeonLamp,
                 (int)ItemID.ChainLantern,
                 ItemID.BrassLantern,
                 ItemID.CagedLantern,
                 ItemID.CarriageLantern,
                 ItemID.AlchemyLantern,
                 ItemID.DiablostLamp,
-                ItemID.OilRagSconse*/
+                ItemID.OilRagSconse
             });
             RecipeGroup.RegisterGroup("LobotomyCorp:DungeonLantern", rec);
 
@@ -181,9 +180,20 @@ namespace LobotomyCorp.ModSystems
         /// <param name="decay"></param>
         /// <param name="falloff"></param>
         /// <param name="Forced"></param>
-        public void ScreenShakeGlobal( Vector2 origin, Player player, int Time, float Intensity, float decay = 0, bool Forced = true)
+        public void ScreenShakeGlobal(Vector2 origin, Player player, float range1, float range2, int Time, float Intensity, float decay = 0, bool Forced = true)
         {
+            if (!ModContent.GetInstance<LobotomyConfig>().ScreenShakeEnabled || (!Forced && ScreenShakeTimer > 0))
+                return;
 
+            float distance = player.Center.Distance(origin);
+            float mult = 1f - Math.Clamp((distance - range1) / (range2 - range1), 0f, 1f);
+
+            if (mult <= 0)
+                return;
+
+            ScreenShakeTimer = (int)(Time * mult);
+            ScreenShakeIntensity = Intensity * mult;
+            ScreenShakeDecay = decay * mult;
         }
 
         private bool modifiedCamera;

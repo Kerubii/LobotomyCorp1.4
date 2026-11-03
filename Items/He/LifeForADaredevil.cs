@@ -1,3 +1,4 @@
+using LobotomyCorp.Players.DamageType;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -28,7 +29,7 @@ namespace LobotomyCorp.Items.He
 
             Item.useStyle = 15;
             Item.damage = 32;
-            Item.DamageType = DamageClass.Melee;
+            Item.DamageType = RWBPEnable(DamageClass.Melee, ModContent.GetInstance<ExtractorPale>());
             Item.rare = ModContent.RarityType<HeB>();
             Item.UseSound = LobotomyCorp.WeaponSound("katana");
             EGORiskLevel = RiskLevel.He;
