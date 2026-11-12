@@ -1486,6 +1486,30 @@ Mods: {
 				Extra: Howling Nightmare - If an ally has Cobalt Scar buff, Attacks do friendly fire and lose Passive conditionals. Disables 'Fury with no Outlet'
 			}
 
+			CobaltScarR: {
+				DisplayName: Cobalt Scar
+				Tooltip: Still, it didn�t matter to him. After all, he was "destined" to be a big bad wolf.
+				PassiveList:
+					'''
+					The Role of the Wolf: <right> to bite bosses or consume regular enemies. Consumption takes 6 seconds. Bite 4 times or consume an enemy to transform into a wolf.
+					-Uncontrollable Instinct: 10% lifesteal from all damage dealt AND a +33% movement speed bonus when transformed.
+					-Howl: Replaces "bite" while transformed, damage all targets with scars debuff. Has a 8 second cooldown.
+					Claws of Savagery: <left> inflicts Scars. Also Inflicts Bleeding for 4 seconds when transformed.
+					Scars: +5% damage taken per, max 5 stacks, lasts for 4 seconds. Double the effects and allowed stacks if the target is bleeding.
+					|Sheep's Clothing: Damage taken is doubled when consuming. Take 25%+ max HP in damage, and puke out the consumed target, Then disable "The Role of the Wolf" for 10 seconds. 
+
+					'''
+				Simplified:
+					'''
+					Starts weak, but become powerful for a bit after eating someone or parts of bosses.
+					While being a wolf, gain lifesteal and walkspeed. You may also howl to deal AoE damage.
+					Howl damage is based on current damage vulnerablity from this weapon.
+					Enemies gain damage vulnerablity when attacked by your M1's.
+					Eating makes you vulnerable, and don't puke your food.
+					
+					'''
+			}
+
 			MimicryR: {
 				Tooltip: And the many shells cried out one word, "Manager".
 				DisplayName: Mimicry
@@ -3493,6 +3517,44 @@ Mods: {
 				DisplayName: Vengeance
 				Description: I’ll hang his head over my bed
 				Description2: "{0}% increased damage"
+			}
+
+			CobaltScarConsuming:{
+				DisplayName: Consuming
+				Description: I was fated to be bad… It doesn’t matter… I don’t have to care…
+			}
+
+			CobaltScarFailedConsume:{
+				DisplayName: Role of The Wolf:Disabled
+				Description: Wolves could not cross the line when doing bad things. And wolves had to be punished. Wolves always needed to be an example.
+				Description2: "-15% Endurance, and you may not bite."
+			}
+
+			CobaltScarRecentHowl:{
+				DisplayName: Howl Cooldown
+				Description: A wolf needs no name, it just obeys the role it was born to fit in…
+			}
+
+			CobaltScarWolf:{
+				DisplayName: Destined to be the Big Bad Wolf
+				Description: Once upon a time, these claws would cut open the bellies of numerous creatures and tear apart their guts.
+				Description2: "+10% Lifesteal and +33% movement speed"
+			}
+
+			CobaltScarRecentBite:{
+				DisplayName: Bite Cooldown
+				Description: Looking at you makes my mouth water…
+				Description2: "-15% Endurance, and you may not bite."
+			}
+
+			CobaltScarScars:{
+				DisplayName: Scars
+				Description: These violent and savage claws would always tear into the skin of fresh meat…
+			}
+			
+			ShadowMist:{
+				DisplayName: Shadow Mist
+				Description: LEEROYYYYYYYYYYYJENKINSSSSSSSSSSSSS(Unused, if you see this it means we fucked up)
 			}
 
 			SwordSharpened: {
