@@ -10,7 +10,7 @@ namespace LobotomyCorp.PlayerDrawEffects
 {
     public class LobotomyPlayerParticle : PlayerDrawLayer
     {
-        public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.MountBack);
+        public override Position GetDefaultPosition() => new Between(null, PlayerDrawLayers.MountBack);
 
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
         {
@@ -92,7 +92,7 @@ namespace LobotomyCorp.PlayerDrawEffects
 
     public class LobotomyPlayerParticleFront : PlayerDrawLayer
     {
-        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.LastVanillaLayer);
+        public override Position GetDefaultPosition() => new Between(PlayerDrawLayers.LastVanillaLayer, null);
 
         public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
         {
