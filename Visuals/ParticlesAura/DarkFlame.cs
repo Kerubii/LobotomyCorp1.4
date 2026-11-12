@@ -11,7 +11,7 @@ using LobotomyCorp.Players;
 
 namespace LobotomyCorp.Visuals.ParticlesAura
 {
-    public class DarkFlameAura : AuraBehavior
+    public class DarkFlameAura : AuraBehavior //Cobalt Scar uses this as a placeholder.
     {
         public bool SpawnCond => Main.timeForVisualEffects % 3 == 0;
 

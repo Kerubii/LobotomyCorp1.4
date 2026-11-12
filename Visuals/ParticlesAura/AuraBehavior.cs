@@ -26,7 +26,7 @@ namespace LobotomyCorp.Visuals.ParticlesAura
         /// <summary>
         /// Layer 0 is Front, Layer 1-3 goes from Front to Back, 1 has priority Textures while 3 uses Smoke-like effects
         /// </summary>
-        int Layer { get; }
+        int Layer { get; } 
 
         /// <summary>
         /// Auto adds namespace directory, only place the filename

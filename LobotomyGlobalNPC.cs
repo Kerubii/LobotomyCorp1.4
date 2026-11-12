@@ -149,6 +149,11 @@ namespace LobotomyCorp
 
         private bool IsBeingGrabbed = false;
 
+//Cobalt Scar Additions
+        public bool CobaltScarScars = false; 
+        public int CobaltScarScarsAmount = 0;
+
+
         public static LobotomyGlobalNPC LNPC (NPC npc)
         {
             return npc.GetGlobalNPC<LobotomyGlobalNPC>();
@@ -214,6 +219,12 @@ namespace LobotomyCorp
             WingbeatFairyMeal = false;
 
             WristCutterScars = false;
+
+            if (!CobaltScarScars)
+            {
+                CobaltScarScarsAmount = 0;
+            }
+            CobaltScarScars = false;
         }
 
 		public override bool PreAI(NPC npc)
@@ -374,6 +385,7 @@ namespace LobotomyCorp
 
             if (NihilDebuff)
                 modifiers.FinalDamage *= 0.7f;
+            
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
@@ -444,7 +456,7 @@ namespace LobotomyCorp
             }
         }
 
-        public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
+        public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers) //Player vs NPC
         {
             if (HarmonyMusicalAddiction)
                 modifiers.ArmorPenetration += 15;
@@ -472,6 +484,16 @@ namespace LobotomyCorp
             else if (GoldRushBrokenBlissBuff)
             {
                 modifiers.Defense.Flat -= 10;
+            }
+
+            if (CobaltScarScars && npc.HasBuff(BuffID.Bleeding)) //Bleed Bonus
+            {
+                modifiers.SourceDamage *= (1f+(.1f * CobaltScarScarsAmount));
+            }
+
+            if (CobaltScarScars && !npc.HasBuff(BuffID.Bleeding)) //Cobalt Scar R Bleed Effect, only effects NPC's for now.
+            {
+                modifiers.SourceDamage *= (1f+(.05f * CobaltScarScarsAmount));
             }
 
             if (NihilDebuff)
@@ -1139,6 +1161,23 @@ namespace LobotomyCorp
 
                 Projectile.NewProjectile(Main.player[LampEverlastingLightSource].GetSource_FromThis(), npc.Center, speed, ModContent.ProjectileType<Projectiles.LampProjectile>(), LampEverlastingLightDamage * 2 / 3, 3, LampEverlastingLightSource, npc.whoAmI);
             }
+        }
+        //Cobalt Scar Calulations(Yes i ripped this off from SanguineDesireR)
+        public static void CobaltScarApplyScar(NPC npc, int amount, int amountMax, int time, int timeMax)
+        {
+            LNPC(npc).CobaltScarScarsAmount += amount;
+            if (LNPC(npc).CobaltScarScarsAmount > amountMax)
+                LNPC(npc).CobaltScarScarsAmount -= amount;// If it hits 6 while the cap is 5, it will revert back to 5. Similarly if cap=10 and hits 11, then go back to 10.
+            if (npc.HasBuff<Buffs.CobaltScarScars>())
+            {
+                int i = npc.FindBuffIndex(ModContent.BuffType<Buffs.CobaltScarScars>());
+                int buffTime = npc.buffTime[i] += time;
+                if (buffTime > timeMax)
+                    buffTime = timeMax;
+                npc.AddBuff(ModContent.BuffType<Buffs.CobaltScarScars>(), buffTime);
+            }
+            else
+                npc.AddBuff(ModContent.BuffType<Buffs.CobaltScarScars>(), timeMax);
         }
     }
 }
