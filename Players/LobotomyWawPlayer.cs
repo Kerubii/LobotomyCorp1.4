@@ -4,6 +4,7 @@ using LobotomyCorp.Items.Waw;
 using LobotomyCorp.PlayerDrawEffects;
 using LobotomyCorp.Projectiles.Realized;
 using LobotomyCorp.Visuals.ParticlesAura;
+using static Terraria.ModLoader.PlayerDrawLayer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -77,6 +78,13 @@ namespace LobotomyCorp.Players
         public int[] SwordSharpenedCurrentSword = { -1, -1, -1};
         public Vector3[] SwordSharpenedImpalePosition = new Vector3[30];
 
+        //public int CobaltScarWolfLifeSteal = 0; //Depends if you want the E.G.O Suit to further buff Weapons.
+        public bool CobaltScarConsuming = false;
+        public float CobaltScarConsumingDamageTaken = 0;
+        public bool CobaltScarWolf = false;
+        public bool CobaltScarMist = false;
+
+
         public override void ResetEffects()
         {
             BlackSwanParryChance = 0;
@@ -111,6 +119,11 @@ namespace LobotomyCorp.Players
             SwordSharpenedBlessing = false;
             SwordSharpenedJustice = false;
             SwordSharpenedDespair = false;
+
+            CobaltScarConsuming = false;
+            CobaltScarWolf = false;
+            CobaltScarMist = false;
+            //CobaltScarWolfLifeSteal = 0; Might have a use later
         }
 
         public override void UpdateDead()
@@ -265,6 +278,10 @@ namespace LobotomyCorp.Players
             if (target.life <= 0 && MagicBulletRequest == target.whoAmI)
             {
                 Main.LocalPlayer.GetModPlayer<LobotomyWawPlayer>().MagicBulletRequest = -1;
+            }
+            if (CobaltScarWolf)
+            {
+                Player.statLife += (int)(damageDone * 0.1f); //Heals your ass by 10% of damage done. Could be lowered to 5% if need be.
             }
         }
 
@@ -425,6 +442,14 @@ namespace LobotomyCorp.Players
                 {
                     Player.manaRegenDelay = 900;
                 }
+            }
+            if (CobaltScarConsuming)
+            {
+
+                info.SourceDamage  *= 2;
+                CobaltScarConsumingDamageTaken += info.SourceDamage; 
+
+
             }
         }
 
@@ -861,5 +886,27 @@ namespace LobotomyCorp.Players
         }
 
         public bool CrimsonScarLowHealthActive => Player.statLife <= Player.statLifeMax2 / 2;
+
+
+        public override void HideDrawLayers (PlayerDrawSet drawInfo) //Hide parts of the body or whatever
+        {
+              
+
+            if (CobaltScarMist)
+            {
+               
+                foreach (PlayerDrawLayer drawlayer in PlayerDrawLayerLoader.Layers)
+                {
+                    if(drawlayer is not LobotomyPlayerParticle) //test
+                    {
+                        drawlayer.Hide(); 
+                    }
+
+
+                    
+                }
+            }
+            
+        }
     }
 }
