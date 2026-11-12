@@ -149,7 +149,7 @@ namespace LobotomyCorp.Items.Ruina.Language
         {
             CreateRecipe()
             .AddIngredient(ModContent.ItemType<CobaltScar>())
-            .AddIngredient(ItemID.AdhesiveBandage)
+            .AddIngredient(ItemID.MoonStone)
             .AddIngredient(ItemID.BloodMoonStarter)
             .AddIngredient(ItemID.LunarTabletFragment, 2)
             .AddTile<Tiles.BlackBox3>()
